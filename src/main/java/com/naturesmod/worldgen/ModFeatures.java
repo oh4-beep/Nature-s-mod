@@ -7,8 +7,10 @@ import com.naturesmod.worldgen.feature.AlpineTarnFeature;
 import com.naturesmod.worldgen.feature.BoulderFeature;
 import com.naturesmod.worldgen.feature.CascadePoolsFeature;
 import com.naturesmod.worldgen.feature.CaveMouthFeature;
+import com.naturesmod.worldgen.feature.CliffVinesFeature;
 import com.naturesmod.worldgen.feature.CliffWaterfallFeature;
 import com.naturesmod.worldgen.feature.FallenLogFeature;
+import com.naturesmod.worldgen.feature.RockFormationFeature;
 import com.naturesmod.worldgen.feature.SinkholeFeature;
 import com.naturesmod.worldgen.tree.GiantTreeFeature;
 
@@ -30,6 +32,8 @@ public final class ModFeatures {
 		register("boulder", BoulderFeature.CODEC);
 		register("fallen_log", FallenLogFeature.CODEC);
 		register("giant_tree", GiantTreeFeature.CODEC);
+		register("rock_formation", RockFormationFeature.CODEC);
+		register("cliff_vines", CliffVinesFeature.CODEC);
 	}
 
 	private static void register(String name, MapCodec<? extends Feature> codec) {

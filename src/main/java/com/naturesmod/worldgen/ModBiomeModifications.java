@@ -58,6 +58,15 @@ public final class ModBiomeModifications {
 		add("boulder_snowy", Decoration.LOCAL_MODIFICATIONS, SNOWY);
 		add("boulder_badlands", Decoration.LOCAL_MODIFICATIONS, BADLANDS, List.of("desert"));
 
+		// Landmark rock formations.
+		add("badlands_arch", Decoration.LOCAL_MODIFICATIONS, BADLANDS);
+		add("badlands_hoodoos", Decoration.LOCAL_MODIFICATIONS, BADLANDS);
+		add("desert_arch", Decoration.LOCAL_MODIFICATIONS, List.of("desert"));
+		add("mountain_arch", Decoration.LOCAL_MODIFICATIONS, List.of("meadow", "windswept_hills", "windswept_gravelly_hills", "stony_peaks",
+				"savanna_plateau"));
+		add("sea_arch", Decoration.LOCAL_MODIFICATIONS, List.of("beach", "stony_shore"));
+		add("sea_stack", Decoration.LOCAL_MODIFICATIONS, List.of("ocean", "lukewarm_ocean", "warm_ocean", "cold_ocean", "beach", "stony_shore"));
+
 		// Giant trees grow first so the ordinary forest fills in around them.
 		add("ancient_oak", Decoration.LOCAL_MODIFICATIONS, List.of("forest", "flower_forest"));
 		add("ancient_oak_rare", Decoration.LOCAL_MODIFICATIONS, PLAINS, List.of("meadow", "windswept_forest"));
@@ -83,6 +92,9 @@ public final class ModBiomeModifications {
 		add("fallen_jungle_log", Decoration.VEGETAL_DECORATION, JUNGLES);
 		add("fallen_poplar_log", Decoration.VEGETAL_DECORATION, List.of("dappled_forest"));
 
+		add("cliff_vines_lush", Decoration.VEGETAL_DECORATION, JUNGLES, SWAMPS, List.of("dark_forest"));
+		add("cliff_vines_sparse", Decoration.VEGETAL_DECORATION, List.of("forest", "flower_forest", "birch_forest", "old_growth_birch_forest",
+				"dappled_forest", "cherry_grove", "windswept_forest"));
 		add("forest_leaf_litter", Decoration.VEGETAL_DECORATION, List.of("forest", "flower_forest", "birch_forest",
 				"old_growth_birch_forest", "windswept_forest"));
 		add("forest_bush", Decoration.VEGETAL_DECORATION, TEMPERATE_FORESTS, TAIGAS, PLAINS);

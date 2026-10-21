@@ -100,6 +100,17 @@ def fallen(log_block, min_length=6, max_length=12, thick=0.25):
     }
 
 
+def rock(style, materials, banded=False, top=None):
+    feature = {"type": f"{NS}:rock_formation", "style": style, "materials": [state(m) for m in materials], "banded": banded}
+    if top:
+        feature["top"] = state(top)
+    return feature
+
+
+CANYON_BANDS = ["terracotta", "orange_terracotta", "red_terracotta", "yellow_terracotta", "white_terracotta",
+                "orange_terracotta", "brown_terracotta", "terracotta", "light_gray_terracotta", "red_terracotta"]
+SEA_ROCK = ["stone", "andesite", "stone", "diorite", "stone", "tuff"]
+
 AUTUMN_LEAVES = ["orange_poplar_leaves", "red_poplar_leaves", "yellow_poplar_leaves", "orange_poplar_leaves"]
 
 FEATURES = {
@@ -119,6 +130,15 @@ FEATURES = {
     "boulder_snowy": (boulder(["stone", "andesite", "stone", "diorite"], max_radius=3.8), surface_placement(chance=5)),
     "boulder_badlands": (boulder(["red_sandstone", "terracotta", "orange_terracotta", "red_sandstone"], min_radius=2.0, max_radius=4.0),
                          surface_placement(chance=4)),
+
+    "badlands_arch": (rock("arch", CANYON_BANDS, banded=True), terrain_placement(chance=10)),
+    "badlands_hoodoos": (rock("hoodoos", CANYON_BANDS, banded=True, top="terracotta"), terrain_placement(chance=4)),
+    "desert_arch": (rock("arch", ["sandstone", "sandstone", "smooth_sandstone", "sandstone"], banded=True), terrain_placement(chance=40)),
+    "mountain_arch": (rock("arch", ["stone", "andesite", "stone", "granite", "stone"], top="grass_block"), terrain_placement(chance=30)),
+    "sea_arch": (rock("arch", SEA_ROCK, top="grass_block"), terrain_placement(chance=12)),
+    "sea_stack": (rock("sea_stack", SEA_ROCK, top="grass_block"), terrain_placement(chance=5)),
+    "cliff_vines_lush": ({"type": f"{NS}:cliff_vines", "density": 0.45, "min_drop": 4}, [IN_SQUARE, BIOME]),
+    "cliff_vines_sparse": ({"type": f"{NS}:cliff_vines", "density": 0.12, "min_drop": 6}, [IN_SQUARE, BIOME]),
 
     "fallen_oak_log": (fallen("oak_log"), surface_placement(chance=4)),
     "fallen_birch_log": (fallen("birch_log", 5, 10, 0.0), surface_placement(chance=4)),

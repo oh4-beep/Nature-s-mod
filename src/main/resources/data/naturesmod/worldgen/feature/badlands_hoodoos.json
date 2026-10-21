@@ -1,0 +1,18 @@
+{
+  "type": "naturesmod:rock_formation",
+  "style": "hoodoos",
+  "materials": [
+    "minecraft:terracotta",
+    "minecraft:orange_terracotta",
+    "minecraft:red_terracotta",
+    "minecraft:yellow_terracotta",
+    "minecraft:white_terracotta",
+    "minecraft:orange_terracotta",
+    "minecraft:brown_terracotta",
+    "minecraft:terracotta",
+    "minecraft:light_gray_terracotta",
+    "minecraft:red_terracotta"
+  ],
+  "banded": true,
+  "top": "minecraft:terracotta"
+}

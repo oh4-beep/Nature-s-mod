@@ -1,0 +1,14 @@
+{
+  "type": "naturesmod:rock_formation",
+  "style": "sea_stack",
+  "materials": [
+    "minecraft:stone",
+    "minecraft:andesite",
+    "minecraft:stone",
+    "minecraft:diorite",
+    "minecraft:stone",
+    "minecraft:tuff"
+  ],
+  "banded": false,
+  "top": "minecraft:grass_block"
+}

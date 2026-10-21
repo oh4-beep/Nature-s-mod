@@ -1,0 +1,11 @@
+{
+  "type": "naturesmod:rock_formation",
+  "style": "arch",
+  "materials": [
+    "minecraft:sandstone",
+    "minecraft:sandstone",
+    "minecraft:smooth_sandstone",
+    "minecraft:sandstone"
+  ],
+  "banded": true
+}

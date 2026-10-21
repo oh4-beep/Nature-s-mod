@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -16,11 +18,15 @@ import com.naturesmod.worldgen.FeatureStats;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.item.FallingBlockEntity;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.entity.EntityTypeTest;
@@ -37,8 +43,9 @@ import net.minecraft.world.phys.Vec3;
  */
 public final class SmokeTest {
 	private static final int REGION_CHUNKS = 8;
-	private static final int[][] REGIONS = {{0, 0}, {70, -45}, {-95, 30}, {160, 130}, {-210, -170}, {320, -60}, {-40, 280}, {450, 400},
-			{-500, 120}, {600, -350}};
+	/** Besides the spawn area, the test visits the nearest example of each of these biomes. */
+	private static final String[] TARGET_BIOMES = {"jagged_peaks", "stony_peaks", "frozen_peaks", "snowy_slopes", "meadow", "cherry_grove",
+			"windswept_hills", "jungle", "badlands", "dappled_forest", "old_growth_spruce_taiga", "swamp"};
 	private static final String RAMP = ".,:;=+*#%@";
 	private static final int[] BANDS = {72, 90, 110, 140, 170, 210, 260, 320, 380};
 
@@ -87,19 +94,45 @@ public final class SmokeTest {
 				fail("expected a 576 block tall overworld");
 			}
 			long start = System.currentTimeMillis();
+			List<int[]> regions = new ArrayList<>();
+			List<String> labels = new ArrayList<>();
+			regions.add(new int[] {0, 0});
+			labels.add("spawn");
+			for (String name : TARGET_BIOMES) {
+				ResourceKey<Biome> key = ResourceKey.create(Registries.BIOME, Identifier.withDefaultNamespace(name));
+				var found = level.findClosestBiome3d(holder -> holder.is(key), BlockPos.ZERO, 6400, 32, 64);
+				if (found == null) {
+					line("no %s within 6400 blocks", name);
+					continue;
+				}
+				BlockPos at = found.getFirst();
+				int cx = at.getX() >> 4;
+				int cz = at.getZ() >> 4;
+				boolean overlaps = false;
+				for (int[] other : regions) {
+					overlaps |= Math.abs(other[0] - cx) < REGION_CHUNKS && Math.abs(other[1] - cz) < REGION_CHUNKS;
+				}
+				if (!overlaps) {
+					regions.add(new int[] {cx, cz});
+					labels.add(name);
+				}
+			}
+			System.out.printf("[smoketest] located %d regions in %.1fs%n", regions.size(), (System.currentTimeMillis() - start) / 1000.0);
+			start = System.currentTimeMillis();
 			int[] allHeights = new int[0];
 			Map<String, Integer> biomes = new TreeMap<>();
-			for (int[] region : REGIONS) {
+			for (int i = 0; i < regions.size(); i++) {
+				int[] region = regions.get(i);
 				long regionStart = System.currentTimeMillis();
-				int[] heights = region(region[0], region[1], biomes);
-				System.out.printf("[smoketest] region %d,%d generated in %.1fs%n", region[0], region[1],
+				int[] heights = region(region[0], region[1], labels.get(i), biomes);
+				System.out.printf("[smoketest] region %s at %d,%d generated in %.1fs%n", labels.get(i), region[0], region[1],
 						(System.currentTimeMillis() - regionStart) / 1000.0);
 				int offset = allHeights.length;
 				allHeights = Arrays.copyOf(allHeights, offset + heights.length);
 				System.arraycopy(heights, 0, allHeights, offset, heights.length);
 			}
 			line("");
-			line("generated %d chunks in %.1fs", REGIONS.length * REGION_CHUNKS * REGION_CHUNKS, (System.currentTimeMillis() - start) / 1000.0);
+			line("generated %d chunks in %.1fs", regions.size() * REGION_CHUNKS * REGION_CHUNKS, (System.currentTimeMillis() - start) / 1000.0);
 			summary("ALL REGIONS", allHeights);
 			line("biomes sampled: %s", biomes);
 			line("features placed: %s", FeatureStats.snapshot());
@@ -117,7 +150,7 @@ public final class SmokeTest {
 		}
 	}
 
-	private int[] region(int centerChunkX, int centerChunkZ, Map<String, Integer> biomes) {
+	private int[] region(int centerChunkX, int centerChunkZ, String label, Map<String, Integer> biomes) {
 		int minChunkX = centerChunkX - REGION_CHUNKS / 2;
 		int minChunkZ = centerChunkZ - REGION_CHUNKS / 2;
 		for (int cx = 0; cx < REGION_CHUNKS; cx++) {
@@ -200,11 +233,12 @@ public final class SmokeTest {
 		}
 
 		TerrainRenderer renderer = new TerrainRenderer(level, minX, minZ, size, heights);
-		TerrainRenderer.emit("top_" + centerChunkX + "_" + centerChunkZ, renderer.topDown());
-		TerrainRenderer.emit("view_" + centerChunkX + "_" + centerChunkZ, renderer.oblique());
+		TerrainRenderer.emit("top_" + label, renderer.topDown());
+		TerrainRenderer.emit("view_" + label, renderer.oblique());
 
 		line("");
-		line("--- region at chunk %d,%d (blocks %d..%d, %d..%d) ---", centerChunkX, centerChunkZ, minX, minX + size - 1, minZ, minZ + size - 1);
+		line("--- %s: region at chunk %d,%d (blocks %d..%d, %d..%d) ---", label, centerChunkX, centerChunkZ, minX, minX + size - 1, minZ,
+				minZ + size - 1);
 		summary("region", heights);
 		int elevated = 0;
 		for (boolean b : elevatedWater) {
@@ -311,8 +345,8 @@ public final class SmokeTest {
 
 	private BlockPos findTreeBase() {
 		BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
-		int minX = (REGIONS[0][0] - REGION_CHUNKS / 2) * 16;
-		int minZ = (REGIONS[0][1] - REGION_CHUNKS / 2) * 16;
+		int minX = -REGION_CHUNKS / 2 * 16;
+		int minZ = -REGION_CHUNKS / 2 * 16;
 		for (int x = minX + 8; x < minX + REGION_CHUNKS * 16 - 8; x++) {
 			for (int z = minZ + 8; z < minZ + REGION_CHUNKS * 16 - 8; z++) {
 				int top = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z) - 1;
