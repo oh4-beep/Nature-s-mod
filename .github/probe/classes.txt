@@ -1,79 +1,17 @@
-net.minecraft.world.level.levelgen.feature.Feature
-net.minecraft.world.level.levelgen.feature.FeaturePlaceContext
-net.minecraft.world.level.WorldGenLevel
-net.minecraft.world.level.LevelWriter
-net.minecraft.world.level.LevelAccessor
-net.minecraft.world.level.LevelReader|getHeight|getBiome|getMinY|getMaxY|isEmptyBlock|getBlockState|getFluidState|getSeaLevel|isInsideBuildHeight|hasChunk|getChunk|getRawBrightness|canSeeSky|isOutsideBuildHeight
-net.minecraft.world.level.LevelHeightAccessor
-net.minecraft.world.level.BlockGetter|getBlockState|getFluidState|getHeight|getMinY|clip
-net.minecraft.world.level.levelgen.Heightmap$Types|public static final
-net.minecraft.world.level.block.state.BlockBehaviour$BlockStateBase|public .*(is|isAir|canBeReplaced|isSolid|blocksMotion|getFluidState|isFaceSturdy|canSurvive|liquid|getBlock|isSolidRender|hasProperty|getDestroySpeed|ignitedByLava|getSoundType|getMapColor|isRandomlyTicking|getCollisionShape|isCollisionShapeFullBlock|entityCanStandOn|isRedstoneConductor)\(
-net.minecraft.world.level.block.state.StateHolder|setValue|getValue|hasProperty|trySetValue|getOptionalValue
-net.minecraft.world.level.block.state.properties.BlockStateProperties|AXIS|PERSISTENT|DISTANCE|WATERLOGGED| NORTH| SOUTH| EAST| WEST| UP| DOWN|HORIZONTAL_FACING|FACING|SEGMENT_AMOUNT|FLOWER_AMOUNT|LAYERS|SNOWY|LEVEL[ ;]|FALLING|VERTICAL_DIRECTION|DRIPSTONE_THICKNESS|AGE_1[ ;]|AGE_25|BERRIES|HALF|DOUBLE_BLOCK_HALF|TIP|HANGING|BOTTOM
-net.minecraft.world.level.block.Blocks|POPLAR|_LEAVES|_LOG[ ;]|LEAF_LITTER|WILDFLOWERS| BUSH|FIREFLY|SHELF_MUSHROOM|MOSS|ROOTED_DIRT|HANGING_ROOTS|GLOW_LICHEN| VINE[ ;]|POINTED_DRIPSTONE|DRIPSTONE_BLOCK|CALCITE|TUFF[ ;]|COBBLESTONE|ANDESITE[ ;]|GRANITE[ ;]|DIORITE[ ;]|GRAVEL|CLAY[ ;]|MUD[ ;]|PODZOL|COARSE_DIRT|GRASS_BLOCK|SHORT_GRASS|TALL_GRASS|FERN|LILY_PAD|SNOW|POWDER_SNOW|PACKED_ICE| ICE[ ;]|WATER[ ;]|STONE[ ;]|DEEPSLATE[ ;]|SAND[ ;]|SANDSTONE[ ;]|AIR[ ;]|CAVE_AIR|DIRT[ ;]|BROWN_MUSHROOM[ ;]|RED_MUSHROOM[ ;]|SWEET_BERRY|PALE_HANGING_MOSS|SPORE_BLOSSOM|CAVE_VINES|AZALEA|BIG_DRIPLEAF|SMALL_DRIPLEAF|SEAGRASS|SUGAR_CANE|_WOOD[ ;]
-net.minecraft.world.level.block.LeavesBlock|public|static
-net.minecraft.world.level.block.VineBlock|public static|PROPERTY
-net.minecraft.world.level.block.PipeBlock|PROPERTY
-net.minecraft.world.level.block.MultifaceBlock|public static|getFaceProperty
-net.minecraft.world.level.block.PointedDripstoneBlock|public static
-net.minecraft.world.level.block.RotatedPillarBlock|public static
-net.minecraft.world.entity.item.FallingBlockEntity
-net.minecraft.world.entity.Entity|setDeltaMovement|getDeltaMovement|level\(|blockPosition|getX\(|getY\(|getZ\(|position\(|discard|isRemoved|setPos|moveTo|snapTo|getDirection|getYRot|setNoGravity|hurtServer|addDeltaMovement|getBoundingBox|isShiftKeyDown|isCrouching|getType\(|tickCount
-net.minecraft.world.level.Level|isClientSide|addParticle|playSound|playLocalSound|destroyBlock|addFreshEntity|getGameTime|getRandom|levelEvent|setBlock\(|setBlockAndUpdate|removeBlock|random|isThundering|isRaining|getEntitiesOfClass|getEntities\(|dimension\(|explode|getServer
-net.minecraft.server.level.ServerLevel|sendParticles|getChunkSource|getSeed|getChunk|getSharedSpawnPos|getRespawnData|setDefaultSpawnPos|getServer|tickTime|getEntities|getAllEntities|players\(|getLevel|registryAccess|getBiome|structureManager
-net.minecraft.server.MinecraftServer|overworld|halt|getTickCount|execute|getWorldData|registryAccess|stopServer|close|getPlayerList|isRunning|getLevel\(|getAllLevels|getWorldPath|isDedicatedServer|reloadResources|getCommands|createCommandSourceStack
-net.minecraft.core.particles.ParticleTypes|CLOUD|SPLASH|FALLING_WATER|DRIPPING_WATER|BLOCK[ ;]|POOF|WHITE_SMOKE|FALLING_LEAVES|TINTED_LEAVES|CHERRY_LEAVES|BUBBLE|RAIN|MYCELIUM|SPORE|FIREFLY|DUST_PLUME|SNOWFLAKE|CAMPFIRE|EXPLOSION
-net.minecraft.core.particles.BlockParticleOption|public
-net.minecraft.sounds.SoundEvents|WOOD_BREAK|WOOD_FALL|WOOD_HIT|ZOMBIE_BREAK_WOODEN_DOOR|ZOMBIE_ATTACK_WOODEN_DOOR|WATER_AMBIENT|GRASS_BREAK|AZALEA_LEAVES|CHERRY_LEAVES|LEAF_LITTER|GENERIC_SPLASH|PLAYER_SPLASH|AMBIENT_UNDERWATER|LIGHTNING_BOLT_IMPACT|BIG_FALL|DEEPSLATE_FALL|WEATHER_RAIN|FIREFLY|BUSH|TREE|LOG|CREAKING|MANGROVE_ROOTS
-net.minecraft.sounds.SoundSource|public static final
-net.minecraft.util.RandomSource
-net.minecraft.resources.Identifier|public static|public .*get
-net.minecraft.resources.ResourceKey|public static
-net.minecraft.core.Registry|public static
-net.minecraft.core.registries.BuiltInRegistries|FEATURE|STRUCTURE_TYPE|STRUCTURE_PIECE|BLOCK[ ;]|ITEM[ ;]|PARTICLE_TYPE|SOUND_EVENT
-net.minecraft.core.registries.Registries|FEATURE|PLACED_FEATURE|CONFIGURED_FEATURE|STRUCTURE[ ;]|BIOME[ ;]|BLOCK[ ;]|DENSITY_FUNCTION
-net.minecraft.world.level.levelgen.structure.Structure
-net.minecraft.world.level.levelgen.structure.Structure$GenerationContext
-net.minecraft.world.level.levelgen.structure.Structure$GenerationStub
-net.minecraft.world.level.levelgen.structure.Structure$StructureSettings
-net.minecraft.world.level.levelgen.structure.StructureType
-net.minecraft.world.level.levelgen.structure.StructurePiece
-net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType
-net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType$ContextlessType
-net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder|public
-net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext
-net.minecraft.world.level.levelgen.structure.BoundingBox|public
-net.minecraft.world.level.chunk.ChunkGenerator|getBaseHeight|getSeaLevel|getMinY|getGenDepth|getBaseColumn|getFirstOccupiedHeight|getFirstFreeHeight
-net.minecraft.nbt.CompoundTag|getInt|putInt|getIntArray|putIntArray|getLong|putLong|getBoolean|putBoolean|getString|putString|getFloat|putFloat|getList|put\(|contains
-net.minecraft.world.entity.LightningBolt|public
-net.minecraft.world.level.material.WaterFluid|animateTick|public
-net.minecraft.world.level.material.FlowingFluid|FALLING|LEVEL|getFlowing|getSource|public static
-net.minecraft.world.level.material.Fluids|public static final
-net.minecraft.world.level.material.FluidState|isSource|getAmount|is\(|isEmpty|getType|createLegacyBlock|getHeight|getOwnHeight|getValue
-net.minecraft.client.multiplayer.ClientLevel|addParticle|playLocalSound|animateTick|getBlockState|getFluidState|playSound
-net.minecraft.client.Minecraft|public .*(level|player|isPaused|getInstance|options|particleEngine|getSoundManager)
-net.minecraft.world.entity.player.Player|isShiftKeyDown|getMainHandItem|isCreative|getAbilities|causeFoodExhaustion|isSpectator|hasCorrectToolForDrops
-net.minecraft.world.item.ItemStack|is\(|hurtAndBreak|isDamageableItem|getItem|isEmpty
-net.minecraft.tags.ItemTags|AXES
-net.minecraft.tags.BlockTags|LOGS|LEAVES|MINEABLE_WITH_AXE|LOGS_THAT_BURN|DIRT|BASE_STONE_OVERWORLD|REPLACEABLE|SAPLINGS|FLOWERS|SNOW|SAND|ICE|STONE_ORE_REPLACEABLES|FEATURES_CANNOT_REPLACE|GRASS_BLOCKS|SUBSTRATE|SOIL|SUPPORTS
-net.minecraft.world.level.levelgen.GenerationStep$Decoration|public static final
-net.minecraft.world.level.block.Block|UPDATE_|public static .*(dropResources|getDrops|pushEntitiesUp|isShapeFullBlock)
-net.minecraft.world.level.levelgen.feature.TreeFeature|public|protected|static
-net.minecraft.world.level.storage.loot.LootParams$Builder|public
-net.minecraft.world.phys.Vec3|public Vec3|public static
-net.minecraft.core.BlockPos|public static|public .*(offset|above|below|relative|immutable|mutable|getX|asLong|distSqr|distManhattan|atY|getCenter|containing|betweenClosed|north|south|east|west|withinManhattan|spiralAround|randomInCube|randomBetweenClosed)\(
-net.minecraft.core.BlockPos$MutableBlockPos|public
-net.minecraft.core.Direction|public static|public .*(getStepX|getAxis|getOpposite|getClockWise|getCounterClockWise|getUnitVec3|get2DDataValue|toYRot|fromYRot|getNearest)
-net.minecraft.core.Direction$Plane|public
-net.minecraft.world.level.ChunkPos|public
-net.minecraft.world.level.chunk.ChunkAccess|getHeight|getPos|getBlockState|getMinY|getHighestSectionPosition|getHighestFilledSectionIndex|getPersistedStatus
-net.minecraft.server.level.ServerChunkCache|getChunk|getGenerator|getGeneratorState|randomState
-net.minecraft.world.level.biome.Biome|public
-net.minecraft.core.Holder|public .*(is|unwrapKey|value|getRegisteredName)\(
-net.minecraft.util.Mth|public static .*(floor|clamp|lerp|sqrt|sin|cos|abs|square|length|smoothstep|frac|ceil|positiveModulo|wrapDegrees|atan2|inverseLerp|clampedLerp|map)\(
-net.minecraft.world.level.levelgen.WorldgenRandom|public
-net.minecraft.world.level.levelgen.LegacyRandomSource|public
-net.minecraft.world.level.levelgen.XoroshiroRandomSource|public
-net.minecraft.world.level.levelgen.synth.SimplexNoise|public
-net.minecraft.world.level.levelgen.synth.PerlinSimplexNoise|public
-net.minecraft.world.level.levelgen.synth.ImprovedNoise|public
+net.minecraft.world.level.block.state.BlockState
+net.minecraft.world.level.chunk.StructureAccess
+net.minecraft.world.level.ScheduledTickAccess
+net.minecraft.world.level.block.PointedDripstoneBlock
+net.minecraft.world.level.block.state.StateDefinition|getProperty
+net.minecraft.world.level.block.state.properties.Property|getValue|getName
+net.minecraft.util.ExtraCodecs|nonEmptyList
+net.minecraft.util.StringRepresentable|fromEnum
+net.minecraft.world.item.ItemStack|public boolean is
+net.minecraft.world.item.ItemInstance
+net.minecraft.commands.Commands|performPrefixedCommand|performCommand
+net.minecraft.server.level.ServerLevel|setChunkForced|getForceLoadedChunks
+net.minecraft.core.particles.ParticleTypes|SMOKE|LARGE_SMOKE
+net.minecraft.world.level.chunk.LevelChunkSection|maybeHas|hasOnlyAir
+net.minecraft.world.phys.Vec3|subtract|add\(|scale|normalize|length|directionFromRotation
+net.minecraft.core.Holder|getRegisteredName
+net.minecraft.resources.ResourceKey|public .*\(\)

@@ -1,0 +1,22 @@
+{
+  "type": "naturesmod:giant_tree",
+  "style": "willow",
+  "log": {
+    "id": "minecraft:mangrove_log",
+    "properties": {
+      "axis": "y"
+    }
+  },
+  "min_height": 8,
+  "max_height": 12,
+  "leaves": [
+    {
+      "id": "minecraft:mangrove_leaves",
+      "properties": {
+        "distance": "7",
+        "persistent": "false",
+        "waterlogged": "false"
+      }
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "type": "naturesmod:fallen_log",
+  "log": {
+    "id": "minecraft:jungle_log",
+    "properties": {
+      "axis": "y"
+    }
+  },
+  "min_length": 7,
+  "max_length": 14,
+  "thick_chance": 0.4
+}

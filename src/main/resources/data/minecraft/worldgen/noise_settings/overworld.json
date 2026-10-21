@@ -1,0 +1,168 @@
+{
+  "aquifers": {
+    "barrier": {
+      "type": "minecraft:noise",
+      "noise": "minecraft:aquifer_barrier",
+      "xz_scale": 1.0,
+      "y_scale": 0.5
+    },
+    "exclusion": {
+      "type": "minecraft:min",
+      "left": {
+        "type": "minecraft:sub",
+        "left": -0.225,
+        "right": "naturesmod:overworld/erosion"
+      },
+      "right": {
+        "type": "minecraft:max",
+        "left": {
+          "type": "minecraft:sub",
+          "left": "naturesmod:overworld/depth",
+          "right": 0.9
+        },
+        "right": 0.0
+      }
+    },
+    "fluid_level_floodedness": {
+      "type": "minecraft:noise",
+      "noise": "minecraft:aquifer_fluid_level_floodedness",
+      "xz_scale": 1.0,
+      "y_scale": 0.67
+    },
+    "fluid_level_spread": {
+      "type": "minecraft:noise",
+      "noise": "minecraft:aquifer_fluid_level_spread",
+      "xz_scale": 1.0,
+      "y_scale": 0.7142857142857143
+    },
+    "lava": {
+      "type": "minecraft:noise",
+      "noise": "minecraft:aquifer_lava",
+      "xz_scale": 1.0,
+      "y_scale": 1.0
+    },
+    "surface_level": "naturesmod:overworld/preliminary_surface_level"
+  },
+  "debug_functions": [
+    {
+      "function": "naturesmod:overworld/final_density",
+      "label": "N"
+    },
+    {
+      "function": "naturesmod:overworld/temperature",
+      "label": "T"
+    },
+    {
+      "function": "naturesmod:overworld/vegetation",
+      "label": "V"
+    },
+    {
+      "function": "naturesmod:overworld/continents",
+      "label": "C"
+    },
+    {
+      "function": "naturesmod:overworld/erosion",
+      "label": "E"
+    },
+    {
+      "function": "naturesmod:overworld/depth",
+      "label": "D"
+    },
+    {
+      "function": "naturesmod:overworld/ridges",
+      "label": "W"
+    },
+    {
+      "function": {
+        "type": "minecraft:mul",
+        "left": {
+          "type": "minecraft:add",
+          "left": {
+            "type": "minecraft:abs",
+            "input": {
+              "type": "minecraft:add",
+              "left": {
+                "type": "minecraft:abs",
+                "input": "naturesmod:overworld/ridges"
+              },
+              "right": -0.6666667
+            }
+          },
+          "right": -0.33333334
+        },
+        "right": -3.0
+      },
+      "label": "PV"
+    },
+    {
+      "function": "naturesmod:overworld/preliminary_surface_level",
+      "label": "PS"
+    }
+  ],
+  "default_block": "minecraft:stone",
+  "default_fluid": "minecraft:water",
+  "disable_mob_generation": false,
+  "legacy_random_source": false,
+  "material_rule": "naturesmod:overworld",
+  "noise": {
+    "height": 576,
+    "min_y": -64
+  },
+  "noise_router": {
+    "chunk_surface_level": "naturesmod:overworld/chunk_surface_level",
+    "continents": "naturesmod:overworld/continents",
+    "depth": "naturesmod:overworld/depth",
+    "erosion": "naturesmod:overworld/erosion",
+    "final_density": "naturesmod:overworld/final_density",
+    "ridges": "naturesmod:overworld/ridges",
+    "temperature": "naturesmod:overworld/temperature",
+    "vegetation": "naturesmod:overworld/vegetation"
+  },
+  "sea_level": 63,
+  "spawn_target": [
+    {
+      "naturesmod:overworld/continents": [
+        -0.11,
+        1.0
+      ],
+      "naturesmod:overworld/erosion": [
+        -1.0,
+        1.0
+      ],
+      "naturesmod:overworld/ridges": [
+        -1.0,
+        -0.16
+      ],
+      "naturesmod:overworld/temperature": [
+        -1.0,
+        1.0
+      ],
+      "naturesmod:overworld/vegetation": [
+        -1.0,
+        1.0
+      ]
+    },
+    {
+      "naturesmod:overworld/continents": [
+        -0.11,
+        1.0
+      ],
+      "naturesmod:overworld/erosion": [
+        -1.0,
+        1.0
+      ],
+      "naturesmod:overworld/ridges": [
+        0.16,
+        1.0
+      ],
+      "naturesmod:overworld/temperature": [
+        -1.0,
+        1.0
+      ],
+      "naturesmod:overworld/vegetation": [
+        -1.0,
+        1.0
+      ]
+    }
+  ]
+}

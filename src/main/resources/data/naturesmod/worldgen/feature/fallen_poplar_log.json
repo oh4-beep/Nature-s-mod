@@ -1,0 +1,12 @@
+{
+  "type": "naturesmod:fallen_log",
+  "log": {
+    "id": "minecraft:poplar_log",
+    "properties": {
+      "axis": "y"
+    }
+  },
+  "min_length": 6,
+  "max_length": 12,
+  "thick_chance": 0.2
+}

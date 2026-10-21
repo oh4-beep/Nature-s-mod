@@ -1,0 +1,78 @@
+package com.naturesmod;
+
+import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParseException;
+
+import net.fabricmc.loader.api.FabricLoader;
+
+/** User settings, stored in {@code config/naturesmod.json}. */
+public final class NaturesConfig {
+	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+	private static NaturesConfig instance = new NaturesConfig();
+
+	// Tree felling
+	/** Chopping through a natural tree's trunk makes everything above the cut topple over. */
+	public boolean treeFelling = true;
+	/** Only fell trees when chopping with an axe. */
+	public boolean fellingRequiresAxe = true;
+	/** Sneak while chopping to break a single log the vanilla way. */
+	public boolean sneakToChopNormally = true;
+	/** Trees also topple for players in creative mode. */
+	public boolean fellInCreative = false;
+	/** Toppling logs and branches hurt whatever they land on. */
+	public boolean fallingTreesHurt = true;
+	/** Extra axe durability used per this many logs felled (0 = no extra wear). */
+	public int logsPerExtraDurability = 8;
+	/** Largest tree (in logs) that can be felled in one go. */
+	public int maxTreeLogs = 2500;
+
+	// Natural tree falls
+	/** A lightning strike can split a tree and knock it over. */
+	public boolean lightningFellsTrees = true;
+	/** During thunderstorms the wind occasionally blows over a tree near a player. */
+	public boolean stormWindthrow = true;
+	/** Average minutes of thunderstorm between wind-thrown trees near each player. */
+	public int windthrowMinutes = 6;
+
+	// Client effects
+	/** Mist, spray and roar at the foot of waterfalls. */
+	public boolean waterfallMist = true;
+	/** Multiplier for the amount of waterfall mist particles. */
+	public float mistDensity = 1.0f;
+	/** Waterfalls make a rushing sound. */
+	public boolean waterfallSounds = true;
+
+	public static NaturesConfig get() {
+		return instance;
+	}
+
+	public static void load() {
+		Path path = FabricLoader.getInstance().getConfigDir().resolve(NaturesMod.MOD_ID + ".json");
+		if (Files.exists(path)) {
+			try (Reader reader = Files.newBufferedReader(path)) {
+				NaturesConfig loaded = GSON.fromJson(reader, NaturesConfig.class);
+				if (loaded != null) {
+					instance = loaded;
+				}
+			} catch (IOException | JsonParseException e) {
+				NaturesMod.LOGGER.warn("Could not read {}, using defaults", path, e);
+			}
+		}
+		// Write back so newly added options show up in the file.
+		try {
+			Files.createDirectories(path.getParent());
+			try (Writer writer = Files.newBufferedWriter(path)) {
+				GSON.toJson(instance, writer);
+			}
+		} catch (IOException e) {
+			NaturesMod.LOGGER.warn("Could not write {}", path, e);
+		}
+	}
+}

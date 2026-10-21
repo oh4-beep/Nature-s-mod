@@ -1,0 +1,12 @@
+{
+  "type": "naturesmod:boulder",
+  "materials": [
+    "minecraft:granite",
+    "minecraft:stone",
+    "minecraft:granite",
+    "minecraft:diorite"
+  ],
+  "moss_chance": 0.2,
+  "min_radius": 1.5,
+  "max_radius": 3.2
+}

@@ -1,0 +1,38 @@
+package com.naturesmod.worldgen;
+
+import com.mojang.serialization.MapCodec;
+
+import com.naturesmod.NaturesMod;
+import com.naturesmod.worldgen.feature.AlpineTarnFeature;
+import com.naturesmod.worldgen.feature.BoulderFeature;
+import com.naturesmod.worldgen.feature.CascadePoolsFeature;
+import com.naturesmod.worldgen.feature.CaveMouthFeature;
+import com.naturesmod.worldgen.feature.CliffWaterfallFeature;
+import com.naturesmod.worldgen.feature.FallenLogFeature;
+import com.naturesmod.worldgen.feature.SinkholeFeature;
+import com.naturesmod.worldgen.tree.GiantTreeFeature;
+
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.level.levelgen.feature.Feature;
+
+/** Registers the Nature's Mod feature types; the features themselves are data-driven JSON. */
+public final class ModFeatures {
+	private ModFeatures() {
+	}
+
+	public static void register() {
+		register("cliff_waterfall", CliffWaterfallFeature.CODEC);
+		register("cascade_pools", CascadePoolsFeature.CODEC);
+		register("alpine_tarn", AlpineTarnFeature.CODEC);
+		register("cave_mouth", CaveMouthFeature.CODEC);
+		register("sinkhole", SinkholeFeature.CODEC);
+		register("boulder", BoulderFeature.CODEC);
+		register("fallen_log", FallenLogFeature.CODEC);
+		register("giant_tree", GiantTreeFeature.CODEC);
+	}
+
+	private static void register(String name, MapCodec<? extends Feature> codec) {
+		Registry.register(BuiltInRegistries.FEATURE_TYPE, NaturesMod.id(name), codec);
+	}
+}

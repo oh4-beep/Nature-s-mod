@@ -1,0 +1,293 @@
+{
+  "type": "minecraft:cache",
+  "input": {
+    "type": "minecraft:lerp",
+    "alpha": {
+      "type": "minecraft:blend_alpha"
+    },
+    "first": 0.0,
+    "second": {
+      "type": "minecraft:spline",
+      "spline": {
+        "coordinate": "naturesmod:overworld/continents",
+        "points": [
+          {
+            "derivative": 0.0,
+            "location": -0.11,
+            "value": 0.0
+          },
+          {
+            "derivative": 0.0,
+            "location": 0.03,
+            "value": {
+              "coordinate": "naturesmod:overworld/erosion",
+              "points": [
+                {
+                  "derivative": 0.0,
+                  "location": -1.0,
+                  "value": {
+                    "coordinate": "naturesmod:overworld/ridges_folded",
+                    "points": [
+                      {
+                        "derivative": 0.0,
+                        "location": 0.19999999,
+                        "value": 0.0
+                      },
+                      {
+                        "derivative": 0.0,
+                        "location": 0.44999996,
+                        "value": 0.0
+                      },
+                      {
+                        "derivative": 0.0,
+                        "location": 1.0,
+                        "value": {
+                          "coordinate": "naturesmod:overworld/ridges",
+                          "points": [
+                            {
+                              "derivative": 0.0,
+                              "location": -0.01,
+                              "value": 0.8505
+                            },
+                            {
+                              "derivative": 0.0,
+                              "location": 0.01,
+                              "value": 0.405
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "derivative": 0.0,
+                  "location": -0.78,
+                  "value": {
+                    "coordinate": "naturesmod:overworld/ridges_folded",
+                    "points": [
+                      {
+                        "derivative": 0.0,
+                        "location": 0.19999999,
+                        "value": 0.0
+                      },
+                      {
+                        "derivative": 0.0,
+                        "location": 0.44999996,
+                        "value": 0.0
+                      },
+                      {
+                        "derivative": 0.0,
+                        "location": 1.0,
+                        "value": {
+                          "coordinate": "naturesmod:overworld/ridges",
+                          "points": [
+                            {
+                              "derivative": 0.0,
+                              "location": -0.01,
+                              "value": 0.42525
+                            },
+                            {
+                              "derivative": 0.0,
+                              "location": 0.01,
+                              "value": 0.2025
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "derivative": 0.0,
+                  "location": -0.5775,
+                  "value": {
+                    "coordinate": "naturesmod:overworld/ridges_folded",
+                    "points": [
+                      {
+                        "derivative": 0.0,
+                        "location": 0.19999999,
+                        "value": 0.0
+                      },
+                      {
+                        "derivative": 0.0,
+                        "location": 0.44999996,
+                        "value": 0.0
+                      },
+                      {
+                        "derivative": 0.0,
+                        "location": 1.0,
+                        "value": {
+                          "coordinate": "naturesmod:overworld/ridges",
+                          "points": [
+                            {
+                              "derivative": 0.0,
+                              "location": -0.01,
+                              "value": 0.42525
+                            },
+                            {
+                              "derivative": 0.0,
+                              "location": 0.01,
+                              "value": 0.2025
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "derivative": 0.0,
+                  "location": -0.375,
+                  "value": 0.0
+                }
+              ]
+            }
+          },
+          {
+            "derivative": 0.0,
+            "location": 0.65,
+            "value": {
+              "coordinate": "naturesmod:overworld/erosion",
+              "points": [
+                {
+                  "derivative": 0.0,
+                  "location": -1.0,
+                  "value": {
+                    "coordinate": "naturesmod:overworld/ridges_folded",
+                    "points": [
+                      {
+                        "derivative": 0.0,
+                        "location": 0.19999999,
+                        "value": 0.0
+                      },
+                      {
+                        "derivative": 0.0,
+                        "location": 0.44999996,
+                        "value": {
+                          "coordinate": "naturesmod:overworld/ridges",
+                          "points": [
+                            {
+                              "derivative": 0.0,
+                              "location": -0.01,
+                              "value": 0.8505
+                            },
+                            {
+                              "derivative": 0.0,
+                              "location": 0.01,
+                              "value": 0.405
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "derivative": 0.0,
+                        "location": 1.0,
+                        "value": {
+                          "coordinate": "naturesmod:overworld/ridges",
+                          "points": [
+                            {
+                              "derivative": 0.0,
+                              "location": -0.01,
+                              "value": 0.8505
+                            },
+                            {
+                              "derivative": 0.0,
+                              "location": 0.01,
+                              "value": 0.405
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "derivative": 0.0,
+                  "location": -0.78,
+                  "value": {
+                    "coordinate": "naturesmod:overworld/ridges_folded",
+                    "points": [
+                      {
+                        "derivative": 0.0,
+                        "location": 0.19999999,
+                        "value": 0.0
+                      },
+                      {
+                        "derivative": 0.0,
+                        "location": 0.44999996,
+                        "value": 0.0
+                      },
+                      {
+                        "derivative": 0.0,
+                        "location": 1.0,
+                        "value": {
+                          "coordinate": "naturesmod:overworld/ridges",
+                          "points": [
+                            {
+                              "derivative": 0.0,
+                              "location": -0.01,
+                              "value": 0.8505
+                            },
+                            {
+                              "derivative": 0.0,
+                              "location": 0.01,
+                              "value": 0.405
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "derivative": 0.0,
+                  "location": -0.5775,
+                  "value": {
+                    "coordinate": "naturesmod:overworld/ridges_folded",
+                    "points": [
+                      {
+                        "derivative": 0.0,
+                        "location": 0.19999999,
+                        "value": 0.0
+                      },
+                      {
+                        "derivative": 0.0,
+                        "location": 0.44999996,
+                        "value": 0.0
+                      },
+                      {
+                        "derivative": 0.0,
+                        "location": 1.0,
+                        "value": {
+                          "coordinate": "naturesmod:overworld/ridges",
+                          "points": [
+                            {
+                              "derivative": 0.0,
+                              "location": -0.01,
+                              "value": 0.8505
+                            },
+                            {
+                              "derivative": 0.0,
+                              "location": 0.01,
+                              "value": 0.405
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "derivative": 0.0,
+                  "location": -0.375,
+                  "value": 0.0
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}
