@@ -1,0 +1,72 @@
+CodModel.java
+SalmonModel.java
+TropicalFish*Model.java
+Pufferfish*Model.java
+SquidModel.java
+DolphinModel.java
+GuardianModel.java|class|public|createBodyLayer|setupAnim|addOrReplaceChild
+CodRenderer.java
+SalmonRenderer.java
+TropicalFishRenderer.java
+SquidRenderer.java
+GlowSquidRenderer.java
+DolphinRenderer.java
+GuardianRenderer.java|class|public|extends|submit|getTextureLocation
+EntityModel.java
+Model.java
+ModelPart.java
+LayerDefinition.java
+CubeListBuilder.java
+PartPose.java
+PartDefinition.java
+MeshDefinition.java
+CubeDeformation.java
+EntityRenderState.java
+LivingEntityRenderState.java
+SquidRenderState.java
+MobRenderer.java
+LivingEntityRenderer.java
+EyesLayer.java
+RenderLayer.java
+ModelLayers.java|COD|SQUID|GLOW_SQUID|createLocation|register\(|ModelLayerLocation
+LayerDefinitions.java|COD|SQUID|SALMON|put\(|createRoots
+EntityRenderers.java|COD|SQUID|register\(|public static
+RenderTypes.java|public static RenderType (entity|eyes|itemEntity)
+RenderType.java|public static RenderType (entity|eyes)
+ArmorMaterials.java
+ArmorMaterial.java
+ArmorType.java
+EquipmentAssets.java
+SpawnEggItem.java
+MobBucketItem.java
+Items.java|TURTLE_HELMET|TURTLE_SCUTE|NAUTILUS_SHELL|COD_BUCKET|COD =|COOKED_COD|COD_SPAWN_EGG|static Item register[A-Za-z]*\(|TRIDENT =|HEART_OF_THE_SEA
+Item.java|class Properties|public Properties [a-zA-Z]+\(|public Item\(
+ItemAttributeModifiers.java|public static|public [A-Za-z<>]+ [a-z]+\(|record|Builder
+Foods.java|COD|SALMON|TROPICAL|PUFFERFISH|public static final
+Attributes.java|WATER|OXYGEN|SUBMERGED|MOVEMENT_SPEED|ARMOR|SCALE|public static final Holder
+MobEffects.java|WATER_BREATHING|NIGHT_VISION|DOLPHINS_GRACE|POISON|CONDUIT|SLOWNESS|WEAKNESS
+AbstractFish.java
+AbstractSchoolingFish.java
+Cod.java
+Pufferfish.java
+WaterAnimal.java
+Squid.java
+GlowSquid.java
+Dolphin.java|class|MoveControl|LookControl|createNavigation|registerGoals|goalSelector|createAttributes|travel|public
+Guardian.java|class|public|registerGoals|goalSelector|targetSelector|createAttributes|checkGuardianSpawnRules|MoveControl|travel
+EntityType.java|COD =|SQUID =|GUARDIAN =|PUFFERFISH =|public static class Builder|public Builder<T> [a-zA-Z]+\(|public static <T extends Entity> Builder|public EntityType<T> build|private static <T extends Entity> EntityType<T> register
+SpawnPlacements.java|COD|SQUID|GUARDIAN|PUFFERFISH|DOLPHIN|static <T extends Mob> void register
+SpawnPlacementTypes.java
+MobCategory.java
+TeleportTransition.java
+NetherPortalBlock.java
+Portal.java
+BlockBehaviour.java|entityInside|setId|public Properties [a-zA-Z]+\(|protected void entityInside|public static Properties of
+Blocks.java|NETHER_PORTAL =|SEA_LANTERN =|SEA_PICKLE =|private static Block register|public static Block register
+ServerPlayer.java|public .* teleport|changeDimension|public void setRespawnPosition
+Entity.java|public .* teleport[A-Za-z]*\(|public boolean isInWater|public boolean isUnderWater|getAirSupply|setAirSupply|public boolean isEyeInFluid|public .*Portal
+LivingEntity.java|public boolean canBreatheUnderwater|protected int decreaseAirSupply|increaseAirSupply|public boolean hasEffect|addEffect\(|public void travel|getWaterSlowDown
+Mob.java|public static AttributeSupplier.Builder createMobAttributes|protected void registerGoals|public boolean doHurtTarget|protected PathNavigation createNavigation|public boolean checkSpawnRules|public boolean checkSpawnObstruction
+DefaultAttributes.java|COD|SQUID|GUARDIAN|put\(
+BiomeDefaultFeatures.java|commonSpawns|oceanSpawns|warmOceanSpawns|addSpawn|MobSpawnSettings
+MobSpawnSettings.java|public|class|record
