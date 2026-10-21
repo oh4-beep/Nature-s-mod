@@ -58,6 +58,9 @@ jobs:
       - name: print terrain report
         if: always()
         run: cat run/smoketest/naturesmod-report.txt || true
+      - name: check the smoke test passed
+        # The server exits normally even when it refuses to load the world, so judge by the report.
+        run: grep -q "RESULT: PASSED" run/smoketest/naturesmod-report.txt
 
   # Temporary development aid: prints the vanilla sources the new content builds on.
   source-probe:

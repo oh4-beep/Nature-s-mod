@@ -597,6 +597,17 @@ def loot(vanilla):
     return files
 
 
+def noise_json(params):
+    """26.3 noise parameters: the base octave, the number of octaves and their amplitudes."""
+    amplitudes = params["amplitudes"]
+    out = {"base_amplitude": 0.95, "base_octave": params["firstOctave"]}
+    if len(amplitudes) > 1:
+        out["octave_count"] = len(amplitudes)
+    if any(a != 1.0 for a in amplitudes):
+        out["amplitude_modifiers"] = amplitudes
+    return out
+
+
 def build(vanilla):
     out = {
         f"{NS}/dimension_type/abyss.json": dimension_type(),
@@ -605,7 +616,7 @@ def build(vanilla):
         f"{NS}/worldgen/material_rule/abyss.json": material_rule(),
     }
     for name, params in NOISES.items():
-        out[f"{NS}/worldgen/noise/abyss/{name}.json"] = params
+        out[f"{NS}/worldgen/noise/abyss/{name}.json"] = noise_json(params)
     for name, fn in density_functions().items():
         out[f"{NS}/worldgen/density_function/abyss/{name}.json"] = fn
     for name, b in biomes().items():
