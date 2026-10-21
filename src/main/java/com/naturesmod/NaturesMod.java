@@ -11,6 +11,7 @@ import com.naturesmod.smoketest.SmokeTest;
 import com.naturesmod.tree.TreeEvents;
 import com.naturesmod.worldgen.ModBiomeModifications;
 import com.naturesmod.worldgen.ModFeatures;
+import com.naturesmod.worldgen.river.ModStructures;
 
 public class NaturesMod implements ModInitializer {
 	public static final String MOD_ID = "naturesmod";
@@ -20,6 +21,7 @@ public class NaturesMod implements ModInitializer {
 	public void onInitialize() {
 		NaturesConfig.load();
 		ModFeatures.register();
+		ModStructures.register();
 		ModBiomeModifications.register();
 		TreeEvents.register();
 

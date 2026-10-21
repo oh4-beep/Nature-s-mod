@@ -146,9 +146,44 @@ FEATURES = {
 }
 
 
+# Biomes where a mountain river may rise (its spring must also be high above sea level).
+RIVER_SOURCE_BIOMES = [
+    "meadow", "cherry_grove", "stony_peaks", "jagged_peaks", "frozen_peaks", "snowy_slopes", "grove",
+    "windswept_hills", "windswept_forest", "windswept_gravelly_hills", "windswept_savanna", "savanna_plateau",
+    "taiga", "old_growth_pine_taiga", "old_growth_spruce_taiga", "snowy_taiga", "forest", "flower_forest",
+    "birch_forest", "old_growth_birch_forest", "dark_forest", "dappled_forest", "jungle", "sparse_jungle",
+    "bamboo_jungle", "plains", "snowy_plains", "savanna", "badlands", "wooded_badlands",
+]
+
+
+def structures():
+    return {
+        f"{NS}/worldgen/structure/mountain_river.json": {
+            "type": f"{NS}:mountain_river",
+            "biomes": f"#{NS}:has_structure/mountain_river",
+            "spawn_overrides": {},
+            "step": "lakes",
+        },
+        f"{NS}/worldgen/structure_set/mountain_rivers.json": {
+            "placement": {
+                "type": "minecraft:random_spread",
+                "exclusion_zone": {"chunk_count": 3, "other_set": "minecraft:villages"},
+                "salt": 1870551927,
+                "separation": 5,
+                "spacing": 14,
+            },
+            "structures": [{"structure": f"{NS}:mountain_river", "weight": 1}],
+        },
+        f"{NS}/tags/worldgen/biome/has_structure/mountain_river.json": {
+            "values": [f"minecraft:{b}" for b in RIVER_SOURCE_BIOMES],
+        },
+    }
+
+
 def build():
     files = {}
     for name, (feature, placement) in FEATURES.items():
         files[f"{NS}/worldgen/feature/{name}.json"] = feature
         files[f"{NS}/worldgen/placed_feature/{name}.json"] = {"feature": f"{NS}:{name}", "placement": placement}
+    files.update(structures())
     return files

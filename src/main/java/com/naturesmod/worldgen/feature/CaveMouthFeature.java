@@ -24,7 +24,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.MultifaceBlock;
 import net.minecraft.world.level.block.VineBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.feature.Feature;
 
@@ -266,10 +265,10 @@ public record CaveMouthFeature(int minLength, int maxLength) implements Feature 
 		pos.set(top);
 		for (int i = 0; i < placed; i++) {
 			boolean last = i == placed - 1;
-			BlockState vine = (last ? Blocks.CAVE_VINES : Blocks.CAVE_VINES_PLANT).defaultBlockState()
-					.setValue(BlockStateProperties.BERRIES, random.nextInt(5) == 0);
+			BlockState vine = WorldGenUtil.withProperty((last ? Blocks.CAVE_VINES : Blocks.CAVE_VINES_PLANT).defaultBlockState(),
+					"berries", Boolean.toString(random.nextInt(5) == 0));
 			if (last) {
-				vine = vine.setValue(BlockStateProperties.AGE_25, 25);
+				vine = WorldGenUtil.withProperty(vine, "age", "25");
 			}
 			WaterWorks.set(level, pos, vine);
 			pos.move(Direction.DOWN);
@@ -308,7 +307,8 @@ public record CaveMouthFeature(int minLength, int maxLength) implements Feature 
 		for (int i = 0; i < room; i++) {
 			int fromTip = room - 1 - i;
 			String thickness = fromTip == 0 ? "tip" : fromTip == 1 ? "frustum" : i == 0 ? "base" : "middle";
-			BlockState dripstone = Blocks.POINTED_DRIPSTONE.defaultBlockState().setValue(BlockStateProperties.VERTICAL_DIRECTION, growth);
+			BlockState dripstone = WorldGenUtil.withProperty(Blocks.POINTED_DRIPSTONE.defaultBlockState(), "vertical_direction",
+					growth.getSerializedName());
 			WaterWorks.set(level, pos, WorldGenUtil.withProperty(dripstone, "thickness", thickness));
 			pos.move(growth);
 		}

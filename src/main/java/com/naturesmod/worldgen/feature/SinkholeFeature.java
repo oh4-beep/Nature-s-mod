@@ -153,8 +153,8 @@ public record SinkholeFeature(boolean water, int minDepth, int maxDepth) impleme
 				if (roll == 0) {
 					WaterWorks.set(level, pos, Blocks.HANGING_ROOTS.defaultBlockState());
 				} else if (roll == 1 && level.getBlockState(pos.set(x, y - 1, z)).isAir()) {
-					WaterWorks.set(level, pos.set(x, y, z), Blocks.CAVE_VINES.defaultBlockState()
-							.setValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.BERRIES, random.nextBoolean()));
+					WaterWorks.set(level, pos.set(x, y, z), WorldGenUtil.withProperty(Blocks.CAVE_VINES.defaultBlockState(), "berries",
+							Boolean.toString(random.nextBoolean())));
 				}
 			}
 			// Moss on ledges.

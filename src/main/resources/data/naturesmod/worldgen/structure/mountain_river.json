@@ -1,0 +1,6 @@
+{
+  "type": "naturesmod:mountain_river",
+  "biomes": "#naturesmod:has_structure/mountain_river",
+  "spawn_overrides": {},
+  "step": "lakes"
+}
