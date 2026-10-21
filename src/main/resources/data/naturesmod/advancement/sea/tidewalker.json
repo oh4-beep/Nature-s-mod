@@ -1,0 +1,47 @@
+{
+  "criteria": {
+    "wearing": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:equipment": {
+              "head": {
+                "items": "naturesmod:tidewalker_helmet"
+              },
+              "chest": {
+                "items": "naturesmod:tidewalker_chestplate"
+              },
+              "legs": {
+                "items": "naturesmod:tidewalker_leggings"
+              },
+              "feet": {
+                "items": "naturesmod:tidewalker_boots"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.naturesmod.sea.tidewalker.description"
+    },
+    "icon": {
+      "id": "naturesmod:tidewalker_helmet"
+    },
+    "title": {
+      "translate": "advancements.naturesmod.sea.tidewalker.title"
+    }
+  },
+  "requirements": [
+    [
+      "wearing"
+    ]
+  ],
+  "sends_telemetry_event": false,
+  "parent": "naturesmod:sea/root"
+}

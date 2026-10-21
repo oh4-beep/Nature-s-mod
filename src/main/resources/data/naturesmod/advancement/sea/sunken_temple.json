@@ -1,0 +1,36 @@
+{
+  "criteria": {
+    "temple": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "naturesmod:sunken_temple"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.naturesmod.sea.sunken_temple.description"
+    },
+    "icon": {
+      "id": "minecraft:dark_prismarine"
+    },
+    "title": {
+      "translate": "advancements.naturesmod.sea.sunken_temple.title"
+    }
+  },
+  "requirements": [
+    [
+      "temple"
+    ]
+  ],
+  "sends_telemetry_event": false,
+  "parent": "naturesmod:sea/into_the_abyss"
+}

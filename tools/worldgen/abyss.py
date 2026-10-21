@@ -559,6 +559,7 @@ def loot(vanilla):
                  item("diamond", 2, (1, 2)), item("book", 4, 1, SEA_ENCHANT)),
             pool(1, empty(6), item(f"{NS}:tidewalker_helmet"), item(f"{NS}:tidewalker_boots"), item("heart_of_the_sea"),
                  item("potion", 2, None, WATER_BREATHING)),
+            pool(1, empty(5), item(f"{NS}:abyssal_upgrade_smithing_template")),
         ),
         "chests/sunken_temple": chest(
             pool(1, item(f"{NS}:abyssal_upgrade_smithing_template", 3), empty(2)),
@@ -577,6 +578,7 @@ def loot(vanilla):
                  item("torch", 6, (4, 12)), item("lantern", 3), item(f"{NS}:sea_scale", 8, (2, 5)),
                  item("potion", 6, None, WATER_BREATHING), item("book", 3, 1, SEA_ENCHANT)),
             pool(1, empty(5), item(f"{NS}:tidewalker_chestplate"), item(f"{NS}:tidewalker_leggings"), item("map", 2, None, *RIFT_MAP)),
+            pool(1, empty(4), item(f"{NS}:abyssal_upgrade_smithing_template")),
         ),
         "chests/leviathan_hoard": chest(
             pool(1, item(f"{NS}:abyssal_upgrade_smithing_template", 1, (1, 2))),

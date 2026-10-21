@@ -1,0 +1,48 @@
+{
+  "criteria": {
+    "wearing": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:equipment": {
+              "head": {
+                "items": "naturesmod:abyssal_helmet"
+              },
+              "chest": {
+                "items": "naturesmod:abyssal_chestplate"
+              },
+              "legs": {
+                "items": "naturesmod:abyssal_leggings"
+              },
+              "feet": {
+                "items": "naturesmod:abyssal_boots"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.naturesmod.sea.pressure_proof.description"
+    },
+    "icon": {
+      "id": "naturesmod:abyssal_helmet"
+    },
+    "title": {
+      "translate": "advancements.naturesmod.sea.pressure_proof.title"
+    },
+    "frame": "goal"
+  },
+  "requirements": [
+    [
+      "wearing"
+    ]
+  ],
+  "sends_telemetry_event": false,
+  "parent": "naturesmod:sea/crushing_depths"
+}

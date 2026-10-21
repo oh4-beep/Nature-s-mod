@@ -167,8 +167,8 @@ public final class Abyss {
 				continue;
 			}
 			int required = requiredRating(player.getY());
-			boolean shielded = player.hasEffect(MobEffects.CONDUIT_POWER) || DivingArmor.pressureRating(player) >= required;
-			if (required == 0 || shielded) {
+			int deficit = required - DivingArmor.pressureRating(player);
+			if (deficit <= 0 || player.hasEffect(MobEffects.CONDUIT_POWER)) {
 				WARNED.remove(player.getUUID());
 				continue;
 			}
@@ -178,7 +178,8 @@ public final class Abyss {
 			player.sendSystemMessage(Component.translatable("message.naturesmod.pressure.overlay"), true);
 			player.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 40, 1, true, false, true));
 			player.addEffect(new MobEffectInstance(MobEffects.MINING_FATIGUE, 40, 1, true, false, true));
-			player.hurtServer(level, player.damageSources().source(PRESSURE), required >= 8 ? 4.0F : 2.0F);
+			// Half a heart a second for every point of pressure rating the suit falls short.
+			player.hurtServer(level, player.damageSources().source(PRESSURE), deficit * 0.5F);
 		}
 	}
 }

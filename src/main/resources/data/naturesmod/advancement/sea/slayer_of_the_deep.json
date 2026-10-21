@@ -1,0 +1,38 @@
+{
+  "criteria": {
+    "leviathan": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "naturesmod:abyssal_leviathan"
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.naturesmod.sea.slayer_of_the_deep.description"
+    },
+    "icon": {
+      "id": "naturesmod:abyssal_heart"
+    },
+    "title": {
+      "translate": "advancements.naturesmod.sea.slayer_of_the_deep.title"
+    },
+    "frame": "challenge"
+  },
+  "requirements": [
+    [
+      "leviathan"
+    ]
+  ],
+  "sends_telemetry_event": false,
+  "parent": "naturesmod:sea/crushing_depths",
+  "rewards": {
+    "experience": 500
+  }
+}

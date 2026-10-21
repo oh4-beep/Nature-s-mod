@@ -8,6 +8,10 @@ Usage: python3 tools/assets/generate.py
 import json
 import math
 import os
+import sys
+
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "worldgen"))
+import advancements  # noqa: E402
 
 from PIL import Image
 
@@ -135,6 +139,7 @@ def main():
     with open(lang_path, encoding="utf-8") as fh:
         lang = json.load(fh)
     lang.update(LANG)
+    lang.update(advancements.lang())
     write_json(lang_path, dict(sorted(lang.items())))
     print(f"wrote rift assets and {len(LANG)} language entries")
 

@@ -1,0 +1,41 @@
+{
+  "criteria": {
+    "high": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "dimension": "minecraft:the_nether",
+              "position": {
+                "y": {
+                  "min": 150.0
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.naturesmod.nether.above_the_lava_sea.description"
+    },
+    "icon": {
+      "id": "minecraft:netherrack"
+    },
+    "title": {
+      "translate": "advancements.naturesmod.nether.above_the_lava_sea.title"
+    }
+  },
+  "requirements": [
+    [
+      "high"
+    ]
+  ],
+  "sends_telemetry_event": false,
+  "parent": "minecraft:nether/root"
+}

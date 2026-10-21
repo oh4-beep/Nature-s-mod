@@ -1,0 +1,45 @@
+{
+  "criteria": {
+    "has_raw_fish_fillet": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "naturesmod:raw_fish_fillet"
+          }
+        ]
+      }
+    },
+    "has_sea_scale": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "naturesmod:sea_scale"
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.naturesmod.sea.root.description"
+    },
+    "icon": {
+      "id": "naturesmod:sea_scale"
+    },
+    "title": {
+      "translate": "advancements.naturesmod.sea.root.title"
+    },
+    "background": "minecraft:block/dark_prismarine",
+    "show_toast": false,
+    "announce_to_chat": false
+  },
+  "requirements": [
+    [
+      "has_raw_fish_fillet",
+      "has_sea_scale"
+    ]
+  ],
+  "sends_telemetry_event": false
+}

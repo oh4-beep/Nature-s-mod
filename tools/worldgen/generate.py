@@ -23,6 +23,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import abyss  # noqa: E402
+import advancements  # noqa: E402
 import features  # noqa: E402
 import nether  # noqa: E402
 import terrain  # noqa: E402
@@ -51,6 +52,9 @@ def main():
     files.update(features.build(vanilla))
     files.update(abyss.build(vanilla))
     files.update(nether.build(vanilla))
+    buckets_dir = os.path.join(REPO, "src", "main", "resources", "assets", "naturesmod", "items")
+    buckets = sorted(f"naturesmod:{name[:-5]}" for name in os.listdir(buckets_dir) if name.endswith("_bucket.json"))
+    files.update(advancements.build(buckets))
 
     for rel, data in sorted(files.items()):
         path = os.path.join(args.out, rel)

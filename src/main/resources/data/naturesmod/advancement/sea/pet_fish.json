@@ -1,0 +1,50 @@
+{
+  "criteria": {
+    "bucket": {
+      "trigger": "minecraft:filled_bucket",
+      "conditions": {
+        "item": {
+          "items": [
+            "naturesmod:arctic_char_bucket",
+            "naturesmod:barreleye_bucket",
+            "naturesmod:blue_tang_bucket",
+            "naturesmod:brown_trout_bucket",
+            "naturesmod:butterflyfish_bucket",
+            "naturesmod:carp_bucket",
+            "naturesmod:clownfish_bucket",
+            "naturesmod:flounder_bucket",
+            "naturesmod:hatchetfish_bucket",
+            "naturesmod:herring_bucket",
+            "naturesmod:icefish_bucket",
+            "naturesmod:lanternfish_bucket",
+            "naturesmod:mackerel_bucket",
+            "naturesmod:parrotfish_bucket",
+            "naturesmod:perch_bucket",
+            "naturesmod:piranha_bucket",
+            "naturesmod:queen_angelfish_bucket",
+            "naturesmod:rainbow_trout_bucket",
+            "naturesmod:seahorse_bucket"
+          ]
+        }
+      }
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.naturesmod.sea.pet_fish.description"
+    },
+    "icon": {
+      "id": "naturesmod:clownfish_bucket"
+    },
+    "title": {
+      "translate": "advancements.naturesmod.sea.pet_fish.title"
+    }
+  },
+  "requirements": [
+    [
+      "bucket"
+    ]
+  ],
+  "sends_telemetry_event": false,
+  "parent": "naturesmod:sea/root"
+}

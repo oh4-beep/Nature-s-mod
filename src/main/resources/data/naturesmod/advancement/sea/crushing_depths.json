@@ -1,0 +1,42 @@
+{
+  "criteria": {
+    "deep": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "dimension": "naturesmod:abyss",
+              "position": {
+                "y": {
+                  "max": 350.0
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.naturesmod.sea.crushing_depths.description"
+    },
+    "icon": {
+      "id": "minecraft:sculk"
+    },
+    "title": {
+      "translate": "advancements.naturesmod.sea.crushing_depths.title"
+    },
+    "frame": "goal"
+  },
+  "requirements": [
+    [
+      "deep"
+    ]
+  ],
+  "sends_telemetry_event": false,
+  "parent": "naturesmod:sea/into_the_abyss"
+}

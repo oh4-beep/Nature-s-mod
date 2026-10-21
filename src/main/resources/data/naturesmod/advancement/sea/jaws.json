@@ -1,0 +1,32 @@
+{
+  "criteria": {
+    "has_shark_tooth": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "naturesmod:shark_tooth"
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.naturesmod.sea.jaws.description"
+    },
+    "icon": {
+      "id": "naturesmod:shark_tooth"
+    },
+    "title": {
+      "translate": "advancements.naturesmod.sea.jaws.title"
+    }
+  },
+  "requirements": [
+    [
+      "has_shark_tooth"
+    ]
+  ],
+  "sends_telemetry_event": false,
+  "parent": "naturesmod:sea/root"
+}

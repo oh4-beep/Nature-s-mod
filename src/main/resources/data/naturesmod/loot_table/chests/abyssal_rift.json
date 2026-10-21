@@ -157,6 +157,20 @@
           }
         }
       ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:empty",
+          "weight": 5
+        },
+        {
+          "type": "minecraft:item",
+          "name": "naturesmod:abyssal_upgrade_smithing_template",
+          "weight": 1
+        }
+      ]
     }
   ]
 }

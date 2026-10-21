@@ -62,6 +62,11 @@ jobs:
         # The server exits normally even when it refuses to load the world, so judge by the report.
         run: |
           grep -q "RESULT: PASSED" run/smoketest/naturesmod-report.txt
+      - name: check for data errors
+        # Broken recipes, loot tables or advancements are only logged, so look for them.
+        if: always()
+        run: |
+          if grep -E "/ERROR\].*naturesmod" run/smoketest/logs/latest.log; then exit 1; fi
 
   # Plays through the sea and the Nether in a real (software-rendered) client and takes screenshots.
   client-test:
