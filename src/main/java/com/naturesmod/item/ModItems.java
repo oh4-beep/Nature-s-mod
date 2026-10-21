@@ -28,6 +28,7 @@ import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.equipment.ArmorMaterial;
 import net.minecraft.world.item.equipment.ArmorType;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluids;
 
 import com.naturesmod.NaturesMod;
@@ -51,6 +52,7 @@ public final class ModItems {
 	public static Item ABYSSAL_PLATE;
 	public static Item ABYSSAL_HEART;
 	public static Item ABYSSAL_UPGRADE_SMITHING_TEMPLATE;
+	public static Item PEARL;
 
 	private ModItems() {
 	}
@@ -68,6 +70,11 @@ public final class ModItems {
 		ABYSSAL_UPGRADE_SMITHING_TEMPLATE = register("abyssal_upgrade_smithing_template", Item::new, new Item.Properties().rarity(Rarity.UNCOMMON));
 
 		register("nether_geyser", properties -> new BlockItem(ModBlocks.NETHER_GEYSER, properties), new Item.Properties().useBlockDescriptionPrefix());
+		PEARL = register("pearl", Item::new, new Item.Properties().rarity(Rarity.UNCOMMON));
+		for (Block block : ModBlocks.SEA_FLOOR) {
+			register(BuiltInRegistries.BLOCK.getKey(block).getPath(), properties -> new BlockItem(block, properties),
+					new Item.Properties().useBlockDescriptionPrefix());
+		}
 
 		armor("tidewalker", DivingArmor.TIDEWALKER, TIDEWALKER_SET);
 		armor("abyssal", DivingArmor.ABYSSAL, ABYSSAL_SET);

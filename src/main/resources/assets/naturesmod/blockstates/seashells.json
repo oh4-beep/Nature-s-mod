@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "naturesmod:block/seashells"
+      },
+      {
+        "model": "naturesmod:block/seashells",
+        "y": 90
+      },
+      {
+        "model": "naturesmod:block/seashells",
+        "y": 180
+      },
+      {
+        "model": "naturesmod:block/seashells",
+        "y": 270
+      }
+    ]
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "variants": {
+    "has_pearl=false,waterlogged=false": [
+      {
+        "model": "naturesmod:block/giant_clam"
+      },
+      {
+        "model": "naturesmod:block/giant_clam",
+        "y": 90
+      },
+      {
+        "model": "naturesmod:block/giant_clam",
+        "y": 180
+      },
+      {
+        "model": "naturesmod:block/giant_clam",
+        "y": 270
+      }
+    ],
+    "has_pearl=false,waterlogged=true": [
+      {
+        "model": "naturesmod:block/giant_clam"
+      },
+      {
+        "model": "naturesmod:block/giant_clam",
+        "y": 90
+      },
+      {
+        "model": "naturesmod:block/giant_clam",
+        "y": 180
+      },
+      {
+        "model": "naturesmod:block/giant_clam",
+        "y": 270
+      }
+    ],
+    "has_pearl=true,waterlogged=false": [
+      {
+        "model": "naturesmod:block/giant_clam_open"
+      },
+      {
+        "model": "naturesmod:block/giant_clam_open",
+        "y": 90
+      },
+      {
+        "model": "naturesmod:block/giant_clam_open",
+        "y": 180
+      },
+      {
+        "model": "naturesmod:block/giant_clam_open",
+        "y": 270
+      }
+    ],
+    "has_pearl=true,waterlogged=true": [
+      {
+        "model": "naturesmod:block/giant_clam_open"
+      },
+      {
+        "model": "naturesmod:block/giant_clam_open",
+        "y": 90
+      },
+      {
+        "model": "naturesmod:block/giant_clam_open",
+        "y": 180
+      },
+      {
+        "model": "naturesmod:block/giant_clam_open",
+        "y": 270
+      }
+    ]
+  }
+}

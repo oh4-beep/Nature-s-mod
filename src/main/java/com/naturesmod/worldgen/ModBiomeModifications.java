@@ -33,6 +33,8 @@ public final class ModBiomeModifications {
 	private static final List<String> PLAINS = List.of("plains", "sunflower_plains");
 	private static final List<String> BADLANDS = List.of("badlands", "wooded_badlands", "eroded_badlands");
 	private static final List<String> SWAMPS = List.of("swamp", "mangrove_swamp");
+	private static final List<String> WARM_SEAS = List.of("warm_ocean", "lukewarm_ocean", "deep_lukewarm_ocean");
+	private static final List<String> COLD_SEAS = List.of("cold_ocean", "deep_cold_ocean", "frozen_ocean", "deep_frozen_ocean");
 
 	private ModBiomeModifications() {
 	}
@@ -101,6 +103,18 @@ public final class ModBiomeModifications {
 		add("forest_large_fern", Decoration.VEGETAL_DECORATION, TAIGAS, JUNGLES, List.of("dark_forest", "forest"));
 		add("waterside_fireflies", Decoration.VEGETAL_DECORATION, TEMPERATE_FORESTS, TAIGAS, PLAINS, JUNGLES,
 				List.of("meadow", "cherry_grove"));
+
+		// The sea: reefs and sea beds full of life, shells on the beaches, and more kelp, seagrass and coral.
+		add("ocean/reef_garden", Decoration.VEGETAL_DECORATION, List.of("warm_ocean"));
+		add("ocean/reef_garden_sparse", Decoration.VEGETAL_DECORATION, List.of("lukewarm_ocean", "deep_lukewarm_ocean"));
+		add("ocean/temperate_garden", Decoration.VEGETAL_DECORATION, List.of("ocean", "deep_ocean"));
+		add("ocean/cold_garden", Decoration.VEGETAL_DECORATION, COLD_SEAS);
+		add("ocean/beach_shells", Decoration.VEGETAL_DECORATION, List.of("beach", "snowy_beach"));
+		add("ocean/extra_coral", Decoration.VEGETAL_DECORATION, List.of("warm_ocean", "lukewarm_ocean"));
+		add("ocean/extra_kelp", Decoration.VEGETAL_DECORATION, List.of("ocean", "deep_ocean", "cold_ocean", "deep_cold_ocean",
+				"lukewarm_ocean", "deep_lukewarm_ocean"));
+		add("ocean/extra_seagrass", Decoration.VEGETAL_DECORATION, WARM_SEAS, List.of("ocean", "deep_ocean"), COLD_SEAS);
+		add("ocean/extra_sea_pickles", Decoration.VEGETAL_DECORATION, WARM_SEAS);
 	}
 
 	@SafeVarargs

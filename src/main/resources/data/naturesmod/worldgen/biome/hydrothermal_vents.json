@@ -75,7 +75,9 @@
       "naturesmod:abyss/glow_lichen"
     ],
     [],
-    [],
+    [
+      "naturesmod:abyss/garden_vents"
+    ],
     []
   ],
   "has_precipitation": false,

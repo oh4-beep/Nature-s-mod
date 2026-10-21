@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "naturesmod:block/orange_starfish"
+      },
+      {
+        "model": "naturesmod:block/orange_starfish",
+        "y": 90
+      },
+      {
+        "model": "naturesmod:block/orange_starfish",
+        "y": 180
+      },
+      {
+        "model": "naturesmod:block/orange_starfish",
+        "y": 270
+      }
+    ]
+  }
+}

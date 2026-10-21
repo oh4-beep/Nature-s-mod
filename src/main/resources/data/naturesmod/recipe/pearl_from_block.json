@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "naturesmod:pearl_block"
+  ],
+  "result": {
+    "count": 9,
+    "id": "naturesmod:pearl"
+  }
+}

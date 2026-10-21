@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cross",
+  "textures": {
+    "cross": "naturesmod:block/purple_sea_fan"
+  }
+}

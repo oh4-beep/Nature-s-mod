@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "naturesmod:block/sea_urchin"
+      },
+      {
+        "model": "naturesmod:block/sea_urchin",
+        "y": 90
+      },
+      {
+        "model": "naturesmod:block/sea_urchin",
+        "y": 180
+      },
+      {
+        "model": "naturesmod:block/sea_urchin",
+        "y": 270
+      }
+    ]
+  }
+}

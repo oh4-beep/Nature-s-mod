@@ -334,15 +334,17 @@ def biomes():
         "midnight_zone": biome("#071630", 96.0, sparks, COMMON + [(LOCAL, f"{NS}:abyss/hanging_glow")], water="#0c2348"),
         "abyssal_plains": biome("#0c1d2e", 104.0, marine_snow, COMMON + [
             (LOCAL, f"{NS}:abyss/nodules"), (LOCAL, f"{NS}:abyss/whale_fall_rare"), (VEGETATION, f"{NS}:abyss/sea_pickles_sparse"),
+            (VEGETATION, f"{NS}:abyss/garden_floor"),
         ], water="#10283e"),
         "glowing_reef": biome("#0a4249", 120.0, [("minecraft:glow", 0.004), ("minecraft:underwater", 0.02)], COMMON + [
             (LOCAL, f"{NS}:abyss/glow_reef"), (VEGETATION, f"{NS}:abyss/reef_coral"), (VEGETATION, f"{NS}:abyss/sea_pickles"),
+            (VEGETATION, f"{NS}:abyss/garden_reef"),
         ], water="#178a8a"),
         "hydrothermal_vents": biome("#2c1a10", 72.0, [("minecraft:ash", 0.03), ("minecraft:bubble", 0.01)], COMMON + [
-            (LOCAL, f"{NS}:abyss/black_smoker"), (LOCAL, f"{NS}:abyss/soul_vent"),
+            (LOCAL, f"{NS}:abyss/black_smoker"), (LOCAL, f"{NS}:abyss/soul_vent"), (VEGETATION, f"{NS}:abyss/garden_vents"),
         ], water="#4a2c1a"),
         "bone_fields": biome("#17221f", 96.0, marine_snow, COMMON + [
-            (LOCAL, f"{NS}:abyss/whale_fall"), (LOCAL, f"{NS}:abyss/nodules"),
+            (LOCAL, f"{NS}:abyss/whale_fall"), (LOCAL, f"{NS}:abyss/nodules"), (VEGETATION, f"{NS}:abyss/garden_floor"),
         ], water="#22342e"),
     }
 
@@ -465,6 +467,9 @@ def features():
         "ore_copper": ore("copper", 12, 8, 8, 600),
         "glow_lichen": ("minecraft:glow_lichen", [count(90), IN_SQUARE, height_range(8, 900), BIOME]),
         "giant_kelp": (abyss_feature("giant_kelp"), floor_placement(n=5)),
+        "garden_reef": ({"type": f"{NS}:sea_garden", "style": "abyss_reef"}, floor_placement(n=4)),
+        "garden_vents": ({"type": f"{NS}:sea_garden", "style": "abyss_vents"}, floor_placement(n=4)),
+        "garden_floor": ({"type": f"{NS}:sea_garden", "style": "abyss_floor"}, floor_placement(n=2)),
         "hanging_glow": (abyss_feature("hanging_glow"), [count(40), IN_SQUARE, height_range(280, 900), BIOME]),
         "sea_pickles": ("minecraft:sea_pickle", floor_placement(n=6)),
         "sea_pickles_sparse": ("minecraft:sea_pickle", floor_placement(n=1, chance=3)),

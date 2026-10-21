@@ -35,7 +35,56 @@ public final class ModBlocks {
 			.isValidSpawn((state, level, pos, type) -> type.fireImmune())
 			.sound(SoundType.BASALT));
 
+	// --- the sea floor ------------------------------------------------------------------------
+	public static final Block RED_SEA_ANEMONE = register("red_sea_anemone", props -> new SeaPlantBlock(props, SeaPlantBlock.PLANT), plant(MapColor.COLOR_RED, 3));
+	public static final Block PURPLE_SEA_ANEMONE = register("purple_sea_anemone", props -> new SeaPlantBlock(props, SeaPlantBlock.PLANT), plant(MapColor.COLOR_PURPLE, 3));
+	public static final Block GREEN_SEA_ANEMONE = register("green_sea_anemone", props -> new SeaPlantBlock(props, SeaPlantBlock.PLANT), plant(MapColor.COLOR_LIGHT_GREEN, 3));
+	public static final Block PURPLE_SEA_FAN = register("purple_sea_fan", props -> new SeaPlantBlock(props, SeaPlantBlock.PLANT), plant(MapColor.COLOR_MAGENTA, 0));
+	public static final Block ORANGE_SEA_FAN = register("orange_sea_fan", props -> new SeaPlantBlock(props, SeaPlantBlock.PLANT), plant(MapColor.COLOR_ORANGE, 0));
+	public static final Block TUBE_WORMS = register("tube_worms", props -> new SeaPlantBlock(props, SeaPlantBlock.PLANT), plant(MapColor.SNOW, 0));
+	public static final Block ABYSSAL_GLOWMOSS = register("abyssal_glowmoss", props -> new SeaPlantBlock(props, SeaPlantBlock.PLANT), plant(MapColor.COLOR_CYAN, 10));
+	public static final Block ORANGE_STARFISH = register("orange_starfish", props -> new SeaPlantBlock(props, SeaPlantBlock.FLAT), floor(MapColor.COLOR_ORANGE));
+	public static final Block BLUE_STARFISH = register("blue_starfish", props -> new SeaPlantBlock(props, SeaPlantBlock.FLAT), floor(MapColor.COLOR_BLUE));
+	public static final Block SEASHELLS = register("seashells", props -> new SeaPlantBlock(props, SeaPlantBlock.FLAT), floor(MapColor.SAND));
+	public static final Block SEA_URCHIN = register("sea_urchin", SeaUrchinBlock::new, BlockBehaviour.Properties.of()
+			.mapColor(MapColor.COLOR_PURPLE)
+			.noCollision()
+			.strength(0.3F)
+			.sound(SoundType.CORAL_BLOCK));
+	public static final Block GIANT_CLAM = register("giant_clam", GiantClamBlock::new, BlockBehaviour.Properties.of()
+			.mapColor(MapColor.STONE)
+			.strength(1.0F)
+			.randomTicks()
+			.sound(SoundType.CORAL_BLOCK));
+	public static final Block PEARL_BLOCK = register("pearl_block", Block::new, BlockBehaviour.Properties.of()
+			.mapColor(MapColor.SNOW)
+			.strength(1.5F)
+			.lightLevel(state -> 6)
+			.sound(SoundType.AMETHYST));
+
+	/** Every block of the sea floor, in creative tab order. */
+	public static final Block[] SEA_FLOOR = {RED_SEA_ANEMONE, PURPLE_SEA_ANEMONE, GREEN_SEA_ANEMONE, PURPLE_SEA_FAN, ORANGE_SEA_FAN,
+			TUBE_WORMS, ABYSSAL_GLOWMOSS, ORANGE_STARFISH, BLUE_STARFISH, SEASHELLS, SEA_URCHIN, GIANT_CLAM, PEARL_BLOCK};
+
 	private ModBlocks() {
+	}
+
+	private static BlockBehaviour.Properties plant(MapColor color, int light) {
+		return BlockBehaviour.Properties.of()
+				.mapColor(color)
+				.noCollision()
+				.instabreak()
+				.lightLevel(state -> light)
+				.offsetType(BlockBehaviour.OffsetType.XZ)
+				.sound(SoundType.WET_GRASS);
+	}
+
+	private static BlockBehaviour.Properties floor(MapColor color) {
+		return BlockBehaviour.Properties.of()
+				.mapColor(color)
+				.noCollision()
+				.instabreak()
+				.sound(SoundType.CORAL_BLOCK);
 	}
 
 	/** Forces the registrations above to run during mod initialisation. */
