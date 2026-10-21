@@ -17,6 +17,7 @@ gaping cave mouths, ancient giant trees, and trees that actually topple when you
 - **Deeper oceans.**
 - **Dramatic cave openings.** Natural cave entrances are larger and more common.
 - **A real snow line.** Every peak above roughly y = 290 is capped with snow, with bare rock and ice on steep faces.
+  High in the mountains moss, vines and pools give way to bare rock, and waterfalls freeze into icefalls.
 
 ### Water
 - **Mountain rivers.** Rivers rise from springs high in the mountains and follow the land downhill for hundreds of
