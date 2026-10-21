@@ -46,7 +46,7 @@ public final class SeaLifeSpawner {
 	}
 
 	public static void register() {
-		ServerTickEvents.END_WORLD_TICK.register(SeaLifeSpawner::tick);
+		ServerTickEvents.END_LEVEL_TICK.register(SeaLifeSpawner::tick);
 	}
 
 	private static void tick(ServerLevel level) {
