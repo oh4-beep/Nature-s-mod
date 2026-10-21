@@ -59,7 +59,7 @@ public class LargeSwimmer extends WaterAnimal implements SeaCreature {
 		this.moveControl = new SmoothSwimmingMoveControl<>(this, 85, 10, 0.02F, 0.1F, true);
 		this.lookControl = new SmoothSwimmingLookControl(this, 10);
 		if (this.species().behavior() == Behavior.BOSS) {
-			this.bossEvent = new ServerBossEvent(this.getDisplayName(), BossEvent.BossBarColor.BLUE, BossEvent.BossBarOverlay.NOTCHED_10);
+			this.bossEvent = new ServerBossEvent(this.getUUID(), this.getDisplayName(), BossEvent.BossBarColor.BLUE, BossEvent.BossBarOverlay.NOTCHED_10);
 			this.bossEvent.setDarkenScreen(true);
 		}
 	}
