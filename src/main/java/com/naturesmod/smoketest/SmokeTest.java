@@ -31,7 +31,9 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.Vec3;
@@ -47,7 +49,11 @@ public final class SmokeTest {
 	private static final String[] TARGET_BIOMES = {"jagged_peaks", "stony_peaks", "frozen_peaks", "snowy_slopes", "meadow", "cherry_grove",
 			"windswept_hills", "jungle", "badlands", "dappled_forest", "old_growth_spruce_taiga", "swamp"};
 	private static final String RAMP = ".,:;=+*#%@";
-	private static final int[] BANDS = {72, 90, 110, 140, 170, 210, 260, 320, 380};
+	private static final int[] BANDS = {72, 100, 140, 180, 230, 280, 330, 380, 430};
+	/** The terrain survey samples heights every SURVEY_STEP blocks out to SURVEY_RADIUS from spawn. */
+	private static final int SURVEY_STEP = 48;
+	private static final int SURVEY_RADIUS = 64 * SURVEY_STEP;
+	private static final int SUMMIT_REGION_CHUNKS = 16;
 
 	private final StringBuilder report = new StringBuilder();
 	private final MinecraftServer server;
@@ -90,14 +96,21 @@ public final class SmokeTest {
 		try {
 			line("=== Nature's Mod worldgen smoke test ===");
 			line("overworld: minY=%d maxY=%d height=%d seaLevel=%d", level.getMinY(), level.getMaxY(), level.getHeight(), level.getSeaLevel());
-			if (level.getHeight() != 576) {
-				fail("expected a 576 block tall overworld");
+			if (level.getHeight() != 640) {
+				fail("expected a 640 block tall overworld");
 			}
 			long start = System.currentTimeMillis();
 			List<int[]> regions = new ArrayList<>();
 			List<String> labels = new ArrayList<>();
-			regions.add(new int[] {0, 0});
+			regions.add(new int[] {0, 0, REGION_CHUNKS});
 			labels.add("spawn");
+			List<int[]> summits = survey();
+			System.out.printf("[smoketest] surveyed the terrain in %.1fs%n", (System.currentTimeMillis() - start) / 1000.0);
+			for (int i = 0; i < summits.size(); i++) {
+				int[] summit = summits.get(i);
+				regions.add(new int[] {summit[0] >> 4, summit[1] >> 4, i == 0 ? SUMMIT_REGION_CHUNKS : REGION_CHUNKS});
+				labels.add("summit_" + (i + 1));
+			}
 			for (String name : TARGET_BIOMES) {
 				ResourceKey<Biome> key = ResourceKey.create(Registries.BIOME, Identifier.withDefaultNamespace(name));
 				var found = level.findClosestBiome3d(holder -> holder.is(key), BlockPos.ZERO, 6400, 32, 64);
@@ -110,10 +123,11 @@ public final class SmokeTest {
 				int cz = at.getZ() >> 4;
 				boolean overlaps = false;
 				for (int[] other : regions) {
-					overlaps |= Math.abs(other[0] - cx) < REGION_CHUNKS && Math.abs(other[1] - cz) < REGION_CHUNKS;
+					int reach = (other[2] + REGION_CHUNKS) / 2;
+					overlaps |= Math.abs(other[0] - cx) < reach && Math.abs(other[1] - cz) < reach;
 				}
 				if (!overlaps) {
-					regions.add(new int[] {cx, cz});
+					regions.add(new int[] {cx, cz, REGION_CHUNKS});
 					labels.add(name);
 				}
 			}
@@ -124,7 +138,7 @@ public final class SmokeTest {
 			for (int i = 0; i < regions.size(); i++) {
 				int[] region = regions.get(i);
 				long regionStart = System.currentTimeMillis();
-				int[] heights = region(region[0], region[1], labels.get(i), biomes);
+				int[] heights = region(region[0], region[1], region[2], labels.get(i), biomes);
 				System.out.printf("[smoketest] region %s at %d,%d generated in %.1fs%n", labels.get(i), region[0], region[1],
 						(System.currentTimeMillis() - regionStart) / 1000.0);
 				int offset = allHeights.length;
@@ -132,7 +146,11 @@ public final class SmokeTest {
 				System.arraycopy(heights, 0, allHeights, offset, heights.length);
 			}
 			line("");
-			line("generated %d chunks in %.1fs", regions.size() * REGION_CHUNKS * REGION_CHUNKS, (System.currentTimeMillis() - start) / 1000.0);
+			int chunks = 0;
+			for (int[] region : regions) {
+				chunks += region[2] * region[2];
+			}
+			line("generated %d chunks in %.1fs", chunks, (System.currentTimeMillis() - start) / 1000.0);
 			summary("ALL REGIONS", allHeights);
 			line("biomes sampled: %s", biomes);
 			line("features placed: %s", FeatureStats.snapshot());
@@ -150,15 +168,60 @@ public final class SmokeTest {
 		}
 	}
 
-	private int[] region(int centerChunkX, int centerChunkZ, String label, Map<String, Integer> biomes) {
-		int minChunkX = centerChunkX - REGION_CHUNKS / 2;
-		int minChunkZ = centerChunkZ - REGION_CHUNKS / 2;
-		for (int cx = 0; cx < REGION_CHUNKS; cx++) {
-			for (int cz = 0; cz < REGION_CHUNKS; cz++) {
+	/**
+	 * Samples the terrain height from the noise alone (without generating chunks) over a wide area
+	 * around spawn, reports how high the land rises and returns the three highest summits that
+	 * are well apart from each other.
+	 */
+	private List<int[]> survey() {
+		ChunkGenerator generator = level.getChunkSource().getGenerator();
+		RandomState randomState = level.getChunkSource().randomState();
+		List<int[]> samples = new ArrayList<>();
+		for (int x = -SURVEY_RADIUS; x <= SURVEY_RADIUS; x += SURVEY_STEP) {
+			for (int z = -SURVEY_RADIUS; z <= SURVEY_RADIUS; z += SURVEY_STEP) {
+				samples.add(new int[] {x, z, generator.getBaseHeight(x, z, Heightmap.Types.WORLD_SURFACE_WG, level, randomState)});
+			}
+		}
+		int land = 0;
+		int[] landHeights = new int[samples.size()];
+		for (int[] sample : samples) {
+			if (sample[2] > level.getSeaLevel() + 1) {
+				landHeights[land++] = sample[2];
+			}
+		}
+		line("");
+		line("--- terrain survey: %d samples every %d blocks within %d blocks of spawn ---", samples.size(), SURVEY_STEP, SURVEY_RADIUS);
+		line("land: %.1f%% of samples", 100.0 * land / samples.size());
+		if (land > 0) {
+			summary("land", Arrays.copyOf(landHeights, land));
+		}
+		samples.sort((a, b) -> Integer.compare(b[2], a[2]));
+		List<int[]> summits = new ArrayList<>();
+		for (int[] sample : samples) {
+			boolean apart = true;
+			for (int[] summit : summits) {
+				apart &= Math.abs(summit[0] - sample[0]) > 512 || Math.abs(summit[1] - sample[1]) > 512;
+			}
+			if (apart) {
+				summits.add(sample);
+				line("summit %d: y=%d at %d, %d", summits.size(), sample[2], sample[0], sample[1]);
+				if (summits.size() == 3) {
+					break;
+				}
+			}
+		}
+		return summits;
+	}
+
+	private int[] region(int centerChunkX, int centerChunkZ, int regionChunks, String label, Map<String, Integer> biomes) {
+		int minChunkX = centerChunkX - regionChunks / 2;
+		int minChunkZ = centerChunkZ - regionChunks / 2;
+		for (int cx = 0; cx < regionChunks; cx++) {
+			for (int cz = 0; cz < regionChunks; cz++) {
 				level.getChunk(minChunkX + cx, minChunkZ + cz);
 			}
 		}
-		int size = REGION_CHUNKS * 16;
+		int size = regionChunks * 16;
 		int minX = minChunkX * 16;
 		int minZ = minChunkZ * 16;
 		int[] heights = new int[size * size];
@@ -168,8 +231,8 @@ public final class SmokeTest {
 		int snowCapped = 0;
 		int leaves = 0;
 		int decayingLeaves = 0;
-		int overhangs = 0;
-		int floating = 0;
+		int[] gapTop = new int[size * size];
+		int[] gapSize = new int[size * size];
 		BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
 		for (int x = 0; x < size; x++) {
 			for (int z = 0; z < size; z++) {
@@ -202,27 +265,21 @@ public final class SmokeTest {
 					ground--;
 				}
 				heights[x * size + z] = wet ? top : ground;
-				// Overhangs: air pockets right under the top layer of land.
+				// The first air pocket under the top layer of land (an overhang or just a cave).
 				if (!wet) {
 					int gap = 0;
-					int solidBelow = -1;
 					for (int y = ground - 1; y > ground - 48 && y > level.getMinY(); y--) {
-						BlockState below = level.getBlockState(pos.set(wx, y, wz));
-						if (below.isAir()) {
-							gap++;
+						if (level.getBlockState(pos.set(wx, y, wz)).isAir()) {
+							if (gap++ == 0) {
+								gapTop[x * size + z] = y;
+							}
 						} else if (gap > 0) {
-							solidBelow = y;
 							break;
 						}
 					}
-					if (gap >= 3 && solidBelow >= 0) {
-						overhangs++;
-						if (gap >= 10 && ground - solidBelow > 14) {
-							floating++;
-						}
-					}
+					gapSize[x * size + z] = gap;
 				}
-				if (ground > 300 && level.getBlockState(pos.set(wx, ground, wz)).is(Blocks.SNOW_BLOCK)) {
+				if (ground > 290 && level.getBlockState(pos.set(wx, ground, wz)).is(Blocks.SNOW_BLOCK)) {
 					snowCapped++;
 				}
 				if (x % 16 == 8 && z % 16 == 8) {
@@ -244,9 +301,36 @@ public final class SmokeTest {
 		for (boolean b : elevatedWater) {
 			elevated += b ? 1 : 0;
 		}
-		line("elevated water columns: %d, falling water blocks: %d, snow-capped columns above y=300: %d", elevated, fallingWater, snowCapped);
+		line("elevated water columns: %d, falling water blocks: %d, snow-capped columns above y=290: %d", elevated, fallingWater, snowCapped);
 		line("leaves seen from above: %d, of which would decay: %d", leaves, decayingLeaves);
-		line("columns with an overhang (3+ air under the top): %d, with a big floating slab: %d", overhangs, floating);
+		// An air pocket only counts as an overhang when it opens to the side, i.e. a nearby column's
+		// surface lies below the roof. A thin roof over a tall open gap is a floating slab.
+		int overhangs = 0;
+		int floating = 0;
+		for (int x = 0; x < size; x++) {
+			for (int z = 0; z < size; z++) {
+				int gap = gapSize[x * size + z];
+				if (gap < 3) {
+					continue;
+				}
+				int roof = gapTop[x * size + z];
+				boolean open = false;
+				for (int dx = -6; dx <= 6 && !open; dx++) {
+					for (int dz = -6; dz <= 6 && !open; dz++) {
+						int nx = x + dx;
+						int nz = z + dz;
+						open = nx >= 0 && nz >= 0 && nx < size && nz < size && heights[nx * size + nz] < roof - 1;
+					}
+				}
+				if (open) {
+					overhangs++;
+					if (gap >= 8 && heights[x * size + z] - roof <= 6) {
+						floating++;
+					}
+				}
+			}
+		}
+		line("columns with an open overhang: %d, with a thin floating slab: %d", overhangs, floating);
 		if (leaves > 200 && decayingLeaves * 20 > leaves) {
 			fail("more than 5%% of tree leaves are detached and would decay");
 		}
@@ -288,14 +372,17 @@ public final class SmokeTest {
 		long sum = 0;
 		int above200 = 0;
 		int above300 = 0;
+		int above400 = 0;
 		for (int h : sorted) {
 			sum += h;
 			above200 += h > 200 ? 1 : 0;
 			above300 += h > 300 ? 1 : 0;
+			above400 += h > 400 ? 1 : 0;
 		}
-		line("%s heights: min=%d p10=%d median=%d mean=%.1f p90=%d p99=%d max=%d | >200: %.1f%% >300: %.1f%%", label, sorted[0],
-				sorted[sorted.length / 10], sorted[sorted.length / 2], sum / (double) sorted.length, sorted[sorted.length * 9 / 10],
-				sorted[sorted.length * 99 / 100], sorted[sorted.length - 1], 100.0 * above200 / sorted.length, 100.0 * above300 / sorted.length);
+		line("%s heights: min=%d p10=%d median=%d mean=%.1f p90=%d p99=%d max=%d | >200: %.1f%% >300: %.1f%% >400: %.2f%%", label,
+				sorted[0], sorted[sorted.length / 10], sorted[sorted.length / 2], sum / (double) sorted.length, sorted[sorted.length * 9 / 10],
+				sorted[sorted.length * 99 / 100], sorted[sorted.length - 1], 100.0 * above200 / sorted.length, 100.0 * above300 / sorted.length,
+				100.0 * above400 / sorted.length);
 	}
 
 	/** Fells a tree near spawn and checks that it ends up lying on the ground. */

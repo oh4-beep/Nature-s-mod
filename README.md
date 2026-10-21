@@ -7,13 +7,14 @@ gaping cave mouths, ancient giant trees, and trees that actually topple when you
 ## What it changes
 
 ### Terrain
-- **A taller world.** The Overworld goes up to **y = 511** (vanilla stops at 319) so mountains have room to grow.
-- **Bigger mountains.** Mountain ranges rise up to ~1.6x higher with sharper, jagged peaks that pierce the clouds.
-- **Larger landscapes.** Biomes, continents, mountain ranges and river valleys are 25% larger, so the land reads as
-  broad, believable scenery instead of patchwork.
+- **A taller world.** The Overworld goes up to **y = 575** (vanilla stops at 319) so mountains have room to grow.
+- **Colossal mountains.** Great ranges tower two to three times higher than vanilla, with summits around y = 400-480
+  and sharper, jagged peaks that pierce the clouds, while foothills still roll gently and lowlands stay lowlands.
+- **Larger landscapes.** Continents, mountain ranges and river valleys are ~40% larger and biomes 25% larger, so the
+  land reads as broad, believable scenery instead of patchwork, and the mountains stay majestic instead of spiky.
 - **Deeper oceans.**
 - **Dramatic cave openings.** Natural cave entrances are larger and more common.
-- **A real snow line.** Every peak above roughly y = 335 is capped with snow, with bare rock and ice on steep faces.
+- **A real snow line.** Every peak above roughly y = 290 is capped with snow, with bare rock and ice on steep faces.
 
 ### Water
 - **Mountain rivers.** Rivers rise from springs high in the mountains and follow the land downhill for hundreds of
@@ -29,6 +30,14 @@ gaping cave mouths, ancient giant trees, and trees that actually topple when you
 ### Caves
 - **Grand cave mouths.** Huge arched openings into hillsides: mossy floors near the light, vines and glow berries
   hanging from the arch, dripstone deeper inside, and sometimes a spring flowing out of the cave.
+
+### Landmarks
+- **Natural arches.** Banded terracotta arches in the badlands, sandstone arches in the desert, stone arches in the
+  highlands and sea arches on rocky beaches.
+- **Hoodoos.** Clusters of striped rock spires with heavy cap stones rising out of the badlands.
+- **Sea stacks.** Weathered rock pillars standing in the surf off the coast, grass on their crowns.
+- **Hanging gardens.** Curtains of vines spill down cliff faces in jungles, swamps and forests, with moss creeping
+  over the brink.
 
 ### Forests
 - **Giant trees.** Ancient oaks and dark oaks with flared roots and sprawling limbs, autumn giants in orange, red and
@@ -91,9 +100,10 @@ Requires JDK 25.
 ./gradlew runSmokeTest   # headless world generation check that prints a terrain report
 ```
 
-The smoke test boots a dedicated server, generates ten regions of the Overworld, prints statistics, ASCII relief
-maps and feature counts, fells a tree, and exits. CI runs it on every push (see `.github/workflows/build.yml`).
-It needs an accepted `eula.txt` in `run/smoketest/`.
+The smoke test boots a dedicated server, generates the spawn area plus the nearest example of a dozen landmark
+biomes (peaks, jungle, badlands...), prints statistics, ASCII relief maps and feature counts, renders a top-down
+map and a bird's-eye view of every region to `run/smoketest/maps/`, fells a tree, and exits. CI runs it on every
+push (see `.github/workflows/build.yml`). It needs an accepted `eula.txt` in `run/smoketest/`.
 
 ### World generation data
 

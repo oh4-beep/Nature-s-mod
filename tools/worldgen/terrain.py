@@ -4,14 +4,16 @@ Derives the Nature's Mod overworld terrain from the vanilla density functions so
 output always matches the exact data format of the targeted Minecraft version.
 
 What changes compared to vanilla:
-  * The world is taller: build height goes up to y=511 so mountains have room.
-  * Mountain ranges are much taller and sharper: the terrain "offset" spline is
-    stretched above the hill line and the jaggedness of peaks is boosted.
-  * Biomes, continents, mountain ranges and river valleys are 25% larger, so the
-    land reads as broad, believable landscapes instead of noisy patchwork.
+  * The world is taller: build height goes up to y=575 so mountains have room.
+  * Mountain ranges are far taller: the terrain "offset" spline is reshaped above the
+    hill line so foothills rise gently while great ranges tower two to three times
+    higher than vanilla, topping out around y=420-480. Peaks are more jagged.
+  * Continents, mountain ranges and river valleys are ~40% larger and biomes 25%
+    larger, so mountains stay majestic instead of spiky and the land reads as broad,
+    believable landscapes instead of noisy patchwork.
   * Oceans are a little deeper.
   * Cave entrances are larger and more common, so hillsides open into caves.
-  * A natural snow line caps every peak above ~y=335 (bare rock on steep faces).
+  * A natural snow line caps every peak above ~y=290 (bare rock on steep faces).
 """
 
 import copy
@@ -19,22 +21,29 @@ import copy
 NS = "naturesmod"
 
 MIN_Y = -64
-WORLD_TOP = 512                      # exclusive; vanilla is 320
-WORLD_HEIGHT = WORLD_TOP - MIN_Y     # 576, a multiple of 16
+WORLD_TOP = 576                      # exclusive; vanilla is 320
+WORLD_HEIGHT = WORLD_TOP - MIN_Y     # 640, a multiple of 16
 BLOCKS_PER_DEPTH_UNIT = 128.0        # vanilla slope of the depth gradient (384 blocks / 3.0)
-TOP_SLIDE = (448, 464)               # vanilla (240, 256): terrain fades to air across this band
+TOP_SLIDE = (496, 512)               # vanilla (240, 256): terrain fades to air across this band
 
-HORIZONTAL_SCALE = 0.8               # < 1 makes climate/terrain features larger
-OFFSET_HILL_LINE = 0.25              # offsets above this (~y=95) get stretched...
-OFFSET_STRETCH = 1.6                 # ...by this factor
+CLIMATE_SCALE = 0.8                  # temperature/vegetation noise: < 1 makes biomes larger
+LANDFORM_SCALE = 0.7                 # continents/erosion/ridges noise: < 1 makes landforms larger
+
+# The offset spline's leaf values map to surface heights as y = 63.5 + 128 * value. Above the
+# hill line (value 0.25, y = 95.5) the height gained over the hill line is reshaped by this
+# curve: (vanilla blocks above the hill line, Nature's Mod blocks above it). Foothills rise a
+# little faster, big ranges grow 2.3-2.5x and the very highest flatten out below the top slide.
+HILL_LINE = 0.25
+MOUNTAIN_CURVE = [(0, 0), (32, 58), (64, 135), (96, 215), (128, 280), (160, 330), (200, 370)]
+MOUNTAIN_CURVE_START_SLOPE = 1.3
 OCEAN_LINE = -0.15                   # offsets below this (ocean floors)...
 OCEAN_STRETCH = 1.15                 # ...get deeper by this factor
-JAGGEDNESS_SCALE = 1.35              # sharper peaks
+JAGGEDNESS_SCALE = 1.5               # sharper peaks
 
 ENTRANCE_BIAS = 0.30                 # vanilla 0.37: lower = more cave entrances
 ENTRANCE_XZ_SCALE = 0.6              # vanilla 0.75: lower = wider entrances
 
-SNOW_LINE = 335
+SNOW_LINE = 290
 
 # Vanilla overworld density functions that get a Nature's Mod variant.
 OVERRIDDEN = [
@@ -88,10 +97,10 @@ def retarget_heights(node):
     return node
 
 
-def scale_horizontal(node):
+def scale_horizontal(node, scale):
     def fix(n):
         if n.get("type") == "minecraft:noise" and "shift_x" in n:
-            n["xz_scale"] = round(n["xz_scale"] * HORIZONTAL_SCALE, 6)
+            n["xz_scale"] = round(n["xz_scale"] * scale, 6)
     walk(node, fix)
     return node
 
@@ -107,9 +116,41 @@ def transform_spline_leaves(node, fn):
     return node
 
 
+def _curve_tangents(points, start_slope):
+    """Fritsch-Carlson tangents: a monotone cubic through the points, no overshoot."""
+    secants = [(y1 - y0) / (x1 - x0) for (x0, y0), (x1, y1) in zip(points, points[1:])]
+    tangents = [start_slope]
+    for a, b in zip(secants, secants[1:]):
+        tangents.append(0.0 if a * b <= 0 else 2 * a * b / (a + b))
+    tangents.append(secants[-1])
+    return tangents
+
+
+_MOUNTAIN_TANGENTS = _curve_tangents(MOUNTAIN_CURVE, MOUNTAIN_CURVE_START_SLOPE)
+
+
+def mountain_curve(dy):
+    """Maps vanilla blocks above the hill line to Nature's Mod blocks; returns (height, slope)."""
+    pts, tans = MOUNTAIN_CURVE, _MOUNTAIN_TANGENTS
+    if dy >= pts[-1][0]:
+        return pts[-1][1] + tans[-1] * (dy - pts[-1][0]), tans[-1]
+    for i in range(len(pts) - 1):
+        (x0, y0), (x1, y1) = pts[i], pts[i + 1]
+        if x0 <= dy <= x1:
+            h = x1 - x0
+            t = (dy - x0) / h
+            m0, m1 = tans[i] * h, tans[i + 1] * h
+            t2, t3 = t * t, t * t * t
+            value = (2 * t3 - 3 * t2 + 1) * y0 + (t3 - 2 * t2 + t) * m0 + (-2 * t3 + 3 * t2) * y1 + (t3 - t2) * m1
+            slope = ((6 * t2 - 6 * t) * y0 + (3 * t2 - 4 * t + 1) * m0 + (-6 * t2 + 6 * t) * y1 + (3 * t2 - 2 * t) * m1) / h
+            return value, slope
+    raise ValueError(dy)
+
+
 def offset_curve(v, d):
-    if v > OFFSET_HILL_LINE:
-        return round(OFFSET_HILL_LINE + (v - OFFSET_HILL_LINE) * OFFSET_STRETCH, 5), round(d * OFFSET_STRETCH, 5)
+    if v > HILL_LINE:
+        height, slope = mountain_curve((v - HILL_LINE) * BLOCKS_PER_DEPTH_UNIT)
+        return round(HILL_LINE + height / BLOCKS_PER_DEPTH_UNIT, 5), round(d * slope, 5)
     if v < OCEAN_LINE:
         return round(OCEAN_LINE + (v - OCEAN_LINE) * OCEAN_STRETCH, 5), round(d * OCEAN_STRETCH, 5)
     return v, d
@@ -136,8 +177,10 @@ def build(vanilla):
 
     for name in OVERRIDDEN:
         node = copy.deepcopy(vanilla.read(f"minecraft/{df_dir}{name}.json"))
-        if name in ("continents", "erosion", "ridges", "temperature", "vegetation"):
-            scale_horizontal(node)
+        if name in ("continents", "erosion", "ridges"):
+            scale_horizontal(node, LANDFORM_SCALE)
+        if name in ("temperature", "vegetation"):
+            scale_horizontal(node, CLIMATE_SCALE)
         if name == "offset":
             transform_spline_leaves(node, offset_curve)
         if name == "jaggedness":

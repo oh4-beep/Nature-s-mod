@@ -28,9 +28,9 @@
                 "alpha": {
                   "type": "minecraft:gradient",
                   "axis": "y",
-                  "from_coordinate": 448,
+                  "from_coordinate": 496,
                   "from_value": 1.0,
-                  "to_coordinate": 464,
+                  "to_coordinate": 512,
                   "to_value": 0.0
                 },
                 "first": -0.078125,

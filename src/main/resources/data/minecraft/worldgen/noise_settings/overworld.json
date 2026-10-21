@@ -105,7 +105,7 @@
   "legacy_random_source": false,
   "material_rule": "naturesmod:overworld",
   "noise": {
-    "height": 576,
+    "height": 640,
     "min_y": -64
   },
   "noise_router": {
