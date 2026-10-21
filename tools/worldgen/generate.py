@@ -46,7 +46,7 @@ def main():
     vanilla = Vanilla(args.vanilla)
     files = {}
     files.update(terrain.build(vanilla))
-    files.update(features.build())
+    files.update(features.build(vanilla))
 
     for rel, data in sorted(files.items()):
         path = os.path.join(args.out, rel)

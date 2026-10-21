@@ -83,23 +83,17 @@ public final class ModBiomeModifications {
 		add("fallen_jungle_log", Decoration.VEGETAL_DECORATION, JUNGLES);
 		add("fallen_poplar_log", Decoration.VEGETAL_DECORATION, List.of("dappled_forest"));
 
-		addVanilla("patch_leaf_litter", Decoration.VEGETAL_DECORATION, List.of("forest", "flower_forest", "birch_forest",
+		add("forest_leaf_litter", Decoration.VEGETAL_DECORATION, List.of("forest", "flower_forest", "birch_forest",
 				"old_growth_birch_forest", "windswept_forest"));
-		addVanilla("patch_bush", Decoration.VEGETAL_DECORATION, TEMPERATE_FORESTS, TAIGAS, PLAINS);
-		addVanilla("patch_large_fern", Decoration.VEGETAL_DECORATION, TAIGAS, JUNGLES, List.of("dark_forest", "forest"));
-		addVanilla("patch_firefly_bush_near_water", Decoration.VEGETAL_DECORATION, TEMPERATE_FORESTS, TAIGAS, PLAINS, JUNGLES,
+		add("forest_bush", Decoration.VEGETAL_DECORATION, TEMPERATE_FORESTS, TAIGAS, PLAINS);
+		add("forest_large_fern", Decoration.VEGETAL_DECORATION, TAIGAS, JUNGLES, List.of("dark_forest", "forest"));
+		add("waterside_fireflies", Decoration.VEGETAL_DECORATION, TEMPERATE_FORESTS, TAIGAS, PLAINS, JUNGLES,
 				List.of("meadow", "cherry_grove"));
 	}
 
 	@SafeVarargs
 	private static void add(String placedFeature, Decoration step, List<String>... biomeGroups) {
 		BiomeModifications.addFeature(biomes(biomeGroups), step, ResourceKey.create(Registries.PLACED_FEATURE, NaturesMod.id(placedFeature)));
-	}
-
-	@SafeVarargs
-	private static void addVanilla(String placedFeature, Decoration step, List<String>... biomeGroups) {
-		BiomeModifications.addFeature(biomes(biomeGroups), step,
-				ResourceKey.create(Registries.PLACED_FEATURE, Identifier.withDefaultNamespace(placedFeature)));
 	}
 
 	@SafeVarargs

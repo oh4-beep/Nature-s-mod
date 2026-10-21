@@ -1,9 +1,0 @@
-StructureAccess
-ScheduledTickAccess
-ItemInstance
-TypedInstance
-SpeleothemBlock
-StateDefinition
-ExtraCodecs
-LevelChunkSection
-DripstoneThickness

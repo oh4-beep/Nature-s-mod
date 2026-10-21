@@ -29,7 +29,7 @@ jobs:
   smoke-test:
     needs: build
     runs-on: ubuntu-24.04
-    timeout-minutes: 40
+    timeout-minutes: 25
     steps:
       - name: checkout repository
         uses: actions/checkout@v6
@@ -58,18 +58,3 @@ jobs:
       - name: print terrain report
         if: always()
         run: cat run/smoketest/naturesmod-report.txt || true
-
-  api-probe:
-    runs-on: ubuntu-24.04
-    steps:
-      - name: checkout repository
-        uses: actions/checkout@v6
-      - name: setup jdk
-        uses: actions/setup-java@v5
-        with:
-          java-version: '25'
-          distribution: 'microsoft'
-      - name: resolve minecraft
-        run: chmod +x ./gradlew && (./gradlew compileJava compileClientJava --stacktrace || true)
-      - name: dump api signatures
-        run: bash .github/probe/probe.sh

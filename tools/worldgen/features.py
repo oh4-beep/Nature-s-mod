@@ -180,10 +180,29 @@ def structures():
     }
 
 
-def build():
+# Vanilla ground cover spread to more biomes. Each gets its own placed feature id: re-using the
+# vanilla ids in extra biomes would break the global feature order and crash world generation.
+GROUND_COVER = {
+    "forest_leaf_litter": "patch_leaf_litter",
+    "forest_bush": "patch_bush",
+    "forest_large_fern": "patch_large_fern",
+    "waterside_fireflies": "patch_firefly_bush_near_water",
+}
+
+
+def ground_cover(vanilla):
+    files = {}
+    for name, source in GROUND_COVER.items():
+        placed = vanilla.read(f"minecraft/worldgen/placed_feature/{source}.json")
+        files[f"{NS}/worldgen/placed_feature/{name}.json"] = placed
+    return files
+
+
+def build(vanilla):
     files = {}
     for name, (feature, placement) in FEATURES.items():
         files[f"{NS}/worldgen/feature/{name}.json"] = feature
         files[f"{NS}/worldgen/placed_feature/{name}.json"] = {"feature": f"{NS}:{name}", "placement": placement}
     files.update(structures())
+    files.update(ground_cover(vanilla))
     return files

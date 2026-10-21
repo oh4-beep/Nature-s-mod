@@ -57,11 +57,11 @@ public final class SmokeTest {
 		// Never let a stuck test hold CI hostage.
 		Thread watchdog = new Thread(() -> {
 			try {
-				Thread.sleep(25 * 60 * 1000L);
+				Thread.sleep(12 * 60 * 1000L);
 			} catch (InterruptedException e) {
 				return;
 			}
-			System.out.println("[smoketest] TIMEOUT after 25 minutes");
+			System.out.println("[smoketest] TIMEOUT after 12 minutes");
 			Runtime.getRuntime().halt(2);
 		}, "naturesmod-smoketest-watchdog");
 		watchdog.setDaemon(true);
