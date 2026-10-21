@@ -7,6 +7,7 @@ import java.util.UUID;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.SectionPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -23,6 +24,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.portal.TeleportTransition;
 import net.minecraft.world.phys.Vec3;
@@ -71,9 +73,11 @@ public final class Abyss {
 			if (overworld == null) {
 				return null;
 			}
-			int y = overworld.getHeight(Heightmap.Types.MOTION_BLOCKING, pos.getX(), pos.getZ());
+			// Load the chunk first: the heightmap of a chunk that is not loaded reads as the bottom of the world.
+			LevelChunk chunk = overworld.getChunk(SectionPos.blockToSectionCoord(pos.getX()), SectionPos.blockToSectionCoord(pos.getZ()));
+			int y = chunk.getHeight(Heightmap.Types.MOTION_BLOCKING, pos.getX() & 15, pos.getZ() & 15) + 1;
 			Vec3 target = new Vec3(pos.getX() + 0.5, y + 0.1, pos.getZ() + 0.5);
-			return new TeleportTransition(overworld, target, Vec3.ZERO, entity.getYRot(), 0.0F, Relative.union(Relative.DELTA, Relative.ROTATION),
+			return new TeleportTransition(overworld, target, Vec3.ZERO, 0.0F, 0.0F, Relative.union(Relative.DELTA, Relative.ROTATION),
 					TeleportTransition.PLAY_PORTAL_SOUND.then(e -> e.placePortalTicket(BlockPos.containing(target))));
 		}
 		ServerLevel abyss = server.getLevel(LEVEL);
@@ -83,7 +87,7 @@ public final class Abyss {
 		BlockPos center = new BlockPos(pos.getX(), SEA_LEVEL - 1, pos.getZ());
 		buildArrival(abyss, center);
 		Vec3 target = new Vec3(center.getX() + 3.5, SEA_LEVEL, center.getZ() + 0.5);
-		return new TeleportTransition(abyss, target, Vec3.ZERO, entity.getYRot(), 0.0F, Relative.union(Relative.DELTA, Relative.ROTATION),
+		return new TeleportTransition(abyss, target, Vec3.ZERO, 0.0F, 0.0F, Relative.union(Relative.DELTA, Relative.ROTATION),
 				TeleportTransition.PLAY_PORTAL_SOUND.then(e -> e.placePortalTicket(center)));
 	}
 
