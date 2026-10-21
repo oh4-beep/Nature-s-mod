@@ -29,6 +29,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.WrittenBookContent;
@@ -74,7 +75,7 @@ public final class Abyss {
 			if (isAbyss(destination) && player.addTag("naturesmod.logbook")) {
 				ItemStack book = logbook();
 				if (!player.getInventory().add(book)) {
-					player.drop(book, false);
+					destination.addFreshEntity(new ItemEntity(destination, player.getX(), player.getY() + 0.5, player.getZ(), book));
 				}
 				player.sendSystemMessage(Component.translatable("message.naturesmod.logbook").withStyle(ChatFormatting.AQUA), false);
 			}
