@@ -135,6 +135,8 @@ public final class SmokeTest {
 		int snowCapped = 0;
 		int leaves = 0;
 		int decayingLeaves = 0;
+		int overhangs = 0;
+		int floating = 0;
 		BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
 		for (int x = 0; x < size; x++) {
 			for (int z = 0; z < size; z++) {
@@ -167,6 +169,26 @@ public final class SmokeTest {
 					ground--;
 				}
 				heights[x * size + z] = wet ? top : ground;
+				// Overhangs: air pockets right under the top layer of land.
+				if (!wet) {
+					int gap = 0;
+					int solidBelow = -1;
+					for (int y = ground - 1; y > ground - 48 && y > level.getMinY(); y--) {
+						BlockState below = level.getBlockState(pos.set(wx, y, wz));
+						if (below.isAir()) {
+							gap++;
+						} else if (gap > 0) {
+							solidBelow = y;
+							break;
+						}
+					}
+					if (gap >= 3 && solidBelow >= 0) {
+						overhangs++;
+						if (gap >= 10 && ground - solidBelow > 14) {
+							floating++;
+						}
+					}
+				}
 				if (ground > 300 && level.getBlockState(pos.set(wx, ground, wz)).is(Blocks.SNOW_BLOCK)) {
 					snowCapped++;
 				}
@@ -186,6 +208,7 @@ public final class SmokeTest {
 		}
 		line("elevated water columns: %d, falling water blocks: %d, snow-capped columns above y=300: %d", elevated, fallingWater, snowCapped);
 		line("leaves seen from above: %d, of which would decay: %d", leaves, decayingLeaves);
+		line("columns with an overhang (3+ air under the top): %d, with a big floating slab: %d", overhangs, floating);
 		if (leaves > 200 && decayingLeaves * 20 > leaves) {
 			fail("more than 5%% of tree leaves are detached and would decay");
 		}
