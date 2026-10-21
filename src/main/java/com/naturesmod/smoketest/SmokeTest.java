@@ -199,6 +199,10 @@ public final class SmokeTest {
 			}
 		}
 
+		TerrainRenderer renderer = new TerrainRenderer(level, minX, minZ, size, heights);
+		TerrainRenderer.emit("top_" + centerChunkX + "_" + centerChunkZ, renderer.topDown());
+		TerrainRenderer.emit("view_" + centerChunkX + "_" + centerChunkZ, renderer.oblique());
+
 		line("");
 		line("--- region at chunk %d,%d (blocks %d..%d, %d..%d) ---", centerChunkX, centerChunkZ, minX, minX + size - 1, minZ, minZ + size - 1);
 		summary("region", heights);
