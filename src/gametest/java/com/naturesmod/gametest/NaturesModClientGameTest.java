@@ -54,7 +54,9 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 			List.of("vampire_squid", "dumbo_octopus", "giant_squid"),
 			List.of("lanternfish", "hatchetfish", "anglerfish", "viperfish", "fangtooth", "black_dragonfish", "barreleye", "tripod_fish"),
 			List.of("gulper_eel", "manta_ray", "ocean_sunfish"),
-			List.of("abyssal_leviathan"));
+			List.of("rotfin", "hollow_eye", "bone_shark", "twinhead_eel", "pale_lurker", "abyssal_maw"),
+			List.of("abyssal_leviathan"),
+			List.of("abyssal_horror"));
 
 	/** GLFW's key code for F1 (LWJGL is not on the test classpath). */
 	private static final int KEY_F1 = 290;
@@ -256,7 +258,7 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 			teleport(context, world, Abyss.LEVEL, at.getX() + 0.5, floor, at.getZ() - 7.5, 0.0F, 35.0F);
 			shoot(context, "abyss_" + biome);
 		}
-		for (String structure : new String[] {"sunken_temple", "bathysphere", "leviathan_lair"}) {
+		for (String structure : new String[] {"sunken_temple", "bathysphere", "leviathan_lair", "vent_shrine", "drowned_sanctum"}) {
 			BlockPos at = world.getServer().computeOnServer(server -> locate(server.getLevel(Abyss.LEVEL), NaturesMod.id(structure)));
 			if (at == null) {
 				failures.add("abyss: no " + structure);
@@ -264,7 +266,12 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 			}
 			// Structures sit in the middle of their chunk; frame them from up and back, clear of the slope.
 			BlockPos center = at.offset(8, 0, 8);
-			int back = structure.equals("bathysphere") ? 11 : 20;
+			int back = switch (structure) {
+				case "bathysphere" -> 11;
+				case "vent_shrine" -> 13;
+				case "drowned_sanctum" -> 30;
+				default -> 20;
+			};
 			int height = world.getServer().computeOnServer(server -> {
 				ServerLevel abyss = server.getLevel(Abyss.LEVEL);
 				return Math.max(ringFloor(abyss, center, back / 2) + back * 3 / 4, floor(abyss, center.getX(), center.getZ() - back) + 4);

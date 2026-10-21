@@ -94,6 +94,10 @@ public final class DivingArmor {
 
 	/** How many pieces of diving gear the player wears, counting Abyssal pieces twice. */
 	public static int pressureRating(ServerPlayer player) {
+		if (player.getItemBySlot(EquipmentSlot.HEAD).is(ModItems.CROWN_OF_THE_DEEP)) {
+			// The Crown of the Deep: the Abyss itself no longer presses on its wearer.
+			return 8;
+		}
 		int rating = 0;
 		for (EquipmentSlot slot : SUIT) {
 			ItemStack stack = player.getItemBySlot(slot);
@@ -108,6 +112,16 @@ public final class DivingArmor {
 
 	/** Full-suit bonuses, refreshed once a second. */
 	public static void tick(ServerPlayer player) {
+		if (player.getItemBySlot(EquipmentSlot.HEAD).is(ModItems.CROWN_OF_THE_DEEP) && player.isInWater()) {
+			refresh(player, MobEffects.WATER_BREATHING, 0);
+			refresh(player, MobEffects.CONDUIT_POWER, 0);
+			refresh(player, MobEffects.DOLPHINS_GRACE, 0);
+			MobEffectInstance sight = player.getEffect(MobEffects.NIGHT_VISION);
+			if (sight == null || sight.getDuration() < 260) {
+				player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 400, 0, true, false, true));
+			}
+			return;
+		}
 		int tidewalker = 0;
 		int abyssal = 0;
 		for (EquipmentSlot slot : SUIT) {

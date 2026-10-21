@@ -189,7 +189,11 @@ DROP_ITEMS = {
     "ink": ("minecraft:ink_sac", False),
     "slime": ("minecraft:slime_ball", False),
     "rotten_flesh": ("minecraft:rotten_flesh", False),
+    "bone_sigil": ("naturesmod:bone_sigil", False),
+    "crown": ("naturesmod:crown_of_the_deep", False),
 }
+# Dropped exactly once, never more for looting.
+UNIQUE_DROPS = {"bone_sigil", "crown"}
 
 SMELT_CONDITION = {
     "type": "minecraft:any_of",
@@ -210,6 +214,9 @@ def loot_table(sp):
     for drop, n in counts.items():
         item, smelts = DROP_ITEMS[drop]
         entry = {"type": "minecraft:item", "name": item}
+        if drop in UNIQUE_DROPS:
+            pools.append({"rolls": 1, "entries": [entry]})
+            continue
         modifiers = []
         top = n + (1 if sp["scale"] >= 1.5 else 0)
         if top > 1:

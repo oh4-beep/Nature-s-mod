@@ -236,8 +236,15 @@ SPECIES = [
       c("#06101c", "#0c1a2c", "#16283c", "#08141e", "#3ae0ff", "#3ae0ff"), "plain",
       variant={"segments": 10, "thick": 2, "fangs": True, "frill": True}, glow=["stripes", "eyes"],
       health=300, attack=18, speed=1.1, weight=1, group=(1, 1),
-      drops=("abyssal_heart", "abyssal_scale", "abyssal_scale", "abyssal_scale", "abyssal_scale"),
+      drops=("abyssal_heart", "abyssal_scale", "abyssal_scale", "abyssal_scale", "abyssal_scale", "bone_sigil"),
       category="water_creature", sound="leviathan", desc="The lord of the deepest dark."),
+    # Never spawns naturally: it rises from beneath the Abyssal Altar when the four sigils are set.
+    S("abyssal_horror", "Abyssal Horror", "fish", 5.5, "boss", [],
+      c("#140a0e", "#24121a", "#3a1c26", "#1a0c12", "#ff2a3a", "#ffd040"), "veins",
+      variant={"deep": True, "big_maw": True, "eyes_many": True, "lure": True, "ribs": True, "stretch": 6},
+      glow=["eyes", "veins", "lure"], health=500, attack=20, speed=1.0, weight=1, group=(1, 1),
+      drops=("crown", "abyssal_heart", "abyssal_heart", "abyssal_scale", "abyssal_scale", "abyssal_scale"),
+      category="water_creature", sound="leviathan", effect="darkness", desc="What the sigils kept asleep."),
 ]
 
 assert len({s["id"] for s in SPECIES}) == len(SPECIES)

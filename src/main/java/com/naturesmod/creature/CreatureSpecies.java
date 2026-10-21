@@ -67,6 +67,7 @@ public final class CreatureSpecies {
 		new SpeciesData("twinhead_eel", "long", Behavior.HUNTER, "water_creature", 1.4F, 1.66F, 0.63F, 32.0, 7.0, 1.4, 1, 1, 5, false, true, false, "any", "fish", 6, List.of("naturesmod:midnight_zone", "naturesmod:glowing_reef"), "poison"),
 		new SpeciesData("pale_lurker", "fish", Behavior.AMBUSH, "water_creature", 1.8F, 1.41F, 0.81F, 36.0, 9.0, 1.6, 1, 1, 5, false, false, false, "any", "fish", 0, List.of("naturesmod:abyssal_plains", "naturesmod:hydrothermal_vents", "naturesmod:bone_fields"), "blindness"),
 		new SpeciesData("abyssal_maw", "fish", Behavior.AMBUSH, "water_creature", 3.0F, 2.06F, 1.35F, 90.0, 14.0, 1.1, 1, 1, 3, false, true, false, "any", "fish", 0, List.of("naturesmod:abyssal_plains", "naturesmod:hydrothermal_vents", "naturesmod:bone_fields"), "darkness"),
-		new SpeciesData("abyssal_leviathan", "long", Behavior.BOSS, "water_creature", 6.0F, 3.5F, 2.5F, 300.0, 18.0, 1.1, 1, 1, 1, false, true, false, "any", "leviathan", 10, List.of(), "")
+		new SpeciesData("abyssal_leviathan", "long", Behavior.BOSS, "water_creature", 6.0F, 3.5F, 2.5F, 300.0, 18.0, 1.1, 1, 1, 1, false, true, false, "any", "leviathan", 10, List.of(), ""),
+		new SpeciesData("abyssal_horror", "fish", Behavior.BOSS, "water_creature", 5.5F, 3.5F, 2.48F, 500.0, 20.0, 1.0, 1, 1, 1, false, true, false, "any", "leviathan", 0, List.of(), "darkness")
 	);
 }

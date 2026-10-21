@@ -59,6 +59,15 @@
     },
     {
       "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "naturesmod:bone_sigil"
+        }
+      ]
+    },
+    {
+      "rolls": 1,
       "condition": {
         "type": "minecraft:random_chance",
         "chance": 0.05

@@ -53,6 +53,11 @@ public final class ModItems {
 	public static Item ABYSSAL_HEART;
 	public static Item ABYSSAL_UPGRADE_SMITHING_TEMPLATE;
 	public static Item PEARL;
+	public static Item TIDE_SIGIL;
+	public static Item DEEP_SIGIL;
+	public static Item BONE_SIGIL;
+	public static Item EMBER_SIGIL;
+	public static Item CROWN_OF_THE_DEEP;
 
 	private ModItems() {
 	}
@@ -79,6 +84,16 @@ public final class ModItems {
 		armor("tidewalker", DivingArmor.TIDEWALKER, TIDEWALKER_SET);
 		armor("abyssal", DivingArmor.ABYSSAL, ABYSSAL_SET);
 
+		// The Drowned Expedition: the four sigils that wake the Abyss, and the crown it guards.
+		TIDE_SIGIL = sigil("tide_sigil");
+		DEEP_SIGIL = sigil("deep_sigil");
+		BONE_SIGIL = sigil("bone_sigil");
+		EMBER_SIGIL = sigil("ember_sigil");
+		CROWN_OF_THE_DEEP = register("crown_of_the_deep", Item::new, DivingArmor.properties(DivingArmor.ABYSSAL, ArmorType.HELMET)
+				.rarity(Rarity.EPIC).fireResistant());
+		register("abyssal_altar", properties -> new BlockItem(ModBlocks.ABYSSAL_ALTAR, properties),
+				new Item.Properties().useBlockDescriptionPrefix().rarity(Rarity.EPIC));
+
 		for (SpeciesData species : CreatureSpecies.ALL) {
 			EntityType<? extends Mob> type = ModCreatures.type(species.id());
 			if (species.bucket()) {
@@ -104,6 +119,11 @@ public final class ModItems {
 				}
 			}
 		});
+	}
+
+	private static Item sigil(String name) {
+		return register(name, Item::new, new Item.Properties().rarity(Rarity.RARE).stacksTo(16).fireResistant()
+				.component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true));
 	}
 
 	private static void armor(String name, ArmorMaterial material, List<Item> set) {

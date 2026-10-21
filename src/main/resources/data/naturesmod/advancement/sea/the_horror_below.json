@@ -1,0 +1,38 @@
+{
+  "criteria": {
+    "horror": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "naturesmod:abyssal_horror"
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.naturesmod.sea.the_horror_below.description"
+    },
+    "icon": {
+      "id": "naturesmod:crown_of_the_deep"
+    },
+    "title": {
+      "translate": "advancements.naturesmod.sea.the_horror_below.title"
+    },
+    "frame": "challenge"
+  },
+  "requirements": [
+    [
+      "horror"
+    ]
+  ],
+  "sends_telemetry_event": false,
+  "parent": "naturesmod:sea/awaken_the_abyss",
+  "rewards": {
+    "experience": 1000
+  }
+}

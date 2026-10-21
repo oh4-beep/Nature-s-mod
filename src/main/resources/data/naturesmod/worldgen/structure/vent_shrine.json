@@ -1,0 +1,6 @@
+{
+  "type": "naturesmod:vent_shrine",
+  "biomes": "#naturesmod:has_structure/vent_shrine",
+  "spawn_overrides": {},
+  "step": "surface_structures"
+}

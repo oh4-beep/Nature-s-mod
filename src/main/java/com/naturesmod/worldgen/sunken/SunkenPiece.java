@@ -79,7 +79,172 @@ public class SunkenPiece extends StructurePiece {
 			case TEMPLE -> temple(b);
 			case BATHYSPHERE -> bathysphere(b);
 			case LAIR -> lair(b, level, chunkBox);
+			case SHRINE -> shrine(b);
+			case SANCTUM -> sanctum(b);
 		}
+	}
+
+	// --- the Vent Shrine -----------------------------------------------------------------
+
+	/** A small blackstone shrine among the vents, half fallen in, where the Ember Sigil is kept. */
+	private void shrine(Builder b) {
+		BlockState bricks = Blocks.POLISHED_BLACKSTONE_BRICKS.defaultBlockState();
+		BlockState cracked = Blocks.CRACKED_POLISHED_BLACKSTONE_BRICKS.defaultBlockState();
+		BlockState stone = Blocks.BLACKSTONE.defaultBlockState();
+		BlockState water = Blocks.WATER.defaultBlockState();
+		for (int dx = -6; dx <= 6; dx++) {
+			for (int dz = -6; dz <= 6; dz++) {
+				int x = cx + dx;
+				int z = cz + dz;
+				if (!b.column(x, z)) {
+					continue;
+				}
+				int ax = Math.abs(dx);
+				int az = Math.abs(dz);
+				int ring = Math.max(ax, az);
+				if (ring > 5) {
+					continue;
+				}
+				int ground = b.ground(x, cy + 3, z, 14);
+				for (int y = ground + 1; y <= cy; y++) {
+					b.set(x, y, z, stone);
+				}
+				boolean vent = (ax + az) % 3 == 0 && ring >= 2 && ring <= 4;
+				b.set(x, cy + 1, z, vent ? Blocks.MAGMA_BLOCK.defaultBlockState() : b.rand(x, cy + 1, z, 1) < 0.3 ? cracked : bricks);
+				for (int h = 2; h <= 5; h++) {
+					int y = cy + h;
+					if (ax == 4 && az == 4) {
+						// Corner pillars, each crowned with a soul lantern or a skull.
+						b.set(x, y, z, h == 5 ? (b.rand(x, 0, z, 2) < 0.5 ? Blocks.SOUL_LANTERN.defaultBlockState()
+								: Blocks.WITHER_SKELETON_SKULL.defaultBlockState()) : Blocks.POLISHED_BLACKSTONE.defaultBlockState());
+					} else if (ring == 5 && h <= 3 && !(dz == -5 && ax <= 1) && b.rand(x, y, z, 3) < 0.7) {
+						b.set(x, y, z, b.rand(x, y, z, 4) < 0.35 ? cracked : bricks);
+					} else {
+						b.set(x, y, z, water);
+					}
+				}
+			}
+		}
+		// The pedestal and its chest.
+		b.set(cx, cy + 2, cz + 2, Blocks.POLISHED_BLACKSTONE.defaultBlockState());
+		b.set(cx - 1, cy + 2, cz + 2, Blocks.POLISHED_BLACKSTONE_BRICK_STAIRS.defaultBlockState());
+		b.chest(cx, cy + 3, cz + 2, Direction.NORTH, loot("chests/vent_shrine"));
+		b.set(cx, cy + 2, cz - 1, Blocks.MAGMA_BLOCK.defaultBlockState());
+	}
+
+	// --- the Drowned Sanctum -------------------------------------------------------------
+
+	/**
+	 * A vast drowned cathedral at the bottom of the Abyss: broken walls, great pillars, arches of
+	 * bone overhead, and on a raised dais in the middle the Abyssal Altar with its four sockets.
+	 */
+	private void sanctum(Builder b) {
+		BlockState tiles = Blocks.DEEPSLATE_TILES.defaultBlockState();
+		BlockState bricks = Blocks.DEEPSLATE_BRICKS.defaultBlockState();
+		BlockState cracked = Blocks.CRACKED_DEEPSLATE_BRICKS.defaultBlockState();
+		BlockState polished = Blocks.POLISHED_DEEPSLATE.defaultBlockState();
+		BlockState dark = Blocks.DARK_PRISMARINE.defaultBlockState();
+		BlockState lantern = Blocks.SEA_LANTERN.defaultBlockState();
+		BlockState water = Blocks.WATER.defaultBlockState();
+		RandomSource layout = RandomSource.create(seed);
+		for (int dx = -17; dx <= 17; dx++) {
+			for (int dz = -17; dz <= 17; dz++) {
+				int x = cx + dx;
+				int z = cz + dz;
+				if (!b.column(x, z)) {
+					continue;
+				}
+				int ax = Math.abs(dx);
+				int az = Math.abs(dz);
+				double r = Math.sqrt(dx * dx + dz * dz);
+				if (r > 16.5) {
+					continue;
+				}
+				// The floor, on a foundation down to the sea bed.
+				int ground = b.ground(x, cy + 4, z, 20);
+				for (int y = ground + 1; y <= cy; y++) {
+					b.set(x, y, z, Blocks.DEEPSLATE.defaultBlockState());
+				}
+				b.set(x, cy + 1, z, r < 5 ? dark : (ax + az) % 7 == 0 ? lantern : b.rand(x, cy, z, 1) < 0.15 ? cracked : tiles);
+				// Clear the nave of mud and kelp.
+				for (int h = 2; h <= 22; h++) {
+					if (!b.get(x, cy + h, z).isAir()) {
+						b.set(x, cy + h, z, water);
+					}
+				}
+				// The outer wall, broken down to stumps in places.
+				if (r > 14.5) {
+					double angle = Math.atan2(dz, dx);
+					int height = 3 + (int) Math.round(6 * Math.abs(Math.sin(angle * 3.0))) + (b.rand(x, 0, z, 2) < 0.3 ? -3 : 0);
+					boolean door = dz < 0 && ax <= 2;
+					for (int h = 2; h <= Math.max(2, height); h++) {
+						if (!door) {
+							b.set(x, cy + h, z, b.crumble(x, cy + h, z, b.rand(x, cy + h, z, 3) < 0.3 ? cracked : bricks));
+						}
+					}
+				}
+				// The dais: two steps up to the altar.
+				if (r < 5.5) {
+					b.set(x, cy + 2, z, r < 4.5 ? dark : Blocks.DARK_PRISMARINE_STAIRS.defaultBlockState());
+				}
+				if (r < 3.5) {
+					b.set(x, cy + 3, z, dark);
+				}
+			}
+		}
+		// Eight great pillars in a ring; some have fallen.
+		for (int i = 0; i < 8; i++) {
+			double angle = Math.PI * 2 * i / 8 + Math.PI / 8;
+			int px = cx + (int) Math.round(Math.cos(angle) * 10);
+			int pz = cz + (int) Math.round(Math.sin(angle) * 10);
+			int height = layout.nextInt(4) == 0 ? 4 + layout.nextInt(4) : 13 + layout.nextInt(6);
+			for (int ox = 0; ox <= 1; ox++) {
+				for (int oz = 0; oz <= 1; oz++) {
+					if (!b.column(px + ox, pz + oz)) {
+						continue;
+					}
+					for (int h = 2; h <= height; h++) {
+						b.set(px + ox, cy + h, pz + oz, h == height ? Blocks.CHISELED_DEEPSLATE.defaultBlockState() : polished);
+					}
+				}
+			}
+			if (height > 10 && b.column(px, pz)) {
+				b.set(px, cy + height + 1, pz, lantern);
+				b.set(px, cy + height + 2, pz, Blocks.SKELETON_SKULL.defaultBlockState());
+			}
+		}
+		// Two arches of bone vault over the dais.
+		for (int arch = 0; arch < 2; arch++) {
+			for (int t = -9; t <= 9; t++) {
+				int x = cx + (arch == 0 ? t : 0);
+				int z = cz + (arch == 0 ? 0 : t);
+				int y = cy + 3 + (int) Math.round(Math.sqrt(Math.max(0, 81 - t * t)) * 1.35);
+				if (b.column(x, z)) {
+					b.set(x, y, z, Blocks.BONE_BLOCK.defaultBlockState().setValue(RotatedPillarBlock.AXIS, arch == 0 ? Direction.Axis.X : Direction.Axis.Z));
+				}
+			}
+		}
+		// Chains hang from the crossing of the arches down towards the altar.
+		for (int h = 8; h <= 15; h++) {
+			if (b.column(cx + 2, cz + 2)) {
+				b.set(cx + 2, cy + h, cz + 2, Blocks.IRON_CHAIN.defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.Y));
+			}
+		}
+		// The altar, waiting for its four sigils, and the obelisks that watch it.
+		if (b.column(cx, cz)) {
+			b.set(cx, cy + 4, cz, ModBlocks.ABYSSAL_ALTAR.defaultBlockState());
+		}
+		for (int[] corner : new int[][] {{3, 3}, {-3, 3}, {3, -3}, {-3, -3}}) {
+			int x = cx + corner[0];
+			int z = cz + corner[1];
+			if (b.column(x, z)) {
+				for (int h = 4; h <= 6; h++) {
+					b.set(x, cy + h, z, h == 6 ? lantern : polished);
+				}
+			}
+		}
+		b.chest(cx - 7, cy + 2, cz + 9, Direction.NORTH, loot("chests/drowned_sanctum"));
+		b.chest(cx + 7, cy + 2, cz + 9, Direction.NORTH, loot("chests/drowned_sanctum"));
 	}
 
 	// --- the Abyssal Rift ----------------------------------------------------------------
@@ -470,7 +635,9 @@ public class SunkenPiece extends StructurePiece {
 		RIFT("abyssal_rift", 12, 600, 12, 7, 16, -40, 14),
 		TEMPLE("sunken_temple", 40, 700, 12, 9, 13, -20, 14),
 		BATHYSPHERE("bathysphere", 30, 1000, 5, 5, 6, -3, 98),
-		LAIR("leviathan_lair", 60, 420, 16, 10, 22, -10, 22);
+		LAIR("leviathan_lair", 60, 420, 16, 10, 22, -10, 22),
+		SHRINE("vent_shrine", 40, 400, 6, 7, 8, -14, 10),
+		SANCTUM("drowned_sanctum", 200, 180, 14, 14, 18, -20, 26);
 
 		private final String id;
 		private final int minDepth;

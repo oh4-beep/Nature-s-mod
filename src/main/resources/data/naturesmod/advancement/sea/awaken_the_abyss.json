@@ -1,0 +1,26 @@
+{
+  "criteria": {
+    "awakened": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.naturesmod.sea.awaken_the_abyss.description"
+    },
+    "icon": {
+      "id": "naturesmod:abyssal_altar"
+    },
+    "title": {
+      "translate": "advancements.naturesmod.sea.awaken_the_abyss.title"
+    },
+    "frame": "goal"
+  },
+  "requirements": [
+    [
+      "awakened"
+    ]
+  ],
+  "sends_telemetry_event": false,
+  "parent": "naturesmod:sea/four_seals"
+}

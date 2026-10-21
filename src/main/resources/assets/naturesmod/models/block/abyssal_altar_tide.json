@@ -1,0 +1,68 @@
+{
+  "textures": {
+    "particle": "naturesmod:item/tide_sigil",
+    "gem": "naturesmod:item/tide_sigil"
+  },
+  "elements": [
+    {
+      "from": [
+        1,
+        13,
+        1
+      ],
+      "to": [
+        5,
+        16,
+        5
+      ],
+      "shade": false,
+      "faces": {
+        "north": {
+          "uv": [
+            6,
+            6,
+            10,
+            10
+          ],
+          "texture": "#gem"
+        },
+        "south": {
+          "uv": [
+            6,
+            6,
+            10,
+            10
+          ],
+          "texture": "#gem"
+        },
+        "east": {
+          "uv": [
+            6,
+            6,
+            10,
+            10
+          ],
+          "texture": "#gem"
+        },
+        "west": {
+          "uv": [
+            6,
+            6,
+            10,
+            10
+          ],
+          "texture": "#gem"
+        },
+        "up": {
+          "uv": [
+            6,
+            6,
+            10,
+            10
+          ],
+          "texture": "#gem"
+        }
+      }
+    }
+  ]
+}

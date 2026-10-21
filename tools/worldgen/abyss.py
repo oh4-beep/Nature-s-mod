@@ -524,6 +524,10 @@ def structures():
     structure("bathysphere", [f"{NS}:abyssal_plains", f"{NS}:glowing_reef", f"{NS}:hydrothermal_vents",
                                              f"{NS}:bone_fields", f"{NS}:midnight_zone", f"{NS}:twilight_waters"], 12, 5, 309871244)
     structure("leviathan_lair", [f"{NS}:bone_fields", f"{NS}:abyssal_plains"], 36, 14, 778120931)
+    structure("vent_shrine", [f"{NS}:hydrothermal_vents"], 18, 6, 412907733)
+    structure("drowned_sanctum", [f"{NS}:abyssal_plains", f"{NS}:bone_fields", f"{NS}:glowing_reef", f"{NS}:hydrothermal_vents"],
+              40, 16, 923401877)
+    files[f"{NS}/tags/worldgen/structure/on_sanctum_maps.json"] = {"values": [f"{NS}:drowned_sanctum"]}
     # Ships that sank, and ruins that were drowned long ago, lie on the floor of the Abyss too.
     floor = [f"{NS}:abyssal_plains", f"{NS}:bone_fields", f"{NS}:glowing_reef", f"{NS}:hydrothermal_vents"]
     files["minecraft/tags/worldgen/biome/has_structure/shipwreck.json"] = {"replace": False, "values": floor}
@@ -584,6 +588,11 @@ SEA_ENCHANT = {"type": "minecraft:enchant_randomly",
 DEEP_ENCHANT = {"type": "minecraft:enchant_with_levels", "levels": {"type": "minecraft:uniform", "min": 25, "max": 39},
                 "options": "#minecraft:on_random_loot"}
 WATER_BREATHING = {"type": "minecraft:set_potion", "id": "minecraft:long_water_breathing"}
+SANCTUM_MAP = [
+    {"type": "minecraft:exploration_map", "decoration": "minecraft:monument", "destination": f"#{NS}:on_sanctum_maps",
+     "skip_existing_chunks": False, "zoom": 2, "search_radius": 100},
+    {"type": "minecraft:set_name", "name": {"translate": "filled_map.naturesmod.drowned_sanctum"}, "target": "item_name"},
+]
 RIFT_MAP = [
     {"type": "minecraft:exploration_map", "decoration": "minecraft:red_x", "destination": f"#{NS}:on_rift_maps",
      "skip_existing_chunks": False, "zoom": 2},
@@ -611,6 +620,8 @@ def loot(vanilla):
                  item("potion", 6, None, WATER_BREATHING)),
             pool(1, empty(7), item("heart_of_the_sea", 2), item("trident", 1, None, DEEP_ENCHANT), item("conduit", 1),
                  item("enchanted_golden_apple", 1)),
+            pool(1, item(f"{NS}:tide_sigil")),
+            pool(1, item("map", 1, None, *SANCTUM_MAP)),
         ),
         "chests/bathysphere": chest(
             pool((3, 7),
@@ -620,6 +631,23 @@ def loot(vanilla):
                  item("potion", 6, None, WATER_BREATHING), item("book", 3, 1, SEA_ENCHANT)),
             pool(1, empty(5), item(f"{NS}:tidewalker_chestplate"), item(f"{NS}:tidewalker_leggings"), item("map", 2, None, *RIFT_MAP)),
             pool(1, empty(4), item(f"{NS}:abyssal_upgrade_smithing_template")),
+            pool(1, item(f"{NS}:deep_sigil")),
+        ),
+        "chests/vent_shrine": chest(
+            pool(1, item(f"{NS}:ember_sigil")),
+            pool((3, 6),
+                 item("magma_cream", 10, (1, 4)), item("blaze_powder", 8, (1, 4)), item("gold_ingot", 10, (2, 6)),
+                 item("obsidian", 8, (1, 4)), item("fire_charge", 6, (1, 3)), item(f"{NS}:abyssal_scale", 10, (2, 5)),
+                 item("diamond", 3, (1, 2)), item("book", 4, 1, DEEP_ENCHANT),
+                 item("potion", 5, None, {"type": "minecraft:set_potion", "id": "minecraft:long_fire_resistance"})),
+        ),
+        "chests/drowned_sanctum": chest(
+            pool((5, 9),
+                 item("diamond", 12, (2, 5)), item("emerald", 10, (3, 8)), item("gold_block", 6, (1, 2)), item("heart_of_the_sea", 4),
+                 item(f"{NS}:abyssal_plate", 10, (1, 3)), item(f"{NS}:abyssal_scale", 12, (3, 8)), item(f"{NS}:pearl", 10, (2, 6)),
+                 item("trident", 3, None, ENCHANT), item("book", 8, 1, DEEP_ENCHANT), item("enchanted_golden_apple", 1),
+                 item("nautilus_shell", 6, (1, 3)), item("golden_apple", 6, (1, 2))),
+            pool(1, empty(2), item(f"{NS}:abyssal_upgrade_smithing_template")),
         ),
         "chests/diver_remains": chest(
             pool((2, 5),

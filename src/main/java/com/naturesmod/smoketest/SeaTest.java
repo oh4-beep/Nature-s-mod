@@ -9,6 +9,7 @@ import java.util.TreeMap;
 import com.mojang.datafixers.util.Pair;
 
 import com.naturesmod.abyss.Abyss;
+import com.naturesmod.abyss.AltarBlock;
 import com.naturesmod.abyss.RiftBlock;
 import com.naturesmod.block.ModBlocks;
 import com.naturesmod.creature.CreatureSpecies;
@@ -191,7 +192,7 @@ final class SeaTest {
 			test.fail("no Abyssal Rift found in the Overworld");
 		}
 		if (abyss != null) {
-			for (String name : new String[] {"sunken_temple", "bathysphere", "leviathan_lair"}) {
+			for (String name : new String[] {"sunken_temple", "bathysphere", "leviathan_lair", "vent_shrine", "drowned_sanctum"}) {
 				if (locate(abyss, name, name.equals("sunken_temple") ? 9 : 0, 2) == null) {
 					test.fail("no %s found in the Abyss", name);
 				}
@@ -224,6 +225,7 @@ final class SeaTest {
 		int minY = Math.max(level.getMinY(), level.getSeaLevel() > 1000 ? 0 : level.getMinY());
 		int floor = Integer.MAX_VALUE;
 		BlockPos rift = null;
+		BlockPos altar = null;
 		for (int dx = -reach; dx <= reach; dx++) {
 			for (int dz = -reach; dz <= reach; dz++) {
 				int x = at.getX() + dx;
@@ -237,6 +239,9 @@ final class SeaTest {
 						blocks.merge(id, 1, Integer::sum);
 						if (state.is(ModBlocks.ABYSSAL_RIFT) && rift == null) {
 							rift = pos.immutable();
+						}
+						if (state.is(ModBlocks.ABYSSAL_ALTAR) && altar == null) {
+							altar = pos.immutable();
 						}
 					}
 				}
@@ -257,15 +262,36 @@ final class SeaTest {
 		if (name.equals("leviathan_lair") && keepers.isEmpty()) {
 			test.fail("the leviathan lair is empty");
 		}
+		if (name.equals("drowned_sanctum")) {
+			altar(level, altar);
+		}
 		int y = rift != null ? rift.getY() : floor;
 		TerrainRenderer.emit("slice_" + name, slice(level, at.getX() - reach, at.getX() + reach, at.getZ(), y - 20, y + 60));
 		TerrainRenderer.emit("top_" + name, floorMap(level, at.getX() - reach, at.getZ() - reach, reach * 2 + 1));
 		return rift != null ? rift : at;
 	}
 
+	/** The sanctum's altar must be there, and wake the Abyssal Horror. */
+	private void altar(ServerLevel level, BlockPos altar) {
+		if (altar == null) {
+			test.fail("the drowned sanctum has no altar");
+			return;
+		}
+		Mob horror = AltarBlock.rise(level, altar, level.getRandom());
+		if (horror == null || !horror.isAlive()) {
+			test.fail("the altar at %s raised nothing", altar);
+			return;
+		}
+		test.line("the altar at %s raises the %s (%.0f health)", altar, BuiltInRegistries.ENTITY_TYPE.getKey(horror.getType()), horror.getHealth());
+		horror.discard();
+	}
+
 	private static String special(BlockState state) {
 		if (state.is(ModBlocks.ABYSSAL_RIFT)) {
 			return "abyssal_rift";
+		}
+		if (state.is(ModBlocks.ABYSSAL_ALTAR)) {
+			return "abyssal_altar";
 		}
 		if (state.is(Blocks.CHEST)) {
 			return "chest";

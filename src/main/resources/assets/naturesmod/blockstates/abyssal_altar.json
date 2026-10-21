@@ -1,0 +1,41 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "naturesmod:block/abyssal_altar"
+      }
+    },
+    {
+      "when": {
+        "tide": "true"
+      },
+      "apply": {
+        "model": "naturesmod:block/abyssal_altar_tide"
+      }
+    },
+    {
+      "when": {
+        "deep": "true"
+      },
+      "apply": {
+        "model": "naturesmod:block/abyssal_altar_deep"
+      }
+    },
+    {
+      "when": {
+        "bone": "true"
+      },
+      "apply": {
+        "model": "naturesmod:block/abyssal_altar_bone"
+      }
+    },
+    {
+      "when": {
+        "ember": "true"
+      },
+      "apply": {
+        "model": "naturesmod:block/abyssal_altar_ember"
+      }
+    }
+  ]
+}

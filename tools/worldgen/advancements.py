@@ -70,6 +70,21 @@ def build(buckets):
             "trigger": "minecraft:player_killed_entity", "conditions": {"entity": {
                 "type": "minecraft:entity_properties", "entity": "this", "predicate": {"minecraft:entity_type": f"{NS}:abyssal_leviathan"}}}}},
             display("sea.slayer_of_the_deep", f"{NS}:abyssal_heart", frame="challenge"), rewards={"experience": 500}),
+        # The Drowned Expedition: the mission of the Abyss.
+        "sea/sigil_seeker": advancement(f"{sea}/into_the_abyss",
+                                        has(f"{NS}:tide_sigil", f"{NS}:deep_sigil", f"{NS}:bone_sigil", f"{NS}:ember_sigil"),
+                                        display("sea.sigil_seeker", f"{NS}:tide_sigil")),
+        "sea/four_seals": advancement(f"{sea}/sigil_seeker",
+                                      has(f"{NS}:tide_sigil", f"{NS}:deep_sigil", f"{NS}:bone_sigil", f"{NS}:ember_sigil"),
+                                      display("sea.four_seals", f"{NS}:ember_sigil", frame="goal"), any_of=False),
+        "sea/awaken_the_abyss": advancement(f"{sea}/four_seals", {"awakened": {"trigger": "minecraft:impossible"}},
+                                            display("sea.awaken_the_abyss", f"{NS}:abyssal_altar", frame="goal")),
+        "sea/the_horror_below": advancement(f"{sea}/awaken_the_abyss", {"horror": {
+            "trigger": "minecraft:player_killed_entity", "conditions": {"entity": {
+                "type": "minecraft:entity_properties", "entity": "this", "predicate": {"minecraft:entity_type": f"{NS}:abyssal_horror"}}}}},
+            display("sea.the_horror_below", f"{NS}:crown_of_the_deep", frame="challenge"), rewards={"experience": 1000}),
+        "sea/crowned": advancement(f"{sea}/the_horror_below", {"wearing": player_where({"minecraft:equipment": {
+            "head": {"items": f"{NS}:crown_of_the_deep"}}})}, display("sea.crowned", f"{NS}:crown_of_the_deep", frame="challenge")),
         "nether/above_the_lava_sea": advancement("minecraft:nether/root", {"high": player_where({"minecraft:location": {
             "dimension": "minecraft:the_nether", "position": {"y": {"min": 150.0}}}})}, display("nether.above_the_lava_sea", "minecraft:netherrack")),
         "nether/ember_wastes": advancement("minecraft:nether/root", {"there": player_where({"minecraft:location": {
@@ -92,6 +107,11 @@ LANG = {
     "sea.sunken_temple": ("Lost Temple", "Find a Sunken Temple on the floor of the Abyss"),
     "sea.pressure_proof": ("Pressure Proof", "Wear a full Abyssal diving suit"),
     "sea.slayer_of_the_deep": ("Slayer of the Deep", "Defeat the Abyssal Leviathan"),
+    "sea.sigil_seeker": ("The Drowned Expedition", "Find one of the four sigils that seal the Abyss"),
+    "sea.four_seals": ("The Four Seals", "Hold the sigils of the Tide, the Deep, the Bone and the Ember"),
+    "sea.awaken_the_abyss": ("Awaken the Abyss", "Set all four sigils into the altar of a Drowned Sanctum"),
+    "sea.the_horror_below": ("The Horror Below", "Defeat the Abyssal Horror"),
+    "sea.crowned": ("Ruler of the Deep", "Wear the Crown of the Deep"),
     "nether.above_the_lava_sea": ("Above the Lava Sea", "Climb into the great caverns of the upper Nether"),
     "nether.ember_wastes": ("Ash and Embers", "Cross the Ember Wastes"),
     "nether.glowstone_grotto": ("Chandeliers of Light", "Find the Glowstone Grotto"),

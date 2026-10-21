@@ -1,12 +1,18 @@
 package com.naturesmod.abyss;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import net.fabricmc.fabric.api.entity.event.v1.ServerEntityLevelChangeEvents;
+
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -14,6 +20,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.Filterable;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
@@ -22,6 +29,9 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Relative;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.WrittenBookContent;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RotatedPillarBlock;
@@ -59,6 +69,28 @@ public final class Abyss {
 
 	public static void register() {
 		ServerTickEvents.END_SERVER_TICK.register(Abyss::tick);
+		// The first time a diver arrives, the logbook of the expedition that came before drifts by.
+		ServerEntityLevelChangeEvents.AFTER_PLAYER_CHANGE_LEVEL.register((player, origin, destination) -> {
+			if (isAbyss(destination) && player.addTag("naturesmod.logbook")) {
+				ItemStack book = logbook();
+				if (!player.getInventory().add(book)) {
+					player.drop(book, false);
+				}
+				player.sendSystemMessage(Component.translatable("message.naturesmod.logbook").withStyle(ChatFormatting.AQUA), false);
+			}
+		});
+	}
+
+	/** The waterlogged logbook of the Drowned Expedition: the mission of the Abyss. */
+	public static ItemStack logbook() {
+		ItemStack book = new ItemStack(Items.WRITTEN_BOOK);
+		List<Filterable<Component>> pages = new ArrayList<>();
+		for (int page = 1; page <= 5; page++) {
+			pages.add(Filterable.<Component>passThrough(Component.translatable("book.naturesmod.logbook.page" + page)));
+		}
+		book.set(DataComponents.WRITTEN_BOOK_CONTENT, new WrittenBookContent(Filterable.passThrough("The Drowned Expedition"),
+				"Captain Ilse Vael", 0, pages, true));
+		return book;
 	}
 
 	public static boolean isAbyss(Level level) {

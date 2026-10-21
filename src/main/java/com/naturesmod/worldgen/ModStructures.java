@@ -34,6 +34,10 @@ public final class ModStructures {
 			NaturesMod.id("bathysphere"), () -> SunkenStructure.Bathysphere.CODEC);
 	public static final StructureType<SunkenStructure.Lair> LEVIATHAN_LAIR = Registry.register(BuiltInRegistries.STRUCTURE_TYPE,
 			NaturesMod.id("leviathan_lair"), () -> SunkenStructure.Lair.CODEC);
+	public static final StructureType<SunkenStructure.Shrine> VENT_SHRINE = Registry.register(BuiltInRegistries.STRUCTURE_TYPE,
+			NaturesMod.id("vent_shrine"), () -> SunkenStructure.Shrine.CODEC);
+	public static final StructureType<SunkenStructure.Sanctum> DROWNED_SANCTUM = Registry.register(BuiltInRegistries.STRUCTURE_TYPE,
+			NaturesMod.id("drowned_sanctum"), () -> SunkenStructure.Sanctum.CODEC);
 
 	private ModStructures() {
 	}

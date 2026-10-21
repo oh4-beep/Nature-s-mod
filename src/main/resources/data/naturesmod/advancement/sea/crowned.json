@@ -1,0 +1,39 @@
+{
+  "criteria": {
+    "wearing": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:equipment": {
+              "head": {
+                "items": "naturesmod:crown_of_the_deep"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.naturesmod.sea.crowned.description"
+    },
+    "icon": {
+      "id": "naturesmod:crown_of_the_deep"
+    },
+    "title": {
+      "translate": "advancements.naturesmod.sea.crowned.title"
+    },
+    "frame": "challenge"
+  },
+  "requirements": [
+    [
+      "wearing"
+    ]
+  ],
+  "sends_telemetry_event": false,
+  "parent": "naturesmod:sea/the_horror_below"
+}

@@ -14,6 +14,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."
 import advancements  # noqa: E402
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import mission  # noqa: E402
 import sea_plants  # noqa: E402
 
 from PIL import Image
@@ -139,6 +140,7 @@ def main():
     write_json(os.path.join(ASSETS, "items", "nether_geyser.json"), {"model": {"type": "minecraft:model", "model": "naturesmod:block/nether_geyser"}})
 
     sea_plants.write(ASSETS, os.path.join(REPO, "src", "main", "resources", "data"))
+    mission.write(ASSETS)
 
     lang_path = os.path.join(ASSETS, "lang", "en_us.json")
     with open(lang_path, encoding="utf-8") as fh:
@@ -146,6 +148,7 @@ def main():
     lang.update(LANG)
     lang.update(advancements.lang())
     lang.update(sea_plants.lang())
+    lang.update(mission.lang())
     write_json(lang_path, dict(sorted(lang.items())))
     print(f"wrote rift assets and {len(LANG)} language entries")
 

@@ -1,0 +1,68 @@
+{
+  "textures": {
+    "particle": "naturesmod:item/ember_sigil",
+    "gem": "naturesmod:item/ember_sigil"
+  },
+  "elements": [
+    {
+      "from": [
+        11,
+        13,
+        11
+      ],
+      "to": [
+        15,
+        16,
+        15
+      ],
+      "shade": false,
+      "faces": {
+        "north": {
+          "uv": [
+            6,
+            6,
+            10,
+            10
+          ],
+          "texture": "#gem"
+        },
+        "south": {
+          "uv": [
+            6,
+            6,
+            10,
+            10
+          ],
+          "texture": "#gem"
+        },
+        "east": {
+          "uv": [
+            6,
+            6,
+            10,
+            10
+          ],
+          "texture": "#gem"
+        },
+        "west": {
+          "uv": [
+            6,
+            6,
+            10,
+            10
+          ],
+          "texture": "#gem"
+        },
+        "up": {
+          "uv": [
+            6,
+            6,
+            10,
+            10
+          ],
+          "texture": "#gem"
+        }
+      }
+    }
+  ]
+}

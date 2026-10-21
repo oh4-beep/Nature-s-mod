@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 
 import com.naturesmod.NaturesMod;
+import com.naturesmod.abyss.AltarBlock;
 import com.naturesmod.abyss.RiftBlock;
 import com.naturesmod.nether.GeyserBlock;
 
@@ -61,6 +62,13 @@ public final class ModBlocks {
 			.strength(1.5F)
 			.lightLevel(state -> 6)
 			.sound(SoundType.AMETHYST));
+
+	public static final Block ABYSSAL_ALTAR = register("abyssal_altar", AltarBlock::new, BlockBehaviour.Properties.of()
+			.mapColor(MapColor.COLOR_CYAN)
+			.strength(-1.0F, 3600000.0F)
+			.noLootTable()
+			.lightLevel(state -> 4 + 2 * AltarBlock.sigils(state) + (state.getValue(AltarBlock.AWAKENED) ? 3 : 0))
+			.sound(SoundType.DEEPSLATE_BRICKS));
 
 	/** Every block of the sea floor, in creative tab order. */
 	public static final Block[] SEA_FLOOR = {RED_SEA_ANEMONE, PURPLE_SEA_ANEMONE, GREEN_SEA_ANEMONE, PURPLE_SEA_FAN, ORANGE_SEA_FAN,

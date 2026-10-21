@@ -1,0 +1,6 @@
+{
+  "type": "naturesmod:drowned_sanctum",
+  "biomes": "#naturesmod:has_structure/drowned_sanctum",
+  "spawn_overrides": {},
+  "step": "surface_structures"
+}

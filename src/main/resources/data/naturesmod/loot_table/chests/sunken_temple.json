@@ -192,6 +192,43 @@
           "weight": 1
         }
       ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "naturesmod:tide_sigil",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:map",
+          "weight": 1,
+          "modifier": [
+            {
+              "type": "minecraft:exploration_map",
+              "decoration": "minecraft:monument",
+              "destination": "#naturesmod:on_sanctum_maps",
+              "skip_existing_chunks": false,
+              "zoom": 2,
+              "search_radius": 100
+            },
+            {
+              "type": "minecraft:set_name",
+              "name": {
+                "translate": "filled_map.naturesmod.drowned_sanctum"
+              },
+              "target": "item_name"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

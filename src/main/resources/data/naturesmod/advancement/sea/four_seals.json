@@ -1,0 +1,72 @@
+{
+  "criteria": {
+    "has_tide_sigil": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "naturesmod:tide_sigil"
+          }
+        ]
+      }
+    },
+    "has_deep_sigil": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "naturesmod:deep_sigil"
+          }
+        ]
+      }
+    },
+    "has_bone_sigil": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "naturesmod:bone_sigil"
+          }
+        ]
+      }
+    },
+    "has_ember_sigil": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "naturesmod:ember_sigil"
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.naturesmod.sea.four_seals.description"
+    },
+    "icon": {
+      "id": "naturesmod:ember_sigil"
+    },
+    "title": {
+      "translate": "advancements.naturesmod.sea.four_seals.title"
+    },
+    "frame": "goal"
+  },
+  "requirements": [
+    [
+      "has_tide_sigil"
+    ],
+    [
+      "has_deep_sigil"
+    ],
+    [
+      "has_bone_sigil"
+    ],
+    [
+      "has_ember_sigil"
+    ]
+  ],
+  "sends_telemetry_event": false,
+  "parent": "naturesmod:sea/sigil_seeker"
+}

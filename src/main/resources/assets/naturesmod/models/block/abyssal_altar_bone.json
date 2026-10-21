@@ -1,0 +1,68 @@
+{
+  "textures": {
+    "particle": "naturesmod:item/bone_sigil",
+    "gem": "naturesmod:item/bone_sigil"
+  },
+  "elements": [
+    {
+      "from": [
+        1,
+        13,
+        11
+      ],
+      "to": [
+        5,
+        16,
+        15
+      ],
+      "shade": false,
+      "faces": {
+        "north": {
+          "uv": [
+            6,
+            6,
+            10,
+            10
+          ],
+          "texture": "#gem"
+        },
+        "south": {
+          "uv": [
+            6,
+            6,
+            10,
+            10
+          ],
+          "texture": "#gem"
+        },
+        "east": {
+          "uv": [
+            6,
+            6,
+            10,
+            10
+          ],
+          "texture": "#gem"
+        },
+        "west": {
+          "uv": [
+            6,
+            6,
+            10,
+            10
+          ],
+          "texture": "#gem"
+        },
+        "up": {
+          "uv": [
+            6,
+            6,
+            10,
+            10
+          ],
+          "texture": "#gem"
+        }
+      }
+    }
+  ]
+}

@@ -30,7 +30,7 @@ import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.SeaPickleBlock;
 import net.minecraft.world.level.block.SkullBlock;
-import net.minecraft.world.level.block.entity.RandomizableContainer;
+import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.chunk.ChunkGenerator;
@@ -582,8 +582,9 @@ public record AbyssFeature(Style style) implements Feature {
 		level.addFreshEntity(body);
 		level.setBlock(chestPos, Blocks.CHEST.defaultBlockState().setValue(ChestBlock.FACING, facing)
 				.setValue(BlockStateProperties.WATERLOGGED, true), 2);
-		RandomizableContainer.setBlockEntityLootTable(level, random, chestPos,
-				ResourceKey.create(Registries.LOOT_TABLE, NaturesMod.id("chests/diver_remains")));
+		if (level.getBlockEntity(chestPos) instanceof ChestBlockEntity chest) {
+			chest.setLootTable(ResourceKey.create(Registries.LOOT_TABLE, NaturesMod.id("chests/diver_remains")), random.nextLong());
+		}
 		BlockPos lantern = seat.relative(facing.getClockWise());
 		if (WorldGenUtil.isWater(level.getBlockState(lantern)) && isSolid(level, lantern.below())) {
 			level.setBlock(lantern, Blocks.LANTERN.defaultBlockState().setValue(BlockStateProperties.WATERLOGGED, true), 2);

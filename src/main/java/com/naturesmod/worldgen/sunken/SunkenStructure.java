@@ -68,6 +68,8 @@ public abstract class SunkenStructure extends Structure {
 			case TEMPLE -> ModStructures.SUNKEN_TEMPLE;
 			case BATHYSPHERE -> ModStructures.BATHYSPHERE;
 			case LAIR -> ModStructures.LEVIATHAN_LAIR;
+			case SHRINE -> ModStructures.VENT_SHRINE;
+			case SANCTUM -> ModStructures.DROWNED_SANCTUM;
 		};
 	}
 
@@ -100,6 +102,22 @@ public abstract class SunkenStructure extends Structure {
 
 		public Lair(StructureSettings settings) {
 			super(settings, SunkenPiece.Kind.LAIR);
+		}
+	}
+
+	public static final class Shrine extends SunkenStructure {
+		public static final MapCodec<Shrine> CODEC = simpleCodec(Shrine::new);
+
+		public Shrine(StructureSettings settings) {
+			super(settings, SunkenPiece.Kind.SHRINE);
+		}
+	}
+
+	public static final class Sanctum extends SunkenStructure {
+		public static final MapCodec<Sanctum> CODEC = simpleCodec(Sanctum::new);
+
+		public Sanctum(StructureSettings settings) {
+			super(settings, SunkenPiece.Kind.SANCTUM);
 		}
 	}
 }
