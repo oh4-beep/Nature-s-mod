@@ -133,7 +133,8 @@ public record RockFormationFeature(Style style, List<BlockState> materials, bool
 	}
 
 	private boolean seaStack(WorldGenLevel level, WorldGenUtil.Window window, RandomSource random, BlockPos origin) {
-		int sea = level.getSeaLevel();
+		// Sea level is the first air block: the surface of the sea is the block below it.
+		int sea = level.getSeaLevel() - 1;
 		int floor = WorldGenUtil.groundY(level, origin.getX(), origin.getZ());
 		BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(origin.getX(), sea, origin.getZ());
 		if (!WorldGenUtil.isWater(level.getBlockState(pos)) || sea - floor > 14 || sea - floor < 1) {
