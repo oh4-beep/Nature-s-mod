@@ -6,6 +6,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.FollowFlockLeaderGoal;
@@ -56,8 +57,19 @@ public class SchoolingFish extends AbstractSchoolingFish implements SeaCreature 
 		this.goalSelector.addGoal(4, new CreatureGoals.SchoolSwimGoal(this));
 		this.goalSelector.addGoal(5, new FollowFlockLeaderGoal(this));
 		this.targetSelector.addGoal(1, new HurtByTargetGoal(this).setAlertOthers());
-		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, CreatureGoals.bleeding(this)));
+		// The rotting packs of the Abyss go for any diver; piranhas wait for blood.
+		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false,
+				this.species().effect().isEmpty() ? CreatureGoals.bleeding(this) : CreatureGoals.diver(this, 14.0, true)));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 20, true, false, CreatureGoals.bleeding(this)));
+	}
+
+	@Override
+	public boolean doHurtTarget(ServerLevel level, Entity target) {
+		boolean hit = super.doHurtTarget(level, target);
+		if (hit) {
+			CreatureEffects.bite(this, this.species(), target);
+		}
+		return hit;
 	}
 
 	@Override

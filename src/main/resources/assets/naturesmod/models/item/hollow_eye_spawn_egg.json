@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "naturesmod:item/hollow_eye_spawn_egg"
+  }
+}

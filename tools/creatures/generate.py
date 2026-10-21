@@ -171,7 +171,7 @@ def species_java(built):
             f"{f(sp['scale'])}, {f(w)}, {f(h)}, {float(default_health(sp))}, {float(sp['attack'])}, {float(sp['speed'])}, "
             f"{sp['group'][0]}, {sp['group'][1]}, {sp['weight']}, {str(sp['bucket']).lower()}, {str(bool(sp['glow'])).lower()}, "
             f"{str(sp['translucent']).lower()}, \"{sp['depth']}\", \"{sp['sound']}\", "
-            f"{model.get('segments', 0)}, List.of({habitats}))")
+            f"{model.get('segments', 0)}, List.of({habitats}), \"{sp['effect']}\")")
     out.append(",\n".join(rows))
     out.append("\t);")
     out.append("}")
@@ -188,6 +188,7 @@ DROP_ITEMS = {
     "abyssal_heart": ("naturesmod:abyssal_heart", False),
     "ink": ("minecraft:ink_sac", False),
     "slime": ("minecraft:slime_ball", False),
+    "rotten_flesh": ("minecraft:rotten_flesh", False),
 }
 
 SMELT_CONDITION = {

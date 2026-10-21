@@ -152,9 +152,32 @@ class Painter:
         elif p == "rings":
             if int(t * 14) % 2 == 0:
                 base = shade(base, 0.8)
+        elif p == "rot":
+            # Rotting: patches of raw flesh, dark holes and bone showing through.
+            n = self.noise(px, py, 1.8)
+            m = self.noise(px + 37, py + 11, 2.6)
+            if n > 0.68:
+                base = mix((176, 82, 86), (120, 40, 44), self.noise(px, py, 0.8))
+            elif n < 0.2:
+                base = (34, 18, 18)
+            if m > 0.82:
+                base = (222, 214, 190)
+        elif p == "bones":
+            # A skeleton barely held together: ribs and spine pale against black rot.
+            if t < 0.12 or (0.15 < t < 0.85 and math.sin(s * math.pi * 14) > 0.55):
+                base = shade(acc, 0.92 + 0.08 * self.noise(px, py, 1.0))
+            elif self.noise(px, py, 1.4) > 0.75:
+                base = (60, 20, 20)
+        elif p == "veins":
+            if self.vein(s, t):
+                base = acc
         # Subtle grain everywhere so flat colours don't look plastic.
         grain = 0.94 + 0.12 * self.noise(px * 1.7, py * 1.3, 1.0)
         return shade(base, grain)
+
+    def vein(self, s, t):
+        """Branching lines of the "veins" pattern."""
+        return abs(math.sin(s * 13 + math.sin(t * 9) * 1.5)) < 0.09 or abs(math.sin(t * 11 + s * 5)) < 0.06
 
     def fin_colour(self, a, b, px, py, edge):
         col = self.col
@@ -265,6 +288,9 @@ class Painter:
             if "spots" in self.glow and self.noise(px, py, 1.1) > 0.86:
                 colour = col["accent"]
                 glowing = col["accent"]
+            if "veins" in self.glow and sp["pattern"] == "veins" and self.vein(s, t_eff):
+                colour = col["accent"]
+                glowing = col["accent"]
             if self.translucent:
                 alpha = 170 if role != "wing" else 190
             if role == "mantle" and sp["pattern"] == "spots" and self.noise(px, py, 1.4) > 0.72:
@@ -303,6 +329,12 @@ class Painter:
             if face == "top":
                 colour = (150, 40, 40)
             return colour, 170 if self.translucent else 255, None
+        if role == "ribs":
+            # Bare ribs: pale bars with nothing between them.
+            along = a if side else b
+            if int(along * 9) % 2 == 0 and 0.08 < (b if side else a) < 0.92:
+                return shade((226, 220, 200), 0.9 + 0.1 * self.noise(px, py, 1.0)), 255, None
+            return (0, 0, 0), 0, None
         if role == "teeth":
             if int((a if side else b) * 10) % 2 == 0 and (b if side else a) > 0.3:
                 return (235, 230, 215), 255, None

@@ -4,22 +4,33 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import com.naturesmod.NaturesMod;
 import com.naturesmod.worldgen.FeatureStats;
 import com.naturesmod.worldgen.WorldGenUtil;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Rotations;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.BaseCoralWallFanBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BubbleColumnBlock;
+import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.SeaPickleBlock;
+import net.minecraft.world.level.block.SkullBlock;
+import net.minecraft.world.level.block.entity.RandomizableContainer;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.chunk.ChunkGenerator;
@@ -60,6 +71,8 @@ public record AbyssFeature(Style style) implements Feature {
 			case WHALE_FALL -> whaleFall(level, window, random, origin);
 			case GIANT_KELP -> giantKelp(level, window, random, origin);
 			case HANGING_GLOW -> hangingGlow(level, window, random, origin);
+			case BONE_PILE -> bonePile(level, window, random, origin);
+			case DIVER_REMAINS -> diverRemains(level, window, random, origin);
 		};
 		if (placed) {
 			FeatureStats.placed("abyss_" + style.getSerializedName(), origin);
@@ -494,6 +507,94 @@ public record AbyssFeature(Style style) implements Feature {
 		return true;
 	}
 
+	// --- bone piles ------------------------------------------------------------------------
+
+	/** Bones and skulls heaped on the sea floor: whatever came down here did not leave. */
+	private boolean bonePile(WorldGenLevel level, WorldGenUtil.Window window, RandomSource random, BlockPos origin) {
+		if (!window.containsRadius(origin.getX(), origin.getZ(), 4)) {
+			return false;
+		}
+		BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
+		int bones = 3 + random.nextInt(6);
+		for (int i = 0; i < bones; i++) {
+			int x = origin.getX() + random.nextInt(7) - 3;
+			int z = origin.getZ() + random.nextInt(7) - 3;
+			int ground = floor(level, x, origin.getY() + 3, z);
+			pos.set(x, ground + 1, z);
+			if (!WorldGenUtil.isWater(level.getBlockState(pos))) {
+				continue;
+			}
+			Direction.Axis axis = Direction.Axis.values()[random.nextInt(3)];
+			set(level, pos, Blocks.BONE_BLOCK.defaultBlockState().setValue(RotatedPillarBlock.AXIS, axis));
+			if (random.nextInt(3) == 0 && WorldGenUtil.isWater(level.getBlockState(pos.above()))) {
+				set(level, pos.move(Direction.UP), Blocks.BONE_BLOCK.defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.Y));
+			}
+		}
+		int skulls = 1 + random.nextInt(4);
+		for (int i = 0; i < skulls; i++) {
+			int x = origin.getX() + random.nextInt(7) - 3;
+			int z = origin.getZ() + random.nextInt(7) - 3;
+			int ground = floor(level, x, origin.getY() + 4, z);
+			pos.set(x, ground + 1, z);
+			if (!WorldGenUtil.isWater(level.getBlockState(pos))) {
+				continue;
+			}
+			Block skull = random.nextInt(14) == 0 ? Blocks.WITHER_SKELETON_SKULL : Blocks.SKELETON_SKULL;
+			level.setBlock(pos, skull.defaultBlockState().setValue(SkullBlock.ROTATION, random.nextInt(16)), 2);
+		}
+		return true;
+	}
+
+	// --- the remains of a diver -----------------------------------------------------------
+
+	/**
+	 * A diver who never made it back: a skeleton in rusted gear slumped against a chest of what
+	 * they carried, a lantern gone dark beside them.
+	 */
+	private boolean diverRemains(WorldGenLevel level, WorldGenUtil.Window window, RandomSource random, BlockPos origin) {
+		if (!window.containsRadius(origin.getX(), origin.getZ(), 3)) {
+			return false;
+		}
+		int ground = floor(level, origin.getX(), origin.getY() + 3, origin.getZ());
+		BlockPos seat = new BlockPos(origin.getX(), ground + 1, origin.getZ());
+		Direction facing = Direction.Plane.HORIZONTAL.getRandomDirection(random);
+		BlockPos chestPos = seat.relative(facing.getOpposite());
+		if (!WorldGenUtil.isWater(level.getBlockState(seat)) || !WorldGenUtil.isWater(level.getBlockState(chestPos))
+				|| !isSolid(level, chestPos.below())) {
+			return false;
+		}
+		ArmorStand body = new ArmorStand(level.getLevel(), seat.getX() + 0.5, seat.getY(), seat.getZ() + 0.5);
+		body.setYRot(facing.toYRot());
+		body.setYBodyRot(facing.toYRot());
+		body.setNoBasePlate(true);
+		body.setShowArms(true);
+		body.setHeadPose(new Rotations(32.0F, 0.0F, random.nextFloat() * 30.0F - 15.0F));
+		body.setLeftArmPose(new Rotations(-12.0F, 0.0F, -12.0F));
+		body.setRightArmPose(new Rotations(-20.0F, 0.0F, 14.0F));
+		body.setItemSlot(EquipmentSlot.HEAD, new ItemStack(Items.SKELETON_SKULL));
+		body.setItemSlot(EquipmentSlot.CHEST, new ItemStack(random.nextBoolean() ? Items.CHAINMAIL_CHESTPLATE : Items.IRON_CHESTPLATE));
+		if (random.nextBoolean()) {
+			body.setItemSlot(EquipmentSlot.LEGS, new ItemStack(Items.CHAINMAIL_LEGGINGS));
+		}
+		if (random.nextInt(3) == 0) {
+			body.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.IRON_SWORD));
+		}
+		level.addFreshEntity(body);
+		level.setBlock(chestPos, Blocks.CHEST.defaultBlockState().setValue(ChestBlock.FACING, facing)
+				.setValue(BlockStateProperties.WATERLOGGED, true), 2);
+		RandomizableContainer.setBlockEntityLootTable(level, random, chestPos,
+				ResourceKey.create(Registries.LOOT_TABLE, NaturesMod.id("chests/diver_remains")));
+		BlockPos lantern = seat.relative(facing.getClockWise());
+		if (WorldGenUtil.isWater(level.getBlockState(lantern)) && isSolid(level, lantern.below())) {
+			level.setBlock(lantern, Blocks.LANTERN.defaultBlockState().setValue(BlockStateProperties.WATERLOGGED, true), 2);
+		}
+		BlockPos skull = seat.relative(facing.getCounterClockWise());
+		if (WorldGenUtil.isWater(level.getBlockState(skull)) && isSolid(level, skull.below()) && random.nextBoolean()) {
+			level.setBlock(skull, Blocks.SKELETON_SKULL.defaultBlockState().setValue(SkullBlock.ROTATION, random.nextInt(16)), 2);
+		}
+		return true;
+	}
+
 	public enum Style implements StringRepresentable {
 		BLACK_SMOKER("black_smoker"),
 		SOUL_VENT("soul_vent"),
@@ -501,7 +602,9 @@ public record AbyssFeature(Style style) implements Feature {
 		NODULES("nodules"),
 		WHALE_FALL("whale_fall"),
 		GIANT_KELP("giant_kelp"),
-		HANGING_GLOW("hanging_glow");
+		HANGING_GLOW("hanging_glow"),
+		BONE_PILE("bone_pile"),
+		DIVER_REMAINS("diver_remains");
 
 		public static final Codec<Style> CODEC = StringRepresentable.fromEnum(Style::values);
 		private final String name;

@@ -31,13 +31,13 @@ HABITATS = {
 
 def S(id, name, plan, scale, behavior, habitats, colors, pattern="plain", variant=None, health=None, attack=0,
       speed=1.0, weight=10, group=(1, 2), glow=(), drops=("fillet",), bucket=False, translucent=False, depth="any",
-      hitbox=None, category=None, sound="fish", desc=""):
+      hitbox=None, category=None, sound="fish", desc="", effect=""):
     return {
         "id": id, "name": name, "plan": plan, "variant": variant or {}, "scale": scale, "behavior": behavior,
         "habitats": list(habitats), "colors": colors, "pattern": pattern, "health": health, "attack": attack,
         "speed": speed, "weight": weight, "group": group, "glow": list(glow), "drops": list(drops), "bucket": bucket,
         "translucent": translucent, "depth": depth, "hitbox": hitbox, "category": category, "sound": sound,
-        "desc": desc,
+        "desc": desc, "effect": effect,
     }
 
 
@@ -205,6 +205,32 @@ SPECIES = [
     S("ghost_shark", "Ghost Shark", "shark", 1.3, "passive", ["abyss_floor"],
       c("#b8bcc8", "#d0d4de", "#e8eaf0", "#a8acb8", "#8a8e9a", "#1a8a5a"), "plain", variant={"whip": True, "big_eyes": True},
       health=24, speed=0.8, weight=4, group=(1, 1), drops=("fillet", "abyssal_scale"), desc="Not a shark at all, but a chimaera."),
+    # --- the mutated things of the deep: things that should not live ---------------------------
+    S("rotfin", "Rotfin", "fish", 0.8, "pack", ["abyss_twilight", "abyss_midnight", "abyss_floor"],
+      c("#4a4a3a", "#6a6450", "#8a7e66", "#5a5444", "#c06a6a", "#e8e8d8"), "rot",
+      health=10, attack=3, speed=1.4, weight=12, group=(3, 7), drops=("rotten_flesh",), effect="nausea",
+      desc="A rotting fish that should be dead, hunting in packs."),
+    S("hollow_eye", "Hollow Eye", "deep", 1.6, "ambush", ["abyss_midnight", "abyss_floor"],
+      c("#2a1418", "#3e1c22", "#5a2a30", "#30161a", "#ff3030", "#f0e060"), "veins", variant={"round": True, "eyes_many": True},
+      glow=["eyes", "veins"], health=40, attack=8, speed=1.0, weight=6, group=(1, 1), drops=("abyssal_scale", "abyssal_scale"),
+      effect="darkness", desc="A mass of eyes that never close."),
+    S("bone_shark", "Bone Shark", "shark", 2.2, "hunter", ["abyss_midnight", "abyss_floor"],
+      c("#1c1c20", "#2a2a30", "#3a3a40", "#26262c", "#e6e0cc", "#ff2020"), "bones", variant={"ribs": True},
+      glow=["eyes"], health=55, attack=10, speed=1.4, weight=5, group=(1, 2), drops=("abyssal_scale", "shark_tooth", "shark_tooth"),
+      category="water_creature", effect="wither", desc="Its flesh rotted away long ago. It still hunts."),
+    S("twinhead_eel", "Twinhead Eel", "long", 1.4, "hunter", ["abyss_midnight"],
+      c("#1a2a1a", "#2a3e28", "#4a5a3a", "#223222", "#a0ff40", "#ff8020"), "veins", variant={"segments": 6, "twin_head": True, "fangs": True},
+      glow=["veins", "eyes"], health=32, attack=7, speed=1.4, weight=5, group=(1, 1), drops=("abyssal_scale",), effect="poison",
+      desc="Two hungry heads and one poisoned body."),
+    S("pale_lurker", "Pale Lurker", "fish", 1.8, "ambush", ["abyss_floor"],
+      c("#c8c4bc", "#dad6ce", "#ece8e0", "#bcb8b0", "#801010", "#e8e4dc"), "plain", variant={"stretch": 4, "big_maw": True},
+      health=36, attack=9, speed=1.6, weight=5, group=(1, 1), drops=("abyssal_scale", "fillet"), effect="blindness",
+      desc="Blind and white as bone, it finds you by your heartbeat."),
+    S("abyssal_maw", "Abyssal Maw", "fish", 3.0, "ambush", ["abyss_floor"],
+      c("#0c0c10", "#16161c", "#22222a", "#101016", "#80ffe0", "#d0d0d0"), "rough",
+      variant={"deep": True, "big_maw": True, "lure": True, "stretch": 2}, glow=["lure"],
+      health=90, attack=14, speed=1.1, weight=3, group=(1, 1), drops=("abyssal_scale", "abyssal_scale", "abyssal_scale"),
+      category="water_creature", effect="darkness", desc="A lure, a light in the dark... and then the jaws."),
     # The leviathan never spawns naturally: one waits in the lair at the bottom of every Abyssal Trench.
     S("abyssal_leviathan", "Abyssal Leviathan", "long", 6.0, "boss", [],
       c("#06101c", "#0c1a2c", "#16283c", "#08141e", "#3ae0ff", "#3ae0ff"), "plain",

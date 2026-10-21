@@ -49,10 +49,18 @@ def fish(v):
         head_children.append(part("lure", (0, -h / 2 + 0.5, -head_len + 1), (-0.5, 0, 0),
                                   cubes=[cube("stalk", (0, -6, -0.5), (0, 6, 1))],
                                   children=[part("bulb", (0, -6, 0), cubes=[cube("lure", (-1, -2, -1), (2, 2, 2))])]))
+    if v.get("big_maw"):
+        # A gaping maw: a deep, long lower jaw lined with fangs.
+        jaw = part("jaw", (0, h / 2 - 1.5, -0.5), (0.25, 0, 0), cubes=[cube("jaw", (-w / 2 - 0.25, 0, -head_len - 2), (w + 0.5, 2, head_len + 2))],
+                   children=[part("teeth", (0, 0, -head_len - 2), cubes=[cube("teeth", (-w / 2, -2, 0), (w, 2, 0))]),
+                             part("side_teeth", (0, 0, -head_len), cubes=[cube("teeth", (-w / 2 - 0.2, -1.5, 0), (0, 1.5, head_len + 1))])])
+        head_children.append(part("upper_teeth", (0, h / 2 - 1.5, -head_len - 0.5), cubes=[cube("teeth", (-w / 2 + 0.25, 0, 0), (w - 0.5, 1.5, 0))]))
+    else:
+        jaw = part("jaw", (0, h / 2 - 1.5, -0.5), cubes=[cube("jaw", (-w / 2 + 0.25, 0, -head_len), (w - 0.5, 1, head_len))])
     head = part("head", (0, 0, -body_len / 2), cubes=[
         cube("head", (-w / 2, -h / 2 + 0.5, -head_len), (w, h - 1, head_len)),
         cube("snout", (-w / 2 + 0.5, -h / 2 + 1.5, -head_len - 1), (w - 1, h - 3, 1)),
-    ], children=head_children + [part("jaw", (0, h / 2 - 1.5, -0.5), cubes=[cube("jaw", (-w / 2 + 0.25, 0, -head_len), (w - 0.5, 1, head_len))])])
+    ], children=head_children + [jaw])
     tail_len = 4 + v.get("stretch", 0) / 2
     tail = part("tail", (0, 0, body_len / 2), cubes=[cube("tail", (-w / 2 + 0.5, -h / 2 + 1.5, 0), (w - 1, h - 3, tail_len))],
                 children=[part("tail_fin", (0, 0, tail_len), cubes=[cube("tail_fin", (0, -h / 2 - 1, 0), (0, h + 2, 5 if v.get("lobes") else 4))])])
@@ -69,8 +77,24 @@ def fish(v):
     if v.get("spines"):
         fins.append(part("left_spines", (w / 2, 0, -1), (0, 0, 0.9), cubes=[cube("spines", (0, -3, -2), (6, 0, 7))]))
         fins.append(part("right_spines", (-w / 2, 0, -1), (0, 0, -0.9), cubes=[cube("spines", (-6, -3, -2), (6, 0, 7), mirror=True)]))
-    body = part("body", (0, y0, 0), cubes=[cube("body", (-w / 2, -h / 2, -body_len / 2), (w, h, body_len))], children=[head, tail] + fins)
+    body_cubes = [cube("body", (-w / 2, -h / 2, -body_len / 2), (w, h, body_len))] + mutations(v, w, h, body_len)
+    body = part("body", (0, y0, 0), cubes=body_cubes, children=[head, tail] + fins)
     return {"kind": "fish", "root": [body], "length": body_len + head_len + tail_len + 5}
+
+
+def mutations(v, w, h, body_len):
+    """Extra cubes on the body of a mutated creature: eyes all over it, or ribs showing through."""
+    cubes = []
+    if v.get("eyes_many"):
+        for i, (z, y) in enumerate([(-0.3, -0.3), (0.05, 0.15), (0.3, -0.2), (-0.1, 0.35), (0.42, 0.25)]):
+            size = 1.4 if i % 2 == 0 else 1.0
+            for side in (-1, 1):
+                x = side * (w / 2) - (size if side < 0 else 0) + side * 0.05
+                cubes.append(cube("eye_bulge", (x, y * h - size / 2, z * body_len - size / 2), (size, size, size)))
+    if v.get("ribs"):
+        for side in (-1, 1):
+            cubes.append(cube("ribs", (side * (w / 2 + 0.3), -h / 2 + 0.5, -body_len / 2 + 1), (0, h - 1, body_len - 2)))
+    return cubes
 
 
 def deep(v):
@@ -83,7 +107,7 @@ def deep(v):
         cube("body", (-1, -h / 2, -body_len / 2), (2, h, body_len)),
         cube("head", (-1, -h / 2 + 1.5, -body_len / 2 - 2), (2, h - 3, 2)),
         cube("snout", (-0.5, -0.5, -body_len / 2 - 3), (1, 2, 1)),
-    ], children=[
+    ] + mutations(v, 2, h, body_len), children=[
         part("jaw", (0, 1.5, -body_len / 2 - 2), cubes=[cube("jaw", (-0.75, 0, -1), (1.5, 0.5, 1))]),
         part("dorsal", (0, -h / 2, -body_len / 2 + 1), (0.2, 0, 0), cubes=[cube("dorsal", (0, -3 - (5 if tall else 0), 0), (0, 3 + (5 if tall else 0), body_len))]),
         part("anal_fin", (0, h / 2, -body_len / 2 + 2), (-0.2, 0, 0), cubes=[cube("fin", (0, 0, 0), (0, 2 + (5 if tall else 0), body_len - 1))]),
@@ -122,8 +146,16 @@ def long(v):
         if i == n - 1:
             children.append(part("tail_fin", (0, 0, seg_len), cubes=[cube("glow_tip" if v.get("glow_tail") else "tail_fin", (0, -2, 0), (0, 4, 3))]))
         chain = part(f"segment{i}", (0, 0, 0 if i == 0 else seg_len), cubes=cubes, children=children)
-    head = part("head", (0, 0, 0), cubes=head_cubes, children=head_children)
-    body = part("body", (0, y0, -n * 5 / 2), cubes=[], children=[head, chain])
+    if v.get("twin_head"):
+        # Two heads on one neck, splayed apart.
+        head = part("head", (-t * 0.6, 0, 0), (0, 0.35, 0), cubes=head_cubes, children=head_children)
+        twin = part("twin_head", (t * 0.6, 0, 0), (0, -0.35, 0), cubes=[dict(c) for c in head_cubes],
+                    children=[part("twin_jaw", (0, t / 2 - 1, -0.5), (0.3, 0, 0),
+                                   cubes=[cube("jaw", (-t / 2 + 0.25, 0, -jaw_len), (t - 0.5, 1, jaw_len))])])
+        body = part("body", (0, y0, -n * 5 / 2), cubes=[], children=[head, twin, chain])
+    else:
+        head = part("head", (0, 0, 0), cubes=head_cubes, children=head_children)
+        body = part("body", (0, y0, -n * 5 / 2), cubes=[], children=[head, chain])
     return {"kind": "long", "root": [body], "length": n * 5 + 5 + 3, "segments": n}
 
 
@@ -144,7 +176,7 @@ def shark(v):
     tail_fin = [cube("tail_fin", (0, -7, 0), (0, 7, 5)), cube("tail_fin", (0, 0, 0), (0, 4, 3))]
     if v.get("whip"):
         tail_fin = [cube("tail_fin", (0, -1, 0), (0, 2, 12))]
-    body = part("body", (0, y0, 0), cubes=[cube("body", (-w / 2, -h / 2, -body_len / 2), (w, h, body_len))], children=[
+    body = part("body", (0, y0, 0), cubes=[cube("body", (-w / 2, -h / 2, -body_len / 2), (w, h, body_len))] + mutations(v, w, h, body_len), children=[
         part("head", (0, 0, -body_len / 2), cubes=head_cubes, children=head_children),
         part("tail", (0, -0.5, body_len / 2), cubes=[cube("tail", (-w / 4, -h / 4, 0), (w / 2, h / 2, 8))],
              children=[part("tail_fin", (0, 0, 8), (0.5, 0, 0), cubes=tail_fin)]),

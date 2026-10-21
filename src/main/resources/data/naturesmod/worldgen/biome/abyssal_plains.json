@@ -15,8 +15,14 @@
     "minecraft:audio/ambient_sounds": {
       "loop": "minecraft:ambient.underwater.loop",
       "additions": {
-        "sound": "minecraft:ambient.underwater.loop.additions.rare",
-        "tick_chance": 0.006
+        "sound": "minecraft:ambient.soul_sand_valley.additions",
+        "tick_chance": 0.005
+      },
+      "mood": {
+        "block_search_extent": 8,
+        "offset": 2.0,
+        "sound": "minecraft:ambient.cave",
+        "tick_delay": 3000
       }
     },
     "minecraft:gameplay/natural_mob_spawns": {
@@ -58,7 +64,9 @@
     [],
     [
       "naturesmod:abyss/nodules",
-      "naturesmod:abyss/whale_fall_rare"
+      "naturesmod:abyss/whale_fall_rare",
+      "naturesmod:abyss/bone_pile_sparse",
+      "naturesmod:abyss/diver_remains"
     ],
     [],
     [],

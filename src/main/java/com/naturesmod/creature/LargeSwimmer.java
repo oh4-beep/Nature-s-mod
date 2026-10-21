@@ -221,6 +221,7 @@ public class LargeSwimmer extends WaterAnimal implements SeaCreature {
 		boolean hit = super.doHurtTarget(level, target);
 		if (hit) {
 			this.playSound(SoundEvents.PHANTOM_BITE, 1.0F, 0.6F + this.random.nextFloat() * 0.3F);
+			CreatureEffects.bite(this, this.species(), target);
 			if (target instanceof LivingEntity living && living.isDeadOrDying()) {
 				// A full stomach: leave the other fish alone for a while.
 				this.fullTicks = 1200 + this.random.nextInt(2400);

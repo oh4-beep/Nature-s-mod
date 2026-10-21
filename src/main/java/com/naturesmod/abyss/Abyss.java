@@ -14,6 +14,9 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -145,6 +148,24 @@ public final class Abyss {
 		}
 	}
 
+	// --- things in the dark ------------------------------------------------------------------
+
+	/** Somewhere out in the black water, something roars, or moans, or its heart beats. */
+	private static void distantSound(ServerLevel level, ServerPlayer player) {
+		RandomSource random = level.getRandom();
+		double angle = random.nextDouble() * Math.PI * 2.0;
+		double distance = 14.0 + random.nextDouble() * 18.0;
+		double x = player.getX() + Math.cos(angle) * distance;
+		double y = player.getY() + random.nextDouble() * 16.0 - 8.0;
+		double z = player.getZ() + Math.sin(angle) * distance;
+		switch (random.nextInt(4)) {
+			case 0 -> level.playSound(null, x, y, z, SoundEvents.WARDEN_ROAR, SoundSource.HOSTILE, 1.4F, 0.45F);
+			case 1 -> level.playSound(null, x, y, z, SoundEvents.ELDER_GUARDIAN_AMBIENT, SoundSource.HOSTILE, 2.5F, 0.35F);
+			case 2 -> level.playSound(null, x, y, z, SoundEvents.WARDEN_HEARTBEAT, SoundSource.HOSTILE, 2.0F, 0.6F);
+			default -> level.playSound(null, x, y, z, SoundEvents.ELDER_GUARDIAN_CURSE, SoundSource.HOSTILE, 0.6F, 0.3F);
+		}
+	}
+
 	// --- pressure --------------------------------------------------------------------------
 
 	/** Pressure rating needed to stay healthy at this height in the Abyss. */
@@ -167,6 +188,9 @@ public final class Abyss {
 			return;
 		}
 		for (ServerPlayer player : level.players()) {
+			if (!player.isSpectator() && player.getY() < MIDNIGHT_DEPTH + 100 && level.getRandom().nextInt(70) == 0) {
+				distantSound(level, player);
+			}
 			if (player.isCreative() || player.isSpectator() || !player.isAlive()) {
 				continue;
 			}

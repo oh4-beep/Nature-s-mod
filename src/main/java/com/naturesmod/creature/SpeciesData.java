@@ -15,10 +15,12 @@ import net.minecraft.world.entity.MobCategory;
  * @param sound     sound set: fish, squid or leviathan
  * @param segments  number of body segments of long (eel-like) bodies
  * @param habitats  biomes it spawns in
+ * @param effect    what its bite does to its victim besides the damage: darkness, wither, nausea, poison,
+ *                  blindness, or nothing
  */
 public record SpeciesData(String id, String plan, Behavior behavior, String category, float scale, float width, float height,
 		double health, double attack, double speed, int groupMin, int groupMax, int weight, boolean bucket, boolean glow,
-		boolean translucent, String depth, String sound, int segments, List<String> habitats) {
+		boolean translucent, String depth, String sound, int segments, List<String> habitats, String effect) {
 
 	public MobCategory mobCategory() {
 		return "water_creature".equals(category) ? MobCategory.WATER_CREATURE : MobCategory.WATER_AMBIENT;

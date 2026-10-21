@@ -278,16 +278,21 @@ def dimension():
 EMPTY_SPAWNS = {"argument": {"spawn_costs": {}, "spawns_by_category": {}}, "modifier": "overlay"}
 
 
-def biome(water_fog, fog_distance, particles=None, features=None, music="minecraft:music.under_water", water="#0a1a3a"):
+def biome(water_fog, fog_distance, particles=None, features=None, music="minecraft:music.under_water", water="#0a1a3a", eerie=False):
+    sounds = {
+        "loop": "minecraft:ambient.underwater.loop",
+        "additions": {"sound": "minecraft:ambient.underwater.loop.additions.rare", "tick_chance": 0.006},
+    }
+    if eerie:
+        # Down here the sea whispers, and something far off answers.
+        sounds["additions"] = {"sound": "minecraft:ambient.soul_sand_valley.additions", "tick_chance": 0.005}
+        sounds["mood"] = {"block_search_extent": 8, "offset": 2.0, "sound": "minecraft:ambient.cave", "tick_delay": 3000}
     attributes = {
         "minecraft:audio/background_music": {
             "default": {"max_delay": 12000, "min_delay": 6000, "sound": music},
             "underwater": {"max_delay": 12000, "min_delay": 6000, "sound": music},
         },
-        "minecraft:audio/ambient_sounds": {
-            "loop": "minecraft:ambient.underwater.loop",
-            "additions": {"sound": "minecraft:ambient.underwater.loop.additions.rare", "tick_chance": 0.006},
-        },
+        "minecraft:audio/ambient_sounds": sounds,
         "minecraft:gameplay/natural_mob_spawns": EMPTY_SPAWNS,
         "minecraft:visual/water_fog_color": water_fog,
         "minecraft:visual/water_fog_end_distance": fog_distance,
@@ -331,21 +336,23 @@ def biomes():
             (LOCAL, f"{NS}:abyss/giant_kelp"), (LOCAL, f"{NS}:abyss/hanging_glow"),
             (VEGETATION, "minecraft:kelp_cold"), (VEGETATION, "minecraft:seagrass_deep"), (VEGETATION, f"{NS}:abyss/sea_pickles"),
         ], water="#1d4f8f"),
-        "midnight_zone": biome("#071630", 96.0, sparks, COMMON + [(LOCAL, f"{NS}:abyss/hanging_glow")], water="#0c2348"),
+        "midnight_zone": biome("#071630", 96.0, sparks, COMMON + [(LOCAL, f"{NS}:abyss/hanging_glow")], water="#0c2348", eerie=True),
         "abyssal_plains": biome("#0c1d2e", 104.0, marine_snow, COMMON + [
             (LOCAL, f"{NS}:abyss/nodules"), (LOCAL, f"{NS}:abyss/whale_fall_rare"), (VEGETATION, f"{NS}:abyss/sea_pickles_sparse"),
-            (VEGETATION, f"{NS}:abyss/garden_floor"),
-        ], water="#10283e"),
+            (VEGETATION, f"{NS}:abyss/garden_floor"), (LOCAL, f"{NS}:abyss/bone_pile_sparse"), (LOCAL, f"{NS}:abyss/diver_remains"),
+        ], water="#10283e", eerie=True),
         "glowing_reef": biome("#0a4249", 120.0, [("minecraft:glow", 0.004), ("minecraft:underwater", 0.02)], COMMON + [
             (LOCAL, f"{NS}:abyss/glow_reef"), (VEGETATION, f"{NS}:abyss/reef_coral"), (VEGETATION, f"{NS}:abyss/sea_pickles"),
             (VEGETATION, f"{NS}:abyss/garden_reef"),
         ], water="#178a8a"),
         "hydrothermal_vents": biome("#2c1a10", 72.0, [("minecraft:ash", 0.03), ("minecraft:bubble", 0.01)], COMMON + [
             (LOCAL, f"{NS}:abyss/black_smoker"), (LOCAL, f"{NS}:abyss/soul_vent"), (VEGETATION, f"{NS}:abyss/garden_vents"),
-        ], water="#4a2c1a"),
+            (LOCAL, f"{NS}:abyss/diver_remains"),
+        ], water="#4a2c1a", eerie=True),
         "bone_fields": biome("#17221f", 96.0, marine_snow, COMMON + [
             (LOCAL, f"{NS}:abyss/whale_fall"), (LOCAL, f"{NS}:abyss/nodules"), (VEGETATION, f"{NS}:abyss/garden_floor"),
-        ], water="#22342e"),
+            (LOCAL, f"{NS}:abyss/bone_pile"), (LOCAL, f"{NS}:abyss/diver_remains"),
+        ], water="#22342e", eerie=True),
     }
 
 
@@ -470,6 +477,9 @@ def features():
         "garden_reef": ({"type": f"{NS}:sea_garden", "style": "abyss_reef"}, floor_placement(n=4)),
         "garden_vents": ({"type": f"{NS}:sea_garden", "style": "abyss_vents"}, floor_placement(n=4)),
         "garden_floor": ({"type": f"{NS}:sea_garden", "style": "abyss_floor"}, floor_placement(n=2)),
+        "bone_pile": (abyss_feature("bone_pile"), floor_placement(n=2)),
+        "bone_pile_sparse": (abyss_feature("bone_pile"), floor_placement(chance=3)),
+        "diver_remains": (abyss_feature("diver_remains"), floor_placement(chance=14)),
         "hanging_glow": (abyss_feature("hanging_glow"), [count(40), IN_SQUARE, height_range(280, 900), BIOME]),
         "sea_pickles": ("minecraft:sea_pickle", floor_placement(n=6)),
         "sea_pickles_sparse": ("minecraft:sea_pickle", floor_placement(n=1, chance=3)),
@@ -514,6 +524,10 @@ def structures():
     structure("bathysphere", [f"{NS}:abyssal_plains", f"{NS}:glowing_reef", f"{NS}:hydrothermal_vents",
                                              f"{NS}:bone_fields", f"{NS}:midnight_zone", f"{NS}:twilight_waters"], 12, 5, 309871244)
     structure("leviathan_lair", [f"{NS}:bone_fields", f"{NS}:abyssal_plains"], 36, 14, 778120931)
+    # Ships that sank, and ruins that were drowned long ago, lie on the floor of the Abyss too.
+    floor = [f"{NS}:abyssal_plains", f"{NS}:bone_fields", f"{NS}:glowing_reef", f"{NS}:hydrothermal_vents"]
+    files["minecraft/tags/worldgen/biome/has_structure/shipwreck.json"] = {"replace": False, "values": floor}
+    files["minecraft/tags/worldgen/biome/has_structure/ocean_ruin_cold.json"] = {"replace": False, "values": floor}
     return files
 
 
@@ -606,6 +620,14 @@ def loot(vanilla):
                  item("potion", 6, None, WATER_BREATHING), item("book", 3, 1, SEA_ENCHANT)),
             pool(1, empty(5), item(f"{NS}:tidewalker_chestplate"), item(f"{NS}:tidewalker_leggings"), item("map", 2, None, *RIFT_MAP)),
             pool(1, empty(4), item(f"{NS}:abyssal_upgrade_smithing_template")),
+        ),
+        "chests/diver_remains": chest(
+            pool((2, 5),
+                 item("bone", 12, (2, 6)), item("rotten_flesh", 8, (1, 4)), item("iron_ingot", 8, (1, 4)), item("gold_nugget", 8, (3, 12)),
+                 item("compass", 3), item("lantern", 3), item("paper", 6, (1, 5)), item(f"{NS}:abyssal_scale", 6, (1, 3)),
+                 item("potion", 5, None, WATER_BREATHING), item("book", 3, 1, SEA_ENCHANT), item("diamond", 2, (1, 2)),
+                 item("name_tag", 1)),
+            pool(1, empty(3), item(f"{NS}:tidewalker_helmet"), item(f"{NS}:tidewalker_boots"), item("map", 1, None, *RIFT_MAP)),
         ),
         "chests/leviathan_hoard": chest(
             pool(1, item(f"{NS}:abyssal_upgrade_smithing_template", 1, (1, 2))),

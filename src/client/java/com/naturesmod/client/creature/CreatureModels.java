@@ -68,6 +68,12 @@ final class CreatureModels {
 			case "frilled_shark" -> frilledShark();
 			case "comb_jelly" -> combJelly();
 			case "ghost_shark" -> ghostShark();
+			case "rotfin" -> rotfin();
+			case "hollow_eye" -> hollowEye();
+			case "bone_shark" -> boneShark();
+			case "twinhead_eel" -> twinheadEel();
+			case "pale_lurker" -> paleLurker();
+			case "abyssal_maw" -> abyssalMaw();
 			case "abyssal_leviathan" -> abyssalLeviathan();
 			default -> throw new IllegalArgumentException("Unknown sea creature " + species);
 		};
@@ -870,6 +876,108 @@ final class CreatureModels {
 		PartDefinition p8 = p0.addOrReplaceChild("right_fin", CubeListBuilder.create().texOffs(22, 35).mirror().addBox(-7.0F, 0.0F, 0.0F, 7.0F, 0.0F, 4.0F).mirror(false), PartPose.offsetAndRotation(-3.0F, 2.0F, -3.0F, 0.3F, -0.3F, -0.5F));
 		PartDefinition p9 = p0.addOrReplaceChild("anal_fin", CubeListBuilder.create().texOffs(26, 29).addBox(0.0F, 0.0F, 0.0F, 0.0F, 2.0F, 3.0F), PartPose.offsetAndRotation(0.0F, 3.0F, 4.0F, 0.5F, 0.0F, 0.0F));
 		return LayerDefinition.create(mesh, 64, 64);
+	}
+
+	private static LayerDefinition rotfin() {
+		MeshDefinition mesh = new MeshDefinition();
+		PartDefinition root = mesh.getRoot();
+		PartDefinition p0 = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-1.5F, -2.5F, -3.5F, 3.0F, 5.0F, 7.0F), PartPose.offset(0.0F, 20.0F, 0.0F));
+		PartDefinition p1 = p0.addOrReplaceChild("head", CubeListBuilder.create().texOffs(0, 12).addBox(-1.5F, -2.0F, -3.0F, 3.0F, 4.0F, 3.0F).texOffs(18, 19).addBox(-1.0F, -1.0F, -4.0F, 2.0F, 2.0F, 1.0F), PartPose.offset(0.0F, 0.0F, -3.5F));
+		PartDefinition p2 = p1.addOrReplaceChild("jaw", CubeListBuilder.create().texOffs(6, 19).addBox(-1.25F, 0.0F, -3.0F, 2.5F, 1.0F, 3.0F), PartPose.offset(0.0F, 1.0F, -0.5F));
+		PartDefinition p3 = p0.addOrReplaceChild("tail", CubeListBuilder.create().texOffs(20, 12).addBox(-1.0F, -1.0F, 0.0F, 2.0F, 2.0F, 4.0F), PartPose.offset(0.0F, 0.0F, 3.5F));
+		PartDefinition p4 = p3.addOrReplaceChild("tail_fin", CubeListBuilder.create().texOffs(20, 0).addBox(0.0F, -3.5F, 0.0F, 0.0F, 7.0F, 4.0F), PartPose.offset(0.0F, 0.0F, 4.0F));
+		PartDefinition p5 = p0.addOrReplaceChild("dorsal", CubeListBuilder.create().texOffs(12, 12).addBox(0.0F, -3.0F, 0.0F, 0.0F, 3.0F, 4.0F), PartPose.offset(0.0F, -2.5F, -1.0F));
+		PartDefinition p6 = p0.addOrReplaceChild("anal_fin", CubeListBuilder.create().texOffs(0, 19).addBox(0.0F, 0.0F, 0.0F, 0.0F, 2.0F, 3.0F), PartPose.offset(0.0F, 2.5F, 1.0F));
+		PartDefinition p7 = p0.addOrReplaceChild("left_fin", CubeListBuilder.create().texOffs(0, 24).addBox(0.0F, 0.0F, 0.0F, 3.0F, 0.0F, 2.0F), PartPose.offsetAndRotation(1.5F, 1.0F, -2.5F, 0.0F, 0.4F, 0.7F));
+		PartDefinition p8 = p0.addOrReplaceChild("right_fin", CubeListBuilder.create().texOffs(10, 24).mirror().addBox(-3.0F, 0.0F, 0.0F, 3.0F, 0.0F, 2.0F).mirror(false), PartPose.offsetAndRotation(-1.5F, 1.0F, -2.5F, 0.0F, -0.4F, -0.7F));
+		return LayerDefinition.create(mesh, 32, 32);
+	}
+
+	private static LayerDefinition hollowEye() {
+		MeshDefinition mesh = new MeshDefinition();
+		PartDefinition root = mesh.getRoot();
+		PartDefinition p0 = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-1.0F, -6.0F, -4.0F, 2.0F, 12.0F, 8.0F).texOffs(20, 0).addBox(-1.0F, -4.5F, -6.0F, 2.0F, 9.0F, 2.0F).texOffs(54, 20).addBox(-0.5F, -0.5F, -7.0F, 1.0F, 2.0F, 1.0F).texOffs(6, 20).addBox(-2.45F, -4.3F, -3.1F, 1.4F, 1.4F, 1.4F).texOffs(14, 20).addBox(1.05F, -4.3F, -3.1F, 1.4F, 1.4F, 1.4F).texOffs(58, 20).addBox(-2.05F, 1.3F, -0.1F, 1.0F, 1.0F, 1.0F).texOffs(0, 25).addBox(1.05F, 1.3F, -0.1F, 1.0F, 1.0F, 1.0F).texOffs(22, 20).addBox(-2.45F, -3.1F, 1.7F, 1.4F, 1.4F, 1.4F).texOffs(30, 20).addBox(1.05F, -3.1F, 1.7F, 1.4F, 1.4F, 1.4F).texOffs(4, 25).addBox(-2.05F, 3.7F, -1.3F, 1.0F, 1.0F, 1.0F).texOffs(8, 25).addBox(1.05F, 3.7F, -1.3F, 1.0F, 1.0F, 1.0F).texOffs(38, 20).addBox(-2.45F, 2.3F, 2.66F, 1.4F, 1.4F, 1.4F).texOffs(46, 20).addBox(1.05F, 2.3F, 2.66F, 1.4F, 1.4F, 1.4F), PartPose.offset(0.0F, 17.0F, 0.0F));
+		PartDefinition p1 = p0.addOrReplaceChild("jaw", CubeListBuilder.create().texOffs(12, 25).addBox(-0.75F, 0.0F, -1.0F, 1.5F, 0.5F, 1.0F), PartPose.offset(0.0F, 1.5F, -6.0F));
+		PartDefinition p2 = p0.addOrReplaceChild("dorsal", CubeListBuilder.create().texOffs(28, 0).addBox(0.0F, -3.0F, 0.0F, 0.0F, 3.0F, 8.0F), PartPose.offsetAndRotation(0.0F, -6.0F, -3.0F, 0.2F, 0.0F, 0.0F));
+		PartDefinition p3 = p0.addOrReplaceChild("anal_fin", CubeListBuilder.create().texOffs(44, 0).addBox(0.0F, 0.0F, 0.0F, 0.0F, 2.0F, 7.0F), PartPose.offsetAndRotation(0.0F, 6.0F, -2.0F, -0.2F, 0.0F, 0.0F));
+		PartDefinition p4 = p0.addOrReplaceChild("tail", CubeListBuilder.create().texOffs(0, 20).addBox(-0.5F, -1.5F, 0.0F, 1.0F, 3.0F, 2.0F), PartPose.offset(0.0F, 0.0F, 4.0F));
+		PartDefinition p5 = p4.addOrReplaceChild("tail_fin", CubeListBuilder.create().texOffs(58, 0).addBox(0.0F, -3.0F, 0.0F, 0.0F, 6.0F, 3.0F), PartPose.offset(0.0F, 0.0F, 2.0F));
+		PartDefinition p6 = p0.addOrReplaceChild("left_fin", CubeListBuilder.create().texOffs(18, 25).addBox(0.0F, 0.0F, 0.0F, 2.0F, 0.0F, 2.0F), PartPose.offsetAndRotation(1.0F, 1.0F, -1.0F, 0.0F, 0.5F, 0.5F));
+		PartDefinition p7 = p0.addOrReplaceChild("right_fin", CubeListBuilder.create().texOffs(26, 25).mirror().addBox(-2.0F, 0.0F, 0.0F, 2.0F, 0.0F, 2.0F).mirror(false), PartPose.offsetAndRotation(-1.0F, 1.0F, -1.0F, 0.0F, -0.5F, -0.5F));
+		return LayerDefinition.create(mesh, 64, 32);
+	}
+
+	private static LayerDefinition boneShark() {
+		MeshDefinition mesh = new MeshDefinition();
+		PartDefinition root = mesh.getRoot();
+		PartDefinition p0 = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-3.0F, -3.0F, -6.0F, 6.0F, 6.0F, 12.0F).texOffs(36, 0).addBox(-3.3F, -2.5F, -5.0F, 0.0F, 5.0F, 10.0F).texOffs(0, 18).addBox(3.3F, -2.5F, -5.0F, 0.0F, 5.0F, 10.0F), PartPose.offset(0.0F, 20.0F, 0.0F));
+		PartDefinition p1 = p0.addOrReplaceChild("head", CubeListBuilder.create().texOffs(0, 33).addBox(-2.5F, -2.5F, -5.0F, 5.0F, 5.0F, 5.0F).texOffs(50, 33).addBox(-1.5F, -2.0F, -7.0F, 3.0F, 3.0F, 2.0F), PartPose.offset(0.0F, 0.0F, -6.0F));
+		PartDefinition p2 = p1.addOrReplaceChild("jaw", CubeListBuilder.create().texOffs(34, 33).addBox(-2.0F, 0.0F, -4.0F, 4.0F, 1.5F, 4.0F), PartPose.offset(0.0F, 1.5F, -1.0F));
+		PartDefinition p3 = p2.addOrReplaceChild("teeth", CubeListBuilder.create().texOffs(50, 43).addBox(-2.0F, -0.5F, 0.0F, 4.0F, 1.0F, 0.0F), PartPose.offset(0.0F, 0.0F, -4.0F));
+		PartDefinition p4 = p0.addOrReplaceChild("tail", CubeListBuilder.create().texOffs(30, 18).addBox(-1.5F, -1.5F, 0.0F, 3.0F, 3.0F, 8.0F), PartPose.offset(0.0F, -0.5F, 6.0F));
+		PartDefinition p5 = p4.addOrReplaceChild("tail_fin", CubeListBuilder.create().texOffs(20, 18).addBox(0.0F, -7.0F, 0.0F, 0.0F, 7.0F, 5.0F).texOffs(28, 33).addBox(0.0F, 0.0F, 0.0F, 0.0F, 4.0F, 3.0F), PartPose.offsetAndRotation(0.0F, 0.0F, 8.0F, 0.5F, 0.0F, 0.0F));
+		PartDefinition p6 = p0.addOrReplaceChild("dorsal", CubeListBuilder.create().texOffs(20, 33).addBox(0.0F, -6.0F, 0.0F, 0.0F, 6.0F, 4.0F), PartPose.offsetAndRotation(0.0F, -3.0F, -2.0F, -0.6F, 0.0F, 0.0F));
+		PartDefinition p7 = p0.addOrReplaceChild("left_fin", CubeListBuilder.create().texOffs(6, 43).addBox(0.0F, 0.0F, 0.0F, 7.0F, 0.0F, 4.0F), PartPose.offsetAndRotation(3.0F, 2.0F, -3.0F, 0.3F, 0.3F, 0.5F));
+		PartDefinition p8 = p0.addOrReplaceChild("right_fin", CubeListBuilder.create().texOffs(28, 43).mirror().addBox(-7.0F, 0.0F, 0.0F, 7.0F, 0.0F, 4.0F).mirror(false), PartPose.offsetAndRotation(-3.0F, 2.0F, -3.0F, 0.3F, -0.3F, -0.5F));
+		PartDefinition p9 = p0.addOrReplaceChild("anal_fin", CubeListBuilder.create().texOffs(0, 43).addBox(0.0F, 0.0F, 0.0F, 0.0F, 2.0F, 3.0F), PartPose.offsetAndRotation(0.0F, 3.0F, 4.0F, 0.5F, 0.0F, 0.0F));
+		return LayerDefinition.create(mesh, 64, 64);
+	}
+
+	private static LayerDefinition twinheadEel() {
+		MeshDefinition mesh = new MeshDefinition();
+		PartDefinition root = mesh.getRoot();
+		PartDefinition p0 = root.addOrReplaceChild("body", CubeListBuilder.create(), PartPose.offset(0.0F, 21.5F, -15.0F));
+		PartDefinition p1 = p0.addOrReplaceChild("head", CubeListBuilder.create().texOffs(30, 15).addBox(-1.5F, -1.5F, -4.0F, 3.0F, 2.0F, 4.0F).texOffs(28, 22).addBox(-1.0F, -1.0F, -5.0F, 2.0F, 1.0F, 1.0F), PartPose.offsetAndRotation(-1.8F, 0.0F, 0.0F, 0.0F, 0.35F, 0.0F));
+		PartDefinition p2 = p1.addOrReplaceChild("jaw", CubeListBuilder.create().texOffs(0, 22).addBox(-1.25F, 0.0F, -4.0F, 2.5F, 1.0F, 4.0F), PartPose.offset(0.0F, 0.5F, -0.5F));
+		PartDefinition p3 = p1.addOrReplaceChild("fangs", CubeListBuilder.create().texOffs(34, 22).addBox(-1.0F, -1.0F, -0.5F, 2.0F, 2.0F, 0.0F), PartPose.offset(0.0F, 0.5F, -4.0F));
+		PartDefinition p4 = p0.addOrReplaceChild("twin_head", CubeListBuilder.create().texOffs(44, 15).addBox(-1.5F, -1.5F, -4.0F, 3.0F, 2.0F, 4.0F).texOffs(38, 22).addBox(-1.0F, -1.0F, -5.0F, 2.0F, 1.0F, 1.0F), PartPose.offsetAndRotation(1.8F, 0.0F, 0.0F, 0.0F, -0.35F, 0.0F));
+		PartDefinition p5 = p4.addOrReplaceChild("twin_jaw", CubeListBuilder.create().texOffs(14, 22).addBox(-1.25F, 0.0F, -4.0F, 2.5F, 1.0F, 4.0F), PartPose.offsetAndRotation(0.0F, 0.5F, -0.5F, 0.3F, 0.0F, 0.0F));
+		PartDefinition p6 = p0.addOrReplaceChild("segment0", CubeListBuilder.create().texOffs(0, 0).addBox(-1.5F, -1.5F, 0.0F, 3.0F, 3.0F, 5.0F).texOffs(0, 8).addBox(0.0F, -3.0F, 0.0F, 0.0F, 1.5F, 5.0F), PartPose.offset(0.0F, 0.0F, 0.0F));
+		PartDefinition p7 = p6.addOrReplaceChild("segment1", CubeListBuilder.create().texOffs(16, 0).addBox(-1.375F, -1.375F, 0.0F, 2.75F, 2.75F, 5.0F).texOffs(10, 8).addBox(0.0F, -2.875F, 0.0F, 0.0F, 1.5F, 5.0F), PartPose.offset(0.0F, 0.0F, 5.0F));
+		PartDefinition p8 = p7.addOrReplaceChild("segment2", CubeListBuilder.create().texOffs(32, 0).addBox(-1.25F, -1.25F, 0.0F, 2.5F, 2.5F, 5.0F).texOffs(20, 8).addBox(0.0F, -2.75F, 0.0F, 0.0F, 1.5F, 5.0F), PartPose.offset(0.0F, 0.0F, 5.0F));
+		PartDefinition p9 = p8.addOrReplaceChild("segment3", CubeListBuilder.create().texOffs(48, 0).addBox(-1.125F, -1.125F, 0.0F, 2.25F, 2.25F, 5.0F).texOffs(30, 8).addBox(0.0F, -2.625F, 0.0F, 0.0F, 1.5F, 5.0F), PartPose.offset(0.0F, 0.0F, 5.0F));
+		PartDefinition p10 = p9.addOrReplaceChild("segment4", CubeListBuilder.create().texOffs(40, 8).addBox(-1.0F, -1.0F, 0.0F, 2.0F, 2.0F, 5.0F).texOffs(54, 8).addBox(0.0F, -2.5F, 0.0F, 0.0F, 1.5F, 5.0F), PartPose.offset(0.0F, 0.0F, 5.0F));
+		PartDefinition p11 = p10.addOrReplaceChild("segment5", CubeListBuilder.create().texOffs(0, 15).addBox(-0.875F, -0.875F, 0.0F, 1.75F, 1.75F, 5.0F).texOffs(14, 15).addBox(0.0F, -2.375F, 0.0F, 0.0F, 1.5F, 5.0F), PartPose.offset(0.0F, 0.0F, 5.0F));
+		PartDefinition p12 = p11.addOrReplaceChild("tail_fin", CubeListBuilder.create().texOffs(24, 15).addBox(0.0F, -2.0F, 0.0F, 0.0F, 4.0F, 3.0F), PartPose.offset(0.0F, 0.0F, 5.0F));
+		return LayerDefinition.create(mesh, 64, 32);
+	}
+
+	private static LayerDefinition paleLurker() {
+		MeshDefinition mesh = new MeshDefinition();
+		PartDefinition root = mesh.getRoot();
+		PartDefinition p0 = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-1.5F, -2.5F, -5.5F, 3.0F, 5.0F, 11.0F), PartPose.offset(0.0F, 20.0F, 0.0F));
+		PartDefinition p1 = p0.addOrReplaceChild("head", CubeListBuilder.create().texOffs(52, 0).addBox(-1.5F, -2.0F, -3.0F, 3.0F, 4.0F, 3.0F).texOffs(40, 16).addBox(-1.0F, -1.0F, -4.0F, 2.0F, 2.0F, 1.0F), PartPose.offset(0.0F, 0.0F, -5.5F));
+		PartDefinition p2 = p1.addOrReplaceChild("upper_teeth", CubeListBuilder.create().texOffs(46, 16).addBox(-1.25F, 0.0F, 0.0F, 2.5F, 1.5F, 0.0F), PartPose.offset(0.0F, 1.0F, -3.5F));
+		PartDefinition p3 = p1.addOrReplaceChild("jaw", CubeListBuilder.create().texOffs(0, 16).addBox(-1.75F, 0.0F, -5.0F, 3.5F, 2.0F, 5.0F), PartPose.offsetAndRotation(0.0F, 1.0F, -0.5F, 0.25F, 0.0F, 0.0F));
+		PartDefinition p4 = p3.addOrReplaceChild("teeth", CubeListBuilder.create().texOffs(52, 16).addBox(-1.5F, -2.0F, 0.0F, 3.0F, 2.0F, 0.0F), PartPose.offset(0.0F, 0.0F, -5.0F));
+		PartDefinition p5 = p3.addOrReplaceChild("side_teeth", CubeListBuilder.create().texOffs(26, 16).addBox(-1.7F, -1.5F, 0.0F, 0.0F, 1.5F, 4.0F), PartPose.offset(0.0F, 0.0F, -3.0F));
+		PartDefinition p6 = p0.addOrReplaceChild("tail", CubeListBuilder.create().texOffs(36, 0).addBox(-1.0F, -1.0F, 0.0F, 2.0F, 2.0F, 6.0F), PartPose.offset(0.0F, 0.0F, 5.5F));
+		PartDefinition p7 = p6.addOrReplaceChild("tail_fin", CubeListBuilder.create().texOffs(28, 0).addBox(0.0F, -3.5F, 0.0F, 0.0F, 7.0F, 4.0F), PartPose.offset(0.0F, 0.0F, 6.0F));
+		PartDefinition p8 = p0.addOrReplaceChild("dorsal", CubeListBuilder.create().texOffs(18, 16).addBox(0.0F, -3.0F, 0.0F, 0.0F, 3.0F, 4.0F), PartPose.offset(0.0F, -2.5F, -1.0F));
+		PartDefinition p9 = p0.addOrReplaceChild("anal_fin", CubeListBuilder.create().texOffs(34, 16).addBox(0.0F, 0.0F, 0.0F, 0.0F, 2.0F, 3.0F), PartPose.offset(0.0F, 2.5F, 1.0F));
+		PartDefinition p10 = p0.addOrReplaceChild("left_fin", CubeListBuilder.create().texOffs(0, 23).addBox(0.0F, 0.0F, 0.0F, 3.0F, 0.0F, 2.0F), PartPose.offsetAndRotation(1.5F, 1.0F, -4.5F, 0.0F, 0.4F, 0.7F));
+		PartDefinition p11 = p0.addOrReplaceChild("right_fin", CubeListBuilder.create().texOffs(10, 23).mirror().addBox(-3.0F, 0.0F, 0.0F, 3.0F, 0.0F, 2.0F).mirror(false), PartPose.offsetAndRotation(-1.5F, 1.0F, -4.5F, 0.0F, -0.4F, -0.7F));
+		return LayerDefinition.create(mesh, 64, 32);
+	}
+
+	private static LayerDefinition abyssalMaw() {
+		MeshDefinition mesh = new MeshDefinition();
+		PartDefinition root = mesh.getRoot();
+		PartDefinition p0 = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-1.5F, -3.5F, -4.5F, 3.0F, 7.0F, 9.0F), PartPose.offset(0.0F, 19.0F, 0.0F));
+		PartDefinition p1 = p0.addOrReplaceChild("head", CubeListBuilder.create().texOffs(32, 0).addBox(-1.5F, -3.0F, -3.0F, 3.0F, 6.0F, 3.0F).texOffs(42, 16).addBox(-1.0F, -2.0F, -4.0F, 2.0F, 4.0F, 1.0F), PartPose.offset(0.0F, 0.0F, -4.5F));
+		PartDefinition p2 = p1.addOrReplaceChild("lure", CubeListBuilder.create().texOffs(8, 16).addBox(0.0F, -6.0F, -0.5F, 0.0F, 6.0F, 1.0F), PartPose.offsetAndRotation(0.0F, -3.0F, -2.0F, -0.5F, 0.0F, 0.0F));
+		PartDefinition p3 = p2.addOrReplaceChild("bulb", CubeListBuilder.create().texOffs(48, 16).addBox(-1.0F, -2.0F, -1.0F, 2.0F, 2.0F, 2.0F), PartPose.offset(0.0F, -6.0F, 0.0F));
+		PartDefinition p4 = p1.addOrReplaceChild("upper_teeth", CubeListBuilder.create().texOffs(56, 16).addBox(-1.25F, 0.0F, 0.0F, 2.5F, 1.5F, 0.0F), PartPose.offset(0.0F, 2.0F, -3.5F));
+		PartDefinition p5 = p1.addOrReplaceChild("jaw", CubeListBuilder.create().texOffs(10, 16).addBox(-1.75F, 0.0F, -5.0F, 3.5F, 2.0F, 5.0F), PartPose.offsetAndRotation(0.0F, 2.0F, -0.5F, 0.25F, 0.0F, 0.0F));
+		PartDefinition p6 = p5.addOrReplaceChild("teeth", CubeListBuilder.create().texOffs(0, 24).addBox(-1.5F, -2.0F, 0.0F, 3.0F, 2.0F, 0.0F), PartPose.offset(0.0F, 0.0F, -5.0F));
+		PartDefinition p7 = p5.addOrReplaceChild("side_teeth", CubeListBuilder.create().texOffs(28, 16).addBox(-1.7F, -1.5F, 0.0F, 0.0F, 1.5F, 4.0F), PartPose.offset(0.0F, 0.0F, -3.0F));
+		PartDefinition p8 = p0.addOrReplaceChild("tail", CubeListBuilder.create().texOffs(44, 0).addBox(-1.0F, -2.0F, 0.0F, 2.0F, 4.0F, 5.0F), PartPose.offset(0.0F, 0.0F, 4.5F));
+		PartDefinition p9 = p8.addOrReplaceChild("tail_fin", CubeListBuilder.create().texOffs(24, 0).addBox(0.0F, -4.5F, 0.0F, 0.0F, 9.0F, 4.0F), PartPose.offset(0.0F, 0.0F, 5.0F));
+		PartDefinition p10 = p0.addOrReplaceChild("dorsal", CubeListBuilder.create().texOffs(0, 16).addBox(0.0F, -4.0F, 0.0F, 0.0F, 4.0F, 4.0F), PartPose.offset(0.0F, -3.5F, -1.0F));
+		PartDefinition p11 = p0.addOrReplaceChild("anal_fin", CubeListBuilder.create().texOffs(36, 16).addBox(0.0F, 0.0F, 0.0F, 0.0F, 3.0F, 3.0F), PartPose.offset(0.0F, 3.5F, 1.0F));
+		PartDefinition p12 = p0.addOrReplaceChild("left_fin", CubeListBuilder.create().texOffs(6, 24).addBox(0.0F, 0.0F, 0.0F, 3.0F, 0.0F, 2.0F), PartPose.offsetAndRotation(1.5F, 1.0F, -3.5F, 0.0F, 0.4F, 0.7F));
+		PartDefinition p13 = p0.addOrReplaceChild("right_fin", CubeListBuilder.create().texOffs(16, 24).mirror().addBox(-3.0F, 0.0F, 0.0F, 3.0F, 0.0F, 2.0F).mirror(false), PartPose.offsetAndRotation(-1.5F, 1.0F, -3.5F, 0.0F, -0.4F, -0.7F));
+		return LayerDefinition.create(mesh, 64, 32);
 	}
 
 	private static LayerDefinition abyssalLeviathan() {
