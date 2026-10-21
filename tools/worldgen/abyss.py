@@ -4,8 +4,7 @@ Divers reach it through Abyssal Rifts on the floor of the deep oceans and arrive
 platform at the surface of a black, starless sea. Below them the water goes down for a thousand
 blocks:
 
-  * The twilight waters (above y ~730): the last of the light, kelp forests on the summits of
-    the tallest seamounts.
+  * The twilight waters (above y ~730): the last of the light.
   * The midnight zone: open black water around the flanks of the seamounts.
   * The sea floor (y ~60-110): abyssal plains of grey ooze, glowing reefs, hydrothermal vent
     fields of black smokers and the bone fields where great creatures sink to die. Seamounts

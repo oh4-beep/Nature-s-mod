@@ -186,13 +186,13 @@ final class SeaTest {
 	private void structures() {
 		test.line("");
 		test.line("--- sea structures ---");
-		riftSite = locate(overworld, "abyssal_rift", 12, 3);
+		riftSite = locate(overworld, "abyssal_rift", 9, 3);
 		if (riftSite == null) {
 			test.fail("no Abyssal Rift found in the Overworld");
 		}
 		if (abyss != null) {
 			for (String name : new String[] {"sunken_temple", "bathysphere", "leviathan_lair"}) {
-				if (locate(abyss, name, name.equals("bathysphere") ? 1 : 2, 2) == null) {
+				if (locate(abyss, name, name.equals("sunken_temple") ? 9 : 0, 2) == null) {
 					test.fail("no %s found in the Abyss", name);
 				}
 			}
@@ -245,7 +245,7 @@ final class SeaTest {
 				}
 			}
 		}
-		List<Mob> keepers = level.getEntitiesOfClass(Mob.class, new AABB(at).inflate(48), mob -> mob.getType() == ModCreatures.type("abyssal_leviathan"));
+		List<Mob> keepers = level.getEntitiesOfClass(Mob.class, new AABB(at.getX() - 48, level.getMinY(), at.getZ() - 48, at.getX() + 64, level.getMaxY(), at.getZ() + 64), mob -> mob.getType() == ModCreatures.type("abyssal_leviathan"));
 		test.line("%s at %s (floor y=%d, found in %.1fs): %s%s", name, at, floor, (System.currentTimeMillis() - start) / 1000.0, blocks,
 				keepers.isEmpty() ? "" : ", guarded by " + keepers.size() + " leviathan(s)");
 		if (minRiftBlocks > 0 && blocks.getOrDefault("abyssal_rift", 0) < minRiftBlocks && !name.equals("bathysphere")) {

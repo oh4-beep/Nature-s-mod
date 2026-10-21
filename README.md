@@ -113,7 +113,7 @@ down to a swirling portal. Treasure maps to the nearest rift turn up in shipwrec
 Swim into a rift and you surface in the Abyss, on a small platform floating on a black, starless sea, next to a
 rift that takes you home. Below you the water goes down for **a thousand blocks**:
 
-- **Twilight Waters** (above y 730), with kelp forests on the summits of the tallest seamounts.
+- **Twilight Waters** (above y 730), the last of the light.
 - **The Midnight Zone**: black open water around the flanks of seamounts up to 500 blocks tall.
 - **The sea floor** (y 60-110): **Abyssal Plains** of grey ooze, **Glowing Reefs** of luminous coral trees,
   **Hydrothermal Vents** with black smokers and bubbling soul vents, and **Bone Fields** strewn with the skeletons of
