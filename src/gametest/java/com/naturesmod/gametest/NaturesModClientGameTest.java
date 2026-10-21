@@ -149,6 +149,8 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 		world.getServer().runCommand("gamemode spectator @a");
 		world.getServer().runCommand("effect give @a minecraft:night_vision infinite 0 true");
 		teleport(context, world, Level.OVERWORLD, sea.getX() + 0.5, 48, sea.getZ() + 0.5, 0.0F, 0.0F);
+		// Let the eyes get used to the water so the fog lifts.
+		context.waitTicks(80);
 		for (List<String> lineup : LINEUPS) {
 			double biggest = lineup.stream().mapToDouble(id -> ModCreatures.species(ModCreatures.type(id)).scale()).max().orElse(1.0);
 			double spacing = 1.2 + biggest * 1.6;
@@ -194,14 +196,17 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 	// --- the rift ------------------------------------------------------------------------
 
 	private void rift(ClientGameTestContext context, TestSingleplayerContext world) {
-		BlockPos rift = world.getServer().computeOnServer(server -> locate(server.overworld(), NaturesMod.id("abyssal_rift")));
-		if (rift == null) {
+		BlockPos found = world.getServer().computeOnServer(server -> locate(server.overworld(), NaturesMod.id("abyssal_rift")));
+		if (found == null) {
 			throw new AssertionError("no abyssal rift near spawn");
 		}
-		int floor = world.getServer().computeOnServer(server -> floor(server.overworld(), rift.getX(), rift.getZ()));
-		teleport(context, world, Level.OVERWORLD, rift.getX() + 0.5, floor + 12, rift.getZ() - 14.5, 0.0F, 38.0F);
+		// The rift lies at the bottom of a funnel some thirty blocks deep in the middle of its chunk.
+		BlockPos rift = found.offset(8, 0, 8);
+		int bottom = world.getServer().computeOnServer(server -> floor(server.overworld(), rift.getX(), rift.getZ()));
+		int rim = world.getServer().computeOnServer(server -> ringFloor(server.overworld(), rift, 20));
+		teleport(context, world, Level.OVERWORLD, rift.getX() + 0.5, rim + 9, rift.getZ() - 19.5, 0.0F, 42.0F);
 		shoot(context, "rift_from_above");
-		teleport(context, world, Level.OVERWORLD, rift.getX() + 0.5, floor - 14, rift.getZ() - 4.5, 0.0F, 55.0F);
+		teleport(context, world, Level.OVERWORLD, rift.getX() + 0.5, bottom + 9, rift.getZ() - 1.5, 0.0F, 72.0F);
 		shoot(context, "rift_in_the_funnel");
 	}
 
@@ -214,14 +219,19 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 		shoot(context, "abyss_arrival");
 		world.getServer().runCommand("gamemode spectator @a");
 		world.getServer().runCommand("effect give @a minecraft:night_vision infinite 0 true");
+		teleport(context, world, Abyss.LEVEL, 3.5, Abyss.SEA_LEVEL - 20, 0.5, 90.0F, 25.0F);
+		context.waitTicks(80);
 		for (String biome : new String[] {"glowing_reef", "hydrothermal_vents", "bone_fields", "abyssal_plains"}) {
 			BlockPos at = world.getServer().computeOnServer(server -> findBiome(server.getLevel(Abyss.LEVEL), biome, 90));
 			if (at == null) {
 				failures.add("abyss: no " + biome);
 				continue;
 			}
-			int floor = world.getServer().computeOnServer(server -> floor(server.getLevel(Abyss.LEVEL), at.getX(), at.getZ()));
-			teleport(context, world, Abyss.LEVEL, at.getX() + 0.5, floor + 8, at.getZ() - 7.5, 0.0F, 35.0F);
+			int floor = world.getServer().computeOnServer(server -> {
+				ServerLevel abyss = server.getLevel(Abyss.LEVEL);
+				return Math.max(floor(abyss, at.getX(), at.getZ()) + 8, floor(abyss, at.getX(), at.getZ() - 8) + 4);
+			});
+			teleport(context, world, Abyss.LEVEL, at.getX() + 0.5, floor, at.getZ() - 7.5, 0.0F, 35.0F);
 			shoot(context, "abyss_" + biome);
 		}
 		for (String structure : new String[] {"sunken_temple", "bathysphere", "leviathan_lair"}) {
@@ -230,9 +240,14 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 				failures.add("abyss: no " + structure);
 				continue;
 			}
-			int floor = world.getServer().computeOnServer(server -> floor(server.getLevel(Abyss.LEVEL), at.getX(), at.getZ()));
-			double back = structure.equals("bathysphere") ? 12 : 28;
-			teleport(context, world, Abyss.LEVEL, at.getX() + 0.5, floor + back * 0.55, at.getZ() - back, 0.0F, 25.0F);
+			// Structures sit in the middle of their chunk; frame them from up and back, clear of the slope.
+			BlockPos center = at.offset(8, 0, 8);
+			int back = structure.equals("bathysphere") ? 11 : 20;
+			int height = world.getServer().computeOnServer(server -> {
+				ServerLevel abyss = server.getLevel(Abyss.LEVEL);
+				return Math.max(ringFloor(abyss, center, back / 2) + back * 3 / 4, floor(abyss, center.getX(), center.getZ() - back) + 4);
+			});
+			teleport(context, world, Abyss.LEVEL, center.getX() + 0.5, height, center.getZ() - back + 0.5, 0.0F, 36.0F);
 			shoot(context, "abyss_" + structure);
 		}
 	}
@@ -290,6 +305,17 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 	private static int floor(ServerLevel level, int x, int z) {
 		level.getChunk(x >> 4, z >> 4);
 		return level.getHeight(Heightmap.Types.OCEAN_FLOOR, x, z);
+	}
+
+	/** The median height of the ground on a ring around a position. */
+	private static int ringFloor(ServerLevel level, BlockPos center, int radius) {
+		List<Integer> heights = new ArrayList<>();
+		for (int i = 0; i < 16; i++) {
+			double angle = Math.PI * 2 * i / 16;
+			heights.add(floor(level, center.getX() + (int) Math.round(Math.cos(angle) * radius), center.getZ() + (int) Math.round(Math.sin(angle) * radius)));
+		}
+		heights.sort(null);
+		return heights.get(heights.size() / 2);
 	}
 
 	/** A spot in the middle of a big open space between the given heights, near the origin. */
