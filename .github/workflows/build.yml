@@ -1,0 +1,75 @@
+# Builds the mod on every push / pull request, then boots a headless dedicated
+# server that generates terrain with the mod installed and prints a terrain report.
+name: build
+on: [pull_request, push, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v6
+      - name: validate gradle wrapper
+        uses: gradle/actions/wrapper-validation@v6
+      - name: setup jdk
+        uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'microsoft'
+      - name: make gradle wrapper executable
+        run: chmod +x ./gradlew
+      - name: build
+        run: ./gradlew build --stacktrace
+      - name: capture build artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: Artifacts
+          path: build/libs/
+
+  smoke-test:
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v6
+      - name: setup jdk
+        uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'microsoft'
+      - name: make gradle wrapper executable
+        run: chmod +x ./gradlew
+      - name: prepare server directory
+        run: |
+          mkdir -p run/smoketest
+          echo "eula=true" > run/smoketest/eula.txt
+          cat > run/smoketest/server.properties <<'EOF'
+          level-seed=8675309
+          online-mode=false
+          spawn-protection=0
+          view-distance=4
+          simulation-distance=4
+          sync-chunk-writes=false
+          EOF
+      - name: run worldgen smoke test
+        run: ./gradlew runSmokeTest --stacktrace
+      - name: print terrain report
+        if: always()
+        run: cat run/smoketest/naturesmod-report.txt || true
+
+  api-probe:
+    if: ${{ hashFiles('.github/probe/classes.txt') != '' }}
+    runs-on: ubuntu-24.04
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v6
+      - name: setup jdk
+        uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'microsoft'
+      - name: resolve minecraft
+        run: chmod +x ./gradlew && (./gradlew compileJava compileClientJava --stacktrace || true)
+      - name: dump api signatures
+        run: bash .github/probe/probe.sh

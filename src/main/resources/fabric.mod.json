@@ -1,0 +1,30 @@
+{
+	"schemaVersion": 1,
+	"id": "naturesmod",
+	"version": "${version}",
+	"name": "Nature's Mod",
+	"description": "A complete overhaul of the Overworld: towering mountain ranges, rivers that wind down from the peaks, roaring waterfalls with mist, dramatic cave mouths, giant ancient trees, fallen logs, and trees that actually topple when you chop them.",
+	"authors": [
+		"oh4-beep"
+	],
+	"contact": {
+		"sources": "https://github.com/oh4-beep/Nature-s-mod"
+	},
+	"license": "MIT",
+	"icon": "assets/naturesmod/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.naturesmod.NaturesMod"
+		],
+		"client": [
+			"com.naturesmod.client.NaturesModClient"
+		]
+	},
+	"depends": {
+		"fabricloader": ">=0.19.5",
+		"minecraft": "~26.3",
+		"java": ">=25",
+		"fabric-api": "*"
+	}
+}
