@@ -11,6 +11,7 @@ import com.naturesmod.abyss.Abyss;
 import com.naturesmod.block.ModBlocks;
 import com.naturesmod.creature.ModCreatures;
 import com.naturesmod.item.ModItems;
+import com.naturesmod.nether.NetherOverhaul;
 import com.naturesmod.smoketest.SmokeTest;
 import com.naturesmod.tree.TreeEvents;
 import com.naturesmod.worldgen.ModBiomeModifications;
@@ -32,11 +33,12 @@ public class NaturesMod implements ModInitializer {
 		ModCreatures.register();
 		ModItems.register();
 		Abyss.register();
+		NetherOverhaul.register();
 
 		if (Boolean.getBoolean("naturesmod.smoketest")) {
 			SmokeTest.register();
 		}
-		LOGGER.info("Nature's Mod is reshaping the Overworld and filling the seas");
+		LOGGER.info("Nature's Mod is reshaping the Overworld, filling the seas and stoking the Nether");
 	}
 
 	public static Identifier id(String path) {

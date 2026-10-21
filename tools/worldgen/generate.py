@@ -24,6 +24,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import abyss  # noqa: E402
 import features  # noqa: E402
+import nether  # noqa: E402
 import terrain  # noqa: E402
 
 REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
@@ -49,6 +50,7 @@ def main():
     files.update(terrain.build(vanilla))
     files.update(features.build(vanilla))
     files.update(abyss.build(vanilla))
+    files.update(nether.build(vanilla))
 
     for rel, data in sorted(files.items()):
         path = os.path.join(args.out, rel)

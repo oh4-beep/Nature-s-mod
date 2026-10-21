@@ -1,0 +1,171 @@
+{
+  "type": "minecraft:mul",
+  "left": {
+    "type": "minecraft:min",
+    "left": {
+      "type": "minecraft:clamp",
+      "input": {
+        "type": "minecraft:gradient",
+        "axis": "y",
+        "from_coordinate": 40,
+        "from_value": 0.0,
+        "to_coordinate": 70,
+        "to_value": 1.0
+      },
+      "min": 0.0,
+      "max": 1.0
+    },
+    "right": {
+      "type": "minecraft:clamp",
+      "input": {
+        "type": "minecraft:gradient",
+        "axis": "y",
+        "from_coordinate": 220,
+        "from_value": 1.0,
+        "to_coordinate": 250,
+        "to_value": 0.0
+      },
+      "min": 0.0,
+      "max": 1.0
+    }
+  },
+  "right": {
+    "type": "minecraft:mul",
+    "left": {
+      "type": "minecraft:min",
+      "left": {
+        "type": "minecraft:add",
+        "left": {
+          "type": "minecraft:add",
+          "left": 0.045,
+          "right": {
+            "type": "minecraft:add",
+            "left": {
+              "type": "minecraft:mul",
+              "left": {
+                "type": "minecraft:noise",
+                "noise": "naturesmod:nether/pillar_wobble",
+                "xz_scale": 1.0,
+                "y_scale": 0.5
+              },
+              "right": 0.02
+            },
+            "right": {
+              "type": "minecraft:mul",
+              "left": {
+                "type": "minecraft:min",
+                "left": {
+                  "type": "minecraft:clamp",
+                  "input": {
+                    "type": "minecraft:gradient",
+                    "axis": "y",
+                    "from_coordinate": 60,
+                    "from_value": 0.0,
+                    "to_coordinate": 90,
+                    "to_value": 1.0
+                  },
+                  "min": 0.0,
+                  "max": 1.0
+                },
+                "right": {
+                  "type": "minecraft:clamp",
+                  "input": {
+                    "type": "minecraft:gradient",
+                    "axis": "y",
+                    "from_coordinate": 200,
+                    "from_value": 1.0,
+                    "to_coordinate": 236,
+                    "to_value": 0.0
+                  },
+                  "min": 0.0,
+                  "max": 1.0
+                }
+              },
+              "right": -0.012
+            }
+          }
+        },
+        "right": {
+          "type": "minecraft:mul",
+          "left": {
+            "type": "minecraft:abs",
+            "input": {
+              "type": "minecraft:noise",
+              "noise": "naturesmod:nether/pillar_a",
+              "xz_scale": 1.0,
+              "y_scale": 0.0
+            }
+          },
+          "right": -1.0
+        }
+      },
+      "right": {
+        "type": "minecraft:add",
+        "left": {
+          "type": "minecraft:add",
+          "left": 0.045,
+          "right": {
+            "type": "minecraft:add",
+            "left": {
+              "type": "minecraft:mul",
+              "left": {
+                "type": "minecraft:noise",
+                "noise": "naturesmod:nether/pillar_wobble",
+                "xz_scale": 1.0,
+                "y_scale": 0.5
+              },
+              "right": 0.02
+            },
+            "right": {
+              "type": "minecraft:mul",
+              "left": {
+                "type": "minecraft:min",
+                "left": {
+                  "type": "minecraft:clamp",
+                  "input": {
+                    "type": "minecraft:gradient",
+                    "axis": "y",
+                    "from_coordinate": 60,
+                    "from_value": 0.0,
+                    "to_coordinate": 90,
+                    "to_value": 1.0
+                  },
+                  "min": 0.0,
+                  "max": 1.0
+                },
+                "right": {
+                  "type": "minecraft:clamp",
+                  "input": {
+                    "type": "minecraft:gradient",
+                    "axis": "y",
+                    "from_coordinate": 200,
+                    "from_value": 1.0,
+                    "to_coordinate": 236,
+                    "to_value": 0.0
+                  },
+                  "min": 0.0,
+                  "max": 1.0
+                }
+              },
+              "right": -0.012
+            }
+          }
+        },
+        "right": {
+          "type": "minecraft:mul",
+          "left": {
+            "type": "minecraft:abs",
+            "input": {
+              "type": "minecraft:noise",
+              "noise": "naturesmod:nether/pillar_b",
+              "xz_scale": 1.0,
+              "y_scale": 0.0
+            }
+          },
+          "right": -1.0
+        }
+      }
+    },
+    "right": 40.0
+  }
+}

@@ -18,6 +18,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -30,6 +31,7 @@ import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.level.material.Fluids;
 
 import com.naturesmod.NaturesMod;
+import com.naturesmod.block.ModBlocks;
 import com.naturesmod.creature.CreatureSpecies;
 import com.naturesmod.creature.ModCreatures;
 import com.naturesmod.creature.SpeciesData;
@@ -64,6 +66,8 @@ public final class ModItems {
 		ABYSSAL_PLATE = register("abyssal_plate", Item::new, new Item.Properties().rarity(Rarity.UNCOMMON).fireResistant());
 		ABYSSAL_HEART = register("abyssal_heart", Item::new, new Item.Properties().rarity(Rarity.EPIC).fireResistant().stacksTo(16));
 		ABYSSAL_UPGRADE_SMITHING_TEMPLATE = register("abyssal_upgrade_smithing_template", Item::new, new Item.Properties().rarity(Rarity.UNCOMMON));
+
+		register("nether_geyser", properties -> new BlockItem(ModBlocks.NETHER_GEYSER, properties), new Item.Properties().useBlockDescriptionPrefix());
 
 		armor("tidewalker", DivingArmor.TIDEWALKER, TIDEWALKER_SET);
 		armor("abyssal", DivingArmor.ABYSSAL, ABYSSAL_SET);

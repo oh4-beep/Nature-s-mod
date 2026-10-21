@@ -1,0 +1,33 @@
+{
+  "default_block": "minecraft:netherrack",
+  "default_fluid": "minecraft:lava",
+  "disable_mob_generation": false,
+  "legacy_random_source": true,
+  "material_rule": "naturesmod:nether",
+  "noise": {
+    "height": 256,
+    "min_y": 0
+  },
+  "noise_router": {
+    "chunk_surface_level": 0.0,
+    "continents": 0.0,
+    "depth": "naturesmod:nether/depth",
+    "erosion": 0.0,
+    "final_density": "naturesmod:nether/final_density",
+    "ridges": 0.0,
+    "temperature": {
+      "type": "minecraft:noise",
+      "noise": "minecraft:nether/temperature",
+      "xz_scale": 0.25,
+      "y_scale": 0.0
+    },
+    "vegetation": {
+      "type": "minecraft:noise",
+      "noise": "minecraft:nether/vegetation",
+      "xz_scale": 0.25,
+      "y_scale": 0.0
+    }
+  },
+  "sea_level": 32,
+  "spawn_target": []
+}

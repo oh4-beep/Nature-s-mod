@@ -28,6 +28,10 @@ LANG = {
     "message.naturesmod.pressure.crush": "The crushing pressure of the abyss! Only a full Abyssal suit or a conduit's power can withstand it.",
     "message.naturesmod.pressure.overlay": "The pressure is crushing you!",
     "filled_map.naturesmod.abyssal_rift": "Map to an Abyssal Rift",
+    "block.naturesmod.nether_geyser": "Nether Geyser",
+    "biome.naturesmod.ember_wastes": "Ember Wastes",
+    "biome.naturesmod.glowstone_grotto": "Glowstone Grotto",
+    "biome.naturesmod.obsidian_spires": "Obsidian Spires",
 }
 
 
@@ -62,6 +66,43 @@ def rift_texture(frames=32, size=16):
     return sheet
 
 
+def geyser_textures(size=16):
+    """Cracked dark basalt; the top has a glowing vent, the sides glowing seams."""
+    import random
+    rng = random.Random(1907)
+    def rock(x, y):
+        n = rng.random()
+        base = 38 + int(22 * n)
+        return (base, base - 4, base - 2, 255)
+    top = Image.new("RGBA", (size, size))
+    side = Image.new("RGBA", (size, size))
+    for y in range(size):
+        for x in range(size):
+            top.putpixel((x, y), rock(x, y))
+            side.putpixel((x, y), rock(x, y))
+    c = (size - 1) / 2
+    for y in range(size):
+        for x in range(size):
+            d = math.hypot(x - c, y - c)
+            # The vent: a hot core fading out through orange into the rock.
+            if d < 2.2:
+                top.putpixel((x, y), (255, 230 - int(40 * d), 120 - int(40 * d), 255))
+            elif d < 3.6:
+                t = (d - 2.2) / 1.4
+                top.putpixel((x, y), (int(240 - 140 * t), int(110 - 80 * t), int(20), 255))
+            # Radial cracks glowing ember-red.
+            angle = math.atan2(y - c, x - c)
+            if 3.6 <= d < 7.5 and abs(math.sin(angle * 2.5 + 0.4)) < 0.12:
+                top.putpixel((x, y), (200, 60, 10, 255))
+    for x in range(size):
+        # Two wandering seams of magma up the sides.
+        for seam in (4, 11):
+            y = int(seam + 1.6 * math.sin(x * 0.7 + seam))
+            if 0 <= y < size:
+                side.putpixel((x, y), (215, 80, 15, 255))
+    return top, side
+
+
 def main():
     rift = rift_texture()
     path = os.path.join(ASSETS, "textures", "block", "abyssal_rift.png")
@@ -78,6 +119,17 @@ def main():
              "faces": {"up": {"uv": [16, 16, 0, 0], "texture": "#rift"}, "down": {"uv": [16, 16, 0, 0], "texture": "#rift"}}},
         ],
     })
+
+    top, side = geyser_textures()
+    top.save(os.path.join(ASSETS, "textures", "block", "nether_geyser_top.png"))
+    side.save(os.path.join(ASSETS, "textures", "block", "nether_geyser_side.png"))
+    write_json(os.path.join(ASSETS, "blockstates", "nether_geyser.json"), {"variants": {"": {"model": "naturesmod:block/nether_geyser"}}})
+    write_json(os.path.join(ASSETS, "models", "block", "nether_geyser.json"), {
+        "parent": "minecraft:block/cube_bottom_top",
+        "textures": {"top": "naturesmod:block/nether_geyser_top", "side": "naturesmod:block/nether_geyser_side",
+                     "bottom": "minecraft:block/basalt_top"},
+    })
+    write_json(os.path.join(ASSETS, "items", "nether_geyser.json"), {"model": {"type": "minecraft:model", "model": "naturesmod:block/nether_geyser"}})
 
     lang_path = os.path.join(ASSETS, "lang", "en_us.json")
     with open(lang_path, encoding="utf-8") as fh:

@@ -11,6 +11,7 @@ import com.naturesmod.worldgen.feature.CaveMouthFeature;
 import com.naturesmod.worldgen.feature.CliffVinesFeature;
 import com.naturesmod.worldgen.feature.CliffWaterfallFeature;
 import com.naturesmod.worldgen.feature.FallenLogFeature;
+import com.naturesmod.worldgen.feature.NetherFeature;
 import com.naturesmod.worldgen.feature.RockFormationFeature;
 import com.naturesmod.worldgen.feature.SinkholeFeature;
 import com.naturesmod.worldgen.tree.GiantTreeFeature;
@@ -36,6 +37,7 @@ public final class ModFeatures {
 		register("rock_formation", RockFormationFeature.CODEC);
 		register("cliff_vines", CliffVinesFeature.CODEC);
 		register("abyss_feature", AbyssFeature.CODEC);
+		register("nether_feature", NetherFeature.CODEC);
 	}
 
 	private static void register(String name, MapCodec<? extends Feature> codec) {

@@ -13,6 +13,7 @@ import net.minecraft.world.level.material.MapColor;
 
 import com.naturesmod.NaturesMod;
 import com.naturesmod.abyss.RiftBlock;
+import com.naturesmod.nether.GeyserBlock;
 
 /** Blocks added by Nature's Mod. */
 public final class ModBlocks {
@@ -23,6 +24,16 @@ public final class ModBlocks {
 			.noLootTable()
 			.lightLevel(state -> 12)
 			.sound(SoundType.GLASS));
+
+	public static final Block NETHER_GEYSER = register("nether_geyser", GeyserBlock::new, BlockBehaviour.Properties.of()
+			.mapColor(MapColor.NETHER)
+			.requiresCorrectToolForDrops()
+			.strength(1.2F, 4.0F)
+			.lightLevel(state -> 6)
+			.randomTicks()
+			.emissiveRendering(state -> true)
+			.isValidSpawn((state, level, pos, type) -> type.fireImmune())
+			.sound(SoundType.BASALT));
 
 	private ModBlocks() {
 	}
