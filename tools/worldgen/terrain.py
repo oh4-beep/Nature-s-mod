@@ -6,11 +6,11 @@ output always matches the exact data format of the targeted Minecraft version.
 What changes compared to vanilla:
   * The world is taller: build height goes up to y=575 so mountains have room.
   * Mountain ranges are far taller: the terrain "offset" spline is reshaped above the
-    hill line so foothills rise gently while great ranges tower two to three times
-    higher than vanilla, topping out around y=420-480. Peaks are more jagged.
-  * Continents, mountain ranges and river valleys are ~40% larger and biomes 25%
-    larger, so mountains stay majestic instead of spiky and the land reads as broad,
-    believable landscapes instead of noisy patchwork.
+    hill line so foothills rise gently while mountain ranges tower three to five times
+    higher above the lowlands than vanilla ones, up to y=400-500. Peaks are more jagged.
+  * Mountain ranges and river valleys are 2.2x larger, continents ~40% larger and
+    biomes 25% larger, so the much taller mountains stay majestic instead of spiky and
+    the land reads as broad, believable landscapes instead of noisy patchwork.
   * Oceans are a little deeper.
   * Cave entrances are larger and more common, so hillsides open into caves.
   * A natural snow line caps every peak above ~y=290 (bare rock on steep faces).
@@ -27,15 +27,17 @@ BLOCKS_PER_DEPTH_UNIT = 128.0        # vanilla slope of the depth gradient (384 
 TOP_SLIDE = (496, 512)               # vanilla (240, 256): terrain fades to air across this band
 
 CLIMATE_SCALE = 0.8                  # temperature/vegetation noise: < 1 makes biomes larger
-LANDFORM_SCALE = 0.7                 # continents/erosion/ridges noise: < 1 makes landforms larger
+CONTINENT_SCALE = 0.7                # continentalness noise: < 1 makes continents and oceans larger
+RANGE_SCALE = 0.45                   # erosion/weirdness noise: < 1 makes mountain ranges and valleys larger
 
 # The offset spline's leaf values map to surface heights as y = 63.5 + 128 * value. Above the
 # hill line (value 0.25, y = 95.5) the height gained over the hill line is reshaped by this
-# curve: (vanilla blocks above the hill line, Nature's Mod blocks above it). Foothills rise a
-# little faster, big ranges grow 2.3-2.5x and the very highest flatten out below the top slide.
+# curve: (vanilla blocks above the hill line, Nature's Mod blocks above it). Vanilla land rarely
+# climbs far above the hill line (only 1% of it by more than ~35 blocks), so hills grow ~3x and
+# mountains 4-5x, while the rare giants flatten out below the top slide.
 HILL_LINE = 0.25
-MOUNTAIN_CURVE = [(0, 0), (32, 58), (64, 135), (96, 215), (128, 280), (160, 330), (200, 370)]
-MOUNTAIN_CURVE_START_SLOPE = 1.3
+MOUNTAIN_CURVE = [(0, 0), (18, 50), (35, 125), (55, 220), (72, 290), (100, 340), (130, 362), (170, 372), (220, 375)]
+MOUNTAIN_CURVE_START_SLOPE = 1.5
 OCEAN_LINE = -0.15                   # offsets below this (ocean floors)...
 OCEAN_STRETCH = 1.15                 # ...get deeper by this factor
 JAGGEDNESS_SCALE = 1.5               # sharper peaks
@@ -177,8 +179,10 @@ def build(vanilla):
 
     for name in OVERRIDDEN:
         node = copy.deepcopy(vanilla.read(f"minecraft/{df_dir}{name}.json"))
-        if name in ("continents", "erosion", "ridges"):
-            scale_horizontal(node, LANDFORM_SCALE)
+        if name == "continents":
+            scale_horizontal(node, CONTINENT_SCALE)
+        if name in ("erosion", "ridges"):
+            scale_horizontal(node, RANGE_SCALE)
         if name in ("temperature", "vegetation"):
             scale_horizontal(node, CLIMATE_SCALE)
         if name == "offset":

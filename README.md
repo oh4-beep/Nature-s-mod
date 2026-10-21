@@ -8,10 +8,12 @@ gaping cave mouths, ancient giant trees, and trees that actually topple when you
 
 ### Terrain
 - **A taller world.** The Overworld goes up to **y = 575** (vanilla stops at 319) so mountains have room to grow.
-- **Colossal mountains.** Great ranges tower two to three times higher than vanilla, with summits around y = 400-480
-  and sharper, jagged peaks that pierce the clouds, while foothills still roll gently and lowlands stay lowlands.
-- **Larger landscapes.** Continents, mountain ranges and river valleys are ~40% larger and biomes 25% larger, so the
-  land reads as broad, believable scenery instead of patchwork, and the mountains stay majestic instead of spiky.
+- **Colossal mountains.** Mountain ranges rise three to five times higher above the lowlands than in vanilla, with
+  summits up to y = 400-500 and sharper, jagged peaks that pierce the clouds, while foothills still roll gently and
+  lowlands stay lowlands.
+- **Larger landscapes.** Mountain ranges and river valleys are over twice as large, continents ~40% larger and biomes
+  25% larger, so the land reads as broad, believable scenery instead of patchwork, and the giant mountains stay
+  majestic instead of spiky.
 - **Deeper oceans.**
 - **Dramatic cave openings.** Natural cave entrances are larger and more common.
 - **A real snow line.** Every peak above roughly y = 290 is capped with snow, with bare rock and ice on steep faces.

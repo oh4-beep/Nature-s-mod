@@ -58,3 +58,19 @@ jobs:
       - name: print terrain report
         if: always()
         run: cat run/smoketest/naturesmod-report.txt || true
+
+  # Temporary development aid: dumps Minecraft API signatures the mod needs.
+  api-probe:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v6
+      - name: setup jdk
+        uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'microsoft'
+      - name: resolve minecraft
+        run: chmod +x ./gradlew && (./gradlew compileJava --stacktrace || true)
+      - name: dump api signatures
+        run: bash .github/probe/probe.sh
