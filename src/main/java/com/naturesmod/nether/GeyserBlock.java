@@ -57,7 +57,7 @@ public class GeyserBlock extends Block {
 		AABB column = new AABB(pos.above()).expandTowards(0.0, HEIGHT, 0.0).inflate(0.3, 0.0, 0.3);
 		for (Entity entity : level.getEntitiesOfClass(Entity.class, column)) {
 			entity.push(0.0, 1.3, 0.0);
-			entity.hurtMarked = true;
+			entity.needsSync = true;
 			if (entity instanceof LivingEntity living && !living.fireImmune()) {
 				living.igniteForSeconds(6.0F);
 				living.hurtServer(level, level.damageSources().hotFloor(), 4.0F);

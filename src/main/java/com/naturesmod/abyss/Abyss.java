@@ -92,7 +92,7 @@ public final class Abyss {
 	 * arrives at a spot: a ring of prismarine around a rift back home, lit by sea lanterns and
 	 * anchored by a chain that disappears into the deep.
 	 */
-	static void buildArrival(ServerLevel level, BlockPos center) {
+	public static void buildArrival(ServerLevel level, BlockPos center) {
 		if (level.getBlockState(center).is(ModBlocks.ABYSSAL_RIFT)) {
 			return;
 		}

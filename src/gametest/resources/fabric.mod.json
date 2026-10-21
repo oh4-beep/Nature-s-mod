@@ -1,0 +1,17 @@
+{
+	"schemaVersion": 1,
+	"id": "naturesmod-gametest",
+	"version": "1.0.0",
+	"name": "Nature's Mod client game test",
+	"description": "Walks through the new content in a real client and takes screenshots of it.",
+	"environment": "client",
+	"entrypoints": {
+		"fabric-client-gametest": [
+			"com.naturesmod.gametest.NaturesModClientGameTest"
+		]
+	},
+	"depends": {
+		"naturesmod": "*",
+		"fabric-client-gametest-api-v1": "*"
+	}
+}

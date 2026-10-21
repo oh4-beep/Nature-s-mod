@@ -36,6 +36,19 @@ loom {
 	}
 }
 
+fabricApi {
+	// A client game test walks through the new content in a real client and takes screenshots:
+	// ./gradlew runClientGameTest (see src/gametest).
+	configureTests {
+		createSourceSet = true
+		modId = "naturesmod-gametest"
+		enableGameTests = false
+		enableClientGameTests = true
+		eula = true
+		clearRunDirectory = false
+	}
+}
+
 dependencies {
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"

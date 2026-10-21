@@ -63,6 +63,41 @@ jobs:
         run: |
           grep -q "RESULT: PASSED" run/smoketest/naturesmod-report.txt
 
+  # Plays through the sea and the Nether in a real (software-rendered) client and takes screenshots.
+  client-test:
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v6
+      - name: setup jdk
+        uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'microsoft'
+      - name: install software rendering
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb mesa-vulkan-drivers libgl1-mesa-dri
+      - name: prepare client directory
+        run: |
+          mkdir -p build/run/clientGameTest
+          echo "eula=true" > build/run/clientGameTest/eula.txt
+          printf 'version:4896\npreferredGraphicsBackend:"opengl"\nrenderDistance:6\nsimulationDistance:6\nmaxFps:30\n' > build/run/clientGameTest/options.txt
+      - name: run client game test
+        run: chmod +x ./gradlew && xvfb-run -a -s "-screen 0 1280x720x24" ./gradlew runClientGameTest --stacktrace
+      - name: print screenshots
+        if: always()
+        run: |
+          for f in build/run/clientGameTest/screenshots/*.png; do
+            [ -f "$f" ] || continue
+            n=$(basename "$f")
+            echo "[map-begin $n]"
+            base64 -w 3000 "$f" | sed 's/^/[map] /'
+            echo "[map-end $n]"
+          done
+
   # Temporary development aid: prints the vanilla sources the new content builds on.
   source-probe:
     runs-on: ubuntu-24.04
