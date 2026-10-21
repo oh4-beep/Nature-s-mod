@@ -162,7 +162,7 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 			double distance = 3.5 + biggest * 3.2 + lineup.size() * spacing * 0.35;
 			List<UUID> ids = world.getServer().computeOnServer(server -> lineup(world, lineup, spacing, distance));
 			context.waitTicks(20);
-			String server = world.getServer().computeOnServer(s -> {
+			String onServer = world.getServer().computeOnServer(s -> {
 				ServerLevel level = (ServerLevel) world.getConnection().getServerPlayer().level();
 				StringBuilder out = new StringBuilder("player " + world.getConnection().getServerPlayer().position());
 				for (UUID id : ids) {
@@ -172,7 +172,7 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 				}
 				return out.toString();
 			});
-			String client = context.computeOnClient(c -> {
+			String onClient = context.computeOnClient(c -> {
 				StringBuilder out = new StringBuilder("player " + c.player.position() + " sees");
 				for (Entity entity : c.level.entitiesForRendering()) {
 					if (entity instanceof SeaCreature) {
@@ -181,8 +181,8 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 				}
 				return out.toString();
 			});
-			System.out.println("[gametest] lineup " + lineup.getFirst() + " server: " + server);
-			System.out.println("[gametest] lineup " + lineup.getFirst() + " client: " + client);
+			System.out.println("[gametest] lineup " + lineup.getFirst() + " server: " + onServer);
+			System.out.println("[gametest] lineup " + lineup.getFirst() + " client: " + onClient);
 			shoot(context, "creatures_" + lineup.getFirst());
 			world.getServer().runOnServer(server -> {
 				ServerLevel level = (ServerLevel) world.getConnection().getServerPlayer().level();
