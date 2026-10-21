@@ -7,8 +7,6 @@ import java.util.function.Predicate;
 
 import com.mojang.datafixers.util.Pair;
 
-import org.lwjgl.glfw.GLFW;
-
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
@@ -57,6 +55,9 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 			List.of("gulper_eel", "manta_ray", "ocean_sunfish"),
 			List.of("abyssal_leviathan"));
 
+	/** GLFW's key code for F1 (LWJGL is not on the test classpath). */
+	private static final int KEY_F1 = 290;
+
 	private final List<String> failures = new ArrayList<>();
 
 	@Override
@@ -73,7 +74,7 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 				.create()) {
 			world.getConnection().waitForChunksRender();
 			// F1: hide the hotbar and crosshair so the screenshots show only the world.
-			context.getInput().pressKey(GLFW.GLFW_KEY_F1);
+			context.getInput().pressKey(KEY_F1);
 			world.getServer().runCommand("time set noon");
 			world.getServer().runCommand("weather clear");
 			scene("spawn", () -> context.takeScreenshot("nm_overworld_spawn"));
