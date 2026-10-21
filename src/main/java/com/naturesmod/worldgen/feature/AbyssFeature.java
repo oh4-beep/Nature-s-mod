@@ -58,6 +58,8 @@ public record AbyssFeature(Style style) implements Feature {
 			case GLOW_REEF -> glowReef(level, window, random, origin);
 			case NODULES -> nodules(level, window, random, origin);
 			case WHALE_FALL -> whaleFall(level, window, random, origin);
+			case GIANT_KELP -> giantKelp(level, window, random, origin);
+			case HANGING_GLOW -> hangingGlow(level, window, random, origin);
 		};
 		if (placed) {
 			FeatureStats.placed("abyss_" + style.getSerializedName(), origin);
@@ -395,12 +397,111 @@ public record AbyssFeature(Style style) implements Feature {
 		return true;
 	}
 
+	// --- giant kelp ----------------------------------------------------------------------
+
+	/** A stand of kelp far taller than any in the Overworld, swaying on a seamount summit. */
+	private boolean giantKelp(WorldGenLevel level, WorldGenUtil.Window window, RandomSource random, BlockPos origin) {
+		if (!window.containsRadius(origin.getX(), origin.getZ(), 4)) {
+			return false;
+		}
+		BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
+		int strands = 3 + random.nextInt(6);
+		boolean placed = false;
+		for (int n = 0; n < strands; n++) {
+			int x = origin.getX() + random.nextInt(7) - 3;
+			int z = origin.getZ() + random.nextInt(7) - 3;
+			int ground = floor(level, x, origin.getY() + 4, z);
+			pos.set(x, ground, z);
+			if (!isSolid(level, pos)) {
+				continue;
+			}
+			int height = 14 + random.nextInt(30);
+			int top = ground;
+			for (int h = 1; h <= height; h++) {
+				pos.set(x, ground + h, z);
+				if (!level.getBlockState(pos).is(Blocks.WATER) || !level.getBlockState(pos.above()).is(Blocks.WATER)
+						|| pos.getY() >= level.getSeaLevel() - 3) {
+					break;
+				}
+				top = ground + h;
+			}
+			if (top - ground < 4) {
+				continue;
+			}
+			for (int y = ground + 1; y < top; y++) {
+				level.setBlock(pos.set(x, y, z), Blocks.KELP_PLANT.defaultBlockState(), 2);
+			}
+			level.setBlock(pos.set(x, top, z), Blocks.KELP.defaultBlockState().setValue(BlockStateProperties.AGE_25, 25), 2);
+			placed = true;
+		}
+		return placed;
+	}
+
+	// --- hanging glow --------------------------------------------------------------------
+
+	/**
+	 * Bioluminescent growths dripping from the underside of a drifting island or an overhang:
+	 * beacons in the black water that a diver can see from far away.
+	 */
+	private boolean hangingGlow(WorldGenLevel level, WorldGenUtil.Window window, RandomSource random, BlockPos origin) {
+		if (!window.containsRadius(origin.getX(), origin.getZ(), 3)) {
+			return false;
+		}
+		BlockPos.MutableBlockPos pos = origin.mutable();
+		int ceiling = Integer.MIN_VALUE;
+		for (int i = 0; i < 12; i++) {
+			pos.move(Direction.UP);
+			if (isSolid(level, pos)) {
+				ceiling = pos.getY();
+				break;
+			}
+			if (!WorldGenUtil.isWater(level.getBlockState(pos))) {
+				return false;
+			}
+		}
+		if (ceiling == Integer.MIN_VALUE || !WorldGenUtil.isTerrain(level.getBlockState(pos)) && !level.getBlockState(pos).is(Blocks.DEEPSLATE)
+				&& !level.getBlockState(pos).is(Blocks.COBBLED_DEEPSLATE) && !level.getBlockState(pos).is(Blocks.TUFF)) {
+			return false;
+		}
+		Block glow = random.nextInt(3) == 0 ? Blocks.SHROOMLIGHT : FROGLIGHTS[random.nextInt(FROGLIGHTS.length)];
+		int drips = 1 + random.nextInt(4);
+		for (int d = 0; d < drips; d++) {
+			int x = origin.getX() + random.nextInt(5) - 2;
+			int z = origin.getZ() + random.nextInt(5) - 2;
+			int length = 1 + random.nextInt(d == 0 ? 4 : 2);
+			// Find the ceiling right above this drip.
+			int y = ceiling + 2;
+			pos.set(x, y, z);
+			int found = Integer.MIN_VALUE;
+			for (int i = 0; i < 6; i++) {
+				pos.move(Direction.DOWN);
+				if (WorldGenUtil.isWater(level.getBlockState(pos)) && isSolid(level, pos.above())) {
+					found = pos.getY();
+					break;
+				}
+			}
+			if (found == Integer.MIN_VALUE) {
+				continue;
+			}
+			for (int k = 0; k < length; k++) {
+				pos.set(x, found - k, z);
+				if (!WorldGenUtil.isWater(level.getBlockState(pos))) {
+					break;
+				}
+				level.setBlock(pos, glow.defaultBlockState(), 2);
+			}
+		}
+		return true;
+	}
+
 	public enum Style implements StringRepresentable {
 		BLACK_SMOKER("black_smoker"),
 		SOUL_VENT("soul_vent"),
 		GLOW_REEF("glow_reef"),
 		NODULES("nodules"),
-		WHALE_FALL("whale_fall");
+		WHALE_FALL("whale_fall"),
+		GIANT_KELP("giant_kelp"),
+		HANGING_GLOW("hanging_glow");
 
 		public static final Codec<Style> CODEC = StringRepresentable.fromEnum(Style::values);
 		private final String name;

@@ -46,6 +46,8 @@ public final class NaturesConfig {
 	public boolean abyssPressure = true;
 	/** Sharks, eels and the other hunters of the sea attack divers. */
 	public boolean hostileSeaCreatures = true;
+	/** How much sea life to keep around players in the water (1 = lively, 0 = vanilla spawning only). */
+	public double seaLifeDensity = 1.0;
 
 	// Client effects
 	/** Mist, spray and roar at the foot of waterfalls. */
@@ -65,6 +67,10 @@ public final class NaturesConfig {
 
 	public static boolean hostileSeaCreatures() {
 		return instance.hostileSeaCreatures;
+	}
+
+	public static double seaLifeDensity() {
+		return instance.seaLifeDensity;
 	}
 
 	public static void load() {

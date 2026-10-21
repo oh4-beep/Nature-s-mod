@@ -42,6 +42,14 @@ def clamp(x, lo, hi):
     return {"type": "minecraft:clamp", "input": x, "min": lo, "max": hi}
 
 
+def mx(a, b):
+    return {"type": "minecraft:max", "left": a, "right": b}
+
+
+def mn(a, b):
+    return {"type": "minecraft:min", "left": a, "right": b}
+
+
 def cache(x):
     return {"type": "minecraft:cache", "input": x}
 
@@ -52,6 +60,11 @@ def noise(name, xz=1.0, y=0.0):
 
 def gradient_y(y0, v0, y1, v1):
     return {"type": "minecraft:gradient", "axis": "y", "from_coordinate": y0, "from_value": v0, "to_coordinate": y1, "to_value": v1}
+
+
+def band(y0, y1, y2, y3):
+    """0 below y0, rising to 1 at y1, 1 up to y2, falling to 0 at y3."""
+    return mn(clamp(gradient_y(y0, 0.0, y1, 1.0), 0.0, 1.0), clamp(gradient_y(y2, 1.0, y3, 0.0), 0.0, 1.0))
 
 
 def spline(coordinate, points):
@@ -82,6 +95,7 @@ NOISES = {
     "vegetation": {"firstOctave": -9, "amplitudes": [1.0, 0.5]},
     "patch": {"firstOctave": -5, "amplitudes": [1.0, 0.5]},
     "detail": {"firstOctave": -3, "amplitudes": [1.0, 1.0]},
+    "drift": {"firstOctave": -6, "amplitudes": [1.0, 0.6, 0.3]},
 }
 
 
@@ -90,11 +104,12 @@ NOISES = {
 def density_functions():
     out = {}
     # Seamounts: most of the sea floor is plain, but where the seamount noise runs high the
-    # floor climbs in great ridges and peaks up to ~500 blocks.
+    # floor climbs in great ridges and peaks; the tallest break into the twilight waters ~700
+    # blocks up, where kelp forests sway on their summits.
     out["seamount"] = cache(mul(
         spline(noise("seamount"), [
-            (-1.0, -12.0, 0.0), (0.1, 0.0, 0.0), (0.28, 25.0, 300.0), (0.42, 140.0, 1100.0),
-            (0.56, 320.0, 1100.0), (0.7, 450.0, 600.0), (0.9, 520.0, 150.0), (1.2, 540.0, 0.0),
+            (-1.0, -12.0, 0.0), (0.1, 0.0, 0.0), (0.26, 25.0, 300.0), (0.4, 150.0, 1100.0),
+            (0.54, 340.0, 1300.0), (0.68, 530.0, 1100.0), (0.84, 680.0, 650.0), (1.0, 760.0, 250.0), (1.3, 780.0, 0.0),
         ]),
         add(1.0, mul(noise("rough"), 0.18)),
     ))
@@ -123,13 +138,17 @@ def density_functions():
     carve_strength = add(0.25, mul(clamp(mul(add(ref("seamount"), ref("spire")), 1.0 / 150.0), 0.0, 1.0), 0.55))
     carve = mul(noise("carve", 1.0, 1.4), carve_strength)
     solid = add(mul(add(ref("floor"), {"type": "minecraft:negate", "input": "minecraft:y"}), 1.0 / 24.0), carve)
+    # Drifting islands: great flat-bottomed rocks that float in the black water between the
+    # sea floor and the twilight. Outside their band they fall well below zero so the max
+    # leaves the rest of the sea alone.
+    out["islands"] = add(mul(add(noise("drift", 1.0, 2.2), -0.6), 7.0), mul(add(band(280, 360, 800, 880), -1.0), 12.0))
     out["final_density"] = {
         "type": "minecraft:interpolated",
         "cell_size_xz": 4,
         "cell_size_y": 8,
         "input": add(
             # Keep the bottom of the world solid under even the deepest trench.
-            add(solid, gradient_y(0, 2.0, 12, 0.0)),
+            mx(add(solid, gradient_y(0, 2.0, 12, 0.0)), ref("islands")),
             {"type": "minecraft:beardifier"},
         ),
     }
@@ -210,7 +229,7 @@ def biome_source():
 
 def dimension_type():
     return {
-        "ambient_light": 0.06,
+        "ambient_light": 0.25,
         "attributes": {
             "minecraft:audio/ambient_sounds": {
                 "mood": {"block_search_extent": 8, "offset": 2.0, "sound": "minecraft:ambient.cave", "tick_delay": 6000},
@@ -222,7 +241,7 @@ def dimension_type():
             "minecraft:gameplay/respawn_anchor_works": False,
             "minecraft:gameplay/can_start_raid": False,
             "minecraft:gameplay/sky_light_level": 0.0,
-            "minecraft:visual/ambient_light_color": "#0b1826",
+            "minecraft:visual/ambient_light_color": "#24405a",
             "minecraft:visual/fog_color": "#02060c",
             "minecraft:visual/sky_color": "#000000",
             "minecraft:visual/sky_light_factor": 0.0,
@@ -306,23 +325,25 @@ COMMON = [(ORES, f"{NS}:abyss/ore_{o}") for o in ("diamond", "gold", "lapis", "r
 
 def biomes():
     marine_snow = [("minecraft:white_ash", 0.025), ("minecraft:underwater", 0.02)]
+    sparks = [("minecraft:glow", 0.003), ("minecraft:underwater", 0.025)]
     return {
-        "twilight_waters": biome("#0b2547", 64.0, [("minecraft:underwater", 0.03)], COMMON + [
+        "twilight_waters": biome("#103c72", 128.0, [("minecraft:underwater", 0.04), ("minecraft:glow", 0.001)], COMMON + [
+            (LOCAL, f"{NS}:abyss/giant_kelp"), (LOCAL, f"{NS}:abyss/hanging_glow"),
             (VEGETATION, "minecraft:kelp_cold"), (VEGETATION, "minecraft:seagrass_deep"), (VEGETATION, f"{NS}:abyss/sea_pickles"),
-        ], water="#16407a"),
-        "midnight_zone": biome("#030a16", 40.0, [("minecraft:underwater", 0.012)], COMMON, water="#0a1a3a"),
-        "abyssal_plains": biome("#050d18", 48.0, marine_snow, COMMON + [
+        ], water="#1d4f8f"),
+        "midnight_zone": biome("#071630", 96.0, sparks, COMMON + [(LOCAL, f"{NS}:abyss/hanging_glow")], water="#0c2348"),
+        "abyssal_plains": biome("#0c1d2e", 104.0, marine_snow, COMMON + [
             (LOCAL, f"{NS}:abyss/nodules"), (LOCAL, f"{NS}:abyss/whale_fall_rare"), (VEGETATION, f"{NS}:abyss/sea_pickles_sparse"),
-        ], water="#0c1c36"),
-        "glowing_reef": biome("#06243a", 56.0, [("minecraft:glow", 0.004), ("minecraft:underwater", 0.02)], COMMON + [
+        ], water="#10283e"),
+        "glowing_reef": biome("#0a4249", 120.0, [("minecraft:glow", 0.004), ("minecraft:underwater", 0.02)], COMMON + [
             (LOCAL, f"{NS}:abyss/glow_reef"), (VEGETATION, f"{NS}:abyss/reef_coral"), (VEGETATION, f"{NS}:abyss/sea_pickles"),
-        ], water="#147a8a"),
-        "hydrothermal_vents": biome("#140c08", 36.0, [("minecraft:ash", 0.03), ("minecraft:bubble", 0.01)], COMMON + [
+        ], water="#178a8a"),
+        "hydrothermal_vents": biome("#2c1a10", 72.0, [("minecraft:ash", 0.03), ("minecraft:bubble", 0.01)], COMMON + [
             (LOCAL, f"{NS}:abyss/black_smoker"), (LOCAL, f"{NS}:abyss/soul_vent"),
-        ], water="#3a2a1a"),
-        "bone_fields": biome("#0a0f14", 44.0, marine_snow, COMMON + [
+        ], water="#4a2c1a"),
+        "bone_fields": biome("#17221f", 96.0, marine_snow, COMMON + [
             (LOCAL, f"{NS}:abyss/whale_fall"), (LOCAL, f"{NS}:abyss/nodules"),
-        ], water="#1a2a3a"),
+        ], water="#22342e"),
     }
 
 
@@ -442,7 +463,9 @@ def features():
         "ore_redstone": ore("redstone", 8, 6, 8, 200),
         "ore_emerald": ore("emerald", 3, 6, 120, 600),
         "ore_copper": ore("copper", 12, 8, 8, 600),
-        "glow_lichen": ("minecraft:glow_lichen", [count(90), IN_SQUARE, height_range(8, 760), BIOME]),
+        "glow_lichen": ("minecraft:glow_lichen", [count(90), IN_SQUARE, height_range(8, 900), BIOME]),
+        "giant_kelp": (abyss_feature("giant_kelp"), floor_placement(n=5)),
+        "hanging_glow": (abyss_feature("hanging_glow"), [count(40), IN_SQUARE, height_range(280, 900), BIOME]),
         "sea_pickles": ("minecraft:sea_pickle", floor_placement(n=6)),
         "sea_pickles_sparse": ("minecraft:sea_pickle", floor_placement(n=1, chance=3)),
         "reef_coral": ("minecraft:warm_ocean_vegetation", floor_placement(n=8)),

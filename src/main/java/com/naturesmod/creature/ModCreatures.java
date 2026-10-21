@@ -91,7 +91,7 @@ public final class ModCreatures {
 	}
 
 	/** Each species keeps to its part of the water column. */
-	private static boolean canSpawn(SpeciesData species, LevelAccessor level, BlockPos pos, RandomSource random) {
+	static boolean canSpawn(SpeciesData species, LevelAccessor level, BlockPos pos, RandomSource random) {
 		if (!level.getFluidState(pos).is(FluidTags.WATER) || !level.getBlockState(pos.above()).is(Blocks.WATER)) {
 			return false;
 		}

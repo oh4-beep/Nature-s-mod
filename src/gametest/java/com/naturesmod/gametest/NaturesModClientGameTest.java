@@ -146,14 +146,10 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 	// --- the creatures -------------------------------------------------------------------
 
 	private void creatures(ClientGameTestContext context, TestSingleplayerContext world) {
-		BlockPos sea = world.getServer().computeOnServer(server -> {
-			Pair<BlockPos, Holder<Biome>> found = server.overworld().findClosestBiome3d(holder -> holder.is(BiomeTags.IS_DEEP_OCEAN),
-					BlockPos.ZERO, 6400, 32, 64);
-			return found == null ? BlockPos.ZERO : found.getFirst();
-		});
+		// Open water high up in the Abyss: nothing for the line-ups to hide in.
 		world.getServer().runCommand("gamemode spectator @a");
 		world.getServer().runCommand("effect give @a minecraft:night_vision infinite 0 true");
-		teleport(context, world, Level.OVERWORLD, sea.getX() + 0.5, 48, sea.getZ() + 0.5, 0.0F, 0.0F);
+		teleport(context, world, Abyss.LEVEL, 3000.5, 960, 3000.5, 0.0F, 0.0F);
 		// Let the eyes get used to the water so the fog lifts.
 		context.waitTicks(80);
 		for (List<String> lineup : LINEUPS) {

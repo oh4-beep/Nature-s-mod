@@ -26,8 +26,8 @@
       },
       "modifier": "overlay"
     },
-    "minecraft:visual/water_fog_color": "#0a0f14",
-    "minecraft:visual/water_fog_end_distance": 44.0,
+    "minecraft:visual/water_fog_color": "#17221f",
+    "minecraft:visual/water_fog_end_distance": 96.0,
     "minecraft:visual/fog_color": "#02060c",
     "minecraft:visual/sky_color": "#000000",
     "minecraft:visual/ambient_particles": {
@@ -51,7 +51,7 @@
   "carvers": [],
   "downfall": 0.5,
   "effects": {
-    "water_color": "#1a2a3a"
+    "water_color": "#22342e"
   },
   "features": [
     [],

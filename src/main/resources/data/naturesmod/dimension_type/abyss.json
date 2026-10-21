@@ -1,5 +1,5 @@
 {
-  "ambient_light": 0.06,
+  "ambient_light": 0.25,
   "attributes": {
     "minecraft:audio/ambient_sounds": {
       "mood": {
@@ -24,7 +24,7 @@
     "minecraft:gameplay/respawn_anchor_works": false,
     "minecraft:gameplay/can_start_raid": false,
     "minecraft:gameplay/sky_light_level": 0.0,
-    "minecraft:visual/ambient_light_color": "#0b1826",
+    "minecraft:visual/ambient_light_color": "#24405a",
     "minecraft:visual/fog_color": "#02060c",
     "minecraft:visual/sky_color": "#000000",
     "minecraft:visual/sky_light_factor": 0.0,

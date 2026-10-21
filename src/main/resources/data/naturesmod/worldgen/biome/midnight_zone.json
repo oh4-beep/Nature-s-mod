@@ -26,17 +26,23 @@
       },
       "modifier": "overlay"
     },
-    "minecraft:visual/water_fog_color": "#030a16",
-    "minecraft:visual/water_fog_end_distance": 40.0,
+    "minecraft:visual/water_fog_color": "#071630",
+    "minecraft:visual/water_fog_end_distance": 96.0,
     "minecraft:visual/fog_color": "#02060c",
     "minecraft:visual/sky_color": "#000000",
     "minecraft:visual/ambient_particles": {
       "argument": [
         {
           "particle": {
+            "type": "minecraft:glow"
+          },
+          "probability": 0.003
+        },
+        {
+          "particle": {
             "type": "minecraft:underwater"
           },
-          "probability": 0.012
+          "probability": 0.025
         }
       ],
       "modifier": "append"
@@ -45,12 +51,14 @@
   "carvers": [],
   "downfall": 0.5,
   "effects": {
-    "water_color": "#0a1a3a"
+    "water_color": "#0c2348"
   },
   "features": [
     [],
     [],
-    [],
+    [
+      "naturesmod:abyss/hanging_glow"
+    ],
     [],
     [],
     [],
