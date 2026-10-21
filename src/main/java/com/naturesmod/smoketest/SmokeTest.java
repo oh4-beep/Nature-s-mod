@@ -36,6 +36,8 @@ import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
+import net.minecraft.world.level.levelgen.NoiseRouter;
 import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.FluidState;
@@ -148,6 +150,31 @@ public final class SmokeTest {
 				allHeights = Arrays.copyOf(allHeights, offset + heights.length);
 				System.arraycopy(heights, 0, allHeights, offset, heights.length);
 			}
+			// Close-ups of the first glacier and mountain river the regions above ran into.
+			for (String structure : new String[] {"glacier", "mountain_river"}) {
+				List<BlockPos> spots = FeatureStats.locations(structure + "_chunk");
+				if (spots.isEmpty()) {
+					continue;
+				}
+				// Centre on the chunks the first structure touched (they are recorded in generation order).
+				BlockPos first = spots.getFirst();
+				long sumX = 0;
+				long sumZ = 0;
+				int count = 0;
+				for (BlockPos pos : spots) {
+					if (pos.distManhattan(first) < 256) {
+						sumX += pos.getX();
+						sumZ += pos.getZ();
+						count++;
+					}
+				}
+				BlockPos spot = new BlockPos((int) (sumX / count), first.getY(), (int) (sumZ / count));
+				long regionStart = System.currentTimeMillis();
+				region(spot.getX() >> 4, spot.getZ() >> 4, REGION_CHUNKS, structure, biomes);
+				regions.add(new int[] {spot.getX() >> 4, spot.getZ() >> 4, REGION_CHUNKS});
+				System.out.printf("[smoketest] region %s at %s generated in %.1fs%n", structure, spot,
+						(System.currentTimeMillis() - regionStart) / 1000.0);
+			}
 			line("");
 			int chunks = 0;
 			for (int[] region : regions) {
@@ -179,21 +206,30 @@ public final class SmokeTest {
 	private List<int[]> survey() {
 		ChunkGenerator generator = level.getChunkSource().getGenerator();
 		RandomState randomState = level.getChunkSource().randomState();
+		NoiseRouter router = generator instanceof NoiseBasedChunkGenerator noise ? noise.generatorSettings().value().noiseRouter() : null;
 		List<int[]> samples = new ArrayList<>();
-		// The full height grid also goes into a compressed data file for offline analysis.
-		ByteArrayOutputStream grid = new ByteArrayOutputStream();
-		try (DataOutputStream out = new DataOutputStream(new DeflaterOutputStream(grid))) {
+		// The height and climate behind every sample (continentalness, erosion, weirdness and the
+		// terrain offset, i.e. depth at y=128 where the depth gradient is zero) go into a compressed
+		// data file for offline analysis.
+		ByteArrayOutputStream climate = new ByteArrayOutputStream();
+		try (DataOutputStream out = new DataOutputStream(new DeflaterOutputStream(climate))) {
 			for (int x = -SURVEY_RADIUS; x <= SURVEY_RADIUS; x += SURVEY_STEP) {
 				for (int z = -SURVEY_RADIUS; z <= SURVEY_RADIUS; z += SURVEY_STEP) {
 					int height = generator.getBaseHeight(x, z, Heightmap.Types.WORLD_SURFACE_WG, level, randomState);
 					samples.add(new int[] {x, z, height});
 					out.writeShort(height);
+					if (router != null) {
+						out.writeFloat(randomState.sampleBlockValueUncached(router.continents(), x, 128, z));
+						out.writeFloat(randomState.sampleBlockValueUncached(router.erosion(), x, 128, z));
+						out.writeFloat(randomState.sampleBlockValueUncached(router.ridges(), x, 128, z));
+						out.writeFloat(randomState.sampleBlockValueUncached(router.depth(), x, 128, z));
+					}
 				}
 			}
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
 		}
-		TerrainRenderer.emit("survey.bin", grid.toByteArray());
+		TerrainRenderer.emit(router != null ? "climate.bin" : "survey.bin", climate.toByteArray());
 		int land = 0;
 		int[] landHeights = new int[samples.size()];
 		for (int[] sample : samples) {

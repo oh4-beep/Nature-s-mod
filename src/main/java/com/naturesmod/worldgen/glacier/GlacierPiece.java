@@ -139,7 +139,7 @@ public class GlacierPiece extends StructurePiece {
 			}
 		}
 		if (touched) {
-			FeatureStats.placed("glacier_chunk");
+			FeatureStats.placed("glacier_chunk", chunkPos.getMiddleBlockPosition(path.surfaces[from]));
 		}
 	}
 

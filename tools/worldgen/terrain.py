@@ -36,7 +36,7 @@ RANGE_SCALE = 0.45                   # erosion/weirdness noise: < 1 makes mounta
 # climbs far above the hill line (only 1% of it by more than ~35 blocks), so hills grow ~3x and
 # mountains 4-5x, while the rare giants flatten out below the top slide.
 HILL_LINE = 0.25
-MOUNTAIN_CURVE = [(0, 0), (18, 50), (35, 125), (55, 220), (72, 290), (100, 340), (130, 362), (170, 372), (220, 375)]
+MOUNTAIN_CURVE = [(0, 0), (18, 55), (35, 140), (55, 250), (72, 320), (100, 365), (130, 385), (170, 393), (220, 396)]
 MOUNTAIN_CURVE_START_SLOPE = 1.5
 OCEAN_LINE = -0.15                   # offsets below this (ocean floors)...
 OCEAN_STRETCH = 1.15                 # ...get deeper by this factor

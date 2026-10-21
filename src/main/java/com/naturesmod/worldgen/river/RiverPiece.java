@@ -142,7 +142,7 @@ public class RiverPiece extends StructurePiece {
 			}
 		}
 		if (touched) {
-			FeatureStats.placed("mountain_river_chunk");
+			FeatureStats.placed("mountain_river_chunk", chunkPos.getMiddleBlockPosition(path.levels[from]));
 		}
 	}
 
