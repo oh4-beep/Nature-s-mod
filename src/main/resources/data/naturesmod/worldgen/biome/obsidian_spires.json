@@ -107,6 +107,7 @@
     [],
     [
       "minecraft:spring_open",
+      "minecraft:patch_soul_fire",
       "minecraft:glowstone_extra",
       "minecraft:glowstone",
       "minecraft:ore_magma",
@@ -117,7 +118,6 @@
       "minecraft:ore_quartz_nether",
       "minecraft:ore_ancient_debris_large",
       "minecraft:ore_debris_small",
-      "minecraft:patch_soul_fire",
       "naturesmod:nether/hanging_cage",
       "naturesmod:nether/lavafall"
     ],

@@ -30,6 +30,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.FeatureSorter;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.entity.EntityTypeTest;
@@ -60,6 +61,8 @@ public final class SmokeTest {
 	private static final int SURVEY_RADIUS = 64 * SURVEY_STEP;
 	private static final int SUMMIT_REGION_CHUNKS = 16;
 
+	private static volatile SmokeTest running;
+
 	private final StringBuilder report = new StringBuilder();
 	private final MinecraftServer server;
 	private final ServerLevel level;
@@ -72,8 +75,11 @@ public final class SmokeTest {
 
 	public static void register() {
 		ServerLifecycleEvents.SERVER_STARTING.register(server -> System.out.println("[smoketest] server starting"));
-		ServerLifecycleEvents.SERVER_STARTED.register(server -> new SmokeTest(server).start());
-		// Never let a stuck test hold CI hostage.
+		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
+			running = new SmokeTest(server);
+			running.start();
+		});
+		// Never let a stuck test hold CI hostage, but keep what it found so far.
 		Thread watchdog = new Thread(() -> {
 			try {
 				Thread.sleep(16 * 60 * 1000L);
@@ -81,25 +87,55 @@ public final class SmokeTest {
 				return;
 			}
 			System.out.println("[smoketest] TIMEOUT after 16 minutes");
+			SmokeTest test = running;
+			if (test != null) {
+				test.fail("timed out after 16 minutes");
+				test.writeReport();
+			}
 			Runtime.getRuntime().halt(2);
 		}, "naturesmod-smoketest-watchdog");
 		watchdog.setDaemon(true);
 		watchdog.start();
 	}
 
-	void line(String format, Object... args) {
+	synchronized void line(String format, Object... args) {
 		report.append(String.format(format, args)).append('\n');
 	}
 
-	void fail(String format, Object... args) {
+	synchronized void fail(String format, Object... args) {
 		failed = true;
 		line("FAIL: " + format, args);
+	}
+
+	/**
+	 * Minecraft sorts the features of all biomes sharing a generator into one order per step and
+	 * cannot generate a single chunk if two biomes disagree; the chunk then never finishes and
+	 * the test would hang, so look for that up front.
+	 */
+	private boolean featureOrderOk(ServerLevel level) {
+		ChunkGenerator generator = level.getChunkSource().getGenerator();
+		try {
+			FeatureSorter.buildFeaturesPerStep(List.copyOf(generator.getBiomeSource().possibleBiomes()),
+					biome -> generator.getBiomeGenerationSettings(biome).features(), true);
+			return true;
+		} catch (IllegalStateException e) {
+			fail("%s cannot generate: %s", level.dimension().identifier(), e.getMessage());
+			return false;
+		}
 	}
 
 	private void start() {
 		System.out.println("[smoketest] server started, generating regions");
 		try {
 			line("=== Nature's Mod worldgen smoke test ===");
+			boolean generates = true;
+			for (ServerLevel dimension : server.getAllLevels()) {
+				generates &= featureOrderOk(dimension);
+			}
+			if (!generates) {
+				finish();
+				return;
+			}
 			line("overworld: minY=%d maxY=%d height=%d seaLevel=%d", level.getMinY(), level.getMaxY(), level.getHeight(), level.getSeaLevel());
 			if (level.getHeight() != 640) {
 				fail("expected a 640 block tall overworld");
@@ -519,7 +555,7 @@ public final class SmokeTest {
 		return count;
 	}
 
-	private void finish() {
+	private synchronized void writeReport() {
 		line("");
 		line(failed ? "RESULT: FAILED" : "RESULT: PASSED");
 		String text = report.toString();
@@ -529,6 +565,10 @@ public final class SmokeTest {
 		} catch (IOException e) {
 			NaturesMod.LOGGER.error("Could not write the smoke test report", e);
 		}
+	}
+
+	private void finish() {
+		writeReport();
 		if (failed) {
 			Runtime.getRuntime().halt(1);
 		}

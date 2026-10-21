@@ -90,13 +90,14 @@ def density_functions():
     cavern_bias = add(-0.22, mul(noise("caverns", 1.0, 0.0), 0.25))
     out["upper"] = add({"type": "minecraft:old_blended_noise", "smear_scale_multiplier": 8.0, "xz_factor": 170.0, "xz_scale": 0.25,
                         "y_factor": 150.0, "y_scale": 0.18}, cavern_bias)
-    # Floating islands drift in the middle of the caverns.
-    out["islands"] = mul(band(124, 140, 180, 200), mul(add(noise("islands", 1.0, 1.6), -0.38), 5.0))
+    # Floating islands drift in the middle of the caverns. Outside their band they must be well
+    # below zero rather than zero: the terrain takes the max, and a zero would fill every cave.
+    out["islands"] = add(mul(add(noise("islands", 1.0, 1.6), -0.38), 5.0), mul(add(band(124, 140, 180, 200), -1.0), 8.0))
     # Colossal pillars stand where two winding lines cross, rooted below and holding up the roof.
     wobble = mul(noise("pillar_wobble", 1.0, 0.5), 0.02)
     width = add(0.045, add(wobble, mul(band(60, 90, 200, 236), -0.012)))
     pillar = mn(add(width, neg_abs(noise("pillar_a", 1.0, 0.0))), add(width, neg_abs(noise("pillar_b", 1.0, 0.0))))
-    out["pillars"] = mul(band(40, 70, 220, 250), mul(pillar, 40.0))
+    out["pillars"] = add(mul(pillar, 40.0), mul(add(band(40, 70, 220, 250), -1.0), 40.0))
     terrain = lerp(clamp(gradient_y(96, 0.0, 150, 1.0), 0.0, 1.0), ref("lower"), ref("upper"))
     terrain = mx(mx(terrain, ref("islands")), ref("pillars"))
     slid = lerp(clamp(gradient_y(-8, 0.0, 24, 1.0), 0.0, 1.0), 2.5,
@@ -199,8 +200,8 @@ def biomes():
             [spawn("wither_skeleton", 40, 1, 3), spawn("ghast", 35, 1, 1), spawn("enderman", 12, 1, 3), spawn("magma_cube", 20, 1, 3),
              spawn("skeleton", 10, 1, 2)],
             [],
-            [f for f in VANILLA_DECORATION if f != "minecraft:patch_fire"] + ["minecraft:patch_soul_fire", f"{NS}:nether/hanging_cage",
-                                                                             f"{NS}:nether/lavafall"],
+            # Soul fire takes the place of fire: features must keep the same order in every Nether biome.
+            [f.replace("patch_fire", "patch_soul_fire") for f in VANILLA_DECORATION] + [f"{NS}:nether/hanging_cage", f"{NS}:nether/lavafall"],
             ["minecraft:spring_lava"],
             local=[f"{NS}:nether/obsidian_spire"],
         ),

@@ -40,6 +40,46 @@ class Vanilla:
             return json.load(f)
 
 
+# The biomes that share a chunk generator. Minecraft sorts their features into one order per
+# decoration step and refuses to generate the dimension if two biomes disagree on it.
+DIMENSION_BIOMES = {
+    "the Nether": ["minecraft:nether_wastes", "minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest",
+                   "minecraft:basalt_deltas", "naturesmod:ember_wastes", "naturesmod:glowstone_grotto", "naturesmod:obsidian_spires"],
+    "the Abyss": ["naturesmod:twilight_waters", "naturesmod:midnight_zone", "naturesmod:abyssal_plains", "naturesmod:glowing_reef",
+                  "naturesmod:hydrothermal_vents", "naturesmod:bone_fields"],
+}
+
+
+def check_feature_order(files, vanilla):
+    for dimension, biomes in DIMENSION_BIOMES.items():
+        steps = {}
+        for biome in biomes:
+            namespace, name = biome.split(":")
+            rel = f"{namespace}/worldgen/biome/{name}.json"
+            data = files[rel] if namespace == "naturesmod" else vanilla.read(f"minecraft/worldgen/biome/{name}.json")
+            for step, placed in enumerate(data["features"]):
+                edges = steps.setdefault(step, {})
+                for before, after in zip(placed, placed[1:]):
+                    edges.setdefault(before, set()).add((after, biome))
+        for step, edges in steps.items():
+            # Depth-first search for a feature that has to come after itself.
+            state = {}
+
+            def visit(feature, path):
+                state[feature] = "open"
+                for after, biome in edges.get(feature, ()):
+                    if state.get(after) == "open":
+                        loop = path[path.index(after):] + [after] if after in path else [feature, after]
+                        raise SystemExit(f"feature order cycle in {dimension}, step {step} ({biome}): {' -> '.join(loop)}")
+                    if after not in state:
+                        visit(after, path + [after])
+                state[feature] = "done"
+
+            for feature in list(edges):
+                if feature not in state:
+                    visit(feature, [feature])
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--vanilla", required=True, help="vanilla data pack `data` directory")
@@ -55,6 +95,7 @@ def main():
     buckets_dir = os.path.join(REPO, "src", "main", "resources", "assets", "naturesmod", "items")
     buckets = sorted(f"naturesmod:{name[:-5]}" for name in os.listdir(buckets_dir) if name.endswith("_bucket.json"))
     files.update(advancements.build(buckets))
+    check_feature_order(files, vanilla)
 
     for rel, data in sorted(files.items()):
         path = os.path.join(args.out, rel)

@@ -1,35 +1,6 @@
 {
-  "type": "minecraft:mul",
+  "type": "minecraft:add",
   "left": {
-    "type": "minecraft:min",
-    "left": {
-      "type": "minecraft:clamp",
-      "input": {
-        "type": "minecraft:gradient",
-        "axis": "y",
-        "from_coordinate": 40,
-        "from_value": 0.0,
-        "to_coordinate": 70,
-        "to_value": 1.0
-      },
-      "min": 0.0,
-      "max": 1.0
-    },
-    "right": {
-      "type": "minecraft:clamp",
-      "input": {
-        "type": "minecraft:gradient",
-        "axis": "y",
-        "from_coordinate": 220,
-        "from_value": 1.0,
-        "to_coordinate": 250,
-        "to_value": 0.0
-      },
-      "min": 0.0,
-      "max": 1.0
-    }
-  },
-  "right": {
     "type": "minecraft:mul",
     "left": {
       "type": "minecraft:min",
@@ -165,6 +136,43 @@
           "right": -1.0
         }
       }
+    },
+    "right": 40.0
+  },
+  "right": {
+    "type": "minecraft:mul",
+    "left": {
+      "type": "minecraft:add",
+      "left": {
+        "type": "minecraft:min",
+        "left": {
+          "type": "minecraft:clamp",
+          "input": {
+            "type": "minecraft:gradient",
+            "axis": "y",
+            "from_coordinate": 40,
+            "from_value": 0.0,
+            "to_coordinate": 70,
+            "to_value": 1.0
+          },
+          "min": 0.0,
+          "max": 1.0
+        },
+        "right": {
+          "type": "minecraft:clamp",
+          "input": {
+            "type": "minecraft:gradient",
+            "axis": "y",
+            "from_coordinate": 220,
+            "from_value": 1.0,
+            "to_coordinate": 250,
+            "to_value": 0.0
+          },
+          "min": 0.0,
+          "max": 1.0
+        }
+      },
+      "right": -1.0
     },
     "right": 40.0
   }
