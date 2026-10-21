@@ -12,18 +12,22 @@ for jar in $JARS; do
 	unzip -q -o "$jar" -d /tmp/src
 done
 
-echo "===== PACKAGES ====="
-find /tmp/src/net/minecraft -name '*.java' | sed 's#/tmp/src/##' | grep -E 'entity/animal|client/model/|renderer/entity/|item/equipment|world/item/[A-Z]' | sort | head -900
 
+# Each line: Name.java (whole file), Name.java|regex (matching lines, 3 lines of context after),
+# or Name.java@start-end (a line range).
 while IFS= read -r line; do
 	[ -z "$line" ] && continue
-	name="${line%%|*}"
+	name="${line%%[|@]*}"
 	filter=""
+	range=""
 	[[ "$line" == *"|"* ]] && filter="${line#*|}"
+	[[ "$line" == *"@"* ]] && range="${line#*@}"
 	for file in $(find /tmp/src -name "$name" | sort); do
-		echo "===== FILE ${file#/tmp/src/} ${filter:+(filter: $filter)}"
+		echo "===== FILE ${file#/tmp/src/} ${filter:+(filter: $filter)}${range:+(lines $range)}"
 		if [ -n "$filter" ]; then
-			grep -nE "$filter" "$file" | head -160
+			grep -nE -A3 "$filter" "$file" | head -240
+		elif [ -n "$range" ]; then
+			sed -n "${range%-*},${range#*-}p" "$file" | cat -n
 		else
 			cat -n "$file" | head -700
 		fi
