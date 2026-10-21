@@ -1,5 +1,7 @@
 package com.naturesmod.smoketest;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -9,6 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.zip.DeflaterOutputStream;
 
 import com.naturesmod.NaturesMod;
 import com.naturesmod.tree.ServerScheduler;
@@ -32,7 +35,9 @@ import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.NoiseRouter;
 import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.FluidState;
@@ -176,12 +181,28 @@ public final class SmokeTest {
 	private List<int[]> survey() {
 		ChunkGenerator generator = level.getChunkSource().getGenerator();
 		RandomState randomState = level.getChunkSource().randomState();
+		NoiseRouter router = randomState.router();
 		List<int[]> samples = new ArrayList<>();
-		for (int x = -SURVEY_RADIUS; x <= SURVEY_RADIUS; x += SURVEY_STEP) {
-			for (int z = -SURVEY_RADIUS; z <= SURVEY_RADIUS; z += SURVEY_STEP) {
-				samples.add(new int[] {x, z, generator.getBaseHeight(x, z, Heightmap.Types.WORLD_SURFACE_WG, level, randomState)});
+		// The climate behind every sample (continentalness, erosion, weirdness and the terrain offset,
+		// i.e. depth at y=128 where the depth gradient is zero) goes into a compressed data file.
+		ByteArrayOutputStream climate = new ByteArrayOutputStream();
+		try (DataOutputStream out = new DataOutputStream(new DeflaterOutputStream(climate))) {
+			for (int x = -SURVEY_RADIUS; x <= SURVEY_RADIUS; x += SURVEY_STEP) {
+				for (int z = -SURVEY_RADIUS; z <= SURVEY_RADIUS; z += SURVEY_STEP) {
+					int height = generator.getBaseHeight(x, z, Heightmap.Types.WORLD_SURFACE_WG, level, randomState);
+					samples.add(new int[] {x, z, height});
+					DensityFunction.SinglePointContext context = new DensityFunction.SinglePointContext(x, 128, z);
+					out.writeShort(height);
+					out.writeFloat((float) router.continents().compute(context));
+					out.writeFloat((float) router.erosion().compute(context));
+					out.writeFloat((float) router.ridges().compute(context));
+					out.writeFloat((float) router.depth().compute(context));
+				}
 			}
+		} catch (IOException e) {
+			throw new IllegalStateException(e);
 		}
+		TerrainRenderer.emit("climate.bin", climate.toByteArray());
 		int land = 0;
 		int[] landHeights = new int[samples.size()];
 		for (int[] sample : samples) {

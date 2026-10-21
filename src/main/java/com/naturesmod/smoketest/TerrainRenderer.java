@@ -140,20 +140,29 @@ final class TerrainRenderer {
 		try {
 			ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 			ImageIO.write(image, "png", bytes);
-			Path dir = Path.of("maps");
-			Files.createDirectories(dir);
-			Files.write(dir.resolve(name + ".png"), bytes.toByteArray());
-			String encoded = Base64.getEncoder().encodeToString(bytes.toByteArray());
-			StringBuilder out = new StringBuilder();
-			out.append("[map-begin ").append(name).append("]\n");
-			for (int i = 0; i < encoded.length(); i += 3000) {
-				out.append("[map] ").append(encoded, i, Math.min(encoded.length(), i + 3000)).append('\n');
-			}
-			out.append("[map-end ").append(name).append("]");
-			System.out.println(out);
+			emit(name + ".png", bytes.toByteArray());
 		} catch (IOException e) {
 			System.out.println("[map-error " + name + "] " + e);
 		}
+	}
+
+	/** Writes a file to {@code maps/} and prints it base64-encoded so it can be recovered from CI logs. */
+	static void emit(String fileName, byte[] bytes) {
+		try {
+			Path dir = Path.of("maps");
+			Files.createDirectories(dir);
+			Files.write(dir.resolve(fileName), bytes);
+		} catch (IOException e) {
+			System.out.println("[map-error " + fileName + "] " + e);
+		}
+		String encoded = Base64.getEncoder().encodeToString(bytes);
+		StringBuilder out = new StringBuilder();
+		out.append("[map-begin ").append(fileName).append("]\n");
+		for (int i = 0; i < encoded.length(); i += 3000) {
+			out.append("[map] ").append(encoded, i, Math.min(encoded.length(), i + 3000)).append('\n');
+		}
+		out.append("[map-end ").append(fileName).append("]");
+		System.out.println(out);
 	}
 
 	private static int darken(int rgb, double factor) {
