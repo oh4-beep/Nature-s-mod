@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "naturesmod:tidewalker"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "naturesmod:tidewalker"
+      }
+    ]
+  }
+}

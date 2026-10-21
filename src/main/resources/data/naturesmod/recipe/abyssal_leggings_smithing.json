@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smithing_transform",
+  "addition": "naturesmod:abyssal_plate",
+  "base": "naturesmod:tidewalker_leggings",
+  "result": {
+    "id": "naturesmod:abyssal_leggings"
+  },
+  "template": "naturesmod:abyssal_upgrade_smithing_template"
+}

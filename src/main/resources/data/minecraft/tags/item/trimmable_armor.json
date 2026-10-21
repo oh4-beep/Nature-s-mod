@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "naturesmod:tidewalker_helmet",
+    "naturesmod:tidewalker_chestplate",
+    "naturesmod:tidewalker_leggings",
+    "naturesmod:tidewalker_boots",
+    "naturesmod:abyssal_helmet",
+    "naturesmod:abyssal_chestplate",
+    "naturesmod:abyssal_leggings",
+    "naturesmod:abyssal_boots"
+  ]
+}

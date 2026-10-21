@@ -1,0 +1,217 @@
+"""The Nature's Mod sea creatures.
+
+Behaviours:
+  school   passive, swims in schools          bottom   passive, keeps to the sea floor
+  passive  passive, alone or in small groups  drifter  jellyfish: drifts, stings on touch
+  neutral  attacks whatever hurts it          ambush   hostile, lurks and strikes at close range
+  hunter   hostile, hunts swimmers and fish   pack     hostile school (piranhas)
+  boss     the abyssal leviathan
+
+Habitats name groups of biomes (see HABITATS); abyss_* habitats are the Abyss biomes.
+"""
+
+HABITATS = {
+    "river": ["river"],
+    "frozen_river": ["frozen_river"],
+    "swamp": ["swamp", "mangrove_swamp"],
+    "jungle_water": ["jungle", "sparse_jungle", "bamboo_jungle", "mangrove_swamp"],
+    "warm": ["warm_ocean"],
+    "lukewarm": ["lukewarm_ocean", "deep_lukewarm_ocean"],
+    "ocean": ["ocean", "deep_ocean"],
+    "cold": ["cold_ocean", "deep_cold_ocean"],
+    "frozen": ["frozen_ocean", "deep_frozen_ocean"],
+    "deep": ["deep_ocean", "deep_lukewarm_ocean", "deep_cold_ocean"],
+    "deep_cold": ["deep_cold_ocean", "deep_frozen_ocean"],
+    "abyss_twilight": ["naturesmod:twilight_waters", "naturesmod:glowing_reef"],
+    "abyss_midnight": ["naturesmod:midnight_zone", "naturesmod:glowing_reef"],
+    "abyss_floor": ["naturesmod:abyssal_plains", "naturesmod:hydrothermal_vents", "naturesmod:bone_fields"],
+    "abyss_vents": ["naturesmod:hydrothermal_vents"],
+}
+
+
+def S(id, name, plan, scale, behavior, habitats, colors, pattern="plain", variant=None, health=None, attack=0,
+      speed=1.0, weight=10, group=(1, 2), glow=(), drops=("fillet",), bucket=False, translucent=False, depth="any",
+      hitbox=None, category=None, sound="fish", desc=""):
+    return {
+        "id": id, "name": name, "plan": plan, "variant": variant or {}, "scale": scale, "behavior": behavior,
+        "habitats": list(habitats), "colors": colors, "pattern": pattern, "health": health, "attack": attack,
+        "speed": speed, "weight": weight, "group": group, "glow": list(glow), "drops": list(drops), "bucket": bucket,
+        "translucent": translucent, "depth": depth, "hitbox": hitbox, "category": category, "sound": sound,
+        "desc": desc,
+    }
+
+
+def c(back, side, belly, fin, accent, eye="#101010"):
+    return {"back": back, "side": side, "belly": belly, "fin": fin, "accent": accent, "eye": eye}
+
+
+SPECIES = [
+    # --- rivers and lakes ------------------------------------------------------------------
+    S("rainbow_trout", "Rainbow Trout", "fish", 0.7, "passive", ["river"],
+      c("#5d6b3a", "#9aa36a", "#e9e4d0", "#7d7a52", "#e0708a"), "rainbow", bucket=True, health=6, desc="A speckled river trout with a pink stripe."),
+    S("brown_trout", "Brown Trout", "fish", 0.7, "passive", ["river", "frozen_river"],
+      c("#5a4526", "#a07a45", "#efe0b8", "#8a6a3a", "#c03a2a"), "spots", bucket=True, health=6),
+    S("northern_pike", "Northern Pike", "long", 0.9, "neutral", ["river", "swamp"],
+      c("#3f5a2a", "#6f8a46", "#e8e6c4", "#6a6a3a", "#d8dc9a"), "spots", variant={"segments": 4, "stiff": True},
+      health=12, attack=4, speed=1.3, weight=4, group=(1, 1)),
+    S("catfish", "Catfish", "fish", 1.0, "bottom", ["river", "swamp"],
+      c("#3a3a32", "#5e5a4c", "#c8c0a8", "#4a463a", "#2a2a24"), "mottled", variant={"barbels": True, "stretch": 2},
+      health=12, weight=5, group=(1, 2), depth="floor"),
+    S("carp", "Carp", "fish", 0.9, "passive", ["river", "swamp"],
+      c("#6e5a24", "#c09a3c", "#f0dc9a", "#a07a3a", "#8a6a24"), "scales", variant={"deep": True}, bucket=True, health=8),
+    S("perch", "Perch", "fish", 0.55, "school", ["river"],
+      c("#4f5e2a", "#a0a84a", "#f0ecc8", "#e07a2a", "#2e3a14"), "bars", bucket=True, health=4, group=(3, 7)),
+    S("piranha", "Piranha", "deep", 0.5, "pack", ["jungle_water"],
+      c("#4a5258", "#9aa4aa", "#d83a24", "#7a8288", "#c02a1a", "#d8b020"), "speckles", variant={"round": True},
+      health=6, attack=2, speed=1.6, weight=8, group=(4, 8), bucket=True, desc="Small, fearless and never alone."),
+    S("sturgeon", "Sturgeon", "fish", 1.7, "bottom", ["river", "cold"],
+      c("#3f4a4c", "#6e7c7e", "#d8dcd4", "#4a5658", "#c8ccc0"), "scutes", variant={"stretch": 6, "barbels": True},
+      health=30, weight=2, group=(1, 1), drops=("fillet", "sea_scale"), depth="floor"),
+
+    # --- warm reefs -------------------------------------------------------------------------
+    S("clownfish", "Clownfish", "fish", 0.35, "passive", ["warm"],
+      c("#e86a10", "#f47a18", "#f49a40", "#e05a10", "#ffffff"), "clown", bucket=True, health=3, group=(2, 4)),
+    S("blue_tang", "Blue Tang", "deep", 0.45, "school", ["warm", "lukewarm"],
+      c("#1a3ac8", "#2a5af0", "#3a7af8", "#1a2a8a", "#101830", "#101010"), "tang", bucket=True, health=4, group=(3, 6)),
+    S("butterflyfish", "Butterflyfish", "deep", 0.4, "passive", ["warm"],
+      c("#f0d020", "#fae060", "#fff4c0", "#f0c010", "#202020"), "eye_band", bucket=True, health=3, group=(1, 3)),
+    S("queen_angelfish", "Queen Angelfish", "deep", 0.5, "passive", ["warm", "lukewarm"],
+      c("#2a6ad0", "#3ab0e0", "#f0d830", "#f0c020", "#1a3aa0"), "angel", variant={"tall_fins": True}, bucket=True, health=4),
+    S("parrotfish", "Parrotfish", "fish", 0.85, "passive", ["warm"],
+      c("#1aa08a", "#3ad0a8", "#f08aa8", "#2a8ad0", "#e05a9a"), "scales", variant={"beak": True}, bucket=True, health=8),
+    S("lionfish", "Lionfish", "deep", 0.55, "drifter", ["warm", "lukewarm"],
+      c("#8a1a10", "#c8301a", "#f4dcc8", "#e8a890", "#fff0e0"), "zebra", variant={"spines": True},
+      health=6, attack=2, weight=4, group=(1, 1), desc="Beautiful, slow, and covered in venomous spines."),
+    S("moray_eel", "Moray Eel", "long", 1.1, "ambush", ["warm", "lukewarm"],
+      c("#3a5a1a", "#5a8a2a", "#9ab84a", "#4a6a24", "#c8d84a"), "mottled", variant={"segments": 5, "thick": 1, "fangs": True},
+      health=20, attack=6, speed=1.2, weight=4, group=(1, 1), depth="floor"),
+    S("barracuda", "Barracuda", "long", 1.0, "hunter", ["warm", "lukewarm"],
+      c("#4a5a6a", "#a8b4c0", "#e8ecf0", "#5a6a7a", "#2a3440"), "bars", variant={"segments": 4, "stiff": True, "fangs": True},
+      health=16, attack=5, speed=1.8, weight=4, group=(1, 2)),
+    S("reef_shark", "Reef Shark", "shark", 1.2, "hunter", ["warm", "lukewarm"],
+      c("#6a7480", "#8a96a2", "#e8ecee", "#5a646e", "#1a1a1a"), "tips",
+      health=26, attack=6, speed=1.4, weight=3, group=(1, 2), drops=("fillet", "shark_tooth", "sea_scale")),
+    S("seahorse", "Seahorse", "seahorse", 0.45, "passive", ["warm", "lukewarm"],
+      c("#d8901a", "#f0b030", "#f8d070", "#e8a020", "#a05a10"), "rings", bucket=True, health=3, speed=0.5, group=(1, 2)),
+
+    # --- temperate and cold seas -------------------------------------------------------------
+    S("herring", "Herring", "fish", 0.45, "school", ["ocean", "cold"],
+      c("#2a4a6a", "#8aa8c0", "#eef2f4", "#6a8aa0", "#4a6a8a"), "plain", bucket=True, health=3, weight=12, group=(6, 12), depth="surface"),
+    S("mackerel", "Mackerel", "fish", 0.55, "school", ["ocean", "lukewarm"],
+      c("#1a5a4a", "#6aa89a", "#eef4f0", "#4a7a6a", "#0a2a24"), "wavy", bucket=True, health=4, weight=10, group=(4, 8)),
+    S("bluefin_tuna", "Bluefin Tuna", "fish", 1.6, "school", ["ocean", "lukewarm", "deep"],
+      c("#101c4a", "#5a6a8a", "#dce0e8", "#2a3a6a", "#f0d020"), "finlets", variant={"stretch": 2},
+      health=26, speed=1.7, weight=3, group=(2, 4), drops=("fillet", "fillet", "sea_scale"), category="water_creature"),
+    S("swordfish", "Swordfish", "fish", 1.6, "neutral", ["ocean", "lukewarm", "warm", "deep"],
+      c("#3a2a4a", "#6a5a7a", "#d8d4dc", "#4a3a5a", "#2a1a3a"), "plain", variant={"bill": True, "stretch": 3},
+      health=28, attack=8, speed=1.8, weight=2, group=(1, 1), drops=("fillet", "sea_scale"), category="water_creature"),
+    S("manta_ray", "Manta Ray", "ray", 2.2, "passive", ["warm", "lukewarm", "deep"],
+      c("#141414", "#202020", "#f0f0f0", "#181818", "#e8e8e8"), "manta", variant={"manta": True},
+      health=40, speed=0.9, weight=2, group=(1, 1), drops=("sea_scale",), category="water_creature"),
+    S("flounder", "Flounder", "ray", 0.75, "bottom", ["ocean", "cold", "lukewarm"],
+      c("#8a7a54", "#a8946a", "#f4f0e8", "#968460", "#5a4a30"), "speckles", variant={"flat": True}, bucket=True,
+      health=8, speed=0.6, group=(1, 2), depth="floor"),
+    S("ocean_sunfish", "Ocean Sunfish", "deep", 2.4, "passive", ["ocean", "lukewarm", "deep"],
+      c("#6a7480", "#a8b0b8", "#e0e4e8", "#8a949e", "#5a646e"), "mottled", variant={"round": True, "tall_fins": True},
+      health=40, speed=0.5, weight=2, group=(1, 1), drops=("fillet", "fillet", "sea_scale"), category="water_creature"),
+    S("hammerhead_shark", "Hammerhead Shark", "shark", 1.8, "hunter", ["warm", "lukewarm", "deep"],
+      c("#7a6a50", "#9a8a6e", "#ece6da", "#6a5a44", "#4a3e2e"), "plain", variant={"hammer": True},
+      health=34, attack=7, speed=1.4, weight=2, group=(1, 3), drops=("fillet", "shark_tooth", "sea_scale")),
+
+    # --- polar seas ---------------------------------------------------------------------------
+    S("arctic_char", "Arctic Char", "fish", 0.7, "school", ["frozen", "cold", "frozen_river"],
+      c("#2a3a3a", "#5a6a62", "#e05a3a", "#e8e0d0", "#f0b0a0"), "spots", bucket=True, health=6, group=(3, 6)),
+    S("icefish", "Icefish", "fish", 0.6, "passive", ["frozen"],
+      c("#b8d0dc", "#d8e8f0", "#f4f8fa", "#c8dce8", "#a0bccc", "#202a30"), "plain", translucent=True, bucket=True, health=5,
+      desc="Its blood holds no red cells, so the whole fish looks made of ice."),
+    S("greenland_shark", "Greenland Shark", "shark", 2.4, "neutral", ["deep_cold", "frozen"],
+      c("#3a3430", "#5a524a", "#8a8276", "#4a423a", "#2a2420"), "mottled", variant={"bulky": True},
+      health=50, attack=8, speed=0.7, weight=1, group=(1, 1), drops=("fillet", "shark_tooth", "sea_scale"),
+      desc="Slow, ancient and enormous; it can live for centuries."),
+
+    # --- open deep ocean -----------------------------------------------------------------------
+    S("great_white_shark", "Great White Shark", "shark", 2.5, "hunter", ["deep", "ocean"],
+      c("#5a646e", "#7a848e", "#f4f6f8", "#4a545e", "#30383e"), "countershade",
+      health=60, attack=10, speed=1.5, weight=1, group=(1, 1), drops=("fillet", "shark_tooth", "shark_tooth", "sea_scale"),
+      category="water_creature"),
+    S("giant_grouper", "Giant Grouper", "fish", 1.8, "neutral", ["warm", "deep"],
+      c("#3e3a2c", "#6a6248", "#a8a080", "#4a4432", "#2a2618"), "mottled", variant={"deep": True},
+      health=40, attack=6, speed=0.8, weight=2, group=(1, 1), drops=("fillet", "fillet", "sea_scale"), category="water_creature"),
+    S("coelacanth", "Coelacanth", "fish", 1.4, "passive", ["deep"],
+      c("#1a2a4a", "#2a3e66", "#3a4e74", "#24365a", "#e8eef4"), "spots", variant={"lobes": True},
+      health=30, speed=0.7, weight=1, group=(1, 1), drops=("fillet", "sea_scale"), depth="deep", category="water_creature",
+      desc="A living fossil, older than the dinosaurs."),
+
+    # --- jellyfish -------------------------------------------------------------------------------
+    S("moon_jelly", "Moon Jelly", "jelly", 0.8, "drifter", ["ocean", "warm", "lukewarm"],
+      c("#e8eef8", "#e8eef8", "#e8eef8", "#f0c8d8", "#f0a0c0"), "moon", translucent=True, health=4, attack=1,
+      speed=0.3, weight=6, group=(3, 8), drops=("slime",)),
+    S("lions_mane_jelly", "Lion's Mane Jelly", "jelly", 1.6, "drifter", ["cold", "frozen"],
+      c("#c84a1a", "#d86a2a", "#e88a3a", "#f0b060", "#a03010"), "plain", variant={"tentacles": 16, "length": 22, "big": True},
+      translucent=True, health=10, attack=3, speed=0.25, weight=3, group=(1, 2), drops=("slime",)),
+    S("box_jellyfish", "Box Jellyfish", "jelly", 0.6, "drifter", ["warm", "lukewarm"],
+      c("#c0e0f0", "#c0e0f0", "#c0e0f0", "#a0c8e0", "#80b0d0"), "plain", variant={"box": True, "tentacles": 8, "length": 14},
+      translucent=True, health=4, attack=4, speed=0.4, weight=2, group=(1, 3), drops=("slime",),
+      desc="Nearly invisible, and the most venomous creature in the sea."),
+
+    # --- the Abyss ---------------------------------------------------------------------------------
+    S("lanternfish", "Lanternfish", "fish", 0.4, "school", ["abyss_twilight", "abyss_midnight"],
+      c("#141c2a", "#26324a", "#3a465e", "#1a2236", "#8ad0ff"), "plain", glow=["photophores"], bucket=True, health=3,
+      weight=14, group=(6, 12)),
+    S("hatchetfish", "Hatchetfish", "deep", 0.4, "school", ["abyss_twilight"],
+      c("#4a5664", "#b8c4d0", "#e0e8f0", "#8a96a2", "#8ad0ff"), "plain", glow=["photophores"], bucket=True, health=3,
+      weight=10, group=(4, 10)),
+    S("anglerfish", "Anglerfish", "fish", 0.9, "ambush", ["abyss_midnight", "abyss_floor"],
+      c("#1a1410", "#2a221a", "#3a3026", "#221a14", "#d8d0c0"), "rough", variant={"deep": True, "lure": True},
+      glow=["lure"], health=20, attack=7, speed=0.9, weight=6, group=(1, 1), drops=("fillet", "abyssal_scale")),
+    S("viperfish", "Viperfish", "long", 0.8, "hunter", ["abyss_midnight"],
+      c("#101828", "#1a2a44", "#24365a", "#141e34", "#e8f0ff"), "plain", variant={"segments": 4, "fangs": True},
+      glow=["photophores"], health=14, attack=6, speed=1.5, weight=6, group=(1, 2), drops=("abyssal_scale",)),
+    S("gulper_eel", "Gulper Eel", "long", 1.5, "hunter", ["abyss_midnight", "abyss_floor"],
+      c("#0e0e12", "#18181e", "#24242c", "#121218", "#ff5aa0"), "plain", variant={"segments": 7, "taper": True, "big_jaw": True, "glow_tail": True},
+      glow=["tail_tip"], health=22, attack=7, speed=1.1, weight=4, group=(1, 1), drops=("abyssal_scale",)),
+    S("fangtooth", "Fangtooth", "deep", 0.65, "hunter", ["abyss_midnight", "abyss_floor"],
+      c("#1e1612", "#30241c", "#3e3026", "#261c16", "#e8e0d0"), "rough", variant={"round": True},
+      health=14, attack=6, speed=1.2, weight=6, group=(1, 2), drops=("abyssal_scale",)),
+    S("black_dragonfish", "Black Dragonfish", "long", 1.0, "hunter", ["abyss_midnight"],
+      c("#08080c", "#101016", "#18181e", "#0c0c10", "#ff3a3a"), "plain", variant={"segments": 5, "fangs": True, "barbel": True},
+      glow=["photophores", "lure"], health=16, attack=7, speed=1.4, weight=4, group=(1, 1), drops=("abyssal_scale",)),
+    S("barreleye", "Barreleye", "fish", 0.6, "passive", ["abyss_twilight", "abyss_midnight"],
+      c("#2a2e36", "#3e444e", "#5a606a", "#343a44", "#7aff7a"), "plain", variant={"dome": True}, glow=["eyes"],
+      health=6, weight=4, group=(1, 1), bucket=True, desc="Its eyes look up through a clear dome on its head."),
+    S("giant_squid", "Giant Squid", "squid", 2.6, "hunter", ["abyss_midnight", "abyss_floor"],
+      c("#6a1a1a", "#8a2a24", "#c87a6a", "#7a2420", "#4a0e0e"), "spots", variant={"tentacle_len": 18},
+      health=70, attack=10, speed=1.0, weight=2, group=(1, 1), drops=("abyssal_scale", "abyssal_scale", "ink"),
+      sound="squid", category="water_creature"),
+    S("vampire_squid", "Vampire Squid", "squid", 0.9, "passive", ["abyss_midnight"],
+      c("#3a0e14", "#5a1a22", "#7a2a32", "#4a141a", "#5ac8ff"), "plain", variant={"cape": True}, glow=["spots", "eyes"],
+      health=10, speed=0.8, weight=4, group=(1, 1), drops=("ink",), sound="squid"),
+    S("dumbo_octopus", "Dumbo Octopus", "squid", 0.7, "bottom", ["abyss_floor"],
+      c("#e8b0a0", "#f0c0b0", "#f8dcd0", "#f0a890", "#d88a7a"), "plain", variant={"dumbo": True, "arms": 8},
+      health=8, speed=0.5, weight=6, group=(1, 2), drops=("ink",), sound="squid"),
+    S("tripod_fish", "Tripod Fish", "fish", 0.8, "bottom", ["abyss_floor"],
+      c("#3a3e44", "#585e66", "#7a8088", "#4a5058", "#2a2e34"), "plain", variant={"legs": True},
+      health=8, speed=0.4, weight=8, group=(1, 3), depth="floor", desc="Stands on the sea floor on three long fins."),
+    S("goblin_shark", "Goblin Shark", "shark", 2.1, "hunter", ["abyss_midnight", "abyss_floor"],
+      c("#c88a8a", "#e0a8a8", "#f4d8d8", "#c87a7a", "#a85a5a"), "plain", variant={"snout": True},
+      health=45, attack=9, speed=1.3, weight=2, group=(1, 1), drops=("abyssal_scale", "shark_tooth"), category="water_creature"),
+    S("frilled_shark", "Frilled Shark", "long", 1.7, "hunter", ["abyss_midnight", "abyss_floor"],
+      c("#3a3228", "#5a4e3e", "#7a6c58", "#4a4032", "#c8b8a0"), "plain", variant={"segments": 7, "frill": True, "fangs": True, "thick": 1},
+      health=38, attack=8, speed=1.2, weight=2, group=(1, 1), drops=("abyssal_scale", "shark_tooth"), category="water_creature"),
+    S("comb_jelly", "Comb Jelly", "jelly", 0.7, "drifter", ["abyss_twilight", "abyss_midnight"],
+      c("#d8e8f8", "#d8e8f8", "#d8e8f8", "#c0d8f0", "#ffffff"), "plain", variant={"oval": True}, translucent=True,
+      glow=["combs"], health=4, attack=0, speed=0.3, weight=8, group=(2, 5), drops=("slime",),
+      desc="Harmless; rainbows ripple along its rows of tiny combs."),
+    S("ghost_shark", "Ghost Shark", "shark", 1.3, "passive", ["abyss_floor"],
+      c("#b8bcc8", "#d0d4de", "#e8eaf0", "#a8acb8", "#8a8e9a", "#1a8a5a"), "plain", variant={"whip": True, "big_eyes": True},
+      health=24, speed=0.8, weight=4, group=(1, 1), drops=("fillet", "abyssal_scale"), desc="Not a shark at all, but a chimaera."),
+    # The leviathan never spawns naturally: one waits in the lair at the bottom of every Abyssal Trench.
+    S("abyssal_leviathan", "Abyssal Leviathan", "long", 6.0, "boss", [],
+      c("#06101c", "#0c1a2c", "#16283c", "#08141e", "#3ae0ff", "#3ae0ff"), "plain",
+      variant={"segments": 10, "thick": 2, "fangs": True, "frill": True}, glow=["stripes", "eyes"],
+      health=300, attack=18, speed=1.1, weight=1, group=(1, 1),
+      drops=("abyssal_heart", "abyssal_scale", "abyssal_scale", "abyssal_scale", "abyssal_scale"),
+      category="water_creature", sound="leviathan", desc="The lord of the deepest dark."),
+]
+
+assert len({s["id"] for s in SPECIES}) == len(SPECIES)

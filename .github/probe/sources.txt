@@ -1,34 +1,20 @@
-CodModel.java
-SalmonModel.java
-TropicalFish*Model.java
-PufferfishBigModel.java
-ModelLayerLocation.java
-EntityRendererProvider.java|bakeLayer|class Context|public
-EntityTypes.java|public static final EntityType<Cod> COD|public static final EntityType<GlowSquid>|public static final EntityType<Guardian> GUARDIAN|private static <T extends Entity> EntityType<T> register
-EntityType.java|public EntityType.Builder<T> [a-zA-Z]+\(|public static <T extends Entity> EntityType.Builder<T> of|public EntityType<T> build
-SpawnPlacements.java@55-75
-Items.java@1918-1926
-Items.java@2860-2945
-Item.java|public Item.Properties [a-zA-Z]+\(
-Blocks.java@5645-5675
-Blocks.java@2176-2192
-Blocks.java@3043-3052
-BlockBehaviour.java|public BlockBehaviour.Properties [a-zA-Z]+\(
-SmoothSwimmingMoveControl.java|public SmoothSwimmingMoveControl
-SmoothSwimmingLookControl.java|public SmoothSwimmingLookControl
-MeleeAttackGoal.java|public MeleeAttackGoal|protected void checkAndPerformAttack|protected boolean canPerformAttack
-NearestAttackableTargetGoal.java|public NearestAttackableTargetGoal
-HurtByTargetGoal.java|public HurtByTargetGoal
-AvoidEntityGoal.java|public AvoidEntityGoal
-RandomSwimmingGoal.java|public RandomSwimmingGoal
-TryFindWaterGoal.java|public TryFindWaterGoal
-WaterBoundPathNavigation.java|public WaterBoundPathNavigation
-Bucketable.java
-FollowFlockLeaderGoal.java|public FollowFlockLeaderGoal
-Mob.java|public boolean doHurtTarget|public void setTarget|public LivingEntity getTarget
-Monster.java|public static boolean isDarkEnoughToSpawn|public static boolean checkMonsterSpawnRules
-Level.java|public static final ResourceKey<Level>
-ServerLevel.java|public .*getServer\(\)|public boolean addFreshEntity
-SoundEvents.java|COD_AMBIENT|COD_DEATH|COD_HURT|COD_FLOP|GUARDIAN_ATTACK|ARMOR_EQUIP_TURTLE|BUCKET_EMPTY_FISH|SQUID_SQUIRT|ELDER_GUARDIAN_CURSE|CONDUIT_ACTIVATE|PORTAL_TRAVEL
-ItemTags.java|REPAIRS_TURTLE_HELMET|FISHES|create\(
-GlowSquidRenderer.java
+ServerBossEvent.java|public ServerBossEvent
+BossEvent.java|public BossEvent\(|public enum|public BossEvent set
+RandomStrollGoal.java|protected .*getPosition|public RandomStrollGoal
+PathfinderMob.java|public .*[Hh]ome
+Mob.java|public void playAttackSound|public boolean isWithinMeleeAttackRange|protected void customServerAiStep|public boolean removeWhenFarAway|public boolean requiresCustomPersistence|public int getMaxHeadXRot|public int getMaxHeadYRot|public .*finalizeSpawn
+Entity.java|public void startSeenByPlayer|public void stopSeenByPlayer|public void playerTouch|needsSync|public void handleEntityEvent|doTeamsAllowDamage|public void setCustomName|public void snapTo|public void moveTo|public void absSnapTo
+LivingEntity.java|public boolean isDeadOrDying|protected int getBaseExperienceReward|protected float getSoundVolume|public void heal\(
+SoundEvents.java|GUARDIAN_HURT|ELDER_GUARDIAN_AMBIENT|ELDER_GUARDIAN_HURT|PHANTOM_BITE|FISH_SWIM|SQUID_AMBIENT|SQUID_HURT|SQUID_DEATH|PUFFER_FISH_STING|ARMOR_EQUIP_NETHERITE|BUBBLE_COLUMN_UPWARDS_AMBIENT|AMBIENT_UNDERWATER_LOOP|LAVA_POP|BLAZE_SHOOT|BEACON_ACTIVATE|CONDUIT_AMBIENT
+MobEffects.java|DARKNESS|MINING_FATIGUE|NAUSEA|DOLPHINS_GRACE|FIRE_RESISTANCE
+DamageSources.java|DamageSource source\(|public DamageSources\(
+Item.java|public Item.Properties attributes|public Item.Properties component\(
+Mth.java|TWO_PI|DEG_TO_RAD|public static final float PI
+TargetingConditions.java|interface Selector|boolean test\(
+CreativeModeTab.java|interface Output|interface DisplayItemsGenerator|void accept\(
+StructurePiece.java|protected boolean createChest|protected void placeBlock|protected BlockState getBlock|public abstract void postProcess
+OceanMonumentPieces.java|ElderGuardian|addFreshEntity|snapTo|moveTo|finalizeSpawn
+ParticleTypes.java|BUBBLE|PORTAL|GLOW|DRIPPING_LAVA|SOUL|ASH|SPORE|NAUTILUS|UNDERWATER|SQUID_INK|LAVA|SMOKE|FLAME
+EntityType.java|public T create\(|public .*spawn\(
+LiquidBlock.java|public LiquidBlock\(
+Block.java|public static void popResource\(|public void animateTick

@@ -1,0 +1,272 @@
+package com.naturesmod.client.creature;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
+
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.util.Mth;
+
+import com.naturesmod.creature.SpeciesData;
+
+/**
+ * Animates any sea creature model built from one of the body plans: tails that beat and bodies
+ * that ripple, fins that scull, wings that flap, bells that pulse and jaws that snap.
+ */
+public class SeaCreatureModel extends EntityModel<CreatureRenderState> {
+	private static final float DEG = (float) (Math.PI / 180.0);
+
+	private final SpeciesData species;
+	private final ModelPart body;
+	private final ModelPart head;
+	private final ModelPart jaw;
+	private final ModelPart tail;
+	private final ModelPart tailFin;
+	private final ModelPart dorsal;
+	private final ModelPart leftFin;
+	private final ModelPart rightFin;
+	private final ModelPart leftWing;
+	private final ModelPart rightWing;
+	private final ModelPart leftHorn;
+	private final ModelPart rightHorn;
+	private final ModelPart lure;
+	private final ModelPart barbel;
+	private final ModelPart leftBarbel;
+	private final ModelPart rightBarbel;
+	private final ModelPart cape;
+	private final List<ModelPart> segments;
+	private final List<ModelPart> tentacles;
+	private final List<ModelPart> arms;
+
+	public SeaCreatureModel(ModelPart root, SpeciesData species) {
+		super(root, species.translucent() ? RenderTypes::entityTranslucent : RenderTypes::entityCutout);
+		this.species = species;
+		Function<String, ModelPart> parts = root.createPartLookup();
+		this.body = parts.apply("body");
+		this.head = parts.apply("head");
+		this.jaw = parts.apply("jaw");
+		this.tail = parts.apply("tail");
+		this.tailFin = parts.apply("tail_fin");
+		this.dorsal = parts.apply("dorsal");
+		this.leftFin = parts.apply("left_fin");
+		this.rightFin = parts.apply("right_fin");
+		this.leftWing = parts.apply("left_wing");
+		this.rightWing = parts.apply("right_wing");
+		this.leftHorn = parts.apply("left_horn");
+		this.rightHorn = parts.apply("right_horn");
+		this.lure = parts.apply("lure");
+		this.barbel = parts.apply("barbel");
+		this.leftBarbel = parts.apply("left_barbel");
+		this.rightBarbel = parts.apply("right_barbel");
+		this.cape = parts.apply("cape");
+		this.segments = numbered(parts, "segment");
+		this.tentacles = numbered(parts, "tentacle");
+		this.arms = numbered(parts, "arm");
+	}
+
+	private static List<ModelPart> numbered(Function<String, ModelPart> parts, String prefix) {
+		List<ModelPart> list = new ArrayList<>();
+		for (int i = 0; ; i++) {
+			ModelPart part = parts.apply(prefix + i);
+			if (part == null) {
+				return list;
+			}
+			list.add(part);
+		}
+	}
+
+	@Override
+	public void setupAnim(CreatureRenderState state) {
+		super.setupAnim(state);
+		float age = state.ageInTicks;
+		float moving = Mth.clamp(state.walkAnimationSpeed * 3.0F, 0.0F, 1.0F);
+		// Big animals beat their tails slowly and deliberately, small fish flick theirs.
+		float tempo = 1.0F / Mth.sqrt(Math.max(0.4F, this.species.scale()));
+		boolean stranded = !state.isInWater;
+		switch (this.species.plan()) {
+			case "jelly" -> this.animateJelly(state, age);
+			case "squid" -> this.animateSquid(state, age, tempo);
+			case "ray" -> this.animateRay(age, tempo, moving);
+			case "seahorse" -> this.animateSeahorse(age);
+			case "long" -> this.animateLong(age, tempo, moving, stranded);
+			default -> this.animateFish(age, tempo, moving, stranded);
+		}
+		this.animateJaw(state, age);
+		if (this.body != null && !"jelly".equals(this.species.plan()) && !"seahorse".equals(this.species.plan())) {
+			this.body.xRot += state.xRot * DEG;
+		}
+	}
+
+	private void animateFish(float age, float tempo, float moving, boolean stranded) {
+		float speed = stranded ? 1.7F : (0.35F + 0.4F * moving) * tempo;
+		float amplitude = stranded ? 0.8F : 0.3F + 0.2F * moving;
+		float beat = Mth.sin(age * speed);
+		if (this.tail != null) {
+			this.tail.yRot += -amplitude * beat;
+		}
+		if (this.tailFin != null) {
+			this.tailFin.yRot += -amplitude * 0.8F * Mth.sin(age * speed - 0.7F);
+		}
+		if (this.body != null) {
+			this.body.yRot += amplitude * 0.12F * Mth.sin(age * speed + 1.2F);
+		}
+		float scull = Mth.sin(age * 0.3F * tempo) * 0.3F;
+		if (this.leftFin != null) {
+			this.leftFin.zRot += scull;
+		}
+		if (this.rightFin != null) {
+			this.rightFin.zRot -= scull;
+		}
+		this.sway(this.leftBarbel, age, 0.0F);
+		this.sway(this.rightBarbel, age, 1.5F);
+		if (this.lure != null) {
+			this.lure.xRot += Mth.sin(age * 0.11F) * 0.12F;
+		}
+	}
+
+	private void animateLong(float age, float tempo, float moving, boolean stranded) {
+		float speed = stranded ? 1.2F : (0.25F + 0.3F * moving) * tempo;
+		float amplitude = stranded ? 0.45F : 0.16F + 0.1F * moving;
+		for (int i = 0; i < this.segments.size(); i++) {
+			// A wave that travels from head to tail, swinging wider towards the tail.
+			this.segments.get(i).yRot += amplitude * (0.6F + 0.15F * i) * Mth.sin(age * speed - i * 0.9F);
+		}
+		if (this.tailFin != null) {
+			this.tailFin.yRot += amplitude * 1.6F * Mth.sin(age * speed - this.segments.size() * 0.9F);
+		}
+		if (this.head != null) {
+			this.head.yRot += amplitude * 0.4F * Mth.sin(age * speed + 0.9F);
+		}
+		if (this.barbel != null) {
+			this.barbel.xRot += Mth.sin(age * 0.09F) * 0.15F;
+			this.barbel.zRot += Mth.sin(age * 0.13F) * 0.1F;
+		}
+	}
+
+	private void animateRay(float age, float tempo, float moving) {
+		boolean flat = this.tail == null;
+		float speed = (flat ? 0.2F : 0.12F + 0.05F * moving) * tempo * 2.0F;
+		float flap = (flat ? 0.12F : 0.45F) * Mth.sin(age * speed);
+		if (this.leftWing != null) {
+			this.leftWing.zRot += flap;
+		}
+		if (this.rightWing != null) {
+			this.rightWing.zRot -= flap;
+		}
+		if (this.tail != null) {
+			this.tail.yRot += Mth.sin(age * 0.07F) * 0.15F;
+			this.tail.xRot += Mth.sin(age * speed - 1.0F) * 0.06F;
+		}
+		if (this.leftHorn != null) {
+			this.leftHorn.xRot += Mth.sin(age * 0.05F) * 0.2F;
+		}
+		if (this.rightHorn != null) {
+			this.rightHorn.xRot += Mth.sin(age * 0.05F + 0.5F) * 0.2F;
+		}
+		if (this.body != null) {
+			this.body.y += Mth.sin(age * speed + 1.5F) * 0.6F;
+		}
+	}
+
+	private void animateJelly(CreatureRenderState state, float age) {
+		float pulse = state.pulse;
+		// A quick squeeze, then the bell slowly relaxes again.
+		float squeeze = pulse < 5.0F ? pulse / 5.0F : pulse < 25.0F ? 1.0F - (pulse - 5.0F) / 20.0F : 0.0F;
+		if (this.tentacles.isEmpty()) {
+			// Comb jellies glide on their cilia instead of pulsing.
+			squeeze = 0.08F * (Mth.sin(age * 0.08F) + 1.0F);
+		}
+		if (this.body != null) {
+			this.body.xScale = 1.0F - 0.2F * squeeze;
+			this.body.zScale = 1.0F - 0.2F * squeeze;
+			this.body.yScale = 1.0F + 0.14F * squeeze;
+			this.body.yRot += age * 0.004F;
+			if (!state.isInWater) {
+				this.body.yScale *= 0.55F;
+				this.body.y += 4.0F;
+			}
+		}
+		float spread = 0.32F * (1.0F - squeeze) - 0.08F;
+		for (int i = 0; i < this.tentacles.size(); i++) {
+			ModelPart tentacle = this.tentacles.get(i);
+			tentacle.zRot += -spread + Mth.sin(age * 0.07F + i * 0.8F) * 0.1F;
+			tentacle.xRot += Mth.sin(age * 0.05F + i * 1.7F) * 0.12F;
+		}
+		for (int i = 0; i < this.arms.size(); i++) {
+			ModelPart arm = this.arms.get(i);
+			arm.zRot += -spread * 0.4F + Mth.sin(age * 0.06F + i * 2.1F) * 0.08F;
+			arm.xRot += Mth.sin(age * 0.045F + i) * 0.1F;
+		}
+	}
+
+	private void animateSquid(CreatureRenderState state, float age, float tempo) {
+		boolean dumbo = this.tentacles.isEmpty() && this.cape == null && this.species.scale() < 1.0F;
+		float cycle = (Mth.sin(age * 0.12F * tempo) + 1.0F) * 0.5F;
+		int count = this.arms.size();
+		for (int i = 0; i < count; i++) {
+			ModelPart arm = this.arms.get(i);
+			float angle = (float) (Math.PI * 2.0) * i / count;
+			float spread = (dumbo ? 0.25F : 0.12F) + 0.3F * cycle;
+			// Arms fan out from the body and close again as the animal jets along.
+			arm.xRot += Mth.sin(angle) * spread;
+			arm.yRot += -Mth.cos(angle) * spread;
+			arm.zRot += Mth.sin(age * 0.1F + i) * 0.05F;
+		}
+		for (int i = 0; i < this.tentacles.size(); i++) {
+			ModelPart tentacle = this.tentacles.get(i);
+			tentacle.yRot += Mth.sin(age * 0.08F + i * 3.0F) * 0.12F;
+			tentacle.xRot += Mth.sin(age * 0.06F + i) * 0.08F + (state.attacking ? -0.3F : 0.0F);
+		}
+		float flap = Mth.sin(age * (dumbo ? 0.18F : 0.25F)) * (dumbo ? 0.5F : 0.3F);
+		if (this.leftFin != null) {
+			this.leftFin.zRot += flap;
+		}
+		if (this.rightFin != null) {
+			this.rightFin.zRot -= flap;
+		}
+		if (this.cape != null) {
+			float open = 1.0F + 0.12F * cycle;
+			this.cape.xScale = open;
+			this.cape.yScale = open;
+		}
+	}
+
+	private void animateSeahorse(float age) {
+		if (this.body != null) {
+			this.body.y += Mth.sin(age * 0.08F) * 0.8F;
+			this.body.xRot += Mth.sin(age * 0.05F) * 0.06F;
+		}
+		if (this.dorsal != null) {
+			this.dorsal.yRot += Mth.sin(age * 1.3F) * 0.4F;
+		}
+		if (this.tail != null) {
+			this.tail.xRot += Mth.sin(age * 0.07F) * 0.12F;
+		}
+		if (this.tailFin != null) {
+			this.tailFin.xRot += Mth.sin(age * 0.07F + 0.6F) * 0.25F;
+		}
+		if (this.head != null) {
+			this.head.xRot += Mth.sin(age * 0.05F + 1.0F) * 0.05F;
+		}
+	}
+
+	private void animateJaw(CreatureRenderState state, float age) {
+		if (this.jaw == null) {
+			return;
+		}
+		if (state.attacking) {
+			this.jaw.xRot += 0.35F + 0.3F * Math.abs(Mth.sin(age * 0.45F));
+		} else {
+			this.jaw.xRot += 0.04F + 0.04F * Mth.sin(age * 0.1F);
+		}
+	}
+
+	private void sway(ModelPart part, float age, float phase) {
+		if (part != null) {
+			part.xRot += Mth.sin(age * 0.1F + phase) * 0.12F;
+			part.yRot += Mth.sin(age * 0.07F + phase) * 0.1F;
+		}
+	}
+}

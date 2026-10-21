@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "naturesmod:item/queen_angelfish_spawn_egg"
+  }
+}

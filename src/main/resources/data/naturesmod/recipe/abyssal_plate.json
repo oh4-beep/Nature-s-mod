@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "naturesmod:abyssal_scale",
+    "naturesmod:abyssal_scale",
+    "naturesmod:abyssal_scale",
+    "naturesmod:abyssal_scale",
+    "minecraft:diamond"
+  ],
+  "result": {
+    "id": "naturesmod:abyssal_plate"
+  }
+}

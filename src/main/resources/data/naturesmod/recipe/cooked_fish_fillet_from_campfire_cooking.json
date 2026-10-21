@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:campfire_cooking",
+  "category": "food",
+  "cookingtime": 600,
+  "experience": 0.35,
+  "ingredient": "naturesmod:raw_fish_fillet",
+  "result": {
+    "id": "naturesmod:cooked_fish_fillet"
+  }
+}

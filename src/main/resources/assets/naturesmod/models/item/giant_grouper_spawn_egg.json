@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "naturesmod:item/giant_grouper_spawn_egg"
+  }
+}

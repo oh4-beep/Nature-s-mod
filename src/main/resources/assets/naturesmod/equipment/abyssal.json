@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "naturesmod:abyssal"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "naturesmod:abyssal"
+      }
+    ]
+  }
+}
