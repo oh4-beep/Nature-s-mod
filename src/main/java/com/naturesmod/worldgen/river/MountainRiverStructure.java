@@ -5,6 +5,7 @@ import java.util.Optional;
 import com.mojang.serialization.MapCodec;
 
 import com.naturesmod.worldgen.FeatureStats;
+import com.naturesmod.worldgen.ModStructures;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.ChunkPos;

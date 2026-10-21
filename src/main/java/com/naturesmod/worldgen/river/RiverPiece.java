@@ -1,6 +1,7 @@
 package com.naturesmod.worldgen.river;
 
 import com.naturesmod.worldgen.FeatureStats;
+import com.naturesmod.worldgen.ModStructures;
 import com.naturesmod.worldgen.WaterWorks;
 import com.naturesmod.worldgen.WorldGenUtil;
 

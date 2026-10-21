@@ -176,8 +176,30 @@ RIVER_SOURCE_BIOMES = [
 ]
 
 
+# Biomes a glacier may start in: its basin must also lie above y=300.
+GLACIER_SOURCE_BIOMES = ["frozen_peaks", "jagged_peaks", "snowy_slopes", "stony_peaks"]
+
+
 def structures():
     return {
+        f"{NS}/worldgen/structure/glacier.json": {
+            "type": f"{NS}:glacier",
+            "biomes": f"#{NS}:has_structure/glacier",
+            "spawn_overrides": {},
+            "step": "lakes",
+        },
+        f"{NS}/worldgen/structure_set/glaciers.json": {
+            "placement": {
+                "type": "minecraft:random_spread",
+                "salt": 418235167,
+                "separation": 4,
+                "spacing": 10,
+            },
+            "structures": [{"structure": f"{NS}:glacier", "weight": 1}],
+        },
+        f"{NS}/tags/worldgen/biome/has_structure/glacier.json": {
+            "values": [f"minecraft:{b}" for b in GLACIER_SOURCE_BIOMES],
+        },
         f"{NS}/worldgen/structure/mountain_river.json": {
             "type": f"{NS}:mountain_river",
             "biomes": f"#{NS}:has_structure/mountain_river",

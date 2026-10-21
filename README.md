@@ -24,6 +24,9 @@ gaping cave mouths, ancient giant trees, and trees that actually topple when you
   are frozen into icefalls instead.
 - **Cascading pools.** Chains of natural terraced pools stepping down hillsides, each spilling into the next.
 - **Alpine tarns.** Clear lakes cradled in high mountain hollows, ringed with gravel and boulders.
+- **Glaciers.** Tongues of ice pour from snowy basins high on the great peaks down into the valleys below: snowfields
+  up top, bare ice lower down, deep blue ice in the walls of the crevasses that crack open where the ice runs
+  steep, rubble moraines along the flanks, and a meltwater lake at the snout.
 - **Cenotes and sinkholes.** Collapsed shafts in jungles and savannas, opening into caverns with turquoise pools
   and vines trailing all the way down.
 

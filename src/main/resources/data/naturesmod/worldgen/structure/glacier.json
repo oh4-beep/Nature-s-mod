@@ -1,0 +1,6 @@
+{
+  "type": "naturesmod:glacier",
+  "biomes": "#naturesmod:has_structure/glacier",
+  "spawn_overrides": {},
+  "step": "lakes"
+}
