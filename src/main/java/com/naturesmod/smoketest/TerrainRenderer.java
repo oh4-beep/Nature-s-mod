@@ -12,6 +12,7 @@ import javax.imageio.ImageIO;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
 
@@ -92,6 +93,41 @@ final class TerrainRenderer {
 		for (int x = 0; x < size; x++) {
 			for (int z = 0; z < size; z++) {
 				image.setRGB(x, z, darken(colors[x * size + z], shade(x, z)));
+			}
+		}
+		return image;
+	}
+
+	/**
+	 * Ice thickness from above: how many blocks of snow and ice lie on top of each column. Snow
+	 * cover is a block or two thick, glaciers far more; columns with blue ice are tinted cyan.
+	 */
+	BufferedImage iceMap() {
+		BufferedImage image = new BufferedImage(size, size, BufferedImage.TYPE_INT_RGB);
+		BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
+		for (int x = 0; x < size; x++) {
+			for (int z = 0; z < size; z++) {
+				int y = heights[x * size + z];
+				int thickness = 0;
+				boolean blue = false;
+				for (int dy = 0; dy < 40; dy++) {
+					BlockState state = level.getBlockState(pos.set(minX + x, y - dy, minZ + z));
+					if (state.is(Blocks.BLUE_ICE)) {
+						blue = true;
+					} else if (!state.is(Blocks.PACKED_ICE) && !state.is(Blocks.SNOW_BLOCK)
+							&& !state.is(Blocks.ICE) && !state.isAir()) {
+						break;
+					}
+					thickness++;
+				}
+				int color;
+				if (thickness == 0) {
+					color = darken(colors[x * size + z], 0.45);
+				} else {
+					double t = Math.min(1, thickness / 14.0);
+					color = mix(0xF4F8FF, blue ? 0x1E6FD9 : 0x5B6FD0, t);
+				}
+				image.setRGB(x, z, darken(color, shade(x, z)));
 			}
 		}
 		return image;

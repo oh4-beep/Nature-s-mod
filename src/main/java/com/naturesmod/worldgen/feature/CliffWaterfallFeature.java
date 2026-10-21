@@ -72,6 +72,9 @@ public record CliffWaterfallFeature(int minDrop, int maxChannel) implements Feat
 		}
 
 		boolean frozen = WorldGenUtil.isCold(level, lip);
+		if (frozen && random.nextInt(3) > 0) {
+			return false; // icefalls are the exception: most frozen cliffs stay bare
+		}
 		boolean warm = WorldGenUtil.isWarm(level, lip);
 		int channelLength = 2 + random.nextInt(Math.max(1, maxChannel - 1));
 
@@ -162,9 +165,11 @@ public record CliffWaterfallFeature(int minDrop, int maxChannel) implements Feat
 			WaterWorks.set(level, pos, curtain);
 
 			// The rock behind and beside a waterfall is wet and mossy.
-			mossify(level, random, pos.set(lip.getX(), y, lip.getZ()), 0.45f);
-			mossify(level, random, pos.set(curtainTop.getX() + side.getStepX(), y, curtainTop.getZ() + side.getStepZ()), 0.25f);
-			mossify(level, random, pos.set(curtainTop.getX() - side.getStepX(), y, curtainTop.getZ() - side.getStepZ()), 0.25f);
+			if (!frozen) {
+				mossify(level, random, pos.set(lip.getX(), y, lip.getZ()), 0.45f);
+				mossify(level, random, pos.set(curtainTop.getX() + side.getStepX(), y, curtainTop.getZ() + side.getStepZ()), 0.25f);
+				mossify(level, random, pos.set(curtainTop.getX() - side.getStepX(), y, curtainTop.getZ() - side.getStepZ()), 0.25f);
+			}
 		}
 		if (!frozen) {
 			WaterWorks.scheduleFluidTick(level, curtainTop.atY(top));

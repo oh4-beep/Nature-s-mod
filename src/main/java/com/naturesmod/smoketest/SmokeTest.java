@@ -340,6 +340,9 @@ public final class SmokeTest {
 		TerrainRenderer renderer = new TerrainRenderer(level, minX, minZ, size, heights);
 		TerrainRenderer.emit("top_" + label, renderer.topDown());
 		TerrainRenderer.emit("view_" + label, renderer.oblique());
+		if (label.equals("glacier")) {
+			TerrainRenderer.emit("ice_" + label, renderer.iceMap());
+		}
 
 		line("");
 		line("--- %s: region at chunk %d,%d (blocks %d..%d, %d..%d) ---", label, centerChunkX, centerChunkZ, minX, minX + size - 1, minZ,
