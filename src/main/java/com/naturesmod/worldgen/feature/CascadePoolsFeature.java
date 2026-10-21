@@ -43,7 +43,7 @@ public record CascadePoolsFeature(int minPools, int maxPools) implements Feature
 		int z0 = origin.getZ();
 		int top = WorldGenUtil.groundY(level, x0, z0);
 		BlockPos start = new BlockPos(x0, top, z0);
-		if (top < level.getSeaLevel() + 3 || !level.getFluidState(start.above()).isEmpty()
+		if (top < level.getSeaLevel() + 3 || WorldGenUtil.isAlpine(top) || !level.getFluidState(start.above()).isEmpty()
 				|| !WorldGenUtil.isTerrain(level.getBlockState(start)) || !WorldGenUtil.isStructureFree(level, start)) {
 			return false;
 		}

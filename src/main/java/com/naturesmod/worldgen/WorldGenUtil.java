@@ -162,7 +162,20 @@ public final class WorldGenUtil {
 		return false;
 	}
 
+	/** Snow covers the ground above this height (the snow line material rule, see terrain.py). */
+	public static final int SNOW_LINE = 290;
+	/** Above this height it is too high and cold for moss, vines and pools, whatever the biome. */
+	public static final int TREE_LINE = SNOW_LINE - 20;
+
+	public static boolean isAlpine(int y) {
+		return y >= TREE_LINE;
+	}
+
+	/** Cold enough for snow and ice: a cold biome, or anywhere above the snow line. */
 	public static boolean isCold(WorldGenLevel level, BlockPos pos) {
+		if (pos.getY() >= SNOW_LINE) {
+			return true;
+		}
 		Biome biome = level.getBiome(pos).value();
 		return biome.coldEnoughToSnow(pos, level.getSeaLevel());
 	}

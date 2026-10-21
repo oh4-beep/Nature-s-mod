@@ -232,7 +232,9 @@ public record RockFormationFeature(Style style, List<BlockState> materials, bool
 				BlockState state = level.getBlockState(pos.set(x, y, z));
 				if (materials.contains(state) && level.getBlockState(pos.set(x, y + 1, z)).isAir()
 						&& level.getBlockState(pos.set(x, y + 2, z)).isAir() && y > level.getSeaLevel() + 3) {
-					WaterWorks.set(level, pos.set(x, y, z), top);
+					// Up in the mountains the crown is snow instead.
+					boolean snowy = WorldGenUtil.isAlpine(y) && top.is(Blocks.GRASS_BLOCK);
+					WaterWorks.set(level, pos.set(x, y, z), snowy ? Blocks.SNOW_BLOCK.defaultBlockState() : top);
 				}
 			}
 		}

@@ -43,7 +43,7 @@ public record CliffVinesFeature(float density, int minDrop) implements Feature {
 					int nx = x + direction.getStepX();
 					int nz = z + direction.getStepZ();
 					int neighbour = WorldGenUtil.groundY(level, nx, nz);
-					if (neighbour - ground < minDrop || random.nextFloat() >= density) {
+					if (neighbour - ground < minDrop || WorldGenUtil.isAlpine(neighbour) || random.nextFloat() >= density) {
 						continue;
 					}
 					BlockState vine = Blocks.VINE.defaultBlockState().setValue(VineBlock.getPropertyForFace(direction), true);

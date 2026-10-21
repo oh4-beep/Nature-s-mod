@@ -46,7 +46,7 @@ public record SinkholeFeature(boolean water, int minDepth, int maxDepth) impleme
 		int ground = WorldGenUtil.groundY(level, x0, z0);
 		BlockPos start = new BlockPos(x0, ground, z0);
 		if (!level.getFluidState(start.above()).isEmpty() || !WorldGenUtil.isTerrain(level.getBlockState(start))
-				|| !WorldGenUtil.isStructureFree(level, start)) {
+				|| WorldGenUtil.isAlpine(ground) || !WorldGenUtil.isStructureFree(level, start)) {
 			return false;
 		}
 		double radius = 3 + random.nextDouble() * 3.5;

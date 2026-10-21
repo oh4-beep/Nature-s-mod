@@ -61,6 +61,8 @@ public record BoulderFeature(List<BlockState> materials, float mossChance, float
 			return false;
 		}
 
+		// High in the mountains no moss grows on the rocks.
+		boolean alpine = WorldGenUtil.isAlpine(ground);
 		WorldGenUtil.Wobble wobble = new WorldGenUtil.Wobble(random, 3, 1.3);
 		BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
 		int placed = 0;
@@ -78,7 +80,8 @@ public record BoulderFeature(List<BlockState> materials, float mossChance, float
 					// Patches of a secondary material, like veins and lichen-darkened faces.
 					double patch = wobble.at(dx * 0.7 + dy * 0.3, dz * 0.7 - dy * 0.2);
 					int index = materials.size() == 1 ? 0 : Math.floorMod((int) Math.floor((patch + 1) * materials.size() * 0.75 + random.nextInt(2)), materials.size());
-					WaterWorks.set(level, pos, materials.get(index));
+					BlockState rock = materials.get(index);
+					WaterWorks.set(level, pos, alpine && rock.is(Blocks.MOSSY_COBBLESTONE) ? Blocks.COBBLESTONE.defaultBlockState() : rock);
 					placed++;
 				}
 			}
@@ -87,7 +90,7 @@ public record BoulderFeature(List<BlockState> materials, float mossChance, float
 			return false;
 		}
 
-		if (mossChance > 0) {
+		if (mossChance > 0 && !alpine) {
 			for (int dx = -span; dx <= span; dx++) {
 				for (int dz = -span; dz <= span; dz++) {
 					for (int dy = span; dy >= -1; dy--) {
