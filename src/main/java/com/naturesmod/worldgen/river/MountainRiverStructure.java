@@ -59,7 +59,7 @@ public class MountainRiverStructure extends Structure {
 			return Optional.empty();
 		}
 		Holder<Biome> biome = context.biomeSource().getNoiseBiome(QuartPos.fromBlock(sourceX), QuartPos.fromBlock(sourceHeight),
-				QuartPos.fromBlock(sourceZ), context.randomState().sampler());
+				QuartPos.fromBlock(sourceZ), context.climateSampler());
 		if (!context.validBiome().test(biome)) {
 			return Optional.empty();
 		}
