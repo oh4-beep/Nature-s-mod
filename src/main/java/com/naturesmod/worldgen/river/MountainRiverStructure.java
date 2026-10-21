@@ -7,10 +7,7 @@ import com.mojang.serialization.MapCodec;
 import com.naturesmod.worldgen.FeatureStats;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
-import net.minecraft.core.QuartPos;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.WorldgenRandom;
@@ -58,12 +55,7 @@ public class MountainRiverStructure extends Structure {
 		if (sourceHeight < seaLevel + MIN_SOURCE_RISE) {
 			return Optional.empty();
 		}
-		Holder<Biome> biome = context.biomeSource().getNoiseBiome(QuartPos.fromBlock(sourceX), QuartPos.fromBlock(sourceHeight),
-				QuartPos.fromBlock(sourceZ), context.climateSampler());
-		if (!context.validBiome().test(biome)) {
-			return Optional.empty();
-		}
-
+		// The structure system checks the biome at the spring once we return it.
 		RiverPath path = RiverPath.trace(heights, sourceX, sourceZ, sourceHeight, seaLevel, random);
 		if (path == null) {
 			return Optional.empty();

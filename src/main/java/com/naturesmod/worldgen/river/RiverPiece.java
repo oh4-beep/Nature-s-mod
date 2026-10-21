@@ -188,6 +188,9 @@ public class RiverPiece extends StructurePiece {
 		BlockState surface = top.is(BlockTags.SUBSTRATE_OVERWORLD) || top.is(BlockTags.SAND) || top.is(Blocks.SNOW_BLOCK) || top.is(Blocks.GRAVEL)
 				? top : Blocks.STONE.defaultBlockState();
 		if (ground < water) {
+			if (water - ground > 8) {
+				return; // the land falls away: no dam, the river may spill over here
+			}
 			// Levee: build the bank up so the water stays in its bed.
 			for (int y = ground + 1; y <= water; y++) {
 				WaterWorks.set(level, pos.set(x, y, z), y == water ? surface : Blocks.DIRT.defaultBlockState());
