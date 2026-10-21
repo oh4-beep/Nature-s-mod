@@ -1,4 +1,0 @@
-net.minecraft.world.level.levelgen.RandomState
-net.minecraft.world.level.levelgen.NoiseRouter
-net.minecraft.world.level.biome.Climate$Sampler
-net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator|public|protected

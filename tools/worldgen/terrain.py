@@ -8,6 +8,10 @@ What changes compared to vanilla:
   * Mountain ranges are far taller: the terrain "offset" spline is reshaped above the
     hill line so foothills rise gently while mountain ranges tower three to five times
     higher above the lowlands than vanilla ones, up to y=400-500. Peaks are more jagged.
+  * Big mountains are more common: inland, the erosion that shapes the terrain (not the
+    one that picks biomes) is pushed further toward "mountainous". Vanilla's erosion
+    noise rarely reaches its peak band, so ranges seldom reach full height. River
+    valleys are left alone so rivers keep flowing at sea level.
   * Mountain ranges and river valleys are 2.2x larger, continents ~40% larger and
     biomes 25% larger, so the much taller mountains stay majestic instead of spiky and
     the land reads as broad, believable landscapes instead of noisy patchwork.
@@ -41,6 +45,13 @@ MOUNTAIN_CURVE_START_SLOPE = 1.5
 OCEAN_LINE = -0.15                   # offsets below this (ocean floors)...
 OCEAN_STRETCH = 1.15                 # ...get deeper by this factor
 JAGGEDNESS_SCALE = 1.5               # sharper peaks
+
+# Terrain-only erosion: negative (mountainous) erosion is multiplied by up to EROSION_GAIN. The
+# gain fades in from the coast inland (continentalness 0 -> 0.3) and fades out toward river
+# valleys (folded ridges -0.1 -> -0.6) so coasts and rivers keep their vanilla shape.
+EROSION_GAIN = 1.4
+EROSION_INLAND = (0.0, 0.3)
+EROSION_VALLEY = (-0.6, -0.1)
 
 ENTRANCE_BIAS = 0.30                 # vanilla 0.37: lower = more cave entrances
 ENTRANCE_XZ_SCALE = 0.6              # vanilla 0.75: lower = wider entrances
@@ -172,6 +183,41 @@ def tune_entrances(node):
     return node
 
 
+def ramp(fn, start, end):
+    """0 below start, 1 above end, linear in between."""
+    return {
+        "type": "minecraft:clamp",
+        "input": {"type": "minecraft:mul", "left": {"type": "minecraft:add", "left": fn, "right": round(0.0 - start, 6)},
+                  "right": round(1.0 / (end - start), 6)},
+        "min": 0.0,
+        "max": 1.0,
+    }
+
+
+def erosion_terrain():
+    """Erosion as seen by the terrain shape: more mountainous inland, untouched in valleys."""
+    erosion = f"{NS}:overworld/erosion"
+    boost = {
+        "type": "minecraft:mul",
+        "left": {
+            "type": "minecraft:mul",
+            "left": {"type": "minecraft:min", "left": erosion, "right": 0.0},
+            "right": ramp(f"{NS}:overworld/continents", *EROSION_INLAND),
+        },
+        "right": {"type": "minecraft:mul", "left": ramp(f"{NS}:overworld/ridges_folded", *EROSION_VALLEY), "right": round(EROSION_GAIN - 1, 6)},
+    }
+    return {"type": "minecraft:cache", "input": {"type": "minecraft:add", "left": erosion, "right": boost}}
+
+
+def use_terrain_erosion(node):
+    """Points the erosion coordinate of the terrain splines at the terrain-only erosion."""
+    def fix(n):
+        if "coordinate" in n and "points" in n and n["coordinate"] == f"{NS}:overworld/erosion":
+            n["coordinate"] = f"{NS}:overworld/erosion_terrain"
+    walk(node, fix)
+    return node
+
+
 def build(vanilla):
     """Returns {relative output path: json} for every terrain file."""
     out = {}
@@ -192,7 +238,11 @@ def build(vanilla):
         if name == "caves/entrances":
             tune_entrances(node)
         retarget_heights(node)
-        out[f"{NS}/{df_dir}{name}.json"] = remap_refs(node)
+        node = remap_refs(node)
+        if name in ("offset", "factor", "jaggedness"):
+            use_terrain_erosion(node)
+        out[f"{NS}/{df_dir}{name}.json"] = node
+    out[f"{NS}/{df_dir}erosion_terrain.json"] = erosion_terrain()
 
     settings = copy.deepcopy(vanilla.read("minecraft/worldgen/noise_settings/overworld.json"))
     settings["noise"]["height"] = WORLD_HEIGHT

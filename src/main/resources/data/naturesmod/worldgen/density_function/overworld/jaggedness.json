@@ -20,7 +20,7 @@
             "derivative": 0.0,
             "location": 0.03,
             "value": {
-              "coordinate": "naturesmod:overworld/erosion",
+              "coordinate": "naturesmod:overworld/erosion_terrain",
               "points": [
                 {
                   "derivative": 0.0,
@@ -148,7 +148,7 @@
             "derivative": 0.0,
             "location": 0.65,
             "value": {
-              "coordinate": "naturesmod:overworld/erosion",
+              "coordinate": "naturesmod:overworld/erosion_terrain",
               "points": [
                 {
                   "derivative": 0.0,

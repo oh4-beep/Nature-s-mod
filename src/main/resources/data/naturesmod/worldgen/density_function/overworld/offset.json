@@ -45,7 +45,7 @@
               "derivative": 0.0,
               "location": -0.16,
               "value": {
-                "coordinate": "naturesmod:overworld/erosion",
+                "coordinate": "naturesmod:overworld/erosion_terrain",
                 "points": [
                   {
                     "derivative": 0.0,
@@ -267,7 +267,7 @@
               "derivative": 0.0,
               "location": -0.15,
               "value": {
-                "coordinate": "naturesmod:overworld/erosion",
+                "coordinate": "naturesmod:overworld/erosion_terrain",
                 "points": [
                   {
                     "derivative": 0.0,
@@ -489,7 +489,7 @@
               "derivative": 0.0,
               "location": -0.1,
               "value": {
-                "coordinate": "naturesmod:overworld/erosion",
+                "coordinate": "naturesmod:overworld/erosion_terrain",
                 "points": [
                   {
                     "derivative": 0.0,
@@ -711,7 +711,7 @@
               "derivative": 0.0,
               "location": 0.25,
               "value": {
-                "coordinate": "naturesmod:overworld/erosion",
+                "coordinate": "naturesmod:overworld/erosion_terrain",
                 "points": [
                   {
                     "derivative": 0.0,
@@ -1102,7 +1102,7 @@
               "derivative": 0.0,
               "location": 1.0,
               "value": {
-                "coordinate": "naturesmod:overworld/erosion",
+                "coordinate": "naturesmod:overworld/erosion_terrain",
                 "points": [
                   {
                     "derivative": 0.0,
