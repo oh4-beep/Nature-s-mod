@@ -425,7 +425,7 @@ def write(assets, data_root):
         "result": {"count": 1, "id": "minecraft:blaze_powder"}})
     for block, fuel in (("hellfire_brazier", "#minecraft:coals"), ("soul_brazier", "#minecraft:soul_fire_base_blocks")):
         _json(os.path.join(recipes, block + ".json"), {
-            "type": "minecraft:crafting_shaped", "category": "decorations", "pattern": ["I#I", " I ", "III"],
+            "type": "minecraft:crafting_shaped", "category": "misc", "pattern": ["I#I", " I ", "III"],
             "key": {"I": "minecraft:iron_ingot", "#": fuel}, "result": {"count": 1, "id": f"naturesmod:{block}"}})
     _json(os.path.join(recipes, "charred_log.json"), {
         "type": "minecraft:campfire_cooking", "category": "blocks", "cookingtime": 600, "experience": 0.1,
