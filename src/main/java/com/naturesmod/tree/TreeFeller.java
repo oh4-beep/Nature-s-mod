@@ -22,6 +22,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.Vec3;
@@ -50,8 +51,7 @@ public final class TreeFeller {
 	}
 
 	private static boolean isNaturalLeaf(BlockState state) {
-		return state.is(BlockTags.LEAVES) && state.hasProperty(BlockStateProperties.PERSISTENT)
-				&& !state.getValue(BlockStateProperties.PERSISTENT);
+		return state.is(BlockTags.LEAVES) && state.hasProperty(LeavesBlock.PERSISTENT) && !state.getValue(LeavesBlock.PERSISTENT);
 	}
 
 	/** Blocks a trunk can stand on. */
@@ -159,7 +159,7 @@ public final class TreeFeller {
 			long key = leafQueue.dequeueLong();
 			int d = depth.get(key);
 			BlockState state = level.getBlockState(pos.set(key));
-			int own = state.hasProperty(BlockStateProperties.DISTANCE) ? state.getValue(BlockStateProperties.DISTANCE) : 7;
+			int own = state.hasProperty(LeavesBlock.DISTANCE) ? state.getValue(LeavesBlock.DISTANCE) : LeavesBlock.DECAY_DISTANCE;
 			if (d > own) {
 				continue; // closer to some other tree
 			}
@@ -214,11 +214,11 @@ public final class TreeFeller {
 			}
 			if (i % keepEvery == 0 && falling < MAX_FALLING_LEAVES) {
 				BlockState landed = state;
-				if (landed.hasProperty(BlockStateProperties.DISTANCE)) {
-					landed = landed.setValue(BlockStateProperties.DISTANCE, 7);
+				if (landed.hasProperty(LeavesBlock.DISTANCE)) {
+					landed = landed.setValue(LeavesBlock.DISTANCE, LeavesBlock.DECAY_DISTANCE);
 				}
-				if (landed.hasProperty(BlockStateProperties.WATERLOGGED)) {
-					landed = landed.setValue(BlockStateProperties.WATERLOGGED, false);
+				if (landed.hasProperty(LeavesBlock.WATERLOGGED)) {
+					landed = landed.setValue(LeavesBlock.WATERLOGGED, false);
 				}
 				FallingBlockEntity entity = FallingBlockEntity.fall(level, pos.immutable(), landed);
 				entity.disableDrop();

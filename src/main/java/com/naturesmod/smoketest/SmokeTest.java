@@ -22,6 +22,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -132,6 +133,8 @@ public final class SmokeTest {
 		boolean[] elevatedWater = new boolean[size * size];
 		int fallingWater = 0;
 		int snowCapped = 0;
+		int leaves = 0;
+		int decayingLeaves = 0;
 		BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
 		for (int x = 0; x < size; x++) {
 			for (int z = 0; z < size; z++) {
@@ -152,7 +155,13 @@ public final class SmokeTest {
 						if (!fluid.isSource() && fluid.getValue(FlowingFluid.FALLING)) {
 							fallingWater++;
 						}
-					} else if (!state.isAir() && !state.is(BlockTags.LEAVES) && !state.is(BlockTags.LOGS) && !state.canBeReplaced()) {
+					} else if (state.is(BlockTags.LEAVES)) {
+						leaves++;
+						if (state.hasProperty(LeavesBlock.DISTANCE) && state.getValue(LeavesBlock.DISTANCE) >= LeavesBlock.DECAY_DISTANCE
+								&& !state.getValue(LeavesBlock.PERSISTENT)) {
+							decayingLeaves++;
+						}
+					} else if (!state.isAir() && !state.is(BlockTags.LOGS) && !state.canBeReplaced()) {
 						break;
 					}
 					ground--;
@@ -176,6 +185,10 @@ public final class SmokeTest {
 			elevated += b ? 1 : 0;
 		}
 		line("elevated water columns: %d, falling water blocks: %d, snow-capped columns above y=300: %d", elevated, fallingWater, snowCapped);
+		line("leaves seen from above: %d, of which would decay: %d", leaves, decayingLeaves);
+		if (leaves > 200 && decayingLeaves * 20 > leaves) {
+			fail("more than 5%% of tree leaves are detached and would decay");
+		}
 		line("legend: ~ sea-level water, w water above sea level, height bands %s from <%d to >=%d", RAMP, BANDS[0], BANDS[BANDS.length - 1]);
 		for (int row = 0; row < size; row += 4) {
 			StringBuilder map = new StringBuilder();

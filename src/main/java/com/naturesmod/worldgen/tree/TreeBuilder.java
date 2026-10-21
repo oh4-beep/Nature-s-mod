@@ -268,11 +268,11 @@ public final class TreeBuilder {
 				continue;
 			}
 			BlockState state = entry.getValue();
-			if (state.hasProperty(BlockStateProperties.DISTANCE)) {
-				state = state.setValue(BlockStateProperties.DISTANCE, d);
+			if (state.hasProperty(LeavesBlock.DISTANCE)) {
+				state = state.setValue(LeavesBlock.DISTANCE, d);
 			}
-			if (state.hasProperty(BlockStateProperties.PERSISTENT)) {
-				state = state.setValue(BlockStateProperties.PERSISTENT, false);
+			if (state.hasProperty(LeavesBlock.PERSISTENT)) {
+				state = state.setValue(LeavesBlock.PERSISTENT, false);
 			}
 			WaterWorks.set(level, pos.set(entry.getLongKey()), state);
 		}
