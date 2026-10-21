@@ -155,7 +155,24 @@ def main():
     lang.update(mission.lang())
     lang.update(hell.lang())
     write_json(lang_path, dict(sorted(lang.items())))
+    check_recipes(os.path.join(REPO, "src", "main", "resources", "data", "naturesmod", "recipe"))
     print(f"wrote rift assets and {len(LANG)} language entries")
+
+
+# The recipe book categories Minecraft accepts; an unknown one stops the server loading the data pack.
+RECIPE_CATEGORIES = {
+    "crafting": {"building", "redstone", "equipment", "misc"},
+    "cooking": {"food", "blocks", "misc"},
+}
+
+
+def check_recipes(folder):
+    for name in sorted(os.listdir(folder)):
+        with open(os.path.join(folder, name), encoding="utf-8") as fh:
+            recipe = json.load(fh)
+        kind = "crafting" if recipe["type"].startswith("minecraft:crafting") else "cooking"
+        if "category" in recipe and recipe["category"] not in RECIPE_CATEGORIES[kind]:
+            raise SystemExit(f"recipe {name}: unknown {kind} category {recipe['category']!r}")
 
 
 if __name__ == "__main__":

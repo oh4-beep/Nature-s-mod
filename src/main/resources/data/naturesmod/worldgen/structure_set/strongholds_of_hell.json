@@ -2,8 +2,8 @@
   "placement": {
     "type": "minecraft:random_spread",
     "salt": 666013,
-    "separation": 12,
-    "spacing": 34,
+    "separation": 5,
+    "spacing": 16,
     "exclusion_zone": {
       "chunk_count": 3,
       "other_set": "minecraft:nether_complexes"
@@ -13,6 +13,14 @@
     {
       "structure": "naturesmod:infernal_citadel",
       "weight": 1
+    },
+    {
+      "structure": "naturesmod:bone_pit",
+      "weight": 2
+    },
+    {
+      "structure": "naturesmod:ritual_circle",
+      "weight": 2
     }
   ]
 }

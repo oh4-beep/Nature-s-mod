@@ -482,7 +482,7 @@
                   "if_true": {
                     "type": "minecraft:noise_threshold",
                     "noise": "naturesmod:nether/scorch",
-                    "min_threshold": 0.45,
+                    "min_threshold": 0.15,
                     "max_threshold": 1000000000.0
                   },
                   "then_run": {
@@ -495,7 +495,7 @@
                   "if_true": {
                     "type": "minecraft:noise_threshold",
                     "noise": "naturesmod:nether/ash",
-                    "min_threshold": 0.55,
+                    "min_threshold": 0.45,
                     "max_threshold": 1000000000.0
                   },
                   "then_run": {
@@ -514,13 +514,26 @@
               "if_true": {
                 "type": "minecraft:noise_threshold",
                 "noise": "naturesmod:nether/scorch",
-                "min_threshold": 0.5,
+                "min_threshold": 0.3,
                 "max_threshold": 1000000000.0
               },
               "then_run": {
                 "type": "minecraft:block",
                 "result_state": "naturesmod:scorched_netherrack"
               }
+            }
+          },
+          {
+            "type": "minecraft:condition",
+            "if_true": {
+              "type": "minecraft:noise_threshold",
+              "noise": "naturesmod:nether/scorch",
+              "min_threshold": 0.55,
+              "max_threshold": 1000000000.0
+            },
+            "then_run": {
+              "type": "minecraft:block",
+              "result_state": "naturesmod:scorched_netherrack"
             }
           }
         ]
@@ -540,7 +553,7 @@
           "if_true": {
             "type": "minecraft:noise_threshold",
             "noise": "naturesmod:nether/ash",
-            "min_threshold": 0.4,
+            "min_threshold": 0.25,
             "max_threshold": 1000000000.0
           },
           "then_run": {
@@ -564,7 +577,7 @@
           "if_true": {
             "type": "minecraft:noise_threshold",
             "noise": "naturesmod:nether/ash",
-            "min_threshold": 0.3,
+            "min_threshold": 0.2,
             "max_threshold": 1000000000.0
           },
           "then_run": {

@@ -390,11 +390,12 @@ def material_rule():
     ))
     # The vanilla biomes get scorched ground, drifts of ash, and flesh in the crimson forests.
     wastes = cond(in_biome("minecraft:nether_wastes"), seq(
-        cond(floor, seq(cond(threshold(mine("scorch"), 0.45), scorched), cond(threshold(mine("ash"), 0.55), ash))),
-        cond(ceiling, cond(threshold(mine("scorch"), 0.5), scorched)),
+        cond(floor, seq(cond(threshold(mine("scorch"), 0.15), scorched), cond(threshold(mine("ash"), 0.45), ash))),
+        cond(ceiling, cond(threshold(mine("scorch"), 0.3), scorched)),
+        cond(threshold(mine("scorch"), 0.55), scorched),
     ))
-    valley = cond(in_biome("minecraft:soul_sand_valley"), cond(floor, cond(threshold(mine("ash"), 0.4), ash)))
-    deltas = cond(in_biome("minecraft:basalt_deltas"), cond(floor, cond(threshold(mine("ash"), 0.3), ash)))
+    valley = cond(in_biome("minecraft:soul_sand_valley"), cond(floor, cond(threshold(mine("ash"), 0.25), ash)))
+    deltas = cond(in_biome("minecraft:basalt_deltas"), cond(floor, cond(threshold(mine("ash"), 0.2), ash)))
     crimson = cond(in_biome("minecraft:crimson_forest"), seq(
         cond(ceiling, cond(threshold(mine("flesh"), 0.35), flesh)),
         cond(threshold(mine("flesh"), 0.6), flesh),
@@ -467,24 +468,28 @@ LOWER = ["minecraft:nether_wastes", "minecraft:soul_sand_valley", "minecraft:cri
          "minecraft:basalt_deltas", f"{NS}:ember_wastes", f"{NS}:brimstone_fields", f"{NS}:flesh_caverns"]
 
 STRUCTURES = {
-    # id: (spacing, separation, salt, biomes, spawn overrides)
-    "infernal_citadel": (34, 12, 666013, LOWER, [spawn("wither_skeleton", 10, 1, 2), spawn("blaze", 10, 1, 2), spawn("magma_cube", 3, 2, 3),
-                                                  spawn("zombified_piglin", 3, 2, 4)]),
-    "bone_pit": (26, 8, 666027, ["minecraft:soul_sand_valley", "minecraft:nether_wastes", f"{NS}:ember_wastes", f"{NS}:flesh_caverns"], []),
-    "ritual_circle": (22, 7, 666041, LOWER + [f"{NS}:obsidian_spires"], []),
+    # id: (weight, biomes, spawn overrides)
+    "infernal_citadel": (1, LOWER, [spawn("wither_skeleton", 10, 1, 2), spawn("blaze", 10, 1, 2), spawn("magma_cube", 3, 2, 3),
+                                    spawn("zombified_piglin", 3, 2, 4)]),
+    "bone_pit": (2, ["minecraft:soul_sand_valley", "minecraft:nether_wastes", f"{NS}:ember_wastes", f"{NS}:flesh_caverns"], []),
+    "ritual_circle": (2, LOWER + [f"{NS}:obsidian_spires"], []),
 }
 
 
 def structures():
+    """The strongholds share one structure set, like fortresses and bastions do, so they never
+    overlap: each spot picks one by weight and falls back on the others if it cannot stand there."""
     files = {}
-    for name, (spacing, separation, salt, biomes_, spawns) in STRUCTURES.items():
+    entries = []
+    for name, (weight, biomes_, spawns) in STRUCTURES.items():
         overrides = {"monster": {"bounding_box": "full", "spawns": spawns}} if spawns else {}
         files[f"{NS}/worldgen/structure/{name}.json"] = {
             "type": f"{NS}:{name}", "biomes": f"#{NS}:has_structure/{name}", "spawn_overrides": overrides, "step": "surface_structures"}
-        placement = {"type": "minecraft:random_spread", "salt": salt, "separation": separation, "spacing": spacing,
-                     "exclusion_zone": {"chunk_count": 3, "other_set": "minecraft:nether_complexes"}}
-        files[f"{NS}/worldgen/structure_set/{name}.json"] = {"placement": placement, "structures": [{"structure": f"{NS}:{name}", "weight": 1}]}
         files[f"{NS}/tags/worldgen/biome/has_structure/{name}.json"] = {"values": biomes_}
+        entries.append({"structure": f"{NS}:{name}", "weight": weight})
+    placement = {"type": "minecraft:random_spread", "salt": 666013, "separation": 5, "spacing": 16,
+                 "exclusion_zone": {"chunk_count": 3, "other_set": "minecraft:nether_complexes"}}
+    files[f"{NS}/worldgen/structure_set/strongholds_of_hell.json"] = {"placement": placement, "structures": entries}
     return files
 
 
