@@ -1,18 +1,3 @@
-Entity.java|public void kill\(|public final void kill|public void discard
-NestedLootTable.java|public static .*lootTableReference
-LootPool.java|public static LootPool.Builder lootPool|public LootPool.Builder add\(|public LootPool.Builder setRolls
-LootTable.java|public LootTable.Builder withPool
-ConstantValue.java|public static ConstantValue exactly
-ChunkGenerator.java|public .*findNearestMapStructure|public abstract NoiseColumn getBaseColumn|public NoiseColumn getBaseColumn
-BoundingBox.java|public boolean isInside
-CompoundTag.java|public long getLongOr|public Optional<Long> getLong
-StructurePiece.java@385-460
-Blocks.java|IRON_CHAIN|public static final Block CHAIN
-ChainBlock.java|public class ChainBlock|public ChainBlock
-BubbleColumnBlock.java|DRAG_DOWN|public static final
-BaseCoralWallFanBlock.java|FACING
-NoiseColumn.java|public BlockState getBlock
-ServerPlayer.java|public void sendSystemMessage|public void displayClientMessage
-Player.java|public void displayClientMessage|public void sendOverlayMessage
-LootTableSource.java|isBuiltin
-MobEffects.java|public static final Holder<MobEffect> [A-Z_]+ =
+Options.java|[Hh]ide|hidden
+Gui.java|[Hh]ide|hidden|isHidden
+KeyboardHandler.java|290|F1|[Hh]ide

@@ -35,6 +35,7 @@ import net.minecraft.world.level.levelgen.structure.Structure;
 import com.naturesmod.NaturesMod;
 import com.naturesmod.abyss.Abyss;
 import com.naturesmod.creature.ModCreatures;
+import com.naturesmod.creature.SeaCreature;
 
 /**
  * Plays through Nature's Mod's sea and Nether in a real client and screenshots what it sees:
@@ -126,7 +127,10 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 			int z = player.getBlockZ();
 			return new BlockPos(x, level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z), z);
 		});
-		teleport(context, world, Level.OVERWORLD, ground.getX() + 0.5, ground.getY(), ground.getZ() + 0.5, 180.0F, 0.0F);
+		// Stand on a pillar in the sky so nothing gets between the camera and the diver.
+		world.getServer().runCommand(String.format(java.util.Locale.ROOT, "fill %d %d %d %d %d %d minecraft:dark_prismarine",
+				ground.getX(), ground.getY() + 40, ground.getZ(), ground.getX(), ground.getY() + 44, ground.getZ()));
+		teleport(context, world, Level.OVERWORLD, ground.getX() + 0.5, ground.getY() + 45, ground.getZ() + 0.5, 180.0F, 0.0F);
 		context.runOnClient(client -> client.options.setCameraType(CameraType.THIRD_PERSON_FRONT));
 		for (String set : new String[] {"tidewalker", "abyssal"}) {
 			for (String[] piece : new String[][] {{"head", "helmet"}, {"chest", "chestplate"}, {"legs", "leggings"}, {"feet", "boots"}}) {
@@ -158,6 +162,27 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 			double distance = 3.5 + biggest * 3.2 + lineup.size() * spacing * 0.35;
 			List<UUID> ids = world.getServer().computeOnServer(server -> lineup(world, lineup, spacing, distance));
 			context.waitTicks(20);
+			String server = world.getServer().computeOnServer(s -> {
+				ServerLevel level = (ServerLevel) world.getConnection().getServerPlayer().level();
+				StringBuilder out = new StringBuilder("player " + world.getConnection().getServerPlayer().position());
+				for (UUID id : ids) {
+					Entity entity = level.getEntity(id);
+					out.append(entity == null ? " gone" : " " + EntityType.getKey(entity.getType()).getPath() + "@" + entity.blockPosition()
+							+ (entity.isAlive() ? "" : "(dead)"));
+				}
+				return out.toString();
+			});
+			String client = context.computeOnClient(c -> {
+				StringBuilder out = new StringBuilder("player " + c.player.position() + " sees");
+				for (Entity entity : c.level.entitiesForRendering()) {
+					if (entity instanceof SeaCreature) {
+						out.append(" ").append(EntityType.getKey(entity.getType()).getPath()).append("@").append(entity.blockPosition());
+					}
+				}
+				return out.toString();
+			});
+			System.out.println("[gametest] lineup " + lineup.getFirst() + " server: " + server);
+			System.out.println("[gametest] lineup " + lineup.getFirst() + " client: " + client);
 			shoot(context, "creatures_" + lineup.getFirst());
 			world.getServer().runOnServer(server -> {
 				ServerLevel level = (ServerLevel) world.getConnection().getServerPlayer().level();
