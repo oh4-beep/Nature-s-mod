@@ -20,8 +20,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.material.FlowingFluid;
@@ -229,7 +230,7 @@ public final class SmokeTest {
 			return;
 		}
 		ServerScheduler.schedule(160, () -> {
-			int stillFalling = level.getEntities(EntityType.FALLING_BLOCK, entity -> true).size();
+			int stillFalling = level.getEntities(EntityTypeTest.forClass(FallingBlockEntity.class), entity -> true).size();
 			int standing = countLogsAbove(base);
 			int lying = 0;
 			BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
