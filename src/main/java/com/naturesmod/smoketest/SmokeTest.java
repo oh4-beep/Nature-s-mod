@@ -76,22 +76,22 @@ public final class SmokeTest {
 		// Never let a stuck test hold CI hostage.
 		Thread watchdog = new Thread(() -> {
 			try {
-				Thread.sleep(12 * 60 * 1000L);
+				Thread.sleep(16 * 60 * 1000L);
 			} catch (InterruptedException e) {
 				return;
 			}
-			System.out.println("[smoketest] TIMEOUT after 12 minutes");
+			System.out.println("[smoketest] TIMEOUT after 16 minutes");
 			Runtime.getRuntime().halt(2);
 		}, "naturesmod-smoketest-watchdog");
 		watchdog.setDaemon(true);
 		watchdog.start();
 	}
 
-	private void line(String format, Object... args) {
+	void line(String format, Object... args) {
 		report.append(String.format(format, args)).append('\n');
 	}
 
-	private void fail(String format, Object... args) {
+	void fail(String format, Object... args) {
 		failed = true;
 		line("FAIL: " + format, args);
 	}
@@ -417,7 +417,7 @@ public final class SmokeTest {
 		return heights;
 	}
 
-	private void summary(String label, int[] heights) {
+	void summary(String label, int[] heights) {
 		int[] sorted = heights.clone();
 		Arrays.sort(sorted);
 		long sum = 0;
@@ -441,7 +441,7 @@ public final class SmokeTest {
 		BlockPos base = findTreeBase();
 		if (base == null) {
 			line("tree test: no natural tree found in the first region, skipped");
-			finish();
+			seaTest();
 			return;
 		}
 		int cx = base.getX() >> 4;
@@ -455,7 +455,7 @@ public final class SmokeTest {
 		line("tree test: tree at %s with %d logs above the cut, %d logs started falling", base, logsBefore, felled);
 		if (felled == 0) {
 			fail("chopping the trunk of a natural tree did not make it fall");
-			finish();
+			seaTest();
 			return;
 		}
 		ServerScheduler.schedule(160, () -> {
@@ -477,8 +477,12 @@ public final class SmokeTest {
 			if (standing > 0) {
 				fail("logs above the cut were left standing");
 			}
-			finish();
+			seaTest();
 		});
+	}
+
+	private void seaTest() {
+		new SeaTest(server, this).run(this::finish);
 	}
 
 	private BlockPos findTreeBase() {

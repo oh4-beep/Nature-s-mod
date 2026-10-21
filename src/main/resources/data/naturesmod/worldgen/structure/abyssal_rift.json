@@ -1,0 +1,6 @@
+{
+  "type": "naturesmod:abyssal_rift",
+  "biomes": "#naturesmod:has_structure/abyssal_rift",
+  "spawn_overrides": {},
+  "step": "surface_structures"
+}

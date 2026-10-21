@@ -1,0 +1,74 @@
+{
+  "attributes": {
+    "minecraft:audio/background_music": {
+      "default": {
+        "max_delay": 12000,
+        "min_delay": 6000,
+        "sound": "minecraft:music.under_water"
+      },
+      "underwater": {
+        "max_delay": 12000,
+        "min_delay": 6000,
+        "sound": "minecraft:music.under_water"
+      }
+    },
+    "minecraft:audio/ambient_sounds": {
+      "loop": "minecraft:ambient.underwater.loop",
+      "additions": {
+        "sound": "minecraft:ambient.underwater.loop.additions.rare",
+        "tick_chance": 0.006
+      }
+    },
+    "minecraft:gameplay/natural_mob_spawns": {
+      "argument": {
+        "spawn_costs": {},
+        "spawns_by_category": {}
+      },
+      "modifier": "overlay"
+    },
+    "minecraft:visual/water_fog_color": "#030a16",
+    "minecraft:visual/water_fog_end_distance": 40.0,
+    "minecraft:visual/fog_color": "#02060c",
+    "minecraft:visual/sky_color": "#000000",
+    "minecraft:visual/ambient_particles": {
+      "argument": [
+        {
+          "particle": {
+            "type": "minecraft:underwater"
+          },
+          "probability": 0.012
+        }
+      ],
+      "modifier": "append"
+    }
+  },
+  "carvers": [],
+  "downfall": 0.5,
+  "effects": {
+    "water_color": "#0a1a3a"
+  },
+  "features": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [
+      "naturesmod:abyss/ore_diamond",
+      "naturesmod:abyss/ore_gold",
+      "naturesmod:abyss/ore_lapis",
+      "naturesmod:abyss/ore_redstone",
+      "naturesmod:abyss/ore_emerald",
+      "naturesmod:abyss/ore_copper"
+    ],
+    [
+      "naturesmod:abyss/glow_lichen"
+    ],
+    [],
+    [],
+    []
+  ],
+  "has_precipitation": false,
+  "temperature": 0.5
+}

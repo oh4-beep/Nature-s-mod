@@ -1,0 +1,85 @@
+{
+  "attributes": {
+    "minecraft:audio/background_music": {
+      "default": {
+        "max_delay": 12000,
+        "min_delay": 6000,
+        "sound": "minecraft:music.under_water"
+      },
+      "underwater": {
+        "max_delay": 12000,
+        "min_delay": 6000,
+        "sound": "minecraft:music.under_water"
+      }
+    },
+    "minecraft:audio/ambient_sounds": {
+      "loop": "minecraft:ambient.underwater.loop",
+      "additions": {
+        "sound": "minecraft:ambient.underwater.loop.additions.rare",
+        "tick_chance": 0.006
+      }
+    },
+    "minecraft:gameplay/natural_mob_spawns": {
+      "argument": {
+        "spawn_costs": {},
+        "spawns_by_category": {}
+      },
+      "modifier": "overlay"
+    },
+    "minecraft:visual/water_fog_color": "#050d18",
+    "minecraft:visual/water_fog_end_distance": 48.0,
+    "minecraft:visual/fog_color": "#02060c",
+    "minecraft:visual/sky_color": "#000000",
+    "minecraft:visual/ambient_particles": {
+      "argument": [
+        {
+          "particle": {
+            "type": "minecraft:white_ash"
+          },
+          "probability": 0.025
+        },
+        {
+          "particle": {
+            "type": "minecraft:underwater"
+          },
+          "probability": 0.02
+        }
+      ],
+      "modifier": "append"
+    }
+  },
+  "carvers": [],
+  "downfall": 0.5,
+  "effects": {
+    "water_color": "#0c1c36"
+  },
+  "features": [
+    [],
+    [],
+    [
+      "naturesmod:abyss/nodules",
+      "naturesmod:abyss/whale_fall_rare"
+    ],
+    [],
+    [],
+    [],
+    [
+      "naturesmod:abyss/ore_diamond",
+      "naturesmod:abyss/ore_gold",
+      "naturesmod:abyss/ore_lapis",
+      "naturesmod:abyss/ore_redstone",
+      "naturesmod:abyss/ore_emerald",
+      "naturesmod:abyss/ore_copper"
+    ],
+    [
+      "naturesmod:abyss/glow_lichen"
+    ],
+    [],
+    [
+      "naturesmod:abyss/sea_pickles_sparse"
+    ],
+    []
+  ],
+  "has_precipitation": false,
+  "temperature": 0.5
+}

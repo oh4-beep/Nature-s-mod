@@ -1,0 +1,6 @@
+{
+  "type": "naturesmod:bathysphere",
+  "biomes": "#naturesmod:has_structure/bathysphere",
+  "spawn_overrides": {},
+  "step": "surface_structures"
+}

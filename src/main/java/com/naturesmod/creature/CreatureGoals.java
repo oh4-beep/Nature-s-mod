@@ -17,6 +17,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
+import com.naturesmod.NaturesConfig;
+
 /** Goals and target rules shared by the sea creatures. */
 final class CreatureGoals {
 	private CreatureGoals() {
@@ -28,7 +30,8 @@ final class CreatureGoals {
 	 */
 	static TargetingConditions.Selector diver(Mob hunter, double reach, boolean smellsBlood) {
 		return (target, level) -> {
-			if (!(target instanceof Player) || level.getDifficulty() == Difficulty.PEACEFUL || !target.isInWater()) {
+			if (!(target instanceof Player) || level.getDifficulty() == Difficulty.PEACEFUL || !target.isInWater()
+					|| !NaturesConfig.hostileSeaCreatures()) {
 				return false;
 			}
 			double distance = hunter.distanceToSqr(target);
@@ -55,7 +58,7 @@ final class CreatureGoals {
 			if (target == null || !target.isInWater() || target.getType() == hunter.getType() || target instanceof AbstractSchoolingFish) {
 				return false;
 			}
-			if (target instanceof Player && level.getDifficulty() == Difficulty.PEACEFUL) {
+			if (target instanceof Player && (level.getDifficulty() == Difficulty.PEACEFUL || !NaturesConfig.hostileSeaCreatures())) {
 				return false;
 			}
 			return target.getHealth() < target.getMaxHealth() * 0.75F || hunter.distanceToSqr(target) < 9.0;

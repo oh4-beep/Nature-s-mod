@@ -1,0 +1,6 @@
+{
+  "type": "naturesmod:leviathan_lair",
+  "biomes": "#naturesmod:has_structure/leviathan_lair",
+  "spawn_overrides": {},
+  "step": "surface_structures"
+}

@@ -1,0 +1,6 @@
+{
+  "type": "naturesmod:sunken_temple",
+  "biomes": "#naturesmod:has_structure/sunken_temple",
+  "spawn_overrides": {},
+  "step": "surface_structures"
+}

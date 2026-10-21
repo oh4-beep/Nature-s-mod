@@ -1,20 +1,18 @@
-ServerBossEvent.java|public ServerBossEvent
-BossEvent.java|public BossEvent\(|public enum|public BossEvent set
-RandomStrollGoal.java|protected .*getPosition|public RandomStrollGoal
-PathfinderMob.java|public .*[Hh]ome
-Mob.java|public void playAttackSound|public boolean isWithinMeleeAttackRange|protected void customServerAiStep|public boolean removeWhenFarAway|public boolean requiresCustomPersistence|public int getMaxHeadXRot|public int getMaxHeadYRot|public .*finalizeSpawn
-Entity.java|public void startSeenByPlayer|public void stopSeenByPlayer|public void playerTouch|needsSync|public void handleEntityEvent|doTeamsAllowDamage|public void setCustomName|public void snapTo|public void moveTo|public void absSnapTo
-LivingEntity.java|public boolean isDeadOrDying|protected int getBaseExperienceReward|protected float getSoundVolume|public void heal\(
-SoundEvents.java|GUARDIAN_HURT|ELDER_GUARDIAN_AMBIENT|ELDER_GUARDIAN_HURT|PHANTOM_BITE|FISH_SWIM|SQUID_AMBIENT|SQUID_HURT|SQUID_DEATH|PUFFER_FISH_STING|ARMOR_EQUIP_NETHERITE|BUBBLE_COLUMN_UPWARDS_AMBIENT|AMBIENT_UNDERWATER_LOOP|LAVA_POP|BLAZE_SHOOT|BEACON_ACTIVATE|CONDUIT_AMBIENT
-MobEffects.java|DARKNESS|MINING_FATIGUE|NAUSEA|DOLPHINS_GRACE|FIRE_RESISTANCE
-DamageSources.java|DamageSource source\(|public DamageSources\(
-Item.java|public Item.Properties attributes|public Item.Properties component\(
-Mth.java|TWO_PI|DEG_TO_RAD|public static final float PI
-TargetingConditions.java|interface Selector|boolean test\(
-CreativeModeTab.java|interface Output|interface DisplayItemsGenerator|void accept\(
-StructurePiece.java|protected boolean createChest|protected void placeBlock|protected BlockState getBlock|public abstract void postProcess
-OceanMonumentPieces.java|ElderGuardian|addFreshEntity|snapTo|moveTo|finalizeSpawn
-ParticleTypes.java|BUBBLE|PORTAL|GLOW|DRIPPING_LAVA|SOUL|ASH|SPORE|NAUTILUS|UNDERWATER|SQUID_INK|LAVA|SMOKE|FLAME
-EntityType.java|public T create\(|public .*spawn\(
-LiquidBlock.java|public LiquidBlock\(
-Block.java|public static void popResource\(|public void animateTick
+Entity.java|public void kill\(|public final void kill|public void discard
+NestedLootTable.java|public static .*lootTableReference
+LootPool.java|public static LootPool.Builder lootPool|public LootPool.Builder add\(|public LootPool.Builder setRolls
+LootTable.java|public LootTable.Builder withPool
+ConstantValue.java|public static ConstantValue exactly
+ChunkGenerator.java|public .*findNearestMapStructure|public abstract NoiseColumn getBaseColumn|public NoiseColumn getBaseColumn
+BoundingBox.java|public boolean isInside
+CompoundTag.java|public long getLongOr|public Optional<Long> getLong
+StructurePiece.java@385-460
+Blocks.java|IRON_CHAIN|public static final Block CHAIN
+ChainBlock.java|public class ChainBlock|public ChainBlock
+BubbleColumnBlock.java|DRAG_DOWN|public static final
+BaseCoralWallFanBlock.java|FACING
+NoiseColumn.java|public BlockState getBlock
+ServerPlayer.java|public void sendSystemMessage|public void displayClientMessage
+Player.java|public void displayClientMessage|public void sendOverlayMessage
+LootTableSource.java|isBuiltin
+MobEffects.java|public static final Holder<MobEffect> [A-Z_]+ =

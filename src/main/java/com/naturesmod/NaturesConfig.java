@@ -41,6 +41,12 @@ public final class NaturesConfig {
 	/** Average minutes of thunderstorm between wind-thrown trees near each player. */
 	public int windthrowMinutes = 6;
 
+	// The sea
+	/** Diving deep in the Abyss without a strong enough diving suit hurts. */
+	public boolean abyssPressure = true;
+	/** Sharks, eels and the other hunters of the sea attack divers. */
+	public boolean hostileSeaCreatures = true;
+
 	// Client effects
 	/** Mist, spray and roar at the foot of waterfalls. */
 	public boolean waterfallMist = true;
@@ -51,6 +57,14 @@ public final class NaturesConfig {
 
 	public static NaturesConfig get() {
 		return instance;
+	}
+
+	public static boolean abyssPressure() {
+		return instance.abyssPressure;
+	}
+
+	public static boolean hostileSeaCreatures() {
+		return instance.hostileSeaCreatures;
 	}
 
 	public static void load() {

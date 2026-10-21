@@ -3,6 +3,7 @@ package com.naturesmod.worldgen;
 import com.mojang.serialization.MapCodec;
 
 import com.naturesmod.NaturesMod;
+import com.naturesmod.worldgen.feature.AbyssFeature;
 import com.naturesmod.worldgen.feature.AlpineTarnFeature;
 import com.naturesmod.worldgen.feature.BoulderFeature;
 import com.naturesmod.worldgen.feature.CascadePoolsFeature;
@@ -34,6 +35,7 @@ public final class ModFeatures {
 		register("giant_tree", GiantTreeFeature.CODEC);
 		register("rock_formation", RockFormationFeature.CODEC);
 		register("cliff_vines", CliffVinesFeature.CODEC);
+		register("abyss_feature", AbyssFeature.CODEC);
 	}
 
 	private static void register(String name, MapCodec<? extends Feature> codec) {

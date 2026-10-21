@@ -1,4 +1,13 @@
 {
+  "biome.naturesmod.abyssal_plains": "Abyssal Plains",
+  "biome.naturesmod.bone_fields": "Bone Fields",
+  "biome.naturesmod.glowing_reef": "Glowing Reef",
+  "biome.naturesmod.hydrothermal_vents": "Hydrothermal Vents",
+  "biome.naturesmod.midnight_zone": "Midnight Zone",
+  "biome.naturesmod.twilight_waters": "Twilight Waters",
+  "block.naturesmod.abyssal_rift": "Abyssal Rift",
+  "death.attack.naturesmod.pressure": "%1$s was crushed by the weight of the deep",
+  "death.attack.naturesmod.pressure.player": "%1$s was crushed by the weight of the deep while fleeing %2$s",
   "entity.naturesmod.abyssal_leviathan": "Abyssal Leviathan",
   "entity.naturesmod.anglerfish": "Anglerfish",
   "entity.naturesmod.arctic_char": "Arctic Char",
@@ -51,6 +60,7 @@
   "entity.naturesmod.tripod_fish": "Tripod Fish",
   "entity.naturesmod.vampire_squid": "Vampire Squid",
   "entity.naturesmod.viperfish": "Viperfish",
+  "filled_map.naturesmod.abyssal_rift": "Map to an Abyssal Rift",
   "item.naturesmod.abyssal_boots": "Abyssal Boots",
   "item.naturesmod.abyssal_chestplate": "Abyssal Chestplate",
   "item.naturesmod.abyssal_heart": "Abyssal Heart",
@@ -140,5 +150,8 @@
   "item.naturesmod.tripod_fish_spawn_egg": "Tripod Fish Spawn Egg",
   "item.naturesmod.vampire_squid_spawn_egg": "Vampire Squid Spawn Egg",
   "item.naturesmod.viperfish_spawn_egg": "Viperfish Spawn Egg",
-  "itemGroup.naturesmod": "Nature's Mod"
+  "itemGroup.naturesmod": "Nature's Mod",
+  "message.naturesmod.pressure.crush": "The crushing pressure of the abyss! Only a full Abyssal suit or a conduit's power can withstand it.",
+  "message.naturesmod.pressure.deep": "The water presses in on you. You need a full Tidewalker suit or stronger to dive this deep.",
+  "message.naturesmod.pressure.overlay": "The pressure is crushing you!"
 }

@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 309871244,
+    "separation": 5,
+    "spacing": 12
+  },
+  "structures": [
+    {
+      "structure": "naturesmod:bathysphere",
+      "weight": 1
+    }
+  ]
+}

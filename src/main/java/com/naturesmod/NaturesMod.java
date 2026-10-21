@@ -7,6 +7,8 @@ import net.minecraft.resources.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.naturesmod.abyss.Abyss;
+import com.naturesmod.block.ModBlocks;
 import com.naturesmod.creature.ModCreatures;
 import com.naturesmod.item.ModItems;
 import com.naturesmod.smoketest.SmokeTest;
@@ -22,12 +24,14 @@ public class NaturesMod implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		NaturesConfig.load();
+		ModBlocks.register();
 		ModFeatures.register();
 		ModStructures.register();
 		ModBiomeModifications.register();
 		TreeEvents.register();
 		ModCreatures.register();
 		ModItems.register();
+		Abyss.register();
 
 		if (Boolean.getBoolean("naturesmod.smoketest")) {
 			SmokeTest.register();

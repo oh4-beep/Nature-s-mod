@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:cache",
+  "input": {
+    "type": "minecraft:add",
+    "left": {
+      "type": "minecraft:add",
+      "left": 72.0,
+      "right": {
+        "type": "minecraft:mul",
+        "left": {
+          "type": "minecraft:noise",
+          "noise": "naturesmod:abyss/plains",
+          "xz_scale": 1.0,
+          "y_scale": 0.0
+        },
+        "right": 10.0
+      }
+    },
+    "right": {
+      "type": "minecraft:add",
+      "left": {
+        "type": "minecraft:add",
+        "left": "naturesmod:abyss/seamount",
+        "right": "naturesmod:abyss/spire"
+      },
+      "right": {
+        "type": "minecraft:mul",
+        "left": "naturesmod:abyss/trench",
+        "right": -1.0
+      }
+    }
+  }
+}

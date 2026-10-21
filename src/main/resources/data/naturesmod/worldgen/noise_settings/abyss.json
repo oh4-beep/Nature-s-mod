@@ -1,0 +1,33 @@
+{
+  "default_block": "minecraft:deepslate",
+  "default_fluid": "minecraft:water",
+  "disable_mob_generation": false,
+  "legacy_random_source": false,
+  "material_rule": "naturesmod:abyss",
+  "noise": {
+    "height": 1088,
+    "min_y": 0
+  },
+  "noise_router": {
+    "chunk_surface_level": "naturesmod:abyss/floor",
+    "continents": 0.0,
+    "depth": "naturesmod:abyss/above_floor",
+    "erosion": "naturesmod:abyss/height",
+    "final_density": "naturesmod:abyss/final_density",
+    "ridges": 0.0,
+    "temperature": {
+      "type": "minecraft:noise",
+      "noise": "naturesmod:abyss/temperature",
+      "xz_scale": 1.0,
+      "y_scale": 0.0
+    },
+    "vegetation": {
+      "type": "minecraft:noise",
+      "noise": "naturesmod:abyss/vegetation",
+      "xz_scale": 1.0,
+      "y_scale": 0.0
+    }
+  },
+  "sea_level": 1050,
+  "spawn_target": []
+}

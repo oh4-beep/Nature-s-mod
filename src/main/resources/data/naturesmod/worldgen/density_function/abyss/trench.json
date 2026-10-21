@@ -1,0 +1,48 @@
+{
+  "type": "minecraft:cache",
+  "input": {
+    "type": "minecraft:mul",
+    "left": {
+      "type": "minecraft:spline",
+      "spline": {
+        "coordinate": {
+          "type": "minecraft:abs",
+          "input": {
+            "type": "minecraft:noise",
+            "noise": "naturesmod:abyss/trench",
+            "xz_scale": 1.0,
+            "y_scale": 0.0
+          }
+        },
+        "points": [
+          {
+            "location": 0.0,
+            "value": 66.0,
+            "derivative": 0.0
+          },
+          {
+            "location": 0.035,
+            "value": 58.0,
+            "derivative": -400.0
+          },
+          {
+            "location": 0.08,
+            "value": 12.0,
+            "derivative": -400.0
+          },
+          {
+            "location": 0.11,
+            "value": 0.0,
+            "derivative": 0.0
+          },
+          {
+            "location": 1.0,
+            "value": 0.0,
+            "derivative": 0.0
+          }
+        ]
+      }
+    },
+    "right": "naturesmod:abyss/plain_factor"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 207914625,
+    "separation": 9,
+    "spacing": 26
+  },
+  "structures": [
+    {
+      "structure": "naturesmod:abyssal_rift",
+      "weight": 1
+    }
+  ]
+}
