@@ -140,7 +140,7 @@ final class SeaTest {
 			Map<String, Integer> counts = new TreeMap<>();
 			for (int i = -16; i <= 16; i++) {
 				for (int j = -16; j <= 16; j++) {
-					Holder<Biome> biome = generator.getBiomeSource().getNoiseBiome((i * 64) >> 2, y >> 2, (j * 64) >> 2, randomState.sampler());
+					Holder<Biome> biome = abyss.getUncachedNoiseBiome((i * 64) >> 2, y >> 2, (j * 64) >> 2);
 					counts.merge(biome.getRegisteredName().replace("naturesmod:", ""), 1, Integer::sum);
 				}
 			}
@@ -152,7 +152,7 @@ final class SeaTest {
 			for (int j = 0; j < n; j += 4) {
 				int x = (i - n / 2) * step;
 				int z = (j - n / 2) * step;
-				Holder<Biome> biome = generator.getBiomeSource().getNoiseBiome(x >> 2, (floors[i * n + j] + 2) >> 2, z >> 2, randomState.sampler());
+				Holder<Biome> biome = abyss.getUncachedNoiseBiome(x >> 2, (floors[i * n + j] + 2) >> 2, z >> 2);
 				floorBiomes.merge(biome.getRegisteredName().replace("naturesmod:", ""), 1, Integer::sum);
 			}
 		}

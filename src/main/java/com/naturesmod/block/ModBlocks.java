@@ -10,7 +10,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
-import net.minecraft.world.level.material.PushReaction;
 
 import com.naturesmod.NaturesMod;
 import com.naturesmod.abyss.RiftBlock;
@@ -23,8 +22,7 @@ public final class ModBlocks {
 			.strength(-1.0F, 3600000.0F)
 			.noLootTable()
 			.lightLevel(state -> 12)
-			.sound(SoundType.GLASS)
-			.pushReaction(PushReaction.BLOCK));
+			.sound(SoundType.GLASS));
 
 	private ModBlocks() {
 	}

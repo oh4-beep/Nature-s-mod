@@ -16,6 +16,8 @@ Biomes are picked by absolute height ("erosion" axis) and by height above the lo
 ("depth" axis), so the floor biomes hug the floor wherever it is.
 """
 
+import copy
+
 NS = "naturesmod"
 DF = f"{NS}:abyss"
 
@@ -548,7 +550,7 @@ RIFT_MAP = [
 ]
 
 
-def loot():
+def loot(vanilla):
     tables = {
         "chests/abyssal_rift": chest(
             pool((3, 6),
@@ -584,9 +586,13 @@ def loot():
                  item("book", 8, 1, DEEP_ENCHANT), item("golden_apple", 6, (1, 2)), item("heart_of_the_sea", 3)),
             pool(1, empty(3), item("enchanted_golden_apple", 1), item("trident", 1, None, DEEP_ENCHANT)),
         ),
-        "inject/rift_map": chest(pool(1, empty(1), item("map", 1, None, *RIFT_MAP))),
     }
     files = {f"{NS}/loot_table/{name}.json": table for name, table in tables.items()}
+    # Treasure maps to the nearest Abyssal Rift turn up in the sea's treasure chests.
+    for name, chance in (("shipwreck_map", 1), ("underwater_ruin_big", 2), ("buried_treasure", 1)):
+        table = copy.deepcopy(vanilla.read(f"minecraft/loot_table/chests/{name}.json"))
+        table["pools"].append(pool(1, empty(chance), item("map", 1, None, *RIFT_MAP)))
+        files[f"minecraft/loot_table/chests/{name}.json"] = table
     files[f"{NS}/tags/worldgen/structure/on_rift_maps.json"] = {"values": [f"{NS}:abyssal_rift"]}
     return files
 
@@ -607,7 +613,7 @@ def build(vanilla):
     out.update(features())
     out.update(structures())
     out.update(damage())
-    out.update(loot())
+    out.update(loot(vanilla))
     # The noise settings must not carry an explicit null: leave aquifers out entirely.
     del out[f"{NS}/worldgen/noise_settings/abyss.json"]["aquifers"]
     return out

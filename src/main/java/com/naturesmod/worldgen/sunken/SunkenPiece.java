@@ -259,7 +259,7 @@ public class SunkenPiece extends StructurePiece {
 		double radius = 4.4;
 		int my = cy + 3;
 		BlockState iron = Blocks.IRON_BLOCK.defaultBlockState();
-		BlockState copper = Blocks.WAXED_WEATHERED_COPPER.defaultBlockState();
+		BlockState copper = Blocks.PRISMARINE.defaultBlockState();
 		BlockState glass = Blocks.GLASS.defaultBlockState();
 		for (int dx = -5; dx <= 5; dx++) {
 			for (int dz = -5; dz <= 5; dz++) {

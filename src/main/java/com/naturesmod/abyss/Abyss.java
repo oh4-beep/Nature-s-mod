@@ -2,11 +2,9 @@ package com.naturesmod.abyss;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
@@ -27,10 +25,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.portal.TeleportTransition;
-import net.minecraft.world.level.storage.loot.LootPool;
-import net.minecraft.world.level.storage.loot.LootTable;
-import net.minecraft.world.level.storage.loot.entries.NestedLootTable;
-import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.phys.Vec3;
 
 import com.naturesmod.NaturesConfig;
@@ -54,20 +48,12 @@ public final class Abyss {
 	public static final int CRUSH_DEPTH = 350;
 
 	private static final Map<UUID, Integer> WARNED = new HashMap<>();
-	/** Vanilla treasure chests that may hold a map to the nearest Abyssal Rift. */
-	private static final Set<String> RIFT_MAP_CHESTS = Set.of("chests/shipwreck_map", "chests/underwater_ruin_big", "chests/buried_treasure");
-	private static final ResourceKey<LootTable> RIFT_MAP = ResourceKey.create(Registries.LOOT_TABLE, NaturesMod.id("inject/rift_map"));
 
 	private Abyss() {
 	}
 
 	public static void register() {
 		ServerTickEvents.END_SERVER_TICK.register(Abyss::tick);
-		LootTableEvents.MODIFY.register((key, table, source, registries) -> {
-			if (source.isBuiltin() && key.identifier().getNamespace().equals("minecraft") && RIFT_MAP_CHESTS.contains(key.identifier().getPath())) {
-				table.withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F)).add(NestedLootTable.lootTableReference(RIFT_MAP)));
-			}
-		});
 	}
 
 	public static boolean isAbyss(Level level) {
