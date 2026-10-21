@@ -52,7 +52,20 @@ public final class SmokeTest {
 	}
 
 	public static void register() {
+		ServerLifecycleEvents.SERVER_STARTING.register(server -> System.out.println("[smoketest] server starting"));
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> new SmokeTest(server).start());
+		// Never let a stuck test hold CI hostage.
+		Thread watchdog = new Thread(() -> {
+			try {
+				Thread.sleep(25 * 60 * 1000L);
+			} catch (InterruptedException e) {
+				return;
+			}
+			System.out.println("[smoketest] TIMEOUT after 25 minutes");
+			Runtime.getRuntime().halt(2);
+		}, "naturesmod-smoketest-watchdog");
+		watchdog.setDaemon(true);
+		watchdog.start();
 	}
 
 	private void line(String format, Object... args) {
@@ -65,6 +78,7 @@ public final class SmokeTest {
 	}
 
 	private void start() {
+		System.out.println("[smoketest] server started, generating regions");
 		try {
 			line("=== Nature's Mod worldgen smoke test ===");
 			line("overworld: minY=%d maxY=%d height=%d seaLevel=%d", level.getMinY(), level.getMaxY(), level.getHeight(), level.getSeaLevel());
@@ -75,7 +89,10 @@ public final class SmokeTest {
 			int[] allHeights = new int[0];
 			Map<String, Integer> biomes = new TreeMap<>();
 			for (int[] region : REGIONS) {
+				long regionStart = System.currentTimeMillis();
 				int[] heights = region(region[0], region[1], biomes);
+				System.out.printf("[smoketest] region %d,%d generated in %.1fs%n", region[0], region[1],
+						(System.currentTimeMillis() - regionStart) / 1000.0);
 				int offset = allHeights.length;
 				allHeights = Arrays.copyOf(allHeights, offset + heights.length);
 				System.arraycopy(heights, 0, allHeights, offset, heights.length);
