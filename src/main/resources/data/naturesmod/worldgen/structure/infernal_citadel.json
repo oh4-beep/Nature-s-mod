@@ -1,0 +1,48 @@
+{
+  "type": "naturesmod:infernal_citadel",
+  "biomes": "#naturesmod:has_structure/infernal_citadel",
+  "spawn_overrides": {
+    "monster": {
+      "bounding_box": "full",
+      "spawns": [
+        {
+          "type": "minecraft:wither_skeleton",
+          "count": {
+            "type": "minecraft:uniform",
+            "min_inclusive": 1,
+            "max_inclusive": 2
+          },
+          "weight": 10
+        },
+        {
+          "type": "minecraft:blaze",
+          "count": {
+            "type": "minecraft:uniform",
+            "min_inclusive": 1,
+            "max_inclusive": 2
+          },
+          "weight": 10
+        },
+        {
+          "type": "minecraft:magma_cube",
+          "count": {
+            "type": "minecraft:uniform",
+            "min_inclusive": 2,
+            "max_inclusive": 3
+          },
+          "weight": 3
+        },
+        {
+          "type": "minecraft:zombified_piglin",
+          "count": {
+            "type": "minecraft:uniform",
+            "min_inclusive": 2,
+            "max_inclusive": 4
+          },
+          "weight": 3
+        }
+      ]
+    }
+  },
+  "step": "surface_structures"
+}

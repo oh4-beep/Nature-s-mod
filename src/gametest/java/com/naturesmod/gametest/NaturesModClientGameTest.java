@@ -28,6 +28,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.Structure;
@@ -296,7 +297,8 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 			failures.add("nether: no open cavern found");
 		}
 		world.getServer().runCommand("effect clear @a minecraft:night_vision");
-		for (String[] spot : new String[][] {{"ember_wastes", "60"}, {"glowstone_grotto", "170"}, {"obsidian_spires", "170"}}) {
+		for (String[] spot : new String[][] {{"ember_wastes", "60"}, {"brimstone_fields", "60"}, {"flesh_caverns", "60"},
+				{"minecraft:nether_wastes", "60"}, {"minecraft:soul_sand_valley", "60"}, {"glowstone_grotto", "170"}, {"obsidian_spires", "170"}}) {
 			String biome = spot[0];
 			int y = Integer.parseInt(spot[1]);
 			BlockPos at = world.getServer().computeOnServer(server -> {
@@ -309,8 +311,42 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 				continue;
 			}
 			teleport(context, world, Level.NETHER, at.getX() + 0.5, at.getY(), at.getZ() + 0.5, 0.0F, 15.0F);
-			shoot(context, "nether_" + biome);
+			shoot(context, "nether_" + biome.replace("minecraft:", ""));
 		}
+		// The strongholds of Hell, framed from inside their walls; night vision to see the detail.
+		world.getServer().runCommand("effect give @a minecraft:night_vision infinite 0 true");
+		for (String structure : new String[] {"infernal_citadel", "bone_pit", "ritual_circle"}) {
+			BlockPos at = world.getServer().computeOnServer(server -> locate(server.getLevel(Level.NETHER), NaturesMod.id(structure)));
+			if (at == null) {
+				failures.add("nether: no " + structure);
+				continue;
+			}
+			// Find the treasure: every stronghold keeps a chest at a known spot above its floor.
+			BlockPos center = at.offset(8, 0, 8);
+			int chestX = structure.equals("infernal_citadel") ? center.getX() - 2 : center.getX();
+			int chestZ = structure.equals("infernal_citadel") ? center.getZ() + 11 : center.getZ();
+			int chestY = world.getServer().computeOnServer(server -> {
+				ServerLevel nether = server.getLevel(Level.NETHER);
+				for (int y = 30; y < 220; y++) {
+					if (nether.getBlockState(new BlockPos(chestX, y, chestZ)).is(Blocks.CHEST)) {
+						return y;
+					}
+				}
+				return -1;
+			});
+			if (chestY < 0) {
+				failures.add("nether: no chest in the " + structure + " at " + center);
+				continue;
+			}
+			double[] camera = switch (structure) {
+				case "infernal_citadel" -> new double[] {center.getX() + 0.5, chestY + 7, center.getZ() - 17.5, 14.0};
+				case "bone_pit" -> new double[] {center.getX() + 0.5, chestY + 13, center.getZ() - 11.5, 40.0};
+				default -> new double[] {center.getX() + 0.5, chestY + 4, center.getZ() - 10.5, 22.0};
+			};
+			teleport(context, world, Level.NETHER, camera[0], camera[1], camera[2], 0.0F, (float) camera[3]);
+			shoot(context, "nether_" + structure);
+		}
+		world.getServer().runCommand("effect clear @a minecraft:night_vision");
 	}
 
 	// --- finding places ------------------------------------------------------------------
@@ -324,7 +360,8 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 	}
 
 	private static BlockPos findBiome(ServerLevel level, String name, int y) {
-		ResourceKey<Biome> key = ResourceKey.create(Registries.BIOME, NaturesMod.id(name));
+		ResourceKey<Biome> key = ResourceKey.create(Registries.BIOME, name.startsWith("minecraft:")
+				? Identifier.withDefaultNamespace(name.substring("minecraft:".length())) : NaturesMod.id(name));
 		Predicate<Holder<Biome>> wanted = holder -> holder.is(key);
 		Pair<BlockPos, Holder<Biome>> found = level.findClosestBiome3d(wanted, new BlockPos(0, y, 0), 3200, 32, 16);
 		return found == null ? null : found.getFirst();

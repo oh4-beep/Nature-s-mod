@@ -58,6 +58,7 @@ public final class ModItems {
 	public static Item BONE_SIGIL;
 	public static Item EMBER_SIGIL;
 	public static Item CROWN_OF_THE_DEEP;
+	public static Item EMBER_SHARD;
 
 	private ModItems() {
 	}
@@ -80,6 +81,12 @@ public final class ModItems {
 			register(BuiltInRegistries.BLOCK.getKey(block).getPath(), properties -> new BlockItem(block, properties),
 					new Item.Properties().useBlockDescriptionPrefix());
 		}
+
+		for (Block block : ModBlocks.HELL) {
+			register(BuiltInRegistries.BLOCK.getKey(block).getPath(), properties -> new BlockItem(block, properties),
+					new Item.Properties().useBlockDescriptionPrefix());
+		}
+		EMBER_SHARD = register("ember_shard", Item::new, new Item.Properties().fireResistant());
 
 		armor("tidewalker", DivingArmor.TIDEWALKER, TIDEWALKER_SET);
 		armor("abyssal", DivingArmor.ABYSSAL, ABYSSAL_SET);

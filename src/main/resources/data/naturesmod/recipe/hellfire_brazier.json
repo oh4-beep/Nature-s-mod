@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "decorations",
+  "pattern": [
+    "I#I",
+    " I ",
+    "III"
+  ],
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "#": "#minecraft:coals"
+  },
+  "result": {
+    "count": 1,
+    "id": "naturesmod:hellfire_brazier"
+  }
+}

@@ -45,7 +45,8 @@ class Vanilla:
 # decoration step and refuses to generate the dimension if two biomes disagree on it.
 DIMENSION_BIOMES = {
     "the Nether": ["minecraft:nether_wastes", "minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest",
-                   "minecraft:basalt_deltas", "naturesmod:ember_wastes", "naturesmod:glowstone_grotto", "naturesmod:obsidian_spires"],
+                   "minecraft:basalt_deltas", "naturesmod:ember_wastes", "naturesmod:glowstone_grotto", "naturesmod:obsidian_spires",
+                   "naturesmod:brimstone_fields", "naturesmod:flesh_caverns"],
     "the Abyss": ["naturesmod:twilight_waters", "naturesmod:midnight_zone", "naturesmod:abyssal_plains", "naturesmod:glowing_reef",
                   "naturesmod:hydrothermal_vents", "naturesmod:bone_fields"],
 }
@@ -57,7 +58,8 @@ def check_feature_order(files, vanilla):
         for biome in biomes:
             namespace, name = biome.split(":")
             rel = f"{namespace}/worldgen/biome/{name}.json"
-            data = files[rel] if namespace == "naturesmod" else vanilla.read(f"minecraft/worldgen/biome/{name}.json")
+            # A vanilla biome the mod reworks is checked as the mod writes it.
+            data = files[rel] if rel in files else vanilla.read(f"minecraft/worldgen/biome/{name}.json")
             for step, placed in enumerate(data["features"]):
                 edges = steps.setdefault(step, {})
                 for before, after in zip(placed, placed[1:]):

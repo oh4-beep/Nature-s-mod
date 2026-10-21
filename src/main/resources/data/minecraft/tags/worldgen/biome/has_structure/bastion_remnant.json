@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "naturesmod:ember_wastes"
+    "naturesmod:ember_wastes",
+    "naturesmod:brimstone_fields"
   ]
 }

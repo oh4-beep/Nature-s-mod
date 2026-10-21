@@ -41,7 +41,7 @@
                 "min_inclusive": 1,
                 "max_inclusive": 2
               },
-              "weight": 30
+              "weight": 40
             },
             {
               "type": "minecraft:ghast",
@@ -56,6 +56,15 @@
                 "max_inclusive": 4
               },
               "weight": 20
+            },
+            {
+              "type": "minecraft:wither_skeleton",
+              "count": {
+                "type": "minecraft:uniform",
+                "min_inclusive": 1,
+                "max_inclusive": 2
+              },
+              "weight": 10
             }
           ],
           "creature": [
@@ -86,7 +95,7 @@
           "particle": {
             "type": "minecraft:lava"
           },
-          "probability": 0.0008
+          "probability": 0.003
         }
       ],
       "modifier": "append"
@@ -120,7 +129,12 @@
       "minecraft:ore_debris_small",
       "naturesmod:nether/geyser_field",
       "naturesmod:nether/lavafall",
-      "naturesmod:nether/ember_spikes"
+      "naturesmod:nether/ember_spikes",
+      "naturesmod:nether/brimstone_deposit_sparse",
+      "naturesmod:nether/ember_crystals_sparse",
+      "naturesmod:nether/skull_pikes_sparse",
+      "naturesmod:nether/charred_tree",
+      "naturesmod:nether/hell_shrine_rare"
     ],
     [],
     [

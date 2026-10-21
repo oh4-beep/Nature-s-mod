@@ -1,0 +1,36 @@
+{
+  "criteria": {
+    "there": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "biomes": "naturesmod:brimstone_fields"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.naturesmod.nether.brimstone_fields.description"
+    },
+    "icon": {
+      "id": "naturesmod:brimstone"
+    },
+    "title": {
+      "translate": "advancements.naturesmod.nether.brimstone_fields.title"
+    }
+  },
+  "requirements": [
+    [
+      "there"
+    ]
+  ],
+  "sends_telemetry_event": false,
+  "parent": "minecraft:nether/root"
+}

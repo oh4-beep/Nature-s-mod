@@ -14,6 +14,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."
 import advancements  # noqa: E402
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import hell  # noqa: E402
 import mission  # noqa: E402
 import sea_plants  # noqa: E402
 
@@ -40,6 +41,8 @@ LANG = {
     "biome.naturesmod.ember_wastes": "Ember Wastes",
     "biome.naturesmod.glowstone_grotto": "Glowstone Grotto",
     "biome.naturesmod.obsidian_spires": "Obsidian Spires",
+    "biome.naturesmod.brimstone_fields": "Brimstone Fields",
+    "biome.naturesmod.flesh_caverns": "Flesh Caverns",
 }
 
 
@@ -141,6 +144,7 @@ def main():
 
     sea_plants.write(ASSETS, os.path.join(REPO, "src", "main", "resources", "data"))
     mission.write(ASSETS)
+    hell.write(ASSETS, os.path.join(REPO, "src", "main", "resources", "data"))
 
     lang_path = os.path.join(ASSETS, "lang", "en_us.json")
     with open(lang_path, encoding="utf-8") as fh:
@@ -149,6 +153,7 @@ def main():
     lang.update(advancements.lang())
     lang.update(sea_plants.lang())
     lang.update(mission.lang())
+    lang.update(hell.lang())
     write_json(lang_path, dict(sorted(lang.items())))
     print(f"wrote rift assets and {len(LANG)} language entries")
 

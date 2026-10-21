@@ -1,0 +1,6 @@
+{
+  "type": "naturesmod:bone_pit",
+  "biomes": "#naturesmod:has_structure/bone_pit",
+  "spawn_overrides": {},
+  "step": "surface_structures"
+}

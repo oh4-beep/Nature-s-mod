@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cross",
+  "textures": {
+    "cross": "naturesmod:block/ember_crystal"
+  }
+}

@@ -11,6 +11,7 @@ import com.naturesmod.worldgen.feature.CaveMouthFeature;
 import com.naturesmod.worldgen.feature.CliffVinesFeature;
 import com.naturesmod.worldgen.feature.CliffWaterfallFeature;
 import com.naturesmod.worldgen.feature.FallenLogFeature;
+import com.naturesmod.worldgen.feature.HellFeature;
 import com.naturesmod.worldgen.feature.NetherFeature;
 import com.naturesmod.worldgen.feature.RockFormationFeature;
 import com.naturesmod.worldgen.feature.SeaGardenFeature;
@@ -39,6 +40,7 @@ public final class ModFeatures {
 		register("cliff_vines", CliffVinesFeature.CODEC);
 		register("abyss_feature", AbyssFeature.CODEC);
 		register("nether_feature", NetherFeature.CODEC);
+		register("hell_feature", HellFeature.CODEC);
 		register("sea_garden", SeaGardenFeature.CODEC);
 	}
 

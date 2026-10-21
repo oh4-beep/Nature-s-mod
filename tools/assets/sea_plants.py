@@ -398,10 +398,10 @@ def write(assets, data_root):
     # Loot: every plant drops itself; a clam also gives up its pearl.
     for block in BLOCKS:
         pools = [{"rolls": 1, "entries": [{"type": "minecraft:item", "name": f"naturesmod:{block}"}],
-                  "conditions": [{"condition": "minecraft:survives_explosion"}]}]
+                  "condition": {"type": "minecraft:survives_explosion"}}]
         if block == "giant_clam":
-            pools.append({"rolls": 1, "entries": [{"type": "minecraft:item", "name": "naturesmod:pearl"}], "conditions": [
-                {"condition": "minecraft:block_state_property", "block": "naturesmod:giant_clam", "properties": {"has_pearl": "true"}}]})
+            pools.append({"rolls": 1, "entries": [{"type": "minecraft:item", "name": "naturesmod:pearl"}], "condition": {
+                "type": "minecraft:match_block", "blocks": "naturesmod:giant_clam", "state": {"has_pearl": "true"}}})
         _json(os.path.join(data_root, "naturesmod", "loot_table", "blocks", block + ".json"), {"type": "minecraft:block", "pools": pools})
     # Nine pearls make a block of pearl and back.
     recipes = os.path.join(data_root, "naturesmod", "recipe")

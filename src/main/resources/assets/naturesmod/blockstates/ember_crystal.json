@@ -1,0 +1,30 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "naturesmod:block/ember_crystal",
+      "x": 180
+    },
+    "facing=east": {
+      "model": "naturesmod:block/ember_crystal",
+      "x": 90,
+      "y": 90
+    },
+    "facing=north": {
+      "model": "naturesmod:block/ember_crystal",
+      "x": 90
+    },
+    "facing=south": {
+      "model": "naturesmod:block/ember_crystal",
+      "x": 90,
+      "y": 180
+    },
+    "facing=up": {
+      "model": "naturesmod:block/ember_crystal"
+    },
+    "facing=west": {
+      "model": "naturesmod:block/ember_crystal",
+      "x": 90,
+      "y": 270
+    }
+  }
+}

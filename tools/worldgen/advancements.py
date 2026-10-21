@@ -93,6 +93,16 @@ def build(buckets):
             "biomes": f"{NS}:glowstone_grotto"}})}, display("nether.glowstone_grotto", "minecraft:glowstone")),
         "nether/obsidian_spires": advancement(f"{NS}:nether/above_the_lava_sea", {"there": player_where({"minecraft:location": {
             "biomes": f"{NS}:obsidian_spires"}})}, display("nether.obsidian_spires", "minecraft:crying_obsidian")),
+        "nether/brimstone_fields": advancement("minecraft:nether/root", {"there": player_where({"minecraft:location": {
+            "biomes": f"{NS}:brimstone_fields"}})}, display("nether.brimstone_fields", f"{NS}:brimstone")),
+        "nether/flesh_caverns": advancement("minecraft:nether/root", {"there": player_where({"minecraft:location": {
+            "biomes": f"{NS}:flesh_caverns"}})}, display("nether.flesh_caverns", f"{NS}:flesh_block")),
+        "nether/bone_pit": advancement("minecraft:nether/root", {"there": player_where({"minecraft:location": {
+            "structures": f"{NS}:bone_pit"}})}, display("nether.bone_pit", "minecraft:skeleton_skull")),
+        "nether/ritual_circle": advancement("minecraft:nether/root", {"there": player_where({"minecraft:location": {
+            "structures": f"{NS}:ritual_circle"}})}, display("nether.ritual_circle", f"{NS}:soul_brazier")),
+        "nether/infernal_citadel": advancement("minecraft:nether/root", {"there": player_where({"minecraft:location": {
+            "structures": f"{NS}:infernal_citadel"}})}, display("nether.infernal_citadel", f"{NS}:hellfire_brazier", frame="goal")),
     }
     return {f"{NS}/advancement/{name}.json": adv for name, adv in out.items()}
 
@@ -116,6 +126,11 @@ LANG = {
     "nether.ember_wastes": ("Ash and Embers", "Cross the Ember Wastes"),
     "nether.glowstone_grotto": ("Chandeliers of Light", "Find the Glowstone Grotto"),
     "nether.obsidian_spires": ("Weeping Spires", "Walk among the Obsidian Spires"),
+    "nether.brimstone_fields": ("Fire and Brimstone", "Cross the smouldering Brimstone Fields"),
+    "nether.flesh_caverns": ("The Belly of the Beast", "Enter the Flesh Caverns"),
+    "nether.bone_pit": ("Down Among the Dead", "Find a Bone Pit"),
+    "nether.ritual_circle": ("The Ritual", "Stand in a Ritual Circle"),
+    "nether.infernal_citadel": ("Storm the Citadel", "Enter an Infernal Citadel"),
 }
 
 

@@ -43,6 +43,19 @@
                   "type": "minecraft:condition",
                   "if_true": {
                     "type": "minecraft:noise_threshold",
+                    "noise": "naturesmod:nether/ash",
+                    "min_threshold": 0.25,
+                    "max_threshold": 1000000000.0
+                  },
+                  "then_run": {
+                    "type": "minecraft:block",
+                    "result_state": "naturesmod:ash_block"
+                  }
+                },
+                {
+                  "type": "minecraft:condition",
+                  "if_true": {
+                    "type": "minecraft:noise_threshold",
                     "noise": "minecraft:nether_state_selector",
                     "min_threshold": 0.1,
                     "max_threshold": 1000000000.0
@@ -83,6 +96,19 @@
                   "result_state": "minecraft:basalt"
                 }
               ]
+            }
+          },
+          {
+            "type": "minecraft:condition",
+            "if_true": {
+              "type": "minecraft:noise_threshold",
+              "noise": "naturesmod:nether/scorch",
+              "min_threshold": 0.4,
+              "max_threshold": 1000000000.0
+            },
+            "then_run": {
+              "type": "minecraft:block",
+              "result_state": "naturesmod:scorched_netherrack"
             }
           }
         ]
@@ -214,6 +240,377 @@
             "then_run": {
               "type": "minecraft:block",
               "result_state": "minecraft:basalt"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "minecraft:condition",
+      "if_true": {
+        "type": "minecraft:biome",
+        "biome_is": "naturesmod:brimstone_fields"
+      },
+      "then_run": {
+        "type": "minecraft:sequence",
+        "sequence": [
+          {
+            "type": "minecraft:condition",
+            "if_true": "minecraft:on_ceiling",
+            "then_run": {
+              "type": "minecraft:sequence",
+              "sequence": [
+                {
+                  "type": "minecraft:condition",
+                  "if_true": {
+                    "type": "minecraft:noise_threshold",
+                    "noise": "naturesmod:nether/brimstone",
+                    "min_threshold": 0.3,
+                    "max_threshold": 1000000000.0
+                  },
+                  "then_run": {
+                    "type": "minecraft:block",
+                    "result_state": "naturesmod:brimstone"
+                  }
+                },
+                {
+                  "type": "minecraft:block",
+                  "result_state": "minecraft:basalt"
+                }
+              ]
+            }
+          },
+          {
+            "type": "minecraft:condition",
+            "if_true": "minecraft:on_floor",
+            "then_run": {
+              "type": "minecraft:sequence",
+              "sequence": [
+                {
+                  "type": "minecraft:condition",
+                  "if_true": {
+                    "type": "minecraft:noise_threshold",
+                    "noise": "minecraft:patch",
+                    "min_threshold": 0.4,
+                    "max_threshold": 1000000000.0
+                  },
+                  "then_run": {
+                    "type": "minecraft:block",
+                    "result_state": "minecraft:magma_block"
+                  }
+                },
+                {
+                  "type": "minecraft:condition",
+                  "if_true": {
+                    "type": "minecraft:noise_threshold",
+                    "noise": "naturesmod:nether/brimstone",
+                    "min_threshold": 0.35,
+                    "max_threshold": 1000000000.0
+                  },
+                  "then_run": {
+                    "type": "minecraft:block",
+                    "result_state": "minecraft:sulfur"
+                  }
+                },
+                {
+                  "type": "minecraft:condition",
+                  "if_true": {
+                    "type": "minecraft:noise_threshold",
+                    "noise": "naturesmod:nether/brimstone",
+                    "min_threshold": -1000000000.0,
+                    "max_threshold": -0.45
+                  },
+                  "then_run": {
+                    "type": "minecraft:block",
+                    "result_state": "minecraft:cinnabar"
+                  }
+                },
+                {
+                  "type": "minecraft:block",
+                  "result_state": "naturesmod:brimstone"
+                }
+              ]
+            }
+          },
+          {
+            "type": "minecraft:condition",
+            "if_true": "minecraft:under_floor",
+            "then_run": {
+              "type": "minecraft:block",
+              "result_state": "naturesmod:brimstone"
+            }
+          },
+          {
+            "type": "minecraft:condition",
+            "if_true": {
+              "type": "minecraft:noise_threshold",
+              "noise": "naturesmod:nether/brimstone",
+              "min_threshold": 0.2,
+              "max_threshold": 1000000000.0
+            },
+            "then_run": {
+              "type": "minecraft:block",
+              "result_state": "naturesmod:brimstone"
+            }
+          },
+          {
+            "type": "minecraft:condition",
+            "if_true": {
+              "type": "minecraft:noise_threshold",
+              "noise": "naturesmod:nether/scorch",
+              "min_threshold": 0.3,
+              "max_threshold": 1000000000.0
+            },
+            "then_run": {
+              "type": "minecraft:block",
+              "result_state": "naturesmod:scorched_netherrack"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "minecraft:condition",
+      "if_true": {
+        "type": "minecraft:biome",
+        "biome_is": "naturesmod:flesh_caverns"
+      },
+      "then_run": {
+        "type": "minecraft:sequence",
+        "sequence": [
+          {
+            "type": "minecraft:condition",
+            "if_true": "minecraft:on_ceiling",
+            "then_run": {
+              "type": "minecraft:block",
+              "result_state": "naturesmod:flesh_block"
+            }
+          },
+          {
+            "type": "minecraft:condition",
+            "if_true": "minecraft:on_floor",
+            "then_run": {
+              "type": "minecraft:sequence",
+              "sequence": [
+                {
+                  "type": "minecraft:condition",
+                  "if_true": {
+                    "type": "minecraft:noise_threshold",
+                    "noise": "minecraft:patch",
+                    "min_threshold": 0.4,
+                    "max_threshold": 1000000000.0
+                  },
+                  "then_run": {
+                    "type": "minecraft:block",
+                    "result_state": "minecraft:bone_block"
+                  }
+                },
+                {
+                  "type": "minecraft:condition",
+                  "if_true": {
+                    "type": "minecraft:noise_threshold",
+                    "noise": "minecraft:nether_state_selector",
+                    "min_threshold": 0.25,
+                    "max_threshold": 1000000000.0
+                  },
+                  "then_run": {
+                    "type": "minecraft:block",
+                    "result_state": "minecraft:nether_wart_block"
+                  }
+                },
+                {
+                  "type": "minecraft:block",
+                  "result_state": "naturesmod:flesh_block"
+                }
+              ]
+            }
+          },
+          {
+            "type": "minecraft:condition",
+            "if_true": "minecraft:under_floor",
+            "then_run": {
+              "type": "minecraft:block",
+              "result_state": "naturesmod:flesh_block"
+            }
+          },
+          {
+            "type": "minecraft:condition",
+            "if_true": {
+              "type": "minecraft:noise_threshold",
+              "noise": "minecraft:nether_state_selector",
+              "min_threshold": 0.6,
+              "max_threshold": 1000000000.0
+            },
+            "then_run": {
+              "type": "minecraft:block",
+              "result_state": "minecraft:nether_wart_block"
+            }
+          },
+          {
+            "type": "minecraft:condition",
+            "if_true": {
+              "type": "minecraft:noise_threshold",
+              "noise": "naturesmod:nether/flesh",
+              "min_threshold": -0.6,
+              "max_threshold": 1000000000.0
+            },
+            "then_run": {
+              "type": "minecraft:block",
+              "result_state": "naturesmod:flesh_block"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "minecraft:condition",
+      "if_true": {
+        "type": "minecraft:biome",
+        "biome_is": "minecraft:nether_wastes"
+      },
+      "then_run": {
+        "type": "minecraft:sequence",
+        "sequence": [
+          {
+            "type": "minecraft:condition",
+            "if_true": "minecraft:on_floor",
+            "then_run": {
+              "type": "minecraft:sequence",
+              "sequence": [
+                {
+                  "type": "minecraft:condition",
+                  "if_true": {
+                    "type": "minecraft:noise_threshold",
+                    "noise": "naturesmod:nether/scorch",
+                    "min_threshold": 0.45,
+                    "max_threshold": 1000000000.0
+                  },
+                  "then_run": {
+                    "type": "minecraft:block",
+                    "result_state": "naturesmod:scorched_netherrack"
+                  }
+                },
+                {
+                  "type": "minecraft:condition",
+                  "if_true": {
+                    "type": "minecraft:noise_threshold",
+                    "noise": "naturesmod:nether/ash",
+                    "min_threshold": 0.55,
+                    "max_threshold": 1000000000.0
+                  },
+                  "then_run": {
+                    "type": "minecraft:block",
+                    "result_state": "naturesmod:ash_block"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "type": "minecraft:condition",
+            "if_true": "minecraft:on_ceiling",
+            "then_run": {
+              "type": "minecraft:condition",
+              "if_true": {
+                "type": "minecraft:noise_threshold",
+                "noise": "naturesmod:nether/scorch",
+                "min_threshold": 0.5,
+                "max_threshold": 1000000000.0
+              },
+              "then_run": {
+                "type": "minecraft:block",
+                "result_state": "naturesmod:scorched_netherrack"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "minecraft:condition",
+      "if_true": {
+        "type": "minecraft:biome",
+        "biome_is": "minecraft:soul_sand_valley"
+      },
+      "then_run": {
+        "type": "minecraft:condition",
+        "if_true": "minecraft:on_floor",
+        "then_run": {
+          "type": "minecraft:condition",
+          "if_true": {
+            "type": "minecraft:noise_threshold",
+            "noise": "naturesmod:nether/ash",
+            "min_threshold": 0.4,
+            "max_threshold": 1000000000.0
+          },
+          "then_run": {
+            "type": "minecraft:block",
+            "result_state": "naturesmod:ash_block"
+          }
+        }
+      }
+    },
+    {
+      "type": "minecraft:condition",
+      "if_true": {
+        "type": "minecraft:biome",
+        "biome_is": "minecraft:basalt_deltas"
+      },
+      "then_run": {
+        "type": "minecraft:condition",
+        "if_true": "minecraft:on_floor",
+        "then_run": {
+          "type": "minecraft:condition",
+          "if_true": {
+            "type": "minecraft:noise_threshold",
+            "noise": "naturesmod:nether/ash",
+            "min_threshold": 0.3,
+            "max_threshold": 1000000000.0
+          },
+          "then_run": {
+            "type": "minecraft:block",
+            "result_state": "naturesmod:ash_block"
+          }
+        }
+      }
+    },
+    {
+      "type": "minecraft:condition",
+      "if_true": {
+        "type": "minecraft:biome",
+        "biome_is": "minecraft:crimson_forest"
+      },
+      "then_run": {
+        "type": "minecraft:sequence",
+        "sequence": [
+          {
+            "type": "minecraft:condition",
+            "if_true": "minecraft:on_ceiling",
+            "then_run": {
+              "type": "minecraft:condition",
+              "if_true": {
+                "type": "minecraft:noise_threshold",
+                "noise": "naturesmod:nether/flesh",
+                "min_threshold": 0.35,
+                "max_threshold": 1000000000.0
+              },
+              "then_run": {
+                "type": "minecraft:block",
+                "result_state": "naturesmod:flesh_block"
+              }
+            }
+          },
+          {
+            "type": "minecraft:condition",
+            "if_true": {
+              "type": "minecraft:noise_threshold",
+              "noise": "naturesmod:nether/flesh",
+              "min_threshold": 0.6,
+              "max_threshold": 1000000000.0
+            },
+            "then_run": {
+              "type": "minecraft:block",
+              "result_state": "naturesmod:flesh_block"
             }
           }
         ]

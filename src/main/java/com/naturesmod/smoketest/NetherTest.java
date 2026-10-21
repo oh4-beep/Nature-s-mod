@@ -6,12 +6,14 @@ import java.util.TreeMap;
 
 import com.mojang.datafixers.util.Pair;
 
+import com.naturesmod.NaturesMod;
 import com.naturesmod.block.ModBlocks;
 import com.naturesmod.worldgen.FeatureStats;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -20,6 +22,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.NoiseColumn;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
@@ -117,6 +120,7 @@ final class NetherTest {
 		TerrainRenderer.emit("nether_slice", slice);
 
 		// Which biomes live where.
+		Map<String, Integer> seen = new TreeMap<>();
 		for (int y : new int[] {40, 80, 120, 150, 180, 210}) {
 			Map<String, Integer> counts = new TreeMap<>();
 			for (int i = -16; i <= 16; i++) {
@@ -126,6 +130,12 @@ final class NetherTest {
 				}
 			}
 			test.line("biomes at y=%d: %s", y, counts);
+			counts.forEach((name, count) -> seen.merge(name, count, Integer::sum));
+		}
+		for (String biome : new String[] {"+ember_wastes", "+brimstone_fields", "+flesh_caverns", "+glowstone_grotto", "+obsidian_spires"}) {
+			if (!seen.containsKey(biome)) {
+				test.fail("the %s biome never shows up in the Nether", biome.substring(1));
+			}
 		}
 
 		// Generate a patch for real.
@@ -145,7 +155,7 @@ final class NetherTest {
 					BlockState state = nether.getBlockState(pos.set(x, y, z));
 					String id = state.is(ModBlocks.NETHER_GEYSER) ? "geyser" : state.is(Blocks.GLOWSTONE) ? "glowstone"
 							: state.is(Blocks.CRYING_OBSIDIAN) ? "crying_obsidian" : state.is(Blocks.IRON_BARS) ? "cage_bars"
-							: state.is(Blocks.LAVA) && y > nether.getSeaLevel() ? "lava_above_sea" : null;
+							: state.is(Blocks.LAVA) && y > nether.getSeaLevel() ? "lava_above_sea" : hellish(state);
 					if (id != null) {
 						blocks.merge(id, 1, Integer::sum);
 					}
@@ -186,9 +196,52 @@ final class NetherTest {
 			test.line("%s at %s: %d structure blocks", name, at, bricks);
 			TerrainRenderer.emit("nether_" + name, blockSlice(nether, at.getX() - 48, at.getX() + 48, at.getZ(), 0, 160));
 		}
+		// The strongholds of Hell, each with its treasure and its guards.
+		for (String name : new String[] {"infernal_citadel", "bone_pit", "ritual_circle"}) {
+			ResourceKey<Structure> key = ResourceKey.create(Registries.STRUCTURE, NaturesMod.id(name));
+			Holder<Structure> holder = nether.registryAccess().lookupOrThrow(Registries.STRUCTURE).getOrThrow(key);
+			long found0 = System.currentTimeMillis();
+			Pair<BlockPos, Holder<Structure>> found = generator.findNearestMapStructure(nether, HolderSet.direct(holder), BlockPos.ZERO, 64, false);
+			if (found == null) {
+				test.fail("no %s within 64 chunks", name);
+				continue;
+			}
+			BlockPos at = found.getFirst();
+			for (int cx = -2; cx <= 2; cx++) {
+				for (int cz = -2; cz <= 2; cz++) {
+					nether.getChunk((at.getX() >> 4) + cx, (at.getZ() >> 4) + cz);
+				}
+			}
+			Map<String, Integer> built = new TreeMap<>();
+			int floorY = -1;
+			for (int x = at.getX() - 22; x <= at.getX() + 38; x++) {
+				for (int z = at.getZ() - 22; z <= at.getZ() + 38; z++) {
+					for (int y = 20; y < 200; y++) {
+						BlockState state = nether.getBlockState(pos.set(x, y, z));
+						String id = state.is(Blocks.CHEST) ? "chest" : state.is(Blocks.SPAWNER) ? "spawner" : hellish(state);
+						if (id != null) {
+							built.merge(id, 1, Integer::sum);
+							if (id.equals("chest") && floorY < 0) {
+								floorY = y;
+							}
+						}
+					}
+				}
+			}
+			test.line("%s at %s (found in %.1fs, first chest at y=%d): %s", name, at, (System.currentTimeMillis() - found0) / 1000.0, floorY, built);
+			if (built.getOrDefault("chest", 0) == 0) {
+				test.fail("the %s has no treasure chest", name);
+			}
+			if (built.getOrDefault("spawner", 0) == 0) {
+				test.fail("the %s has no spawner", name);
+			}
+			int sliceY = floorY > 0 ? floorY : 60;
+			TerrainRenderer.emit("nether_" + name, blockSlice(nether, at.getX() - 24, at.getX() + 40, at.getZ() + 8, sliceY - 24, sliceY + 40));
+		}
 		Map<String, Integer> features = new TreeMap<>();
 		FeatureStats.snapshot().forEach((name, count) -> {
-			if (name.startsWith("nether_")) {
+			if (name.startsWith("nether_") || name.startsWith("hell_") || name.equals("infernal_citadel") || name.equals("bone_pit")
+					|| name.equals("ritual_circle")) {
 				features.put(name, count);
 			}
 		});
@@ -196,6 +249,21 @@ final class NetherTest {
 		if (features.isEmpty()) {
 			test.fail("no Nether features were placed");
 		}
+		for (String feature : new String[] {"hell_skull_pikes", "hell_charred_tree", "hell_brimstone_deposit", "hell_ember_crystals"}) {
+			if (!features.containsKey(feature)) {
+				test.fail("no %s was placed near spawn or the strongholds", feature);
+			}
+		}
+	}
+
+	/** The blocks that make the Nether feel like Hell, or null. */
+	private static String hellish(BlockState state) {
+		for (Block block : ModBlocks.HELL) {
+			if (state.is(block)) {
+				return BuiltInRegistries.BLOCK.getKey(block).getPath();
+			}
+		}
+		return state.is(Blocks.SKELETON_SKULL) || state.is(Blocks.WITHER_SKELETON_SKULL) ? "skull" : null;
 	}
 
 	private static BufferedImage blockSlice(ServerLevel level, int minX, int maxX, int z, int minY, int maxY) {

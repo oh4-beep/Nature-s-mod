@@ -1,0 +1,18 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 666013,
+    "separation": 12,
+    "spacing": 34,
+    "exclusion_zone": {
+      "chunk_count": 3,
+      "other_set": "minecraft:nether_complexes"
+    }
+  },
+  "structures": [
+    {
+      "structure": "naturesmod:infernal_citadel",
+      "weight": 1
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "naturesmod:brimstone",
+    "naturesmod:brimstone_bricks",
+    "naturesmod:scorched_netherrack",
+    "naturesmod:scorched_bricks",
+    "naturesmod:ember_crystal",
+    "naturesmod:hellfire_brazier",
+    "naturesmod:soul_brazier",
+    "naturesmod:nether_geyser",
+    "naturesmod:pearl_block"
+  ]
+}

@@ -118,8 +118,10 @@
       "minecraft:ore_quartz_nether",
       "minecraft:ore_ancient_debris_large",
       "minecraft:ore_debris_small",
+      "naturesmod:nether/lavafall",
       "naturesmod:nether/hanging_cage",
-      "naturesmod:nether/lavafall"
+      "naturesmod:nether/skull_pikes",
+      "naturesmod:nether/hell_shrine"
     ],
     [],
     [

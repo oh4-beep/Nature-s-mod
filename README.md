@@ -5,11 +5,13 @@ explorable world:
 
 - **The Overworld:** towering mountain ranges, rivers that run down from the peaks over waterfalls, misty plunge
   pools, gaping cave mouths, ancient giant trees, and trees that actually topple when you chop them.
-- **The Ocean:** 52 new sea creatures, some peaceful and some very much not, two diving suits that let you breathe
-  and swim fast underwater, and **the Abyss**: a sea a thousand blocks deep beneath the ocean floor, with its own
-  biomes, structures, treasure and a leviathan.
-- **The Nether:** twice as tall, with vast caverns, floating islands, colossal pillars, lavafalls, erupting geysers
-  and three new biomes. Still every bit as hostile.
+- **The Ocean:** 59 new sea creatures, some peaceful and some very much not, sea floors covered in anemones, sea fans,
+  starfish, urchins and giant clams, two diving suits that let you breathe and swim fast underwater, and **the
+  Abyss**: a sea a thousand blocks deep beneath the ocean floor, with its own biomes, mutated horrors, structures,
+  treasure, a leviathan and a mission that ends in a boss fight.
+- **The Nether:** twice as tall, with vast caverns, floating islands and colossal pillars, and made to feel like Hell:
+  brimstone, scorched rock, ash and walls of living flesh, skulls on pikes, the bones of titans, five new biomes and
+  three new strongholds: Infernal Citadels, Bone Pits and Ritual Circles.
 
 ## What it changes
 
@@ -73,7 +75,7 @@ explorable world:
 
 ## The Ocean
 
-### 52 new sea creatures
+### 59 new sea creatures
 Every sea, lake and river is alive. Each creature has its own model, texture, animation, sounds, loot and habitat,
 and they behave like the animals they are:
 
@@ -84,7 +86,9 @@ and they behave like the animals they are:
 | Open ocean | herring, mackerel, bluefin tuna, swordfish, manta ray, flounder, ocean sunfish, hammerhead and great white sharks, moon and lion's mane jellies, giant grouper |
 | Cold and frozen seas | arctic char, icefish, Greenland shark |
 | Deep water and the Abyss | coelacanth, lanternfish, hatchetfish, anglerfish, viperfish, gulper eel, fangtooth, black dragonfish, barreleye, giant squid, vampire squid, dumbo octopus, tripod fish, goblin shark, frilled shark, comb jelly, ghost shark |
+| The Abyss's mutants | rotfin, hollow eye, bone shark, twinhead eel, pale lurker, abyssal maw |
 | The Leviathan's Lair | the **Abyssal Leviathan**, a boss |
+| The Drowned Sanctum | the **Abyssal Horror**, the final boss of the Abyss |
 
 - **Peaceful fish** dart about, flee from danger and can be scooped up in a **bucket**. Schooling fish move in
   shoals that scatter when something big comes near.
@@ -98,8 +102,21 @@ and they behave like the animals they are:
 - Deep-sea creatures **glow**: photophores, lures, luminous stripes and eyes shine in the dark.
 - The **Abyssal Leviathan** is a 20-block serpent with a boss bar, a roar that plunges divers into darkness, and
   charges that send them flying. It guards a hoard of treasure.
+- The **mutants** of the Abyss are rotting, many-eyed, rib-cage things, and their bites curse you with darkness,
+  wither, blindness, poison or nausea.
 - Creatures drop **fish fillets** (cook them for a good meal), **sea scales**, **shark teeth** and, in the deep,
   **abyssal scales**.
+- **The seas are crowded.** Fish keep arriving around you in every ocean, reef, river and in the Abyss (far more
+  than vanilla's mob caps would allow); turn it up or down with `seaLifeDensity`.
+
+### Life on the sea floor
+Warm reefs grow **red, purple and green sea anemones** (they glow faintly), **purple and orange sea fans**, orange
+and blue **starfish**, **seashells**, **sea urchins** and **giant clams**, alongside far more coral, kelp, seagrass and
+sea pickles than vanilla. Temperate and cold seas have their own mix, and beaches are strewn with shells.
+
+- **Sea urchins** sting and poison whoever treads on them (sea creatures know better).
+- **Giant clams** sometimes hold a **pearl**: use a clam to take it, and in water it slowly grows a new one. Nine
+  pearls make a glowing **pearl block**.
 
 ### Diving suits
 | Suit | Made from | Every piece | Full suit |
@@ -122,9 +139,25 @@ rift that takes you home. Below you the water goes down for **a thousand blocks*
   pressure rating and each Abyssal piece 2: below y 700 you need 4 (a full Tidewalker suit), below y 350 you need 8
   (a full Abyssal suit), and for every point short the pressure hurts you half a heart a second. Conduit power
   shields you completely. The first Abyssal Upgrade template can be found in rift shrines and bathysphere wrecks.
+- **It is dark, and it is not empty.** You can see a good way through the water, but the fog closes in beyond that.
+  Piles of skulls and bones, the remains of drowned divers slumped beside their chests, giant kelp forests, glowing
+  growths hanging under overhangs, and something roaring, far off, now and then.
 - **Structures:** **Sunken Temples** (treasure, the Abyssal Upgrade template, and a rift home in their courtyard),
-  **Bathysphere** wrecks with dry cabins and their crew's belongings, and the **Leviathan's Lair**, a bowl under a
-  colossal ribcage where the Abyssal Leviathan waits on its hoard.
+  **Bathysphere** wrecks with dry cabins and their crew's belongings, the **Leviathan's Lair**, a bowl under a
+  colossal ribcage where the Abyssal Leviathan waits on its hoard, **Vent Shrines** of blackstone among the
+  hydrothermal vents, and the **Drowned Sanctums**, vast ruined cathedrals on the deep floor.
+
+### The Drowned Expedition
+The first time you reach the Abyss, the **logbook** of the expedition that came before you drifts down beside you.
+It tells you what they were after:
+
+1. Find the four **sigils** that seal the Abyss: the **Sigil of the Tide** in the Sunken Temples, the **Sigil of the
+   Deep** in the bathysphere wrecks, the **Sigil of Bone** inside the Abyssal Leviathan, and the **Sigil of the
+   Ember** in the Vent Shrines.
+2. Find a **Drowned Sanctum** (the temple chests hold maps to them) and set all four sigils into its **Abyssal Altar**.
+3. Survive what wakes: the **Abyssal Horror**, 500 health of rot and teeth. It drops the **Crown of the Deep**, which
+   makes its wearer immune to the pressure of the Abyss and gives water breathing, conduit power, dolphin's grace
+   and night vision underwater.
 
 ## The Nether
 
@@ -141,12 +174,42 @@ rift that takes you home. Below you the water goes down for **a thousand blocks*
 - **Nether geysers** rumble when stepped on and a moment later blast whatever stands on them into the air in a column
   of fire. They erupt on their own now and then, too.
 
+### Hell
+- **Brimstone Fields**: smouldering brimstone with sulfur and cinnabar breaking through it, fires that never go out,
+  glowing **ember crystals**, geysers, and blazes drifting overhead.
+- **Flesh Caverns**: walls of living flesh blistered with glowing boils and dripping blood-red vines, the skeletons
+  of titans with ribs arching overhead, fields of **bone spikes** and skulls on pikes.
+- **The old biomes are reworked too**: scorched, glowing netherrack and drifts of ash on the ground of the Nether
+  Wastes, Soul Sand Valleys and Basalt Deltas; flesh creeping through the roof of the Crimson Forests; embers and soot
+  in the air; burnt-out **charred trees**, **skulls on pikes** (now and then with someone still on one), small ruined
+  **shrines** with burning braziers, brimstone and ember crystals; more blazes and wither skeletons roaming in the
+  open; and screams, far off in the dark.
+- **Infernal Citadels**: fortresses of scorched brick and blackstone behind a moat of lava, with corner towers, a
+  road of braziers to a great keep, a throne between two treasure chests, wither skeletons rising from the hall
+  floor and blazes on the roof.
+- **Bone Pits**: great pits lined with bone and soul soil, giant ribs curling over the edge, soul fire on the floor
+  and a chest on a mound of bones guarded by wither skeletons.
+- **Ritual Circles**: raised circles of black stone inlaid with blood-red brick, ringed by obsidian pillars crowned
+  with braziers, with an offering on the altar and caged skulls watching.
+
+| New block | Where | Notes |
+| --- | --- | --- |
+| Brimstone, Brimstone Bricks | Brimstone Fields | Brimstone burns whoever walks on it (sneak to cross safely); fire on it never goes out. 2x2 makes bricks. |
+| Scorched Netherrack, Scorched Bricks | everywhere | Glowing cracks; 2x2 scorched netherrack makes bricks. |
+| Block of Ash | Ember Wastes, Soul Sand Valleys, Basalt Deltas | Also from smelting a charred log. |
+| Flesh Block | Flesh Caverns, Crimson Forests | Soft: falls onto it hurt much less. Nine rotten flesh make one. |
+| Charred Log | burnt trees | Also from cooking any log on a campfire. |
+| Bone Spikes | Flesh Caverns, Soul Sand Valleys | Slow you down and hurt as you push through. |
+| Ember Crystal | Brimstone Fields and elsewhere | Shatters into **ember shards**; two shards make blaze powder. |
+| Hellfire Brazier, Soul Brazier | strongholds and shrines | An iron brazier that burns forever. Iron and coal (or soul sand) to craft. |
+
 ## Advancements
 
 A new **Deep Sea** advancement tab leads from your first catch to the Abyss: bucket a fish, earn a shark tooth, wear
-a full Tidewalker suit, swim through a rift, dive below y 350, find a Sunken Temple, wear a full Abyssal suit and,
-finally, slay the Abyssal Leviathan. The Nether tab gains advancements for climbing into the upper caverns and for
-finding each new biome.
+a full Tidewalker suit, swim through a rift, dive below y 350, find a Sunken Temple, wear a full Abyssal suit, slay the
+Abyssal Leviathan, and then the Drowned Expedition: find a sigil, hold all four, wake the Abyss, defeat the Abyssal
+Horror and wear its crown. The Nether tab gains advancements for climbing into the upper caverns, for finding each new
+biome and for each of the three strongholds.
 
 ## Installing
 
@@ -175,6 +238,7 @@ The mod is needed on both the server and the client.
 | `windthrowMinutes` | `6` | Average minutes of thunderstorm between wind-thrown trees per player. |
 | `abyssPressure` | `true` | Diving deep in the Abyss without a strong enough diving suit hurts. |
 | `hostileSeaCreatures` | `true` | Sharks, eels and the other hunters attack divers. |
+| `seaLifeDensity` | `1.0` | How crowded the seas are kept around players (0 = only vanilla spawning). |
 | `waterfallMist` | `true` | Mist and spray at the foot of waterfalls. |
 | `mistDensity` | `1.0` | Amount of waterfall mist. |
 | `waterfallSounds` | `true` | Waterfalls roar. |

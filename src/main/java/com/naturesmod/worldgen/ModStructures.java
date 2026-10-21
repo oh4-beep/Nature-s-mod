@@ -3,6 +3,8 @@ package com.naturesmod.worldgen;
 import com.naturesmod.NaturesMod;
 import com.naturesmod.worldgen.glacier.GlacierPiece;
 import com.naturesmod.worldgen.glacier.GlacierStructure;
+import com.naturesmod.worldgen.hell.HellPiece;
+import com.naturesmod.worldgen.hell.HellStructure;
 import com.naturesmod.worldgen.river.MountainRiverStructure;
 import com.naturesmod.worldgen.river.RiverPiece;
 import com.naturesmod.worldgen.sunken.SunkenPiece;
@@ -38,6 +40,15 @@ public final class ModStructures {
 			NaturesMod.id("vent_shrine"), () -> SunkenStructure.Shrine.CODEC);
 	public static final StructureType<SunkenStructure.Sanctum> DROWNED_SANCTUM = Registry.register(BuiltInRegistries.STRUCTURE_TYPE,
 			NaturesMod.id("drowned_sanctum"), () -> SunkenStructure.Sanctum.CODEC);
+
+	public static final StructurePieceType HELL_PIECE = Registry.register(BuiltInRegistries.STRUCTURE_PIECE, NaturesMod.id("hell"),
+			(StructurePieceType.ContextlessType) HellPiece::new);
+	public static final StructureType<HellStructure.Citadel> INFERNAL_CITADEL = Registry.register(BuiltInRegistries.STRUCTURE_TYPE,
+			NaturesMod.id("infernal_citadel"), () -> HellStructure.Citadel.CODEC);
+	public static final StructureType<HellStructure.BonePit> BONE_PIT = Registry.register(BuiltInRegistries.STRUCTURE_TYPE,
+			NaturesMod.id("bone_pit"), () -> HellStructure.BonePit.CODEC);
+	public static final StructureType<HellStructure.Ritual> RITUAL_CIRCLE = Registry.register(BuiltInRegistries.STRUCTURE_TYPE,
+			NaturesMod.id("ritual_circle"), () -> HellStructure.Ritual.CODEC);
 
 	private ModStructures() {
 	}

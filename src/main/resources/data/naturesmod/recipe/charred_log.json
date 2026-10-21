@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:campfire_cooking",
+  "category": "blocks",
+  "cookingtime": 600,
+  "experience": 0.1,
+  "ingredient": "#minecraft:logs_that_burn",
+  "result": {
+    "id": "naturesmod:charred_log"
+  }
+}

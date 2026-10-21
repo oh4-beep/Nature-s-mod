@@ -1,0 +1,37 @@
+{
+  "criteria": {
+    "there": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "naturesmod:infernal_citadel"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.naturesmod.nether.infernal_citadel.description"
+    },
+    "icon": {
+      "id": "naturesmod:hellfire_brazier"
+    },
+    "title": {
+      "translate": "advancements.naturesmod.nether.infernal_citadel.title"
+    },
+    "frame": "goal"
+  },
+  "requirements": [
+    [
+      "there"
+    ]
+  ],
+  "sends_telemetry_event": false,
+  "parent": "minecraft:nether/root"
+}

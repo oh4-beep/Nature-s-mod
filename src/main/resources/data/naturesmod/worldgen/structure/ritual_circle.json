@@ -1,0 +1,6 @@
+{
+  "type": "naturesmod:ritual_circle",
+  "biomes": "#naturesmod:has_structure/ritual_circle",
+  "spawn_overrides": {},
+  "step": "surface_structures"
+}

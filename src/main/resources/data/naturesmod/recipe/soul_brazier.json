@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "decorations",
+  "pattern": [
+    "I#I",
+    " I ",
+    "III"
+  ],
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "#": "#minecraft:soul_fire_base_blocks"
+  },
+  "result": {
+    "count": 1,
+    "id": "naturesmod:soul_brazier"
+  }
+}
