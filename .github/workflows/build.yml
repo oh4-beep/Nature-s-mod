@@ -99,7 +99,9 @@ jobs:
           for f in build/run/clientGameTest/screenshots/*.png; do
             [ -f "$f" ] || continue
             n=$(basename "$f" .png).jpg
-            convert "$f" -resize 854x480 -quality 85 "/tmp/$n"
+            size=854x480
+            case "$n" in *treasure*) size=640x360 ;; esac
+            convert "$f" -resize $size -quality 82 "/tmp/$n"
             echo "[map-begin $n]"
             base64 -w 3000 "/tmp/$n" | sed 's/^/[map] /'
             echo "[map-end $n]"

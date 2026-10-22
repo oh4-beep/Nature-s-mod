@@ -70,6 +70,9 @@ final class SeaTest {
 			System.out.printf("[smoketest] abyss surveyed in %.1fs%n", (System.currentTimeMillis() - start) / 1000.0);
 			structures();
 			System.out.printf("[smoketest] sea structures checked in %.1fs%n", (System.currentTimeMillis() - start) / 1000.0);
+			if (abyss != null) {
+				new TreasureTest(test, abyss).run();
+			}
 			riftTravel();
 			creatures(done);
 		} catch (Throwable t) {

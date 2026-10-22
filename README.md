@@ -5,10 +5,13 @@ explorable world:
 
 - **The Overworld:** towering mountain ranges, rivers that run down from the peaks over waterfalls, misty plunge
   pools, gaping cave mouths, ancient giant trees, and trees that actually topple when you chop them.
-- **The Ocean:** 59 new sea creatures, some peaceful and some very much not, sea floors covered in anemones, sea fans,
+- **The Ocean:** 71 new sea creatures, some peaceful and some very much not, sea floors covered in anemones, sea fans,
   starfish, urchins and giant clams, two diving suits that let you breathe and swim fast underwater, and **the
-  Abyss**: a sea a thousand blocks deep beneath the ocean floor, with its own biomes, mutated horrors, structures,
-  treasure, a leviathan and a mission that ends in a boss fight.
+  Abyss**: a sea a thousand blocks deep beneath the ocean floor, with its own biomes, mutated horrors, a leviathan
+  and a mission that ends in a boss fight. Twelve **guardian bosses** hunt you on the way down; at the bottom wait
+  **55 kinds of forgotten ruins, vaults and wonders**, the richest places in Minecraft, with netherite, diamonds,
+  mob heads, music discs, elytra, eight **lost weapons** and the **Abyssal Enchanting Table**, which doubles
+  every enchantment on an item.
 - **The Nether:** twice as tall, with vast caverns, floating islands and colossal pillars, and made to feel like Hell:
   brimstone, scorched rock, ash and walls of living flesh, skulls on pikes, the bones of titans, five new biomes and
   three new strongholds: Infernal Citadels, Bone Pits and Ritual Circles.
@@ -75,7 +78,7 @@ explorable world:
 
 ## The Ocean
 
-### 59 new sea creatures
+### 71 new sea creatures
 Every sea, lake and river is alive. Each creature has its own model, texture, animation, sounds, loot and habitat,
 and they behave like the animals they are:
 
@@ -89,6 +92,7 @@ and they behave like the animals they are:
 | The Abyss's mutants | rotfin, hollow eye, bone shark, twinhead eel, pale lurker, abyssal maw |
 | The Leviathan's Lair | the **Abyssal Leviathan**, a boss |
 | The Drowned Sanctum | the **Abyssal Horror**, the final boss of the Abyss |
+| The descent through the Abyss | the twelve **guardians**: Tidewyrm, Razorjaw, Gloomlantern, Stormcoil, the Kraken, the Siren Queen, the Bonewarden, the Abyssal Manta, the Hollow King, Dunkleosteus, the Twin Terror and the Megalodon |
 
 - **Peaceful fish** dart about, flee from danger and can be scooped up in a **bucket**. Schooling fish move in
   shoals that scatter when something big comes near.
@@ -146,6 +150,62 @@ rift that takes you home. Below you the water goes down for **a thousand blocks*
   **Bathysphere** wrecks with dry cabins and their crew's belongings, the **Leviathan's Lair**, a bowl under a
   colossal ribcage where the Abyssal Leviathan waits on its hoard, **Vent Shrines** of blackstone among the
   hydrothermal vents, and the **Drowned Sanctums**, vast ruined cathedrals on the deep floor.
+
+### The descent: twelve guardians
+Getting to the bottom of the Abyss is the challenge. The water from y 1000 down to y 160 is split into twelve bands,
+each kept by a **guardian boss**, and when you dive into a guardian's band it comes out of the dark to hunt you (one
+at a time, with a boss bar and a warning). Every guardian has its own powers on top of its charge:
+
+| Guardian | Health | Its powers |
+| --- | --- | --- |
+| Tidewyrm (y 1000-930) | 160 | whirlpools that drag you in, nausea |
+| Razorjaw (930-860) | 180 | blood frenzy: three charges in a row, wither |
+| Gloomlantern (860-790) | 200 | a blinding lure flash, blindness |
+| Stormcoil (790-720) | 210 | lightning discharges |
+| The Kraken (720-650) | 240 | tentacle grabs that pull you in, ink clouds |
+| The Siren Queen (650-580) | 220 | poison blooms, broods of lion's mane jellies |
+| The Bonewarden (580-510) | 260 | barrages of wither skulls, bone sharks |
+| The Abyssal Manta (510-440) | 230 | dives into invisibility and strikes from nowhere |
+| The Hollow King (440-370) | 280 | a crushing gaze, hollow eyes at its side |
+| Dunkleosteus (370-300) | 320 | pressure waves, crushing bites |
+| The Twin Terror (300-230) | 300 | venom spit from two heads |
+| The Megalodon (230-160) | 400 | frenzies, and it gets faster when it is hurt |
+
+Slay a guardian and its depth is safe for you for 20 minutes (`bossRespawnMinutes`); escape it and it comes back in 3.
+Guardians drop Abyssal Hearts, diamonds, netherite scrap and sometimes one of the lost weapons.
+
+### The bottom: forgotten riches
+Below the last guardian (y 150 and down) the floor of the Abyss is the **richest place in Minecraft**. Its rock is
+thick with diamond ore and **ancient debris**, much of it right at the surface, and every hundred blocks or so stands
+one of **55 kinds of structures** left by a drowned people, every one lit, looted with treasure and different:
+
+- **20 ruins**: column circles, a fallen colossus with a golden crown, treasure piles of gold, coral gazebos, a well
+  with something at the bottom, skull shrines, a hermit's cell, spilled mine carts, a giant anchor, a diving bell,
+  bone altars, obsidian monoliths ringed with ancient debris, cracked amethyst geodes full of diamonds, tombs, ruined
+  arches, a pearl bed with a giant clam, a fallen lighthouse, a stone head, a lost explorer's camp and debris veins.
+- **20 vaults**: drowned houses, an ancient library, an armory with weapon racks and suits of armor, a treasury of
+  gold and netherite, a music hall with records on the walls, a museum of mob heads (dragon head included), a sunken
+  End ship with **elytra** in its cabin, a forge, an enchanting sanctum, a throne room, a treasure galleon, a copper
+  submarine, a crypt, a pyramid, a coral palace, an observatory, a prison, an arena, a sea dragon's skeleton on its
+  hoard and a sunken market.
+- **15 wonders**: a drowned cathedral, a ziggurat crowned with a working **beacon**, a walled citadel, a 40-block
+  colossus, a quarter of a drowned city, a titan's skull, the **Great Vault**, the **Temple of the Deep** with a
+  working **conduit**, a leviathan graveyard, the Abyssal Gate, a coral tower forty blocks high, a sea dragon's nest,
+  a mining outpost in an open pit of ore, a laboratory of glass domes and a royal tomb. Some are still guarded by a
+  boss of the deep.
+
+Their chests hold diamonds, netherite, gold and emerald blocks, mob heads, music discs, armor trims, elytra, totems,
+enchanted golden apples, enchanted books at their **highest levels**, and the two prizes found nowhere else:
+
+- **The lost weapons**, each with a strike effect and a power on use: the **Tidecleaver** (a tidal wave), the
+  **Leviathan Fang** (shadowstep behind your target), the **Abyssal Scythe** (a reaping sweep that heals you), the
+  **Stormcaller** (lightning), **Kraken's Grasp** (pull a foe to you), the **Pressure Maul** (a crushing shockwave),
+  the **Sovereign's Staff** (a line of snapping jaws) and the **Coral Rapier** (a lunge). Better than netherite,
+  repaired with abyssal plate, and they can only be found, never crafted.
+- **The Abyssal Enchanting Table**: use an enchanted tool, weapon or piece of armor on it and **every enchantment is
+  doubled**: Fortune III becomes Fortune VI, Sharpness V becomes Sharpness X. Each item can be empowered only
+  once. Found in libraries, sanctums, laboratories, the Great Vault and the Temple of the Deep, rarely in chests, or
+  crafted from an Abyssal Heart, two diamond blocks, an enchanting table and three netherite ingots.
 
 ### The Drowned Expedition
 The first time you reach the Abyss, the **logbook** of the expedition that came before you drifts down beside you.
@@ -208,7 +268,8 @@ It tells you what they were after:
 A new **Deep Sea** advancement tab leads from your first catch to the Abyss: bucket a fish, earn a shark tooth, wear
 a full Tidewalker suit, swim through a rift, dive below y 350, find a Sunken Temple, wear a full Abyssal suit, slay the
 Abyssal Leviathan, and then the Drowned Expedition: find a sigil, hold all four, wake the Abyss, defeat the Abyssal
-Horror and wear its crown. The Nether tab gains advancements for climbing into the upper caverns, for finding each new
+Horror and wear its crown; and the descent: slay a guardian, slay all twelve, reach the bottom, find the forgotten
+riches, stand in a wonder of the deep and get the Abyssal Enchanting Table. The Nether tab gains advancements for climbing into the upper caverns, for finding each new
 biome and for each of the three strongholds.
 
 ## Installing
@@ -238,6 +299,8 @@ The mod is needed on both the server and the client.
 | `windthrowMinutes` | `6` | Average minutes of thunderstorm between wind-thrown trees per player. |
 | `abyssPressure` | `true` | Diving deep in the Abyss without a strong enough diving suit hurts. |
 | `hostileSeaCreatures` | `true` | Sharks, eels and the other hunters attack divers. |
+| `abyssBosses` | `true` | The twelve guardians hunt divers on the way down through the Abyss. |
+| `bossRespawnMinutes` | `20` | How long a slain guardian leaves you alone before it can hunt you again. |
 | `seaLifeDensity` | `1.0` | How crowded the seas are kept around players (0 = only vanilla spawning). |
 | `waterfallMist` | `true` | Mist and spray at the foot of waterfalls. |
 | `mistDensity` | `1.0` | Amount of waterfall mist. |
@@ -260,8 +323,8 @@ Requires JDK 25.
 The smoke test boots a dedicated server, generates the spawn area plus the nearest example of a dozen landmark
 biomes (peaks, jungle, badlands...), prints statistics, ASCII relief maps and feature counts, renders a top-down
 map and a bird's-eye view of every region to `run/smoketest/maps/`, fells a tree, then surveys and renders the
-Abyss and the Nether, finds and checks every new structure, rides an Abyssal Rift down and back, and lets all 52
-sea creatures swim, die and drop their loot. CI runs it on every push (see `.github/workflows/build.yml`), along with
+Abyss and the Nether, finds and checks every new structure, builds all 55 treasures of the deep and opens their
+chests, rides an Abyssal Rift down and back, and lets all 71 sea creatures swim, die and drop their loot. CI runs it on every push (see `.github/workflows/build.yml`), along with
 the client game test. It needs an accepted `eula.txt` in `run/smoketest/`.
 
 ### World generation data

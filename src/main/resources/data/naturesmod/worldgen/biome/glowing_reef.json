@@ -68,7 +68,9 @@
       "naturesmod:abyss/ore_lapis",
       "naturesmod:abyss/ore_redstone",
       "naturesmod:abyss/ore_emerald",
-      "naturesmod:abyss/ore_copper"
+      "naturesmod:abyss/ore_copper",
+      "naturesmod:abyss/ore_riches_diamond",
+      "naturesmod:abyss/ore_riches_debris"
     ],
     [
       "naturesmod:abyss/glow_lichen"

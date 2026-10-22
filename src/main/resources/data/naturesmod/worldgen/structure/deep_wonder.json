@@ -1,0 +1,6 @@
+{
+  "type": "naturesmod:deep_wonder",
+  "biomes": "#naturesmod:has_structure/abyss_treasure",
+  "spawn_overrides": {},
+  "step": "surface_structures"
+}

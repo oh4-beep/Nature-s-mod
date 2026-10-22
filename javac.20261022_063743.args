@@ -1,0 +1,12 @@
+-proc:none
+-d
+/tmp/claude-0/-home-user-Nature-s-mod/f7c65f43-3d89-55dd-9a7b-3363595a8dc5/scratchpad/javac-out
+src/main/java/com/naturesmod/worldgen/deep/DeepBuilder.java
+src/main/java/com/naturesmod/worldgen/deep/DeepKind.java
+src/main/java/com/naturesmod/worldgen/deep/DeepPiece.java
+src/main/java/com/naturesmod/worldgen/deep/DeepShowcase.java
+src/main/java/com/naturesmod/worldgen/deep/DeepStructure.java
+src/main/java/com/naturesmod/worldgen/deep/Ruins.java
+src/main/java/com/naturesmod/worldgen/deep/Vaults.java
+src/main/java/com/naturesmod/worldgen/deep/Wonders.java
+src/main/java/com/naturesmod/smoketest/TreasureTest.java

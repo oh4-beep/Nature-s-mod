@@ -29,6 +29,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.Structure;
@@ -37,6 +38,9 @@ import com.naturesmod.NaturesMod;
 import com.naturesmod.abyss.Abyss;
 import com.naturesmod.creature.ModCreatures;
 import com.naturesmod.creature.SeaCreature;
+import com.naturesmod.worldgen.deep.DeepKind;
+import com.naturesmod.worldgen.deep.DeepPiece;
+import com.naturesmod.worldgen.deep.DeepShowcase;
 
 /**
  * Plays through Nature's Mod's sea and Nether in a real client and screenshots what it sees:
@@ -57,7 +61,12 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 			List.of("gulper_eel", "manta_ray", "ocean_sunfish"),
 			List.of("rotfin", "hollow_eye", "bone_shark", "twinhead_eel", "pale_lurker", "abyssal_maw"),
 			List.of("abyssal_leviathan"),
-			List.of("abyssal_horror"));
+			List.of("abyssal_horror"),
+			List.of("tidewyrm", "razorjaw", "gloomlantern"),
+			List.of("stormcoil", "kraken", "siren_queen"),
+			List.of("bonewarden", "abyssal_manta", "hollow_king"),
+			List.of("dunkleosteus", "twin_terror"),
+			List.of("megalodon"));
 
 	/** GLFW's key code for F1 (LWJGL is not on the test classpath). */
 	private static final int KEY_F1 = 290;
@@ -86,6 +95,7 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 			scene("creatures", () -> creatures(context, world));
 			scene("rift", () -> rift(context, world));
 			scene("abyss", () -> abyss(context, world));
+			scene("treasures", () -> treasures(context, world));
 			scene("nether", () -> nether(context, world));
 		}
 		if (!failures.isEmpty()) {
@@ -280,6 +290,53 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 			teleport(context, world, Abyss.LEVEL, center.getX() + 0.5, height, center.getZ() - back + 0.5, 0.0F, 36.0F);
 			shoot(context, "abyss_" + structure);
 		}
+	}
+
+	// --- the treasures of the deep ------------------------------------------------------
+
+	/** Builds every kind of treasure on the floor of the Abyss and photographs it from the front. */
+	private void treasures(ClientGameTestContext context, TestSingleplayerContext world) {
+		world.getServer().runCommand("gamemode spectator @a");
+		world.getServer().runCommand("effect give @a minecraft:night_vision infinite 0 true");
+		BlockPos site = new BlockPos(6000, 0, 6000);
+		for (DeepKind kind : DeepKind.values()) {
+			int reach = kind.tier().reach();
+			BlockPos from = site;
+			BlockPos center = world.getServer().computeOnServer(server -> {
+				ServerLevel abyss = server.getLevel(Abyss.LEVEL);
+				BlockPos at = DeepShowcase.levelSite(abyss, from, reach);
+				if (at == null) {
+					return null;
+				}
+				DeepPiece piece = DeepShowcase.build(abyss, kind, at, Rotation.NONE);
+				return piece.center();
+			});
+			if (center == null) {
+				failures.add("treasures: no level floor for " + kind.id());
+				return;
+			}
+			// From in front and a little to the left, up high enough to see over the walls.
+			double distance = reach * 1.45 + 6.0;
+			double x = center.getX() + 0.5 - distance * 0.4;
+			double z = center.getZ() + 0.5 - distance;
+			int ground = world.getServer().computeOnServer(server -> floor(server.getLevel(Abyss.LEVEL), (int) Math.floor(x), (int) Math.floor(z)));
+			double y = Math.max(center.getY() + reach * 0.75 + 3.0, ground + 3.0);
+			double dx = center.getX() + 0.5 - x;
+			double dz = center.getZ() + 0.5 - z;
+			float yaw = (float) Math.toDegrees(-Math.atan2(dx, dz));
+			float pitch = (float) Math.toDegrees(Math.atan2(y - (center.getY() + reach * 0.25), Math.sqrt(dx * dx + dz * dz)));
+			teleport(context, world, Abyss.LEVEL, x, y, z, yaw, pitch);
+			context.waitTicks(10);
+			shoot(context, "treasure_" + kind.id());
+			site = center.offset(reach * 2 + 48, 0, 0);
+			if (site.getX() > 7600) {
+				site = new BlockPos(6000, 0, site.getZ() + 400);
+			}
+		}
+		// And one as a diver would really see it, without night vision.
+		world.getServer().runCommand("effect clear @a minecraft:night_vision");
+		context.waitTicks(40);
+		shoot(context, "treasure_last_without_night_vision");
 	}
 
 	// --- the Nether ----------------------------------------------------------------------

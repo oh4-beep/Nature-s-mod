@@ -1,0 +1,37 @@
+{
+  "criteria": {
+    "riches": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "#naturesmod:abyss_treasures"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.naturesmod.sea.forgotten_riches.description"
+    },
+    "icon": {
+      "id": "minecraft:gold_block"
+    },
+    "title": {
+      "translate": "advancements.naturesmod.sea.forgotten_riches.title"
+    },
+    "frame": "goal"
+  },
+  "requirements": [
+    [
+      "riches"
+    ]
+  ],
+  "sends_telemetry_event": false,
+  "parent": "naturesmod:sea/rock_bottom"
+}

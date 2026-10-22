@@ -1,0 +1,32 @@
+{
+  "criteria": {
+    "table": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "naturesmod:abyssal_enchanting_table"
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.naturesmod.sea.empowered.description"
+    },
+    "icon": {
+      "id": "naturesmod:abyssal_enchanting_table"
+    },
+    "title": {
+      "translate": "advancements.naturesmod.sea.empowered.title"
+    }
+  },
+  "requirements": [
+    [
+      "table"
+    ]
+  ],
+  "sends_telemetry_event": false,
+  "parent": "naturesmod:sea/forgotten_riches"
+}

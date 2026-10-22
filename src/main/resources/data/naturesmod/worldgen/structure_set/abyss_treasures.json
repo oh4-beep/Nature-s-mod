@@ -1,0 +1,26 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 640219877,
+    "separation": 3,
+    "spacing": 7,
+    "exclusion_zone": {
+      "other_set": "naturesmod:drowned_sanctum",
+      "chunk_count": 4
+    }
+  },
+  "structures": [
+    {
+      "structure": "naturesmod:deep_ruin",
+      "weight": 6
+    },
+    {
+      "structure": "naturesmod:deep_vault",
+      "weight": 3
+    },
+    {
+      "structure": "naturesmod:deep_wonder",
+      "weight": 1
+    }
+  ]
+}

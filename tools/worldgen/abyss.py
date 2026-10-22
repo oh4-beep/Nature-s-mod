@@ -326,6 +326,9 @@ VEGETATION = 9
 COMMON = [(ORES, f"{NS}:abyss/ore_{o}") for o in ("diamond", "gold", "lapis", "redstone", "emerald", "copper")] + [
     (UNDERGROUND, f"{NS}:abyss/glow_lichen"),
 ]
+# The bottom of the Abyss is the richest rock in the world: diamond and ancient debris in plenty,
+# often right at the surface of the floor.
+RICHES = [(ORES, f"{NS}:abyss/ore_riches_diamond"), (ORES, f"{NS}:abyss/ore_riches_debris")]
 
 
 def biomes():
@@ -337,19 +340,19 @@ def biomes():
             (VEGETATION, "minecraft:kelp_cold"), (VEGETATION, "minecraft:seagrass_deep"), (VEGETATION, f"{NS}:abyss/sea_pickles"),
         ], water="#1d4f8f"),
         "midnight_zone": biome("#071630", 96.0, sparks, COMMON + [(LOCAL, f"{NS}:abyss/hanging_glow")], water="#0c2348", eerie=True),
-        "abyssal_plains": biome("#0c1d2e", 104.0, marine_snow, COMMON + [
+        "abyssal_plains": biome("#0c1d2e", 104.0, marine_snow, COMMON + RICHES + [
             (LOCAL, f"{NS}:abyss/nodules"), (LOCAL, f"{NS}:abyss/whale_fall_rare"), (VEGETATION, f"{NS}:abyss/sea_pickles_sparse"),
             (VEGETATION, f"{NS}:abyss/garden_floor"), (LOCAL, f"{NS}:abyss/bone_pile_sparse"), (LOCAL, f"{NS}:abyss/diver_remains"),
         ], water="#10283e", eerie=True),
-        "glowing_reef": biome("#0a4249", 120.0, [("minecraft:glow", 0.004), ("minecraft:underwater", 0.02)], COMMON + [
+        "glowing_reef": biome("#0a4249", 120.0, [("minecraft:glow", 0.004), ("minecraft:underwater", 0.02)], COMMON + RICHES + [
             (LOCAL, f"{NS}:abyss/glow_reef"), (VEGETATION, f"{NS}:abyss/reef_coral"), (VEGETATION, f"{NS}:abyss/sea_pickles"),
             (VEGETATION, f"{NS}:abyss/garden_reef"),
         ], water="#178a8a"),
-        "hydrothermal_vents": biome("#2c1a10", 72.0, [("minecraft:ash", 0.03), ("minecraft:bubble", 0.01)], COMMON + [
+        "hydrothermal_vents": biome("#2c1a10", 72.0, [("minecraft:ash", 0.03), ("minecraft:bubble", 0.01)], COMMON + RICHES + [
             (LOCAL, f"{NS}:abyss/black_smoker"), (LOCAL, f"{NS}:abyss/soul_vent"), (VEGETATION, f"{NS}:abyss/garden_vents"),
             (LOCAL, f"{NS}:abyss/diver_remains"),
         ], water="#4a2c1a", eerie=True),
-        "bone_fields": biome("#17221f", 96.0, marine_snow, COMMON + [
+        "bone_fields": biome("#17221f", 96.0, marine_snow, COMMON + RICHES + [
             (LOCAL, f"{NS}:abyss/whale_fall"), (LOCAL, f"{NS}:abyss/nodules"), (VEGETATION, f"{NS}:abyss/garden_floor"),
             (LOCAL, f"{NS}:abyss/bone_pile"), (LOCAL, f"{NS}:abyss/diver_remains"),
         ], water="#22342e", eerie=True),
@@ -460,6 +463,22 @@ def ore(name, size, n, lo, hi, discard=0.0):
     return feature, [count(n), IN_SQUARE, height_range(lo, hi), BIOME]
 
 
+def riches_ore(name, size, n, lo, hi):
+    """An ore that grows in any rock of the floor, whatever it is, and shows itself on the surface."""
+    targets = [
+        ("minecraft:deepslate_ore_replaceables", f"minecraft:deepslate_{name}_ore" if name != "ancient_debris" else "minecraft:ancient_debris"),
+        ("minecraft:stone_ore_replaceables", f"minecraft:{name}_ore" if name != "ancient_debris" else "minecraft:ancient_debris"),
+        ("minecraft:base_stone_nether", "minecraft:ancient_debris" if name == "ancient_debris" else f"minecraft:deepslate_{name}_ore"),
+    ]
+    feature = {
+        "type": "minecraft:ore",
+        "discard_chance_on_air_exposure": 0.0,
+        "size": size,
+        "targets": [{"state": state, "target": {"predicate_type": "minecraft:tag_match", "tag": tag}} for tag, state in targets],
+    }
+    return feature, [count(n), IN_SQUARE, height_range(lo, hi), BIOME]
+
+
 def abyss_feature(style):
     return {"type": f"{NS}:abyss_feature", "style": style}
 
@@ -472,6 +491,8 @@ def features():
         "ore_redstone": ore("redstone", 8, 6, 8, 200),
         "ore_emerald": ore("emerald", 3, 6, 120, 600),
         "ore_copper": ore("copper", 12, 8, 8, 600),
+        "ore_riches_diamond": riches_ore("diamond", 8, 8, 8, 150),
+        "ore_riches_debris": riches_ore("ancient_debris", 3, 6, 8, 150),
         "glow_lichen": ("minecraft:glow_lichen", [count(90), IN_SQUARE, height_range(8, 900), BIOME]),
         "giant_kelp": (abyss_feature("giant_kelp"), floor_placement(n=5)),
         "garden_reef": ({"type": f"{NS}:sea_garden", "style": "abyss_reef"}, floor_placement(n=4)),

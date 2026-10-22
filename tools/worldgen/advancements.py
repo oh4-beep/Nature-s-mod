@@ -86,6 +86,13 @@ def build(buckets):
         "sea/rock_bottom": advancement(f"{sea}/crushing_depths", {"bottom": player_where({"minecraft:location": {
             "dimension": f"{NS}:abyss", "position": {"y": {"max": 160.0}}}})},
             display("sea.rock_bottom", "minecraft:netherite_ingot", frame="challenge"), rewards={"experience": 500}),
+        "sea/forgotten_riches": advancement(f"{sea}/rock_bottom", {"riches": player_where({"minecraft:location": {
+            "structures": f"#{NS}:abyss_treasures"}})}, display("sea.forgotten_riches", "minecraft:gold_block", frame="goal")),
+        "sea/wonder_of_the_deep": advancement(f"{sea}/forgotten_riches", {"wonder": player_where({"minecraft:location": {
+            "structures": f"{NS}:deep_wonder"}})}, display("sea.wonder_of_the_deep", "minecraft:beacon", frame="challenge"),
+            rewards={"experience": 1000}),
+        "sea/empowered": advancement(f"{sea}/forgotten_riches", {"table": {"trigger": "minecraft:inventory_changed", "conditions": {
+            "items": [{"items": f"{NS}:abyssal_enchanting_table"}]}}}, display("sea.empowered", f"{NS}:abyssal_enchanting_table")),
         "sea/lord_of_the_deep": advancement(f"{sea}/guardian_slayer", {g: killed(f"{NS}:{g}") for g in GUARDIANS},
                                             display("sea.lord_of_the_deep", f"{NS}:sovereign_staff", frame="challenge"),
                                             rewards={"experience": 2000}, any_of=False),
@@ -144,6 +151,9 @@ LANG = {
     "sea.guardian_slayer": ("Guardian Slayer", "Defeat one of the twelve guardians of the descent"),
     "sea.rock_bottom": ("Rock Bottom", "Reach the bottom of the Abyss, alive"),
     "sea.lord_of_the_deep": ("Lord of the Deep", "Defeat all twelve guardians of the descent"),
+    "sea.forgotten_riches": ("Forgotten Riches", "Find the ruins of the drowned people on the bottom of the Abyss"),
+    "sea.wonder_of_the_deep": ("Wonder of the Deep", "Stand inside one of the great wonders of the Abyss"),
+    "sea.empowered": ("Power of the Deep", "Obtain an Abyssal Enchanting Table"),
     "nether.above_the_lava_sea": ("Above the Lava Sea", "Climb into the great caverns of the upper Nether"),
     "nether.ember_wastes": ("Ash and Embers", "Cross the Ember Wastes"),
     "nether.glowstone_grotto": ("Chandeliers of Light", "Find the Glowstone Grotto"),

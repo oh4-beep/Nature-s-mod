@@ -24,6 +24,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import abyss  # noqa: E402
 import advancements  # noqa: E402
+import deep  # noqa: E402
 import features  # noqa: E402
 import nether  # noqa: E402
 import ocean  # noqa: E402
@@ -94,6 +95,7 @@ def main():
     files.update(terrain.build(vanilla))
     files.update(features.build(vanilla))
     files.update(abyss.build(vanilla))
+    files.update(deep.build(vanilla))
     files.update(nether.build(vanilla))
     files.update(ocean.build())
     buckets_dir = os.path.join(REPO, "src", "main", "resources", "assets", "naturesmod", "items")

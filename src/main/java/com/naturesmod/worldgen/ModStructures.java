@@ -1,6 +1,8 @@
 package com.naturesmod.worldgen;
 
 import com.naturesmod.NaturesMod;
+import com.naturesmod.worldgen.deep.DeepPiece;
+import com.naturesmod.worldgen.deep.DeepStructure;
 import com.naturesmod.worldgen.glacier.GlacierPiece;
 import com.naturesmod.worldgen.glacier.GlacierStructure;
 import com.naturesmod.worldgen.hell.HellPiece;
@@ -49,6 +51,15 @@ public final class ModStructures {
 			NaturesMod.id("bone_pit"), () -> HellStructure.BonePit.CODEC);
 	public static final StructureType<HellStructure.Ritual> RITUAL_CIRCLE = Registry.register(BuiltInRegistries.STRUCTURE_TYPE,
 			NaturesMod.id("ritual_circle"), () -> HellStructure.Ritual.CODEC);
+
+	public static final StructurePieceType DEEP_PIECE = Registry.register(BuiltInRegistries.STRUCTURE_PIECE, NaturesMod.id("deep"),
+			(StructurePieceType.ContextlessType) DeepPiece::new);
+	public static final StructureType<DeepStructure.Ruin> DEEP_RUIN = Registry.register(BuiltInRegistries.STRUCTURE_TYPE,
+			NaturesMod.id("deep_ruin"), () -> DeepStructure.Ruin.CODEC);
+	public static final StructureType<DeepStructure.Vault> DEEP_VAULT = Registry.register(BuiltInRegistries.STRUCTURE_TYPE,
+			NaturesMod.id("deep_vault"), () -> DeepStructure.Vault.CODEC);
+	public static final StructureType<DeepStructure.Wonder> DEEP_WONDER = Registry.register(BuiltInRegistries.STRUCTURE_TYPE,
+			NaturesMod.id("deep_wonder"), () -> DeepStructure.Wonder.CODEC);
 
 	private ModStructures() {
 	}

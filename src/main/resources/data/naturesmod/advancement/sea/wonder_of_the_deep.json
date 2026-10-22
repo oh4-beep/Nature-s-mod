@@ -1,0 +1,40 @@
+{
+  "criteria": {
+    "wonder": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "naturesmod:deep_wonder"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.naturesmod.sea.wonder_of_the_deep.description"
+    },
+    "icon": {
+      "id": "minecraft:beacon"
+    },
+    "title": {
+      "translate": "advancements.naturesmod.sea.wonder_of_the_deep.title"
+    },
+    "frame": "challenge"
+  },
+  "requirements": [
+    [
+      "wonder"
+    ]
+  ],
+  "sends_telemetry_event": false,
+  "parent": "naturesmod:sea/forgotten_riches",
+  "rewards": {
+    "experience": 1000
+  }
+}

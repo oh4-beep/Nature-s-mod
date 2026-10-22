@@ -1,0 +1,50 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "naturesmod:tidecleaver",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "naturesmod:leviathan_fang",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "naturesmod:abyssal_scythe",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "naturesmod:stormcaller",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "naturesmod:krakens_grasp",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "naturesmod:pressure_maul",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "naturesmod:sovereign_staff",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "naturesmod:coral_rapier",
+          "weight": 1
+        }
+      ]
+    }
+  ]
+}
