@@ -95,8 +95,9 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 			scene("creatures", () -> creatures(context, world));
 			scene("rift", () -> rift(context, world));
 			scene("abyss", () -> abyss(context, world));
-			scene("treasures", () -> treasures(context, world));
 			scene("nether", () -> nether(context, world));
+			// Last: building and visiting all 55 treasures loads the server more than anything else.
+			scene("treasures", () -> treasures(context, world));
 		}
 		if (!failures.isEmpty()) {
 			throw new AssertionError("Some scenes failed: " + failures);
