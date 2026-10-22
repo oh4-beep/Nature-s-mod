@@ -379,6 +379,9 @@ class Painter:
                     colour = glow_rgb
             if "rims" in self.glow and role == "rim":
                 glow_rgb = col["accent"]
+            if "bell" in self.glow:
+                # The whole bell glows like a paper lantern, brightest at its heart.
+                glow_rgb = col["accent"] if role == "inner" else mix(col["side"], col["accent"], 0.5 * b)
             alpha = {"bell": 140, "rim": 170, "inner": 200}[role]
             return colour, alpha, glow_rgb
         if role in ("tentacle", "arm"):

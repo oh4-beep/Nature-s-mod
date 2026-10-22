@@ -37,7 +37,7 @@ public final class SeaLifeSpawner {
 	private static final int INTERVAL = 40;
 	/** Sea creatures kept within reach of a player in the Overworld's seas and in the Abyss. */
 	private static final int OVERWORLD_TARGET = 16;
-	private static final int ABYSS_TARGET = 26;
+	private static final int ABYSS_TARGET = 40;
 	private static final double REACH = 48.0;
 
 	private static Map<Identifier, List<SpeciesData>> byBiome;
@@ -85,7 +85,8 @@ public final class SeaLifeSpawner {
 		int present = level.getEntitiesOfClass(Mob.class, around, mob -> mob instanceof SeaCreature).size();
 		RandomSource random = level.getRandom();
 		int groups = 0;
-		for (int attempt = 0; attempt < 8 && groups < 2 && present < target; attempt++) {
+		int maxGroups = abyss ? 3 : 2;
+		for (int attempt = 0; attempt < (abyss ? 12 : 8) && groups < maxGroups && present < target; attempt++) {
 			double angle = random.nextDouble() * Math.PI * 2.0;
 			double distance = 12.0 + random.nextDouble() * 30.0;
 			int spread = abyss ? 24 : 10;

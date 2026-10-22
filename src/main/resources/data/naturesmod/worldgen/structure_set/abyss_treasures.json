@@ -2,8 +2,8 @@
   "placement": {
     "type": "minecraft:random_spread",
     "salt": 640219877,
-    "separation": 3,
-    "spacing": 7,
+    "separation": 2,
+    "spacing": 6,
     "exclusion_zone": {
       "other_set": "naturesmod:drowned_sanctum",
       "chunk_count": 4

@@ -52,7 +52,7 @@ final class TreasureTest {
 		test.line("");
 		test.line("--- the treasures of the deep ---");
 		long start = System.currentTimeMillis();
-		for (String tier : new String[] {"deep_ruin", "deep_vault", "deep_wonder"}) {
+		for (String tier : new String[] {"deep_ruin", "deep_vault", "deep_wonder", "deep_highland"}) {
 			locate(tier);
 		}
 		test.line("treasures placed so far: %s", placed());

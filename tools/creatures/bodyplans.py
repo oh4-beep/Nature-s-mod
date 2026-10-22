@@ -160,7 +160,7 @@ def long(v):
 
 
 def shark(v):
-    """Sharks. Options: hammer, snout (goblin), bulky (greenland), whip (ghost shark), big_eyes."""
+    """Sharks. Options: hammer, snout (goblin), bulky (greenland), whip (ghost shark), big_eyes, whale (flat flukes)."""
     w, h = (8, 7) if v.get("bulky") else (6, 6)
     body_len = 12
     y0 = 24 - h / 2 - 1
@@ -176,11 +176,15 @@ def shark(v):
     tail_fin = [cube("tail_fin", (0, -7, 0), (0, 7, 5)), cube("tail_fin", (0, 0, 0), (0, 4, 3))]
     if v.get("whip"):
         tail_fin = [cube("tail_fin", (0, -1, 0), (0, 2, 12))]
+    if v.get("whale"):
+        # A whale's flukes lie flat, and it has only a little hump for a dorsal fin.
+        tail_fin = [cube("tail_fin", (-7, 0, 0), (14, 0, 5))]
     body = part("body", (0, y0, 0), cubes=[cube("body", (-w / 2, -h / 2, -body_len / 2), (w, h, body_len))] + mutations(v, w, h, body_len), children=[
         part("head", (0, 0, -body_len / 2), cubes=head_cubes, children=head_children),
         part("tail", (0, -0.5, body_len / 2), cubes=[cube("tail", (-w / 4, -h / 4, 0), (w / 2, h / 2, 8))],
              children=[part("tail_fin", (0, 0, 8), (0.5, 0, 0), cubes=tail_fin)]),
-        part("dorsal", (0, -h / 2, -2), (-0.6, 0, 0), cubes=[cube("dorsal", (0, -6, 0), (0, 6, 4))]),
+        part("dorsal", (0, -h / 2, -2 if not v.get("whale") else 3), (-0.6, 0, 0),
+             cubes=[cube("dorsal", (0, -6 if not v.get("whale") else -2, 0), (0, 6 if not v.get("whale") else 2, 4))]),
         part("left_fin", (w / 2, h / 2 - 1, -3), (0.3, 0.3, 0.5), cubes=[cube("fin", (0, 0, 0), (7, 0, 4))]),
         part("right_fin", (-w / 2, h / 2 - 1, -3), (0.3, -0.3, -0.5), cubes=[cube("fin", (-7, 0, 0), (7, 0, 4), mirror=True)]),
         part("anal_fin", (0, h / 2, 4), (0.5, 0, 0), cubes=[cube("fin", (0, 0, 0), (0, 2, 3))]),

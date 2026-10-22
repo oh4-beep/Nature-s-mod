@@ -173,7 +173,14 @@ final class SeaTest {
 		}
 		test.line("generated %d abyss chunks in %.1fs", chunks * chunks, (System.currentTimeMillis() - start) / 1000.0);
 		TerrainRenderer.emit("abyss_spawn_top", floorMap(abyss, -chunks * 8, -chunks * 8, chunks * 16));
-		test.line("abyss features so far: %s", abyssFeatures());
+		Map<String, Integer> features = abyssFeatures();
+		test.line("abyss features so far: %s", features);
+		// The Abyss must be full: life over the floor, relics on it, things drifting in the water.
+		for (String name : new String[] {"abyss_meadow", "abyss_relic", "abyss_drift"}) {
+			if (features.getOrDefault(name, 0) == 0) {
+				test.fail("no %s was placed in %d chunks of the Abyss", name, chunks * chunks);
+			}
+		}
 	}
 
 	private static Map<String, Integer> abyssFeatures() {

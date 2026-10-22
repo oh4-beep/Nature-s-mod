@@ -57,7 +57,8 @@
     [],
     [],
     [
-      "naturesmod:abyss/glow_reef"
+      "naturesmod:abyss/glow_reef",
+      "naturesmod:abyss/relic"
     ],
     [],
     [],
@@ -79,7 +80,8 @@
     [
       "naturesmod:abyss/reef_coral",
       "naturesmod:abyss/sea_pickles",
-      "naturesmod:abyss/garden_reef"
+      "naturesmod:abyss/garden_reef",
+      "naturesmod:abyss/meadow"
     ],
     []
   ],

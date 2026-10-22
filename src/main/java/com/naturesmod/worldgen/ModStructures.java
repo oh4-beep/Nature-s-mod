@@ -60,6 +60,8 @@ public final class ModStructures {
 			NaturesMod.id("deep_vault"), () -> DeepStructure.Vault.CODEC);
 	public static final StructureType<DeepStructure.Wonder> DEEP_WONDER = Registry.register(BuiltInRegistries.STRUCTURE_TYPE,
 			NaturesMod.id("deep_wonder"), () -> DeepStructure.Wonder.CODEC);
+	public static final StructureType<DeepStructure.Highland> DEEP_HIGHLAND = Registry.register(BuiltInRegistries.STRUCTURE_TYPE,
+			NaturesMod.id("deep_highland"), () -> DeepStructure.Highland.CODEC);
 
 	private ModStructures() {
 	}

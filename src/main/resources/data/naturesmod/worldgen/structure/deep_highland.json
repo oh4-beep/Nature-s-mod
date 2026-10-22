@@ -1,0 +1,6 @@
+{
+  "type": "naturesmod:deep_highland",
+  "biomes": "#naturesmod:has_structure/abyss_highland",
+  "spawn_overrides": {},
+  "step": "surface_structures"
+}

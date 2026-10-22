@@ -17,18 +17,31 @@ import net.minecraft.world.level.levelgen.structure.StructureType;
 
 /**
  * The forgotten riches on the floor of the Abyss: ruins, vaults and wonders, each of many kinds.
- * They are only found at the very bottom, below the last of the guardians, on ground that is
- * fairly level.
+ * They are found at the very bottom, below the last of the guardians, on ground that is fairly
+ * level; poorer ruins also stand on the summits and shoulders of the seamounts far above.
  */
 public abstract class DeepStructure extends Structure {
 	/** Only the true bottom of the Abyss: below the guardians, above the bedrock of the trenches. */
 	public static final int MAX_FLOOR = 150;
 	private static final int MIN_FLOOR = 18;
 	private final DeepKind.Tier tier;
+	private final int minFloor;
+	private final int maxFloor;
 
 	protected DeepStructure(StructureSettings settings, DeepKind.Tier tier) {
+		this(settings, tier, MIN_FLOOR, MAX_FLOOR);
+	}
+
+	protected DeepStructure(StructureSettings settings, DeepKind.Tier tier, int minFloor, int maxFloor) {
 		super(settings);
 		this.tier = tier;
+		this.minFloor = minFloor;
+		this.maxFloor = maxFloor;
+	}
+
+	/** Ruins up on the seamounts keep their chests' riches modest: the fortunes are at the bottom. */
+	protected boolean highland() {
+		return false;
 	}
 
 	@Override
@@ -37,7 +50,7 @@ public abstract class DeepStructure extends Structure {
 		int x = chunk.getMiddleBlockX();
 		int z = chunk.getMiddleBlockZ();
 		int floor = floor(context, x, z);
-		if (floor > MAX_FLOOR || floor < MIN_FLOOR) {
+		if (floor > maxFloor || floor < minFloor) {
 			return Optional.empty();
 		}
 		int r = tier.flatRadius();
@@ -56,8 +69,9 @@ public abstract class DeepStructure extends Structure {
 		Rotation rotation = Rotation.getRandom(random);
 		long seed = random.nextLong();
 		BlockPos center = new BlockPos(x, floor, z);
-		FeatureStats.placed("deep/" + kind.id(), center);
-		return Optional.of(new GenerationStub(center, builder -> builder.addPiece(new DeepPiece(kind, center, rotation, seed))));
+		boolean highland = highland();
+		FeatureStats.placed((highland ? "deep/highland/" : "deep/") + kind.id(), center);
+		return Optional.of(new GenerationStub(center, builder -> builder.addPiece(new DeepPiece(kind, center, rotation, seed, highland))));
 	}
 
 	/** Y of the top block of the sea floor. */
@@ -87,6 +101,25 @@ public abstract class DeepStructure extends Structure {
 
 		public Vault(StructureSettings settings) {
 			super(settings, DeepKind.Tier.VAULT);
+		}
+	}
+
+	/** A ruin on a seamount, anywhere between the floor and the surface. */
+	public static final class Highland extends DeepStructure {
+		public static final MapCodec<Highland> CODEC = simpleCodec(Highland::new);
+
+		public Highland(StructureSettings settings) {
+			super(settings, DeepKind.Tier.RUIN, MAX_FLOOR + 1, 1030);
+		}
+
+		@Override
+		protected boolean highland() {
+			return true;
+		}
+
+		@Override
+		public StructureType<?> type() {
+			return ModStructures.DEEP_HIGHLAND;
 		}
 	}
 

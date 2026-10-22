@@ -334,28 +334,33 @@ RICHES = [(ORES, f"{NS}:abyss/ore_riches_diamond"), (ORES, f"{NS}:abyss/ore_rich
 def biomes():
     marine_snow = [("minecraft:white_ash", 0.025), ("minecraft:underwater", 0.02)]
     sparks = [("minecraft:glow", 0.003), ("minecraft:underwater", 0.025)]
+    # Every part of the Abyss is full of something: meadows of life over the whole floor, relics
+    # of the drowned people on it, and rocks, coral and bones drifting in the water above.
+    floor_life = [(LOCAL, f"{NS}:abyss/relic"), (VEGETATION, f"{NS}:abyss/meadow")]
     return {
         "twilight_waters": biome("#103c72", 128.0, [("minecraft:underwater", 0.04), ("minecraft:glow", 0.001)], COMMON + [
-            (LOCAL, f"{NS}:abyss/giant_kelp"), (LOCAL, f"{NS}:abyss/hanging_glow"),
+            (LOCAL, f"{NS}:abyss/giant_kelp"), (LOCAL, f"{NS}:abyss/hanging_glow"), (LOCAL, f"{NS}:abyss/drift"),
             (VEGETATION, "minecraft:kelp_cold"), (VEGETATION, "minecraft:seagrass_deep"), (VEGETATION, f"{NS}:abyss/sea_pickles"),
-        ], water="#1d4f8f"),
-        "midnight_zone": biome("#071630", 96.0, sparks, COMMON + [(LOCAL, f"{NS}:abyss/hanging_glow")], water="#0c2348", eerie=True),
+        ] + floor_life, water="#1d4f8f"),
+        "midnight_zone": biome("#071630", 96.0, sparks, COMMON + [
+            (LOCAL, f"{NS}:abyss/hanging_glow"), (LOCAL, f"{NS}:abyss/drift"), (VEGETATION, f"{NS}:abyss/meadow"),
+        ], water="#0c2348", eerie=True),
         "abyssal_plains": biome("#0c1d2e", 104.0, marine_snow, COMMON + RICHES + [
             (LOCAL, f"{NS}:abyss/nodules"), (LOCAL, f"{NS}:abyss/whale_fall_rare"), (VEGETATION, f"{NS}:abyss/sea_pickles_sparse"),
             (VEGETATION, f"{NS}:abyss/garden_floor"), (LOCAL, f"{NS}:abyss/bone_pile_sparse"), (LOCAL, f"{NS}:abyss/diver_remains"),
-        ], water="#10283e", eerie=True),
+        ] + floor_life, water="#10283e", eerie=True),
         "glowing_reef": biome("#0a4249", 120.0, [("minecraft:glow", 0.004), ("minecraft:underwater", 0.02)], COMMON + RICHES + [
             (LOCAL, f"{NS}:abyss/glow_reef"), (VEGETATION, f"{NS}:abyss/reef_coral"), (VEGETATION, f"{NS}:abyss/sea_pickles"),
             (VEGETATION, f"{NS}:abyss/garden_reef"),
-        ], water="#178a8a"),
+        ] + floor_life, water="#178a8a"),
         "hydrothermal_vents": biome("#2c1a10", 72.0, [("minecraft:ash", 0.03), ("minecraft:bubble", 0.01)], COMMON + RICHES + [
             (LOCAL, f"{NS}:abyss/black_smoker"), (LOCAL, f"{NS}:abyss/soul_vent"), (VEGETATION, f"{NS}:abyss/garden_vents"),
             (LOCAL, f"{NS}:abyss/diver_remains"),
-        ], water="#4a2c1a", eerie=True),
+        ] + floor_life, water="#4a2c1a", eerie=True),
         "bone_fields": biome("#17221f", 96.0, marine_snow, COMMON + RICHES + [
             (LOCAL, f"{NS}:abyss/whale_fall"), (LOCAL, f"{NS}:abyss/nodules"), (VEGETATION, f"{NS}:abyss/garden_floor"),
             (LOCAL, f"{NS}:abyss/bone_pile"), (LOCAL, f"{NS}:abyss/diver_remains"),
-        ], water="#22342e", eerie=True),
+        ] + floor_life, water="#22342e", eerie=True),
     }
 
 
@@ -483,6 +488,10 @@ def abyss_feature(style):
     return {"type": f"{NS}:abyss_feature", "style": style}
 
 
+def abyss_life(style):
+    return {"type": f"{NS}:abyss_life", "style": style}
+
+
 def features():
     out = {
         "ore_diamond": ore("diamond", 8, 4, 8, 220, 0.5),
@@ -511,6 +520,10 @@ def features():
         "nodules": (abyss_feature("nodules"), floor_placement(n=2)),
         "whale_fall": (abyss_feature("whale_fall"), floor_placement(chance=5)),
         "whale_fall_rare": (abyss_feature("whale_fall"), floor_placement(chance=60)),
+        # One call covers a whole chunk of floor with patches of life.
+        "meadow": (abyss_life("meadow"), floor_placement(n=1)),
+        "relic": (abyss_life("relic"), floor_placement(chance=2)),
+        "drift": (abyss_life("drift"), [count(1), IN_SQUARE, height_range(170, 1020), BIOME]),
     }
     files = {}
     for name, (feature, placement) in out.items():

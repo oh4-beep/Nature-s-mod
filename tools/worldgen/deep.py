@@ -168,6 +168,57 @@ def tables():
     }
 
 
+# The ruins up on the seamounts: worth the look, but the fortunes lie at the bottom.
+HIGHLAND = [f"{NS}:abyssal_plains", f"{NS}:bone_fields", f"{NS}:glowing_reef", f"{NS}:hydrothermal_vents", f"{NS}:midnight_zone",
+            f"{NS}:twilight_waters"]
+
+
+def highland_tables():
+    def base(*extra):
+        return chest(
+            pool((3, 6),
+                 item("gold_ingot", 12, (2, 5)), item("iron_ingot", 12, (2, 6)), item("emerald", 8, (1, 4)), item("diamond", 3, (1, 2)),
+                 item(f"{NS}:pearl", 8, (1, 3)), item(f"{NS}:sea_scale", 10, (2, 5)), item("prismarine_crystals", 8, (2, 6)),
+                 item("lapis_lazuli", 6, (3, 8)), item("nautilus_shell", 4), item("experience_bottle", 6, (1, 4)),
+                 item("book", 4, 1, SEA_ENCHANT), item("potion", 5, None, WATER_BREATHING), item("golden_apple", 2)),
+            *extra)
+    return {
+        "ruin": base(pool(1, empty(10), ref("disc"), ref("head"), ref("trim"))),
+        "treasury": base(pool((1, 3), item("gold_ingot", 10, (3, 8)), item("gold_block", 2), item("emerald", 6, (2, 6)))),
+        "heads": base(pool(1, empty(2), ref("head"))),
+        "mine": base(pool((1, 3), item("raw_iron", 8, (3, 8)), item("raw_gold", 6, (2, 6)), item("coal", 8, (6, 16)), item("diamond", 2))),
+        "ship": base(pool((1, 2), item("map", 3), item("compass", 3), item("spyglass", 2), item("firework_rocket", 4, (2, 6)))),
+        "tomb": base(pool((1, 2), item("bone", 8, (2, 6)), item("gold_ingot", 6, (2, 5)), item("totem_of_undying", 1))),
+        "discs": base(pool(1, empty(1), ref("disc"))),
+        "library": base(pool((1, 3), item("book", 8, 1, ENCHANT), item("paper", 6, (3, 9)), item("book", 6, (1, 3)))),
+    }
+
+
+def finds():
+    """Little finds all over the Abyss: amphorae and cargo on the floor, lost cargo drifting above it."""
+    return {
+        "amphora": chest(
+            pool((1, 3),
+                 item("gold_nugget", 12, (3, 9)), item("emerald", 6, (1, 3)), item("gold_ingot", 6, (1, 2)), item(f"{NS}:pearl", 6, (1, 2)),
+                 item("prismarine_crystals", 6, (1, 4)), item("lapis_lazuli", 6, (2, 6)), item("diamond", 1), item("glow_ink_sac", 4, (1, 3)),
+                 item("bone_meal", 4, (2, 6)))),
+        "cargo": chest(
+            pool((3, 6),
+                 item("iron_ingot", 10, (2, 6)), item("gold_ingot", 6, (1, 4)), item("emerald", 6, (1, 4)), item("coal", 8, (4, 12)),
+                 item("bread", 6, (2, 5)), item("paper", 6, (2, 8)), item("leather", 6, (2, 5)), item("lantern", 3, (1, 2)),
+                 item("potion", 5, None, WATER_BREATHING), item(f"{NS}:sea_scale", 6, (2, 5)), item("diamond", 2),
+                 item("book", 3, 1, SEA_ENCHANT)),
+            pool(1, empty(8), item(f"{NS}:tidewalker_helmet"), item(f"{NS}:tidewalker_boots"))),
+        "drift_cargo": chest(
+            pool((3, 6),
+                 item("gold_ingot", 10, (2, 6)), item("emerald", 8, (2, 5)), item("diamond", 4, (1, 2)), item("iron_ingot", 8, (3, 8)),
+                 item(f"{NS}:abyssal_scale", 6, (1, 3)), item(f"{NS}:pearl", 6, (1, 3)), item("experience_bottle", 6, (2, 5)),
+                 item("potion", 6, None, WATER_BREATHING), item("golden_apple", 3), item("book", 4, 1, DEEP_ENCHANT),
+                 item("ender_pearl", 3, (1, 2))),
+            pool(1, empty(6), ref("disc"), ref("trim"), item(f"{NS}:tidewalker_chestplate"), item(f"{NS}:tidewalker_leggings"))),
+    }
+
+
 def structures():
     files = {}
     for name in TIERS:
@@ -180,12 +231,23 @@ def structures():
     # One set for all three, so they never land on each other; a site too rough for a wonder
     # gets a vault or a ruin instead.
     files[f"{NS}/worldgen/structure_set/abyss_treasures.json"] = {
-        "placement": {"type": "minecraft:random_spread", "salt": 640219877, "separation": 3, "spacing": 7,
+        "placement": {"type": "minecraft:random_spread", "salt": 640219877, "separation": 2, "spacing": 6,
                       "exclusion_zone": {"other_set": f"{NS}:drowned_sanctum", "chunk_count": 4}},
         "structures": [{"structure": f"{NS}:{name}", "weight": weight} for name, weight in TIERS.items()],
     }
     files[f"{NS}/tags/worldgen/biome/has_structure/abyss_treasure.json"] = {"values": FLOOR}
     files[f"{NS}/tags/worldgen/structure/abyss_treasures.json"] = {"values": [f"{NS}:{name}" for name in TIERS]}
+    files[f"{NS}/worldgen/structure/deep_highland.json"] = {
+        "type": f"{NS}:deep_highland",
+        "biomes": f"#{NS}:has_structure/abyss_highland",
+        "spawn_overrides": {},
+        "step": "surface_structures",
+    }
+    files[f"{NS}/worldgen/structure_set/abyss_highlands.json"] = {
+        "placement": {"type": "minecraft:random_spread", "salt": 118204573, "separation": 2, "spacing": 5},
+        "structures": [{"structure": f"{NS}:deep_highland", "weight": 1}],
+    }
+    files[f"{NS}/tags/worldgen/biome/has_structure/abyss_highland.json"] = {"values": HIGHLAND}
     return files
 
 
@@ -195,4 +257,8 @@ def build(vanilla):
         files[f"{NS}/loot_table/chests/abyss/parts/{name}.json"] = table
     for name, table in tables().items():
         files[f"{NS}/loot_table/chests/abyss/{name}.json"] = table
+    for name, table in finds().items():
+        files[f"{NS}/loot_table/chests/abyss/{name}.json"] = table
+    for name, table in highland_tables().items():
+        files[f"{NS}/loot_table/chests/abyss/highland/{name}.json"] = table
     return files

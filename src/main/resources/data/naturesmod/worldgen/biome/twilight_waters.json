@@ -58,7 +58,9 @@
     [],
     [
       "naturesmod:abyss/giant_kelp",
-      "naturesmod:abyss/hanging_glow"
+      "naturesmod:abyss/hanging_glow",
+      "naturesmod:abyss/drift",
+      "naturesmod:abyss/relic"
     ],
     [],
     [],
@@ -78,7 +80,8 @@
     [
       "minecraft:kelp_cold",
       "minecraft:seagrass_deep",
-      "naturesmod:abyss/sea_pickles"
+      "naturesmod:abyss/sea_pickles",
+      "naturesmod:abyss/meadow"
     ],
     []
   ],

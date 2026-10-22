@@ -63,7 +63,8 @@
     [],
     [],
     [
-      "naturesmod:abyss/hanging_glow"
+      "naturesmod:abyss/hanging_glow",
+      "naturesmod:abyss/drift"
     ],
     [],
     [],
@@ -80,7 +81,9 @@
       "naturesmod:abyss/glow_lichen"
     ],
     [],
-    [],
+    [
+      "naturesmod:abyss/meadow"
+    ],
     []
   ],
   "has_precipitation": false,

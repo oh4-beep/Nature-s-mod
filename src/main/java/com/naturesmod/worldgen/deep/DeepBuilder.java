@@ -56,12 +56,15 @@ public final class DeepBuilder {
 	private final int cz;
 	private final Rotation rotation;
 	private final long seed;
+	/** Where the loot tables of the chests are: the treasures of the floor, or the poorer highland ruins. */
+	private final String lootFolder;
 	private final BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
 	/** For layout choices: every chunk replays the same sequence. */
 	final RandomSource layout;
 
-	DeepBuilder(WorldGenLevel level, BoundingBox box, int cx, int cy, int cz, Rotation rotation, long seed) {
+	DeepBuilder(WorldGenLevel level, BoundingBox box, int cx, int cy, int cz, Rotation rotation, long seed, String lootFolder) {
 		this.level = level;
+		this.lootFolder = lootFolder;
 		this.box = box;
 		this.cx = cx;
 		this.cy = cy;
@@ -528,8 +531,8 @@ public final class DeepBuilder {
 
 	// --- containers and spawners -------------------------------------------------------------
 
-	static ResourceKey<LootTable> loot(String name) {
-		return ResourceKey.create(Registries.LOOT_TABLE, NaturesMod.id("chests/abyss/" + name));
+	ResourceKey<LootTable> loot(String name) {
+		return ResourceKey.create(Registries.LOOT_TABLE, NaturesMod.id(lootFolder + name));
 	}
 
 	void chest(int x, int y, int z, Direction facing, String loot) {

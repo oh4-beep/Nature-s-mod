@@ -65,7 +65,8 @@
     [
       "naturesmod:abyss/black_smoker",
       "naturesmod:abyss/soul_vent",
-      "naturesmod:abyss/diver_remains"
+      "naturesmod:abyss/diver_remains",
+      "naturesmod:abyss/relic"
     ],
     [],
     [],
@@ -85,7 +86,8 @@
     ],
     [],
     [
-      "naturesmod:abyss/garden_vents"
+      "naturesmod:abyss/garden_vents",
+      "naturesmod:abyss/meadow"
     ],
     []
   ],

@@ -22,8 +22,14 @@ public class DeepPiece extends StructurePiece {
 	private final int cz;
 	private final Rotation rotation;
 	private final long seed;
+	/** A ruin up on a seamount, whose chests hold less. */
+	private final boolean highland;
 
 	public DeepPiece(DeepKind kind, BlockPos center, Rotation rotation, long seed) {
+		this(kind, center, rotation, seed, false);
+	}
+
+	public DeepPiece(DeepKind kind, BlockPos center, Rotation rotation, long seed, boolean highland) {
 		super(ModStructures.DEEP_PIECE, 0, kind.tier().bounds(center));
 		this.kind = kind;
 		this.cx = center.getX();
@@ -31,6 +37,7 @@ public class DeepPiece extends StructurePiece {
 		this.cz = center.getZ();
 		this.rotation = rotation;
 		this.seed = seed;
+		this.highland = highland;
 	}
 
 	public DeepPiece(CompoundTag tag) {
@@ -41,6 +48,7 @@ public class DeepPiece extends StructurePiece {
 		this.cz = tag.getIntOr("cz", 0);
 		this.rotation = Rotation.values()[Math.floorMod(tag.getIntOr("rotation", 0), Rotation.values().length)];
 		this.seed = tag.getLongOr("seed", 0L);
+		this.highland = tag.getBooleanOr("highland", false);
 	}
 
 	public DeepKind kind() {
@@ -60,11 +68,12 @@ public class DeepPiece extends StructurePiece {
 		tag.putInt("cz", cz);
 		tag.putInt("rotation", rotation.ordinal());
 		tag.putLong("seed", seed);
+		tag.putBoolean("highland", highland);
 	}
 
 	@Override
 	public void postProcess(WorldGenLevel level, StructureManager structureManager, ChunkGenerator generator, RandomSource random,
 			BoundingBox chunkBox, ChunkPos chunkPos, BlockPos pivot) {
-		kind.build(new DeepBuilder(level, chunkBox, cx, cy, cz, rotation, seed));
+		kind.build(new DeepBuilder(level, chunkBox, cx, cy, cz, rotation, seed, highland ? "chests/abyss/highland/" : "chests/abyss/"));
 	}
 }

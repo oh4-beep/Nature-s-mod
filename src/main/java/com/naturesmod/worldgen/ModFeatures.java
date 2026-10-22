@@ -4,6 +4,7 @@ import com.mojang.serialization.MapCodec;
 
 import com.naturesmod.NaturesMod;
 import com.naturesmod.worldgen.feature.AbyssFeature;
+import com.naturesmod.worldgen.feature.AbyssLifeFeature;
 import com.naturesmod.worldgen.feature.AlpineTarnFeature;
 import com.naturesmod.worldgen.feature.BoulderFeature;
 import com.naturesmod.worldgen.feature.CascadePoolsFeature;
@@ -39,6 +40,7 @@ public final class ModFeatures {
 		register("rock_formation", RockFormationFeature.CODEC);
 		register("cliff_vines", CliffVinesFeature.CODEC);
 		register("abyss_feature", AbyssFeature.CODEC);
+		register("abyss_life", AbyssLifeFeature.CODEC);
 		register("nether_feature", NetherFeature.CODEC);
 		register("hell_feature", HellFeature.CODEC);
 		register("sea_garden", SeaGardenFeature.CODEC);

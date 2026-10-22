@@ -60,6 +60,8 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 			List.of("lanternfish", "hatchetfish", "anglerfish", "viperfish", "fangtooth", "black_dragonfish", "barreleye", "tripod_fish"),
 			List.of("gulper_eel", "manta_ray", "ocean_sunfish"),
 			List.of("rotfin", "hollow_eye", "bone_shark", "twinhead_eel", "pale_lurker", "abyssal_maw"),
+			List.of("lantern_jelly", "glass_squid", "siphonophore", "ghost_eel", "starry_ray"),
+			List.of("ghost_whale"),
 			List.of("abyssal_leviathan"),
 			List.of("abyssal_horror"),
 			List.of("tidewyrm", "razorjaw", "gloomlantern"),
