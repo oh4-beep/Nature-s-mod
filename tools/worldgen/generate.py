@@ -25,6 +25,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import abyss  # noqa: E402
 import advancements  # noqa: E402
 import deep  # noqa: E402
+import end  # noqa: E402
 import features  # noqa: E402
 import nether  # noqa: E402
 import ocean  # noqa: E402
@@ -48,6 +49,8 @@ DIMENSION_BIOMES = {
     "the Nether": ["minecraft:nether_wastes", "minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest",
                    "minecraft:basalt_deltas", "naturesmod:ember_wastes", "naturesmod:glowstone_grotto", "naturesmod:obsidian_spires",
                    "naturesmod:brimstone_fields", "naturesmod:flesh_caverns"],
+    "the End": ["minecraft:the_end", "minecraft:end_highlands", "minecraft:end_midlands", "minecraft:end_barrens",
+                "minecraft:small_end_islands"] + [f"naturesmod:{b}" for b in end.BIOMES],
     "the Abyss": ["naturesmod:twilight_waters", "naturesmod:midnight_zone", "naturesmod:abyssal_plains", "naturesmod:glowing_reef",
                   "naturesmod:hydrothermal_vents", "naturesmod:bone_fields"],
 }
@@ -97,6 +100,7 @@ def main():
     files.update(abyss.build(vanilla))
     files.update(deep.build(vanilla))
     files.update(nether.build(vanilla))
+    files.update(end.build(vanilla))
     files.update(ocean.build())
     buckets_dir = os.path.join(REPO, "src", "main", "resources", "assets", "naturesmod", "items")
     buckets = sorted(f"naturesmod:{name[:-5]}" for name in os.listdir(buckets_dir) if name.endswith("_bucket.json"))

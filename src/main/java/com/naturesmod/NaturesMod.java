@@ -12,6 +12,7 @@ import com.naturesmod.block.ModBlocks;
 import com.naturesmod.creature.AbyssBosses;
 import com.naturesmod.creature.ModCreatures;
 import com.naturesmod.creature.SeaLifeSpawner;
+import com.naturesmod.end.EndOverhaul;
 import com.naturesmod.item.ModItems;
 import com.naturesmod.nether.NetherOverhaul;
 import com.naturesmod.smoketest.SmokeTest;
@@ -38,11 +39,12 @@ public class NaturesMod implements ModInitializer {
 		ModItems.register();
 		Abyss.register();
 		NetherOverhaul.register();
+		EndOverhaul.register();
 
 		if (Boolean.getBoolean("naturesmod.smoketest")) {
 			SmokeTest.register();
 		}
-		LOGGER.info("Nature's Mod is reshaping the Overworld, filling the seas and stoking the Nether");
+		LOGGER.info("Nature's Mod is reshaping the Overworld, filling the seas, stoking the Nether and remaking the End");
 	}
 
 	public static Identifier id(String path) {

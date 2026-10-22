@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cross",
+  "textures": {
+    "cross": "naturesmod:block/void_crystal_cluster"
+  }
+}

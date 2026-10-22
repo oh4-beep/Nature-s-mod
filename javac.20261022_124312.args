@@ -1,0 +1,12 @@
+-d
+/tmp/claude-0/-home-user-Nature-s-mod/f7c65f43-3d89-55dd-9a7b-3363595a8dc5/scratchpad/javac
+-proc:none
+src/main/java/com/naturesmod/end/BounceBloomBlock.java
+src/main/java/com/naturesmod/end/EndOverhaul.java
+src/main/java/com/naturesmod/end/EndPlantBlock.java
+src/main/java/com/naturesmod/end/HangingVineBlock.java
+src/main/java/com/naturesmod/end/UpdraftVentBlock.java
+src/main/java/com/naturesmod/worldgen/feature/EndFeature.java
+src/main/java/com/naturesmod/smoketest/EndTest.java
+src/main/java/com/naturesmod/worldgen/deep/DeepStructure.java
+src/main/java/com/naturesmod/block/ModBlocks.java

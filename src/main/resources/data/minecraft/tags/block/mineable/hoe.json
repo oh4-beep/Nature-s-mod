@@ -1,6 +1,8 @@
 {
   "replace": false,
   "values": [
-    "naturesmod:flesh_block"
+    "naturesmod:flesh_block",
+    "naturesmod:chorus_bulb",
+    "naturesmod:bounce_bloom"
   ]
 }

@@ -1,0 +1,23 @@
+{
+  "default_block": "minecraft:end_stone",
+  "default_fluid": "minecraft:air",
+  "disable_mob_generation": true,
+  "legacy_random_source": true,
+  "material_rule": "naturesmod:end",
+  "noise": {
+    "height": 256,
+    "min_y": 0
+  },
+  "noise_router": {
+    "chunk_surface_level": 0.0,
+    "continents": 0.0,
+    "depth": 0.0,
+    "erosion": "naturesmod:end/biome_layer",
+    "final_density": "naturesmod:end/final_density",
+    "ridges": 0.0,
+    "temperature": 0.0,
+    "vegetation": 0.0
+  },
+  "sea_level": 0,
+  "spawn_target": []
+}

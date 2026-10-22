@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "naturesmod:chorus_forest",
+    "naturesmod:crystal_highlands",
+    "naturesmod:starfall_plains",
+    "naturesmod:void_marsh",
+    "naturesmod:shattered_spires",
+    "naturesmod:enderglow_wilds"
+  ]
+}

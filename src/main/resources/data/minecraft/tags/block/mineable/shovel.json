@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "naturesmod:ash_block"
+    "naturesmod:ash_block",
+    "naturesmod:stardust"
   ]
 }

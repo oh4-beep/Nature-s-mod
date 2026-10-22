@@ -14,6 +14,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."
 import advancements  # noqa: E402
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import end_blocks  # noqa: E402
 import hell  # noqa: E402
 import mission  # noqa: E402
 import sea_plants  # noqa: E402
@@ -44,6 +45,13 @@ LANG = {
     "biome.naturesmod.obsidian_spires": "Obsidian Spires",
     "biome.naturesmod.brimstone_fields": "Brimstone Fields",
     "biome.naturesmod.flesh_caverns": "Flesh Caverns",
+    "biome.naturesmod.chorus_forest": "Chorus Forest",
+    "biome.naturesmod.crystal_highlands": "Crystal Highlands",
+    "biome.naturesmod.starfall_plains": "Starfall Plains",
+    "biome.naturesmod.void_marsh": "Void Marsh",
+    "biome.naturesmod.shattered_spires": "Shattered Spires",
+    "biome.naturesmod.enderglow_wilds": "Enderglow Wilds",
+    "biome.naturesmod.sky_isles": "Sky Isles",
 }
 
 
@@ -146,6 +154,7 @@ def main():
     sea_plants.write(ASSETS, os.path.join(REPO, "src", "main", "resources", "data"))
     mission.write(ASSETS)
     hell.write(ASSETS, os.path.join(REPO, "src", "main", "resources", "data"))
+    end_blocks.write(ASSETS, os.path.join(REPO, "src", "main", "resources", "data"))
     treasure.write(ASSETS, os.path.join(REPO, "src", "main", "resources", "data"))
 
     lang_path = os.path.join(ASSETS, "lang", "en_us.json")
@@ -156,6 +165,7 @@ def main():
     lang.update(sea_plants.lang())
     lang.update(mission.lang())
     lang.update(hell.lang())
+    lang.update(end_blocks.lang())
     lang.update(treasure.lang())
     write_json(lang_path, dict(sorted(lang.items())))
     check_recipes(os.path.join(REPO, "src", "main", "resources", "data", "naturesmod", "recipe"))

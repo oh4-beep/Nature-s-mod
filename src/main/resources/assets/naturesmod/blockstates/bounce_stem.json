@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "naturesmod:block/bounce_stem_horizontal",
+      "x": 90,
+      "y": 90
+    },
+    "axis=y": {
+      "model": "naturesmod:block/bounce_stem"
+    },
+    "axis=z": {
+      "model": "naturesmod:block/bounce_stem_horizontal",
+      "x": 90
+    }
+  }
+}

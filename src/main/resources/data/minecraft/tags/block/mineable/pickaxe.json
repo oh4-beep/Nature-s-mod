@@ -10,6 +10,16 @@
     "naturesmod:soul_brazier",
     "naturesmod:nether_geyser",
     "naturesmod:pearl_block",
-    "naturesmod:abyssal_enchanting_table"
+    "naturesmod:abyssal_enchanting_table",
+    "naturesmod:end_moss",
+    "naturesmod:voidstone",
+    "naturesmod:voidstone_bricks",
+    "naturesmod:polished_voidstone",
+    "naturesmod:void_crystal",
+    "naturesmod:void_crystal_cluster",
+    "naturesmod:starmetal_ore",
+    "naturesmod:starmetal_block",
+    "naturesmod:meteorite",
+    "naturesmod:updraft_vent"
   ]
 }

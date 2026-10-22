@@ -17,6 +17,10 @@ import com.naturesmod.NaturesMod;
 import com.naturesmod.abyss.AbyssalEnchantingTableBlock;
 import com.naturesmod.abyss.AltarBlock;
 import com.naturesmod.abyss.RiftBlock;
+import com.naturesmod.end.BounceBloomBlock;
+import com.naturesmod.end.EndPlantBlock;
+import com.naturesmod.end.HangingVineBlock;
+import com.naturesmod.end.UpdraftVentBlock;
 import com.naturesmod.nether.BoneSpikesBlock;
 import com.naturesmod.nether.BrazierBlock;
 import com.naturesmod.nether.BrimstoneBlock;
@@ -140,6 +144,58 @@ public final class ModBlocks {
 	public static final Block HELLFIRE_BRAZIER = register("hellfire_brazier", props -> new BrazierBlock(props, false), brazier(15));
 	public static final Block SOUL_BRAZIER = register("soul_brazier", props -> new BrazierBlock(props, true), brazier(10));
 
+	// --- the new End -----------------------------------------------------------------------------
+	public static final Block END_MOSS = register("end_moss", Block::new, stone(MapColor.COLOR_PURPLE, 3.0F, SoundType.MOSS));
+	public static final Block VOIDSTONE = register("voidstone", Block::new, stone(MapColor.COLOR_BLACK, 3.0F, SoundType.DEEPSLATE));
+	public static final Block VOIDSTONE_BRICKS = register("voidstone_bricks", Block::new, stone(MapColor.COLOR_BLACK, 3.0F, SoundType.DEEPSLATE_BRICKS));
+	public static final Block POLISHED_VOIDSTONE = register("polished_voidstone", Block::new, stone(MapColor.COLOR_BLACK, 3.0F, SoundType.DEEPSLATE_BRICKS));
+	public static final Block VOID_CRYSTAL = register("void_crystal", Block::new, stone(MapColor.COLOR_LIGHT_BLUE, 1.5F, SoundType.AMETHYST)
+			.lightLevel(state -> 12));
+	public static final Block VOID_CRYSTAL_CLUSTER = register("void_crystal_cluster", props -> new AmethystClusterBlock(7.0F, 10.0F, props),
+			BlockBehaviour.Properties.of()
+					.mapColor(MapColor.COLOR_LIGHT_BLUE)
+					.noOcclusion()
+					.strength(1.5F)
+					.lightLevel(state -> 9)
+					.emissiveRendering(state -> true)
+					.sound(SoundType.AMETHYST_CLUSTER));
+	public static final Block STARMETAL_ORE = register("starmetal_ore", Block::new, stone(MapColor.SAND, 4.0F, SoundType.STONE).lightLevel(state -> 3));
+	public static final Block STARMETAL_BLOCK = register("starmetal_block", Block::new, stone(MapColor.METAL, 5.0F, SoundType.METAL)
+			.lightLevel(state -> 6));
+	public static final Block STARDUST = register("stardust", Block::new, BlockBehaviour.Properties.of()
+			.mapColor(MapColor.QUARTZ)
+			.strength(0.5F)
+			.lightLevel(state -> 2)
+			.sound(SoundType.SAND));
+	public static final Block METEORITE = register("meteorite", Block::new, stone(MapColor.COLOR_BLACK, 5.0F, SoundType.ANCIENT_DEBRIS));
+	public static final Block CHORUS_LOG = register("chorus_log", RotatedPillarBlock::new, BlockBehaviour.Properties.of()
+			.mapColor(MapColor.COLOR_PURPLE)
+			.strength(2.0F)
+			.sound(SoundType.STEM));
+	public static final Block CHORUS_BULB = register("chorus_bulb", Block::new, BlockBehaviour.Properties.of()
+			.mapColor(MapColor.COLOR_MAGENTA)
+			.strength(1.0F)
+			.lightLevel(state -> 14)
+			.sound(SoundType.SHROOMLIGHT));
+	public static final Block BOUNCE_STEM = register("bounce_stem", RotatedPillarBlock::new, BlockBehaviour.Properties.of()
+			.mapColor(MapColor.TERRACOTTA_WHITE)
+			.strength(1.5F)
+			.sound(SoundType.STEM));
+	public static final Block BOUNCE_BLOOM = register("bounce_bloom", BounceBloomBlock::new, BlockBehaviour.Properties.of()
+			.mapColor(MapColor.COLOR_PINK)
+			.strength(0.8F)
+			.lightLevel(state -> 10)
+			.sound(SoundType.SLIME_BLOCK));
+	public static final Block UPDRAFT_VENT = register("updraft_vent", UpdraftVentBlock::new, stone(MapColor.COLOR_BLACK, 3.0F, SoundType.DEEPSLATE)
+			.lightLevel(state -> 7));
+	public static final Block ENDER_GRASS = register("ender_grass", props -> new EndPlantBlock(props, false), endPlant(MapColor.COLOR_PURPLE, 0, true));
+	public static final Block VOID_BLOOM = register("void_bloom", props -> new EndPlantBlock(props, true), endPlant(MapColor.COLOR_MAGENTA, 9, true));
+	public static final Block VOID_VINES = register("void_vines", HangingVineBlock::new, endPlant(MapColor.COLOR_CYAN, 7, false));
+
+	/** Every block of the new End, in creative tab order. */
+	public static final Block[] END = {END_MOSS, VOIDSTONE, VOIDSTONE_BRICKS, POLISHED_VOIDSTONE, VOID_CRYSTAL, VOID_CRYSTAL_CLUSTER, STARMETAL_ORE,
+			STARMETAL_BLOCK, STARDUST, METEORITE, CHORUS_LOG, CHORUS_BULB, BOUNCE_STEM, BOUNCE_BLOOM, UPDRAFT_VENT, ENDER_GRASS, VOID_BLOOM, VOID_VINES};
+
 	/** Every block of the hellish Nether, in creative tab order. */
 	public static final Block[] HELL = {BRIMSTONE, BRIMSTONE_BRICKS, SCORCHED_NETHERRACK, SCORCHED_BRICKS, ASH_BLOCK, FLESH_BLOCK, CHARRED_LOG,
 			BONE_SPIKES, EMBER_CRYSTAL, HELLFIRE_BRAZIER, SOUL_BRAZIER};
@@ -169,6 +225,25 @@ public final class ModBlocks {
 				.lightLevel(state -> light)
 				.noOcclusion()
 				.sound(SoundType.LANTERN);
+	}
+
+	private static BlockBehaviour.Properties stone(MapColor color, float strength, SoundType sound) {
+		return BlockBehaviour.Properties.of()
+				.mapColor(color)
+				.requiresCorrectToolForDrops()
+				.strength(strength, 9.0F)
+				.sound(sound);
+	}
+
+	private static BlockBehaviour.Properties endPlant(MapColor color, int light, boolean offset) {
+		BlockBehaviour.Properties properties = BlockBehaviour.Properties.of()
+				.mapColor(color)
+				.noCollision()
+				.instabreak()
+				.replaceable()
+				.lightLevel(state -> light)
+				.sound(SoundType.GRASS);
+		return offset ? properties.offsetType(BlockBehaviour.OffsetType.XZ) : properties;
 	}
 
 	private static BlockBehaviour.Properties floor(MapColor color) {

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:lerp",
+  "alpha": {
+    "type": "minecraft:clamp",
+    "input": {
+      "type": "minecraft:gradient",
+      "axis": "y",
+      "from_coordinate": 132,
+      "from_value": 0.0,
+      "to_coordinate": 142,
+      "to_value": 1.0
+    },
+    "min": 0.0,
+    "max": 1.0
+  },
+  "first": 0.5,
+  "second": -0.5
+}

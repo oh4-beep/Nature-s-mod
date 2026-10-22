@@ -4,16 +4,23 @@ import java.util.Optional;
 
 import com.mojang.serialization.MapCodec;
 
+import com.naturesmod.NaturesMod;
 import com.naturesmod.worldgen.FeatureStats;
 import com.naturesmod.worldgen.ModStructures;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.WorldgenRandom;
 import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.level.levelgen.structure.StructureSet;
 import net.minecraft.world.level.levelgen.structure.StructureType;
+import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadStructurePlacement;
 
 /**
  * The forgotten riches on the floor of the Abyss: ruins, vaults and wonders, each of many kinds.
@@ -24,6 +31,9 @@ public abstract class DeepStructure extends Structure {
 	/** Only the true bottom of the Abyss: below the guardians, above the bedrock of the trenches. */
 	public static final int MAX_FLOOR = 150;
 	private static final int MIN_FLOOR = 18;
+	/** The great structures of the Abyss, and how many chunks around them they keep clear. */
+	private static final String[] GREAT_STRUCTURES = {"sunken_temple", "bathysphere", "leviathan_lair", "vent_shrine", "drowned_sanctum"};
+	private static final int[] KEEP_CLEAR = {3, 1, 3, 2, 4};
 	private final DeepKind.Tier tier;
 	private final int minFloor;
 	private final int maxFloor;
@@ -64,6 +74,9 @@ public abstract class DeepStructure extends Structure {
 		if (high - low > tier.maxSlope()) {
 			return Optional.empty();
 		}
+		if (nearGreatStructure(context)) {
+			return Optional.empty();
+		}
 		WorldgenRandom random = context.random();
 		DeepKind kind = DeepKind.pick(tier, random);
 		Rotation rotation = Rotation.getRandom(random);
@@ -72,6 +85,34 @@ public abstract class DeepStructure extends Structure {
 		boolean highland = highland();
 		FeatureStats.placed((highland ? "deep/highland/" : "deep/") + kind.id(), center);
 		return Optional.of(new GenerationStub(center, builder -> builder.addPiece(new DeepPiece(kind, center, rotation, seed, highland))));
+	}
+
+	/**
+	 * The great structures of the Abyss keep the floor around them to themselves: no treasure is
+	 * built where one of them may stand within a few chunks, or it could wall up a temple's rift.
+	 */
+	private static boolean nearGreatStructure(GenerationContext context) {
+		int chunkX = context.chunkPos().getMinBlockX() >> 4;
+		int chunkZ = context.chunkPos().getMinBlockZ() >> 4;
+		HolderGetter<StructureSet> sets = context.registryAccess().lookupOrThrow(Registries.STRUCTURE_SET);
+		for (int i = 0; i < GREAT_STRUCTURES.length; i++) {
+			Optional<StructureSet> set = sets.get(ResourceKey.create(Registries.STRUCTURE_SET, NaturesMod.id(GREAT_STRUCTURES[i])))
+					.map(Holder::value);
+			if (set.isEmpty() || !(set.get().placement() instanceof RandomSpreadStructurePlacement spread)) {
+				continue;
+			}
+			int clear = KEEP_CLEAR[i];
+			// The structure's own chunk in this region and the regions around: one of them is the nearest.
+			for (int dx = -clear; dx <= clear; dx += clear) {
+				for (int dz = -clear; dz <= clear; dz += clear) {
+					ChunkPos potential = spread.getPotentialStructureChunk(context.seed(), chunkX + dx, chunkZ + dz);
+					if (Math.abs((potential.getMinBlockX() >> 4) - chunkX) <= clear && Math.abs((potential.getMinBlockZ() >> 4) - chunkZ) <= clear) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 
 	/** Y of the top block of the sea floor. */

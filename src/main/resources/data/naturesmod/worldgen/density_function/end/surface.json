@@ -1,0 +1,50 @@
+{
+  "type": "minecraft:cache",
+  "input": {
+    "type": "minecraft:add",
+    "left": {
+      "type": "minecraft:add",
+      "left": {
+        "type": "minecraft:add",
+        "left": 70.0,
+        "right": {
+          "type": "minecraft:mul",
+          "left": {
+            "type": "minecraft:noise",
+            "noise": "naturesmod:end/relief",
+            "xz_scale": 1.0,
+            "y_scale": 0.0
+          },
+          "right": 14.0
+        }
+      },
+      "right": {
+        "type": "minecraft:mul",
+        "left": {
+          "type": "minecraft:noise",
+          "noise": "naturesmod:end/hills",
+          "xz_scale": 1.0,
+          "y_scale": 0.0
+        },
+        "right": 9.0
+      }
+    },
+    "right": {
+      "type": "minecraft:add",
+      "left": {
+        "type": "minecraft:mul",
+        "left": {
+          "type": "minecraft:add",
+          "left": "naturesmod:end/land",
+          "right": -1.0
+        },
+        "right": 16.0
+      },
+      "right": {
+        "type": "minecraft:mul",
+        "left": "naturesmod:end/spire",
+        "right": 85.0
+      }
+    }
+  }
+}

@@ -1,0 +1,290 @@
+{
+  "type": "minecraft:sequence",
+  "sequence": [
+    {
+      "type": "minecraft:condition",
+      "if_true": {
+        "type": "minecraft:biome",
+        "biome_is": [
+          "naturesmod:chorus_forest",
+          "naturesmod:crystal_highlands",
+          "naturesmod:starfall_plains",
+          "naturesmod:void_marsh",
+          "naturesmod:shattered_spires",
+          "naturesmod:enderglow_wilds",
+          "naturesmod:sky_isles"
+        ]
+      },
+      "then_run": {
+        "type": "minecraft:sequence",
+        "sequence": [
+          {
+            "type": "minecraft:condition",
+            "if_true": "minecraft:on_ceiling",
+            "then_run": {
+              "type": "minecraft:block",
+              "result_state": "naturesmod:voidstone"
+            }
+          },
+          {
+            "type": "minecraft:condition",
+            "if_true": {
+              "type": "minecraft:steep"
+            },
+            "then_run": {
+              "type": "minecraft:condition",
+              "if_true": "minecraft:under_floor",
+              "then_run": {
+                "type": "minecraft:block",
+                "result_state": "naturesmod:voidstone"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "minecraft:condition",
+      "if_true": {
+        "type": "minecraft:biome",
+        "biome_is": [
+          "naturesmod:chorus_forest",
+          "naturesmod:enderglow_wilds",
+          "naturesmod:sky_isles"
+        ]
+      },
+      "then_run": {
+        "type": "minecraft:condition",
+        "if_true": "minecraft:on_floor",
+        "then_run": {
+          "type": "minecraft:sequence",
+          "sequence": [
+            {
+              "type": "minecraft:condition",
+              "if_true": {
+                "type": "minecraft:noise_threshold",
+                "noise": "naturesmod:end/patch",
+                "min_threshold": -1000000000.0,
+                "max_threshold": -0.55
+              },
+              "then_run": {
+                "type": "minecraft:block",
+                "result_state": "minecraft:end_stone"
+              }
+            },
+            {
+              "type": "minecraft:block",
+              "result_state": "naturesmod:end_moss"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "minecraft:condition",
+      "if_true": {
+        "type": "minecraft:biome",
+        "biome_is": "naturesmod:void_marsh"
+      },
+      "then_run": {
+        "type": "minecraft:sequence",
+        "sequence": [
+          {
+            "type": "minecraft:condition",
+            "if_true": "minecraft:on_floor",
+            "then_run": {
+              "type": "minecraft:sequence",
+              "sequence": [
+                {
+                  "type": "minecraft:condition",
+                  "if_true": {
+                    "type": "minecraft:noise_threshold",
+                    "noise": "naturesmod:end/patch",
+                    "min_threshold": -1000000000.0,
+                    "max_threshold": -0.35
+                  },
+                  "then_run": {
+                    "type": "minecraft:block",
+                    "result_state": "naturesmod:voidstone"
+                  }
+                },
+                {
+                  "type": "minecraft:block",
+                  "result_state": "naturesmod:end_moss"
+                }
+              ]
+            }
+          },
+          {
+            "type": "minecraft:condition",
+            "if_true": "minecraft:under_floor",
+            "then_run": {
+              "type": "minecraft:block",
+              "result_state": "naturesmod:voidstone"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "minecraft:condition",
+      "if_true": {
+        "type": "minecraft:biome",
+        "biome_is": "naturesmod:crystal_highlands"
+      },
+      "then_run": {
+        "type": "minecraft:condition",
+        "if_true": "minecraft:on_floor",
+        "then_run": {
+          "type": "minecraft:sequence",
+          "sequence": [
+            {
+              "type": "minecraft:condition",
+              "if_true": {
+                "type": "minecraft:noise_threshold",
+                "noise": "naturesmod:end/detail",
+                "min_threshold": 0.55,
+                "max_threshold": 1000000000.0
+              },
+              "then_run": {
+                "type": "minecraft:block",
+                "result_state": "naturesmod:voidstone"
+              }
+            },
+            {
+              "type": "minecraft:condition",
+              "if_true": {
+                "type": "minecraft:noise_threshold",
+                "noise": "naturesmod:end/patch",
+                "min_threshold": 0.3,
+                "max_threshold": 1000000000.0
+              },
+              "then_run": {
+                "type": "minecraft:block",
+                "result_state": "minecraft:calcite"
+              }
+            },
+            {
+              "type": "minecraft:block",
+              "result_state": "minecraft:end_stone"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "minecraft:condition",
+      "if_true": {
+        "type": "minecraft:biome",
+        "biome_is": "naturesmod:starfall_plains"
+      },
+      "then_run": {
+        "type": "minecraft:sequence",
+        "sequence": [
+          {
+            "type": "minecraft:condition",
+            "if_true": "minecraft:on_floor",
+            "then_run": {
+              "type": "minecraft:sequence",
+              "sequence": [
+                {
+                  "type": "minecraft:condition",
+                  "if_true": {
+                    "type": "minecraft:noise_threshold",
+                    "noise": "naturesmod:end/patch",
+                    "min_threshold": -1000000000.0,
+                    "max_threshold": -0.45
+                  },
+                  "then_run": {
+                    "type": "minecraft:block",
+                    "result_state": "minecraft:end_stone"
+                  }
+                },
+                {
+                  "type": "minecraft:block",
+                  "result_state": "naturesmod:stardust"
+                }
+              ]
+            }
+          },
+          {
+            "type": "minecraft:condition",
+            "if_true": "minecraft:under_floor",
+            "then_run": {
+              "type": "minecraft:condition",
+              "if_true": {
+                "type": "minecraft:noise_threshold",
+                "noise": "naturesmod:end/patch",
+                "min_threshold": -0.2,
+                "max_threshold": 1000000000.0
+              },
+              "then_run": {
+                "type": "minecraft:block",
+                "result_state": "naturesmod:stardust"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "minecraft:condition",
+      "if_true": {
+        "type": "minecraft:biome",
+        "biome_is": "naturesmod:shattered_spires"
+      },
+      "then_run": {
+        "type": "minecraft:sequence",
+        "sequence": [
+          {
+            "type": "minecraft:condition",
+            "if_true": "minecraft:on_floor",
+            "then_run": {
+              "type": "minecraft:sequence",
+              "sequence": [
+                {
+                  "type": "minecraft:condition",
+                  "if_true": {
+                    "type": "minecraft:noise_threshold",
+                    "noise": "naturesmod:end/detail",
+                    "min_threshold": 0.62,
+                    "max_threshold": 1000000000.0
+                  },
+                  "then_run": {
+                    "type": "minecraft:block",
+                    "result_state": "minecraft:crying_obsidian"
+                  }
+                },
+                {
+                  "type": "minecraft:condition",
+                  "if_true": {
+                    "type": "minecraft:noise_threshold",
+                    "noise": "naturesmod:end/patch",
+                    "min_threshold": 0.4,
+                    "max_threshold": 1000000000.0
+                  },
+                  "then_run": {
+                    "type": "minecraft:block",
+                    "result_state": "minecraft:obsidian"
+                  }
+                },
+                {
+                  "type": "minecraft:block",
+                  "result_state": "naturesmod:voidstone"
+                }
+              ]
+            }
+          },
+          {
+            "type": "minecraft:condition",
+            "if_true": "minecraft:under_floor",
+            "then_run": {
+              "type": "minecraft:block",
+              "result_state": "naturesmod:voidstone"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:cache",
+  "input": {
+    "type": "minecraft:clamp",
+    "input": {
+      "type": "minecraft:add",
+      "left": {
+        "type": "minecraft:mul",
+        "left": {
+          "type": "minecraft:slice",
+          "axis": "y",
+          "coordinate": 0,
+          "input": {
+            "type": "minecraft:distance_to_point",
+            "metric": "euclidean",
+            "point": [
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        "right": 0.007142857142857143
+      },
+      "right": -7.142857142857143
+    },
+    "min": 0.0,
+    "max": 1.0
+  }
+}

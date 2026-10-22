@@ -1,6 +1,8 @@
 {
   "replace": false,
   "values": [
-    "naturesmod:charred_log"
+    "naturesmod:charred_log",
+    "naturesmod:chorus_log",
+    "naturesmod:bounce_stem"
   ]
 }

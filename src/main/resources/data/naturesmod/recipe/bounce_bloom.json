@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "SS",
+    "SC"
+  ],
+  "key": {
+    "S": "minecraft:slime_ball",
+    "C": "minecraft:chorus_fruit"
+  },
+  "result": {
+    "count": 2,
+    "id": "naturesmod:bounce_bloom"
+  }
+}

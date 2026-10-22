@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "naturesmod:starmetal_ingot"
+  },
+  "result": {
+    "count": 1,
+    "id": "naturesmod:starmetal_block"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "VPV",
+    "VCV",
+    "VVV"
+  ],
+  "key": {
+    "V": "naturesmod:voidstone",
+    "P": "minecraft:phantom_membrane",
+    "C": "naturesmod:void_crystal"
+  },
+  "result": {
+    "count": 1,
+    "id": "naturesmod:updraft_vent"
+  }
+}

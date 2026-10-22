@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "naturesmod:starmetal_ore",
+    "naturesmod:starmetal_block",
+    "naturesmod:meteorite"
+  ]
+}

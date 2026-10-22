@@ -61,6 +61,8 @@ public final class ModItems {
 	public static Item EMBER_SIGIL;
 	public static Item CROWN_OF_THE_DEEP;
 	public static Item EMBER_SHARD;
+	public static Item RAW_STARMETAL;
+	public static Item STARMETAL_INGOT;
 	public static final Map<AbyssWeapon.Kind, Item> WEAPONS = new EnumMap<>(AbyssWeapon.Kind.class);
 
 	private ModItems() {
@@ -90,6 +92,13 @@ public final class ModItems {
 					new Item.Properties().useBlockDescriptionPrefix());
 		}
 		EMBER_SHARD = register("ember_shard", Item::new, new Item.Properties().fireResistant());
+
+		for (Block block : ModBlocks.END) {
+			register(BuiltInRegistries.BLOCK.getKey(block).getPath(), properties -> new BlockItem(block, properties),
+					new Item.Properties().useBlockDescriptionPrefix());
+		}
+		RAW_STARMETAL = register("raw_starmetal", Item::new, new Item.Properties());
+		STARMETAL_INGOT = register("starmetal_ingot", Item::new, new Item.Properties().rarity(Rarity.UNCOMMON));
 
 		armor("tidewalker", DivingArmor.TIDEWALKER, TIDEWALKER_SET);
 		armor("abyssal", DivingArmor.ABYSSAL, ABYSSAL_SET);
