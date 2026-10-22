@@ -34,7 +34,7 @@ import net.minecraft.world.level.levelgen.Heightmap;
 
 import com.naturesmod.NaturesMod;
 
-/** Registers the sea creatures: their entity types, attributes, spawn rules and where they live. */
+/** Registers the creatures of the sea and of the End: their entity types, attributes, spawn rules and where they live. */
 public final class ModCreatures {
 	private static final Map<EntityType<?>, SpeciesData> SPECIES = new IdentityHashMap<>();
 	private static final Map<String, EntityType<? extends Mob>> TYPES = new LinkedHashMap<>();
@@ -50,8 +50,13 @@ public final class ModCreatures {
 				case SCHOOL -> register(species, SchoolingFish::new);
 				case LARGE -> register(species, LargeSwimmer::new);
 				case JELLY -> register(species, Jellyfish::new);
+				case FLYER -> "skyray".equals(species.id()) ? register(species, Skyray::new) : register(species, EndFlyer::new);
+				case WALKER -> register(species, EndWalker::new);
 			};
-			addSpawns(species, type);
+			// The End's creatures are brought out by the End's own life spawner (see EndLifeSpawner).
+			if (species.inWater()) {
+				addSpawns(species, type);
+			}
 		}
 	}
 
@@ -65,8 +70,13 @@ public final class ModCreatures {
 		SPECIES.put(type, species);
 		TYPES.put(species.id(), type);
 		FabricDefaultAttributeRegistry.register(type, attributes(species));
-		SpawnPlacements.register(type, SpawnPlacementTypes.IN_WATER, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-				(entityType, level, reason, pos, random) -> canSpawn(species, level, pos, random));
+		if (species.inWater()) {
+			SpawnPlacements.register(type, SpawnPlacementTypes.IN_WATER, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+					(entityType, level, reason, pos, random) -> canSpawn(species, level, pos, random));
+		} else {
+			SpawnPlacements.register(type, species.walks() ? SpawnPlacementTypes.ON_GROUND : SpawnPlacementTypes.NO_RESTRICTIONS,
+					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, (entityType, level, reason, pos, random) -> true);
+		}
 		return type;
 	}
 
@@ -76,12 +86,17 @@ public final class ModCreatures {
 			case SMALL, SCHOOL -> 0.7 * species.speed();
 			case LARGE -> 0.6 * species.speed();
 			case JELLY -> species.speed();
+			// On foot: a little slower than a zombie at speed 1.
+			case FLYER, WALKER -> 0.22 * species.speed();
 		};
 		AttributeSupplier.Builder builder = Mob.createMobAttributes()
 				.add(Attributes.MAX_HEALTH, species.health())
 				.add(Attributes.MOVEMENT_SPEED, speed)
 				.add(Attributes.ATTACK_DAMAGE, Math.max(1.0, species.attack()))
 				.add(Attributes.FOLLOW_RANGE, species.behavior() == Behavior.BOSS ? 64.0 : species.behavior().isHostile() ? 32.0 : 16.0);
+		if (species.flies()) {
+			builder.add(Attributes.FLYING_SPEED, (species.isJelly() ? 0.06 : 0.11) * species.speed());
+		}
 		if (species.behavior() == Behavior.BOSS) {
 			builder.add(Attributes.ARMOR, 12.0).add(Attributes.KNOCKBACK_RESISTANCE, 1.0);
 		} else if (species.scale() >= 1.5F) {

@@ -1,13 +1,18 @@
 package com.naturesmod.smoketest;
 
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 import com.mojang.datafixers.util.Pair;
 
 import com.naturesmod.block.ModBlocks;
+import com.naturesmod.creature.CreatureSpecies;
+import com.naturesmod.creature.ModCreatures;
+import com.naturesmod.creature.SpeciesData;
 import com.naturesmod.end.EndOverhaul;
 import com.naturesmod.tree.ServerScheduler;
 import com.naturesmod.worldgen.FeatureStats;
@@ -34,6 +39,7 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * The End half of the smoke test: how the new End is shaped, which biomes it has where, what its
@@ -250,6 +256,11 @@ final class EndTest {
 
 	/** Bounce blooms throw what steps on them into the air; updraft vents are found under a player. */
 	private void mechanics(BlockPos land, Runnable done) {
+		// Keep the test site loaded and ticking, with nobody there to do it.
+		int cx = land.getX() >> 4;
+		int cz = land.getZ() >> 4;
+		server.getCommands().performPrefixedCommand(server.createCommandSourceStack().withLevel(end).withSuppressedOutput(),
+				String.format("forceload add %d %d %d %d", (cx - 2) * 16, (cz - 2) * 16, (cx + 2) * 16, (cz + 2) * 16));
 		int top = end.getHeight(Heightmap.Types.MOTION_BLOCKING, land.getX(), land.getZ());
 		BlockPos bloom = new BlockPos(land.getX(), top, land.getZ());
 		for (int y = 1; y <= 12; y++) {
@@ -287,6 +298,68 @@ final class EndTest {
 				test.fail("the bounce bloom did not throw the zombie into the air");
 			}
 			jumper.discard();
+			creatures(bloom, done);
+		});
+	}
+
+	/** Lets every creature of the End loose over the land: flyers must fly, walkers walk, and none fall into the void. */
+	private void creatures(BlockPos land, Runnable done) {
+		List<Mob> spawned = new ArrayList<>();
+		List<Vec3> starts = new ArrayList<>();
+		int index = 0;
+		for (SpeciesData species : CreatureSpecies.ALL) {
+			if (species.inWater()) {
+				continue;
+			}
+			int x = land.getX() - 12 + (index % 4) * 8;
+			int z = land.getZ() - 12 + (index / 4) * 8;
+			index++;
+			int ground = end.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z);
+			if (ground <= end.getMinY() + 1) {
+				ground = land.getY();
+			}
+			Mob mob = ModCreatures.type(species.id()).create(end, EntitySpawnReason.COMMAND);
+			if (mob == null) {
+				test.fail("could not create a %s", species.id());
+				continue;
+			}
+			mob.snapTo(x + 0.5, ground + (species.flies() ? 4.0 : 0.5), z + 0.5, index * 40.0F, 0.0F);
+			mob.finalizeSpawn(end, end.getCurrentDifficultyAt(mob.blockPosition()), EntitySpawnReason.COMMAND, null);
+			mob.setPersistenceRequired();
+			end.addFreshEntity(mob);
+			spawned.add(mob);
+			starts.add(mob.position());
+		}
+		test.line("spawned %d creatures of the End around %s", spawned.size(), land);
+		ServerScheduler.schedule(200, () -> {
+			int alive = 0;
+			int moved = 0;
+			StringBuilder report = new StringBuilder();
+			for (int i = 0; i < spawned.size(); i++) {
+				Mob mob = spawned.get(i);
+				String id = BuiltInRegistries.ENTITY_TYPE.getKey(mob.getType()).getPath();
+				if (!mob.isAlive()) {
+					report.append(id).append(":dead ");
+					continue;
+				}
+				alive++;
+				double distance = mob.position().distanceTo(starts.get(i));
+				if (distance > 0.5) {
+					moved++;
+				}
+				report.append(String.format("%s:%.1f@y%d ", id, distance, mob.getBlockY()));
+				if (ModCreatures.species(mob.getType()).flies() && mob.getY() < land.getY() - 20) {
+					test.fail("the %s sank down out of the sky to y=%d", id, mob.getBlockY());
+				}
+				mob.discard();
+			}
+			test.line("after 10s: %d of %d End creatures alive, %d moved: %s", alive, spawned.size(), moved, report);
+			if (alive < spawned.size() - 1) {
+				test.fail("End creatures died within ten seconds of being let loose");
+			}
+			if (moved * 2 < alive) {
+				test.fail("most End creatures did not move about");
+			}
 			done.run();
 		});
 	}

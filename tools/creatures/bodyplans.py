@@ -279,7 +279,82 @@ def seahorse(v):
     return {"kind": "upright", "root": [body], "length": 12}
 
 
-PLANS = {"fish": fish, "deep": deep, "long": long, "shark": shark, "ray": ray, "jelly": jelly, "squid": squid, "seahorse": seahorse}
+# --- the land creatures of the End ----------------------------------------------------------------
+
+def beetle(v):
+    """Six-legged armoured things: a shell over a low body, mandibles and feelers. Options: horn."""
+    leg_len = 6
+    splay = 0.75
+    reach = math.cos(splay) * leg_len
+    y0 = 24 - reach - 1.0
+    head_children = [
+        part("left_mandible", (1.2, 0.8, -3), (0, -0.35, 0), cubes=[cube("jaw", (-0.5, 0, -2.5), (1, 1, 2.5))]),
+        part("right_mandible", (-1.2, 0.8, -3), (0, 0.35, 0), cubes=[cube("jaw", (-0.5, 0, -2.5), (1, 1, 2.5), mirror=True)]),
+        part("left_antenna", (1, -1.5, -2.5), (-0.7, -0.4, 0), cubes=[cube("barbel", (0, -5, -0.5), (0, 5, 1))]),
+        part("right_antenna", (-1, -1.5, -2.5), (-0.7, 0.4, 0), cubes=[cube("barbel", (0, -5, -0.5), (0, 5, 1))]),
+    ]
+    if v.get("horn"):
+        head_children.append(part("horn", (0, -1.5, -2), (-0.6, 0, 0), cubes=[cube("crystal", (-0.5, -5, -0.5), (1, 5, 1))]))
+    head = part("head", (0, -0.5, -4.5), cubes=[cube("head", (-2, -1.5, -3), (4, 3, 3))], children=head_children)
+    legs = []
+    for z in (-2.5, 0.5, 3.5):
+        for side in (1, -1):
+            # Each leg reaches out sideways and down to the ground.
+            legs.append(part(f"leg{len(legs)}", (side * 2.8, 1.2, z), (0, 0, -side * splay),
+                             cubes=[cube("leg", (-0.5, 0, -0.5), (1, leg_len, 1), mirror=side < 0)]))
+    body = part("body", (0, y0, 0), cubes=[cube("shell", (-3.5, -4, -4.5), (7, 4, 9)), cube("body", (-3, 0, -4), (6, 2, 8))],
+                children=[head] + legs)
+    return {"kind": "insect", "root": [body], "length": 15}
+
+
+def golem(v):
+    """Hulking two-legged things of stone and crystal, arms hanging to their knees."""
+    leg_h = 11
+    hip = 24 - leg_h
+    crystals = []
+    for i, (x, z, lean) in enumerate([(-3.5, 1.5, -0.35), (3.0, 2.0, 0.3), (0.0, 2.5, 0.0), (-1.0, 0.0, -0.15), (2.0, -1.0, 0.2)]):
+        crystals.append(part(f"crystal{i}", (x, 0.5, z), (0.4, 0, lean), cubes=[cube("crystal", (-1, -5 - i % 3, -1), (2, 5 + i % 3, 2))]))
+    body = part("body", (0, hip - 10, 0), cubes=[cube("body", (-6, 0, -3.5), (12, 10, 7))], children=[
+        part("head", (0, 0.5, -1.5), cubes=[cube("head", (-3, -7, -3.5), (6, 7, 6))]),
+        part("left_arm", (6, 1.5, 0), cubes=[cube("limb", (0, -1.5, -2), (4, 16, 4))]),
+        part("right_arm", (-6, 1.5, 0), cubes=[cube("limb", (-4, -1.5, -2), (4, 16, 4), mirror=True)]),
+    ] + crystals)
+    left_leg = part("left_leg", (2.8, hip, 0), cubes=[cube("leg", (-2, 0, -2), (4, leg_h, 4))])
+    right_leg = part("right_leg", (-2.8, hip, 0), cubes=[cube("leg", (-2, 0, -2), (4, leg_h, 4), mirror=True)])
+    return {"kind": "biped", "root": [body, left_leg, right_leg], "length": 12}
+
+
+def stalker(v):
+    """Tall prowlers striding on four stilts, a long neck carrying the head high."""
+    leg_h = 15
+    top = 24 - leg_h
+    body = part("body", (0, top - 3, 0), cubes=[cube("body", (-3, -2, -6), (6, 5, 12))], children=[
+        part("head", (0, -1, -5.5), (0.45, 0, 0), cubes=[cube("body", (-1.5, -7, -1.5), (3, 8, 3)), cube("head", (-2, -10, -5), (4, 4, 6))],
+             children=[part("jaw", (0, -6.4, -3), cubes=[cube("jaw", (-1.5, 0, -2.5), (3, 1, 3))])]),
+        part("tail", (0, -1, 6), (-0.35, 0, 0), cubes=[cube("tail", (-0.5, -0.5, 0), (1, 1, 9))]),
+    ])
+    legs = [part(name, (x, top, z), cubes=[cube("leg", (-1, 0, -1), (2, leg_h, 2), mirror=x < 0)])
+            for name, x, z in [("left_front_leg", 2.2, -4), ("right_front_leg", -2.2, -4), ("left_hind_leg", 2.2, 4),
+                               ("right_hind_leg", -2.2, 4)]]
+    return {"kind": "quadruped", "root": [body] + legs, "length": 18}
+
+
+def hopper(v):
+    """Small round hopping critters with long ears."""
+    body = part("body", (0, 19, 0), cubes=[cube("body", (-3, -4, -3), (6, 6, 6)), cube("head", (-2.5, -3, -4), (5, 4, 1))], children=[
+        part("left_ear", (1.5, -4, -1), (-0.2, 0, -0.25), cubes=[cube("ear", (-0.5, -6, -1), (1, 6, 2))]),
+        part("right_ear", (-1.5, -4, -1), (-0.2, 0, 0.25), cubes=[cube("ear", (-0.5, -6, -1), (1, 6, 2), mirror=True)]),
+        part("tail", (0, -1, 3), cubes=[cube("tail", (-1, -1, 0), (2, 2, 2))]),
+    ])
+    feet = [part("left_foot", (1.8, 22, 0), cubes=[cube("leg", (-1, 0, -1.5), (2, 2, 3))]),
+            part("right_foot", (-1.8, 22, 0), cubes=[cube("leg", (-1, 0, -1.5), (2, 2, 3), mirror=True)])]
+    return {"kind": "hopper", "root": [body] + feet, "length": 8}
+
+
+PLANS = {"fish": fish, "deep": deep, "long": long, "shark": shark, "ray": ray, "jelly": jelly, "squid": squid, "seahorse": seahorse,
+         "beetle": beetle, "golem": golem, "stalker": stalker, "hopper": hopper}
+# The body plans of creatures that walk on land.
+LAND_PLANS = {"beetle", "golem", "stalker", "hopper"}
 
 
 # --- texture layout -----------------------------------------------------------------------------

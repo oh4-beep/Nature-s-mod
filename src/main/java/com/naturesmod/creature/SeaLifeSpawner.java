@@ -167,6 +167,9 @@ public final class SeaLifeSpawner {
 		if (byBiome == null) {
 			Map<Identifier, List<SpeciesData>> map = new HashMap<>();
 			for (SpeciesData species : CreatureSpecies.ALL) {
+				if (!species.inWater()) {
+					continue;
+				}
 				for (String habitat : species.habitats()) {
 					int colon = habitat.indexOf(':');
 					Identifier id = colon < 0 ? Identifier.withDefaultNamespace(habitat)

@@ -29,10 +29,17 @@ import com.naturesmod.block.ModBlocks;
  * End biome API shares those out between the new biomes.
  */
 public final class EndOverhaul {
-	/** The continental biomes and their weights; vanilla's End Highlands keep a weight of 1. */
-	private static final String[] CONTINENTAL = {"chorus_forest", "crystal_highlands", "starfall_plains", "void_marsh", "shattered_spires",
-			"enderglow_wilds"};
-	private static final double[] WEIGHTS = {1.3, 1.0, 1.0, 0.9, 0.9, 1.1};
+	/**
+	 * The continental biomes and their weights. Fabric picks a biome by the absolute value of a
+	 * Perlin noise laid over the weights in order, and that value is far more often small than
+	 * large: vanilla's End Highlands come first with a weight of 1, so the weights grow along the
+	 * list to give each biome a fair share (about 10% for vanilla's, 15% for each of these).
+	 */
+	private static final String[] CONTINENTAL = {"chorus_forest", "crystal_highlands", "starfall_plains", "void_marsh", "enderglow_wilds",
+			"shattered_spires"};
+	private static final double[] WEIGHTS = {1.53, 1.64, 1.82, 2.25, 3.21, 19.1};
+	/** The same for the sky: vanilla's small End islands keep about one part in twenty. */
+	private static final double SKY_WEIGHT = 60.0;
 	/** How far above its vent an updraft still lifts. */
 	private static final int UPDRAFT_HEIGHT = 100;
 
@@ -47,7 +54,7 @@ public final class EndOverhaul {
 			TheEndBiomes.addMidlandsBiome(biome, biome, 1.0);
 			TheEndBiomes.addBarrensBiome(biome, biome, 1.0);
 		}
-		TheEndBiomes.addSmallIslandsBiome(biome("sky_isles"), 9.0);
+		TheEndBiomes.addSmallIslandsBiome(biome("sky_isles"), SKY_WEIGHT);
 		ServerTickEvents.END_SERVER_TICK.register(EndOverhaul::tick);
 	}
 

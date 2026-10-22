@@ -124,6 +124,18 @@ public record AbyssLifeFeature(Style style) implements Feature {
 		return level.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, x, z) - 1;
 	}
 
+	/** No structure stands within a few blocks of the point: features must not wall up a temple's rift. */
+	private static boolean clearOfStructures(WorldGenLevel level, BlockPos origin, int reach) {
+		for (int dx = -reach; dx <= reach; dx += reach) {
+			for (int dz = -reach; dz <= reach; dz += reach) {
+				if (!WorldGenUtil.isStructureFree(level, origin.offset(dx, 0, dz))) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
 	/** True when the water around a point is open for some distance in every direction. */
 	private static boolean openWater(WorldGenLevel level, BlockPos center, int reach) {
 		BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
@@ -298,7 +310,7 @@ public record AbyssLifeFeature(Style style) implements Feature {
 	 * a whale still sinking to the bottom, or lost cargo hung with lanterns.
 	 */
 	private boolean drift(WorldGenLevel level, WorldGenUtil.Window window, RandomSource random, BlockPos origin) {
-		if (!window.containsRadius(origin.getX(), origin.getZ(), 13) || !openWater(level, origin, 9)) {
+		if (!window.containsRadius(origin.getX(), origin.getZ(), 13) || !openWater(level, origin, 9) || !clearOfStructures(level, origin, 12)) {
 			return false;
 		}
 		int roll = random.nextInt(20);
@@ -535,7 +547,7 @@ public record AbyssLifeFeature(Style style) implements Feature {
 
 	/** One of the little ruins the drowned people left on the floor. */
 	private boolean relic(WorldGenLevel level, WorldGenUtil.Window window, RandomSource random, BlockPos origin) {
-		if (!window.containsRadius(origin.getX(), origin.getZ(), 6)) {
+		if (!window.containsRadius(origin.getX(), origin.getZ(), 6) || !clearOfStructures(level, origin, 6)) {
 			return false;
 		}
 		int floor = ground(level, origin.getX(), origin.getZ());

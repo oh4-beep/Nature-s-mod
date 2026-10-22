@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.naturesmod.abyss.Abyss;
 import com.naturesmod.block.ModBlocks;
 import com.naturesmod.creature.AbyssBosses;
+import com.naturesmod.creature.EndLifeSpawner;
 import com.naturesmod.creature.ModCreatures;
 import com.naturesmod.creature.SeaLifeSpawner;
 import com.naturesmod.end.EndOverhaul;
@@ -36,6 +37,7 @@ public class NaturesMod implements ModInitializer {
 		ModCreatures.register();
 		AbyssBosses.register();
 		SeaLifeSpawner.register();
+		EndLifeSpawner.register();
 		ModItems.register();
 		Abyss.register();
 		NetherOverhaul.register();

@@ -18,7 +18,7 @@ import com.naturesmod.creature.Jellyfish;
 import com.naturesmod.creature.SeaCreature;
 import com.naturesmod.creature.SpeciesData;
 
-/** Renders one species of sea creature, with its glowing markings if it has any. */
+/** Renders one species of creature, of the sea or of the End, with its glowing markings if it has any. */
 public class SeaCreatureRenderer extends MobRenderer<Mob, CreatureRenderState, SeaCreatureModel> {
 	private final SpeciesData species;
 	private final Identifier texture;
@@ -61,7 +61,8 @@ public class SeaCreatureRenderer extends MobRenderer<Mob, CreatureRenderState, S
 	protected void setupRotations(CreatureRenderState state, PoseStack poseStack, float bodyRot, float entityScale) {
 		super.setupRotations(state, poseStack, bodyRot, entityScale);
 		String plan = this.species.plan();
-		if (!state.isInWater && state.deathTime <= 0.0F && !"jelly".equals(plan) && !"squid".equals(plan) && !"ray".equals(plan)) {
+		if (this.species.inWater() && !state.isInWater && state.deathTime <= 0.0F && !"jelly".equals(plan) && !"squid".equals(plan)
+				&& !"ray".equals(plan)) {
 			// Out of the water a fish lies on its side.
 			poseStack.translate(0.0F, 0.12F * this.species.scale(), 0.0F);
 			poseStack.rotateDegrees(Axis.ZP, 90.0F);

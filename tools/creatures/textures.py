@@ -258,6 +258,9 @@ class Painter:
         side = face in ("west", "east")
         # Fraction from the front (snout) of this face, for eye placement.
         front = (1 - a) if face == "west" else a if face == "east" else 0.5
+        land = sp["plan"] in bodyplans.LAND_PLANS
+        if role in ("shell", "crystal", "ear", "leg", "limb"):
+            return self.land_pixel(role, face, a, b, px, py)
         if role in ("body", "tail", "mantle", "head", "snout", "wing"):
             if face == "top":
                 t_eff = 0.0
@@ -268,7 +271,13 @@ class Painter:
             colour = self.body_colour(s, t_eff, px, py)
             if face in ("north", "south") and role in ("body", "tail", "mantle"):
                 colour = shade(colour, 0.9)
-            if role == "head" and side:
+            if land and role == "head" and face == "north":
+                # Land creatures look straight ahead: two eyes on the face.
+                if abs(b - 0.35) < 0.16 and (abs(a - 0.27) < 0.13 or abs(a - 0.73) < 0.13):
+                    colour = col["eye"]
+                    if "eyes" in self.glow:
+                        glowing = col["eye"]
+            if role == "head" and side and not land:
                 eye_t = 0.3 if sp["plan"] != "shark" else 0.4
                 big = "big_eyes" in sp["variant"] or sp["plan"] in ("squid",)
                 if front > 0.55 and abs(b - eye_t) < (0.18 if big else 0.12) and abs(front - 0.8) < (0.2 if big else 0.13):
@@ -396,6 +405,34 @@ class Painter:
                 colour = mix(col["fin"], col["accent"], b)
             return colour, alpha, None
         return col["side"], 255, None
+
+
+def _land_pixel(self, role, face, a, b, px, py):
+    """Shells, crystals, ears, legs and limbs of the land creatures."""
+    col = self.col
+    if role == "shell":
+        colour = mix(col["back"], col["side"], 0.35 * b)
+        if face == "top" and abs(a - 0.5) < 0.07:
+            colour = shade(colour, 1.3)
+        if "spots" in self.glow and self.noise(px, py, 1.1) > 0.8:
+            return col["accent"], 255, col["accent"]
+        return shade(colour, 0.94 + 0.12 * self.noise(px * 1.7, py * 1.3, 1.0)), 255, None
+    if role == "crystal":
+        colour = mix(col["accent"], (255, 255, 255), 0.35 * (1.0 - b))
+        if (px + py) % 3 == 0:
+            colour = shade(colour, 0.85)
+        return colour, 255, colour if "crystals" in self.glow else None
+    if role == "ear":
+        inner = face in ("north", "south") and 0.25 < a < 0.75 and 0.15 < b < 0.9
+        return (col["fin"] if inner else col["side"]), 255, None
+    base = col["side"] if role == "limb" else col["fin"]
+    colour = shade(base, 1.0 - 0.3 * b)
+    if role == "leg" and b > 0.85:
+        colour = shade(col["fin"], 0.6)
+    return shade(colour, 0.94 + 0.12 * self.noise(px * 1.7, py * 1.3, 1.0)), 255, None
+
+
+Painter.land_pixel = _land_pixel
 
 
 def build(species):

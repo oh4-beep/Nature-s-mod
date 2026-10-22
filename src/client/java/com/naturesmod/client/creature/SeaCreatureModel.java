@@ -12,8 +12,9 @@ import net.minecraft.util.Mth;
 import com.naturesmod.creature.SpeciesData;
 
 /**
- * Animates any sea creature model built from one of the body plans: tails that beat and bodies
- * that ripple, fins that scull, wings that flap, bells that pulse and jaws that snap.
+ * Animates any creature model built from one of the body plans: tails that beat and bodies that
+ * ripple, fins that scull, wings that flap, bells that pulse and jaws that snap, and the legs of
+ * the End's walkers.
  */
 public class SeaCreatureModel extends EntityModel<CreatureRenderState> {
 	private static final float DEG = (float) (Math.PI / 180.0);
@@ -39,6 +40,24 @@ public class SeaCreatureModel extends EntityModel<CreatureRenderState> {
 	private final List<ModelPart> segments;
 	private final List<ModelPart> tentacles;
 	private final List<ModelPart> arms;
+	// The End's walkers.
+	private final List<ModelPart> legs;
+	private final ModelPart leftArm;
+	private final ModelPart rightArm;
+	private final ModelPart leftLeg;
+	private final ModelPart rightLeg;
+	private final ModelPart leftFrontLeg;
+	private final ModelPart rightFrontLeg;
+	private final ModelPart leftHindLeg;
+	private final ModelPart rightHindLeg;
+	private final ModelPart leftEar;
+	private final ModelPart rightEar;
+	private final ModelPart leftFoot;
+	private final ModelPart rightFoot;
+	private final ModelPart leftAntenna;
+	private final ModelPart rightAntenna;
+	private final ModelPart leftMandible;
+	private final ModelPart rightMandible;
 
 	public SeaCreatureModel(ModelPart root, SpeciesData species) {
 		super(root, species.translucent() ? RenderTypes::entityTranslucent : RenderTypes::entityCutout);
@@ -64,6 +83,23 @@ public class SeaCreatureModel extends EntityModel<CreatureRenderState> {
 		this.segments = numbered(parts, "segment");
 		this.tentacles = numbered(parts, "tentacle");
 		this.arms = numbered(parts, "arm");
+		this.legs = numbered(parts, "leg");
+		this.leftArm = parts.apply("left_arm");
+		this.rightArm = parts.apply("right_arm");
+		this.leftLeg = parts.apply("left_leg");
+		this.rightLeg = parts.apply("right_leg");
+		this.leftFrontLeg = parts.apply("left_front_leg");
+		this.rightFrontLeg = parts.apply("right_front_leg");
+		this.leftHindLeg = parts.apply("left_hind_leg");
+		this.rightHindLeg = parts.apply("right_hind_leg");
+		this.leftEar = parts.apply("left_ear");
+		this.rightEar = parts.apply("right_ear");
+		this.leftFoot = parts.apply("left_foot");
+		this.rightFoot = parts.apply("right_foot");
+		this.leftAntenna = parts.apply("left_antenna");
+		this.rightAntenna = parts.apply("right_antenna");
+		this.leftMandible = parts.apply("left_mandible");
+		this.rightMandible = parts.apply("right_mandible");
 	}
 
 	private static List<ModelPart> numbered(Function<String, ModelPart> parts, String prefix) {
@@ -84,18 +120,132 @@ public class SeaCreatureModel extends EntityModel<CreatureRenderState> {
 		float moving = Mth.clamp(state.walkAnimationSpeed * 3.0F, 0.0F, 1.0F);
 		// Big animals beat their tails slowly and deliberately, small fish flick theirs.
 		float tempo = 1.0F / Mth.sqrt(Math.max(0.4F, this.species.scale()));
-		boolean stranded = !state.isInWater;
+		// The End's flyers swim through the air, never stranded.
+		boolean stranded = this.species.inWater() && !state.isInWater;
 		switch (this.species.plan()) {
 			case "jelly" -> this.animateJelly(state, age);
 			case "squid" -> this.animateSquid(state, age, tempo);
 			case "ray" -> this.animateRay(age, tempo, moving);
 			case "seahorse" -> this.animateSeahorse(age);
 			case "long" -> this.animateLong(age, tempo, moving, stranded);
+			case "beetle" -> this.animateBeetle(state, age);
+			case "golem" -> this.animateGolem(state, age);
+			case "stalker" -> this.animateStalker(state, age);
+			case "hopper" -> this.animateHopper(state, age);
 			default -> this.animateFish(age, tempo, moving, stranded);
 		}
 		this.animateJaw(state, age);
-		if (this.body != null && !"jelly".equals(this.species.plan()) && !"seahorse".equals(this.species.plan())) {
+		if (this.species.walks()) {
+			// Walkers turn their heads to look about; their bodies stay level.
+			if (this.head != null) {
+				this.head.yRot += Mth.clamp(state.yRot, -45.0F, 45.0F) * DEG;
+				this.head.xRot += Mth.clamp(state.xRot, -30.0F, 30.0F) * DEG;
+			}
+		} else if (this.body != null && !"jelly".equals(this.species.plan()) && !"seahorse".equals(this.species.plan())) {
 			this.body.xRot += state.xRot * DEG;
+		}
+	}
+
+	// --- the End's walkers -----------------------------------------------------------------------
+
+	/** Six legs in a rippling tripod gait, feelers waving, mandibles working. */
+	private void animateBeetle(CreatureRenderState state, float age) {
+		float pos = state.walkAnimationPos;
+		float speed = Mth.clamp(state.walkAnimationSpeed, 0.0F, 1.0F);
+		for (int i = 0; i < this.legs.size(); i++) {
+			// Legs 0, 3 and 4 step together, then 1, 2 and 5.
+			boolean first = i == 0 || i == 3 || i == 4;
+			float phase = first ? 0.0F : (float) Math.PI;
+			ModelPart leg = this.legs.get(i);
+			leg.yRot += Mth.cos(pos * 1.3F + phase) * 0.55F * speed;
+			leg.zRot += Math.max(0.0F, Mth.sin(pos * 1.3F + phase)) * 0.35F * speed * (i % 2 == 0 ? -1.0F : 1.0F);
+		}
+		this.sway(this.leftAntenna, age, 0.0F);
+		this.sway(this.rightAntenna, age, 2.0F);
+		float chew = state.attacking ? 0.4F * Math.abs(Mth.sin(age * 0.5F)) : 0.08F * Mth.sin(age * 0.15F);
+		if (this.leftMandible != null) {
+			this.leftMandible.yRot -= chew;
+		}
+		if (this.rightMandible != null) {
+			this.rightMandible.yRot += chew;
+		}
+	}
+
+	/** A heavy two-legged stride; the long arms swing, and rise to smash when it attacks. */
+	private void animateGolem(CreatureRenderState state, float age) {
+		float pos = state.walkAnimationPos;
+		float speed = state.walkAnimationSpeed;
+		float swing = Mth.cos(pos * 0.6662F) * 1.2F * speed;
+		if (this.leftLeg != null) {
+			this.leftLeg.xRot += swing;
+		}
+		if (this.rightLeg != null) {
+			this.rightLeg.xRot -= swing;
+		}
+		float arms = state.attacking ? -1.6F + Mth.sin(age * 0.45F) * 0.5F : 0.0F;
+		if (this.leftArm != null) {
+			this.leftArm.xRot += arms - swing * 0.6F;
+			this.leftArm.zRot -= 0.06F + Mth.sin(age * 0.05F) * 0.03F;
+		}
+		if (this.rightArm != null) {
+			this.rightArm.xRot += arms + swing * 0.6F;
+			this.rightArm.zRot += 0.06F + Mth.sin(age * 0.05F) * 0.03F;
+		}
+		if (this.body != null) {
+			this.body.y += Math.abs(Mth.cos(pos * 0.6662F)) * speed * 0.8F;
+		}
+	}
+
+	/** Four stilts in a long, deliberate stride; the head bobs and the tail sways. */
+	private void animateStalker(CreatureRenderState state, float age) {
+		float pos = state.walkAnimationPos;
+		float speed = state.walkAnimationSpeed;
+		float swing = Mth.cos(pos * 0.5F) * 0.9F * speed;
+		if (this.leftFrontLeg != null) {
+			this.leftFrontLeg.xRot += swing;
+		}
+		if (this.rightHindLeg != null) {
+			this.rightHindLeg.xRot += swing;
+		}
+		if (this.rightFrontLeg != null) {
+			this.rightFrontLeg.xRot -= swing;
+		}
+		if (this.leftHindLeg != null) {
+			this.leftHindLeg.xRot -= swing;
+		}
+		if (this.head != null) {
+			this.head.xRot += Mth.sin(pos * 1.0F) * 0.08F * speed + Mth.sin(age * 0.04F) * 0.04F;
+		}
+		if (this.tail != null) {
+			this.tail.yRot += Mth.sin(age * 0.08F) * 0.3F;
+			this.tail.xRot += Mth.sin(age * 0.05F) * 0.1F;
+		}
+	}
+
+	/** Hops: the body bounces, the feet kick, the ears flop. */
+	private void animateHopper(CreatureRenderState state, float age) {
+		float pos = state.walkAnimationPos;
+		float speed = Mth.clamp(state.walkAnimationSpeed * 2.0F, 0.0F, 1.0F);
+		float hop = Math.abs(Mth.sin(pos * 0.9F)) * speed;
+		if (this.body != null) {
+			this.body.y -= hop * 3.0F;
+			this.body.xRot += Mth.sin(pos * 0.9F) * 0.15F * speed;
+		}
+		float kick = Mth.cos(pos * 0.9F) * 0.6F * speed;
+		if (this.leftFoot != null) {
+			this.leftFoot.xRot += kick;
+			this.leftFoot.y -= hop * 1.5F;
+		}
+		if (this.rightFoot != null) {
+			this.rightFoot.xRot += kick;
+			this.rightFoot.y -= hop * 1.5F;
+		}
+		float flop = Mth.sin(age * 0.1F) * 0.08F + hop * 0.4F;
+		if (this.leftEar != null) {
+			this.leftEar.xRot += flop;
+		}
+		if (this.rightEar != null) {
+			this.rightEar.xRot += flop * 0.9F;
 		}
 	}
 
@@ -183,7 +333,7 @@ public class SeaCreatureModel extends EntityModel<CreatureRenderState> {
 			this.body.zScale = 1.0F - 0.2F * squeeze;
 			this.body.yScale = 1.0F + 0.14F * squeeze;
 			this.body.yRot += age * 0.004F;
-			if (!state.isInWater) {
+			if (this.species.inWater() && !state.isInWater) {
 				this.body.yScale *= 0.55F;
 				this.body.y += 4.0F;
 			}

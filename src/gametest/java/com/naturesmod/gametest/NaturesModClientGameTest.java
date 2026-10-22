@@ -98,6 +98,7 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 			scene("rift", () -> rift(context, world));
 			scene("abyss", () -> abyss(context, world));
 			scene("nether", () -> nether(context, world));
+			scene("end", () -> end(context, world));
 			// Last: building and visiting all 55 treasures loads the server more than anything else.
 			scene("treasures", () -> treasures(context, world));
 		}
@@ -299,6 +300,115 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 			teleport(context, world, Abyss.LEVEL, center.getX() + 0.5, height, center.getZ() - back + 0.5, 0.0F, 36.0F);
 			shoot(context, "abyss_" + structure);
 		}
+	}
+
+	// --- the new End ------------------------------------------------------------------------
+
+	private static final String[] END_BIOMES = {"chorus_forest", "crystal_highlands", "starfall_plains", "void_marsh", "enderglow_wilds",
+			"shattered_spires", "sky_isles"};
+
+	private void end(ClientGameTestContext context, TestSingleplayerContext world) {
+		command(world, "gamemode spectator @a");
+		command(world, "effect give @a minecraft:night_vision infinite 0 true");
+		BlockPos forest = null;
+		for (String biome : END_BIOMES) {
+			BlockPos at = world.getServer().computeOnServer(server -> endLand(server.getLevel(Level.END), biome));
+			if (at == null) {
+				failures.add("end: no " + biome + " with land");
+				continue;
+			}
+			if (forest == null && biome.equals("chorus_forest")) {
+				forest = at;
+			}
+			// From up and back, looking down over the land.
+			teleport(context, world, Level.END, at.getX() + 0.5, at.getY() + 16, at.getZ() - 22.5, 0.0F, 30.0F);
+			context.waitTicks(20);
+			shoot(context, "end_" + biome);
+		}
+		// Looking up at the sky isles from the continent below them.
+		BlockPos isle = world.getServer().computeOnServer(server -> endLand(server.getLevel(Level.END), "sky_isles"));
+		if (isle != null) {
+			teleport(context, world, Level.END, isle.getX() + 0.5, isle.getY() - 40, isle.getZ() - 40.5, 0.0F, -28.0F);
+			shoot(context, "end_sky_isles_from_below");
+		}
+		if (forest == null) {
+			return;
+		}
+		// The End's creatures, in the air and on the ground.
+		BlockPos stage = forest;
+		for (List<String> lineup : List.of(List.of("void_jelly", "voidfin", "star_squid", "void_serpent", "ender_shark"), List.of("skyray"),
+				List.of("ender_beetle", "crystal_golem", "void_stalker", "endling"))) {
+			double biggest = lineup.stream().mapToDouble(id -> ModCreatures.species(ModCreatures.type(id)).scale()).max().orElse(1.0);
+			double spacing = 1.4 + biggest * 1.5;
+			double distance = 4.0 + biggest * 3.0 + lineup.size() * spacing * 0.35;
+			boolean walkers = ModCreatures.species(ModCreatures.type(lineup.getFirst())).walks();
+			int ground = world.getServer().computeOnServer(server -> server.getLevel(Level.END).getHeight(Heightmap.Types.MOTION_BLOCKING,
+					stage.getX(), stage.getZ() + (int) distance));
+			double eye = walkers ? ground + 1.6 : ground + 6.0;
+			teleport(context, world, Level.END, stage.getX() + 0.5, eye, stage.getZ() + 0.5, 0.0F, walkers ? 8.0F : 0.0F);
+			List<UUID> ids = world.getServer().computeOnServer(server -> endLineup(world, lineup, spacing, distance, walkers));
+			context.waitTicks(20);
+			shoot(context, "end_creatures_" + lineup.getFirst());
+			world.getServer().runOnServer(server -> {
+				ServerLevel level = server.getLevel(Level.END);
+				for (UUID id : ids) {
+					Entity entity = level.getEntity(id);
+					if (entity != null) {
+						entity.discard();
+					}
+				}
+			});
+		}
+		command(world, "effect clear @a minecraft:night_vision");
+	}
+
+	/** A spot on solid land in a biome of the new End: on a continent, or up on a sky isle. */
+	private static BlockPos endLand(ServerLevel end, String biome) {
+		boolean sky = biome.equals("sky_isles");
+		ResourceKey<Biome> key = ResourceKey.create(Registries.BIOME, NaturesMod.id(biome));
+		for (int i = 0; i <= 40; i++) {
+			for (int j = 0; j <= 40; j++) {
+				int x = 1200 + i * 96;
+				int z = -1920 + j * 96;
+				int top = end.getChunkSource().getGenerator().getBaseHeight(x, z, Heightmap.Types.WORLD_SURFACE_WG, end,
+						end.getChunkSource().randomState());
+				if (sky ? top < 150 || top > 230 : top < 45 || top > 130) {
+					continue;
+				}
+				if (end.getUncachedNoiseBiome(x >> 2, (top + 2) >> 2, z >> 2).is(key)) {
+					end.getChunk(x >> 4, z >> 4);
+					return new BlockPos(x, end.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z), z);
+				}
+			}
+		}
+		return null;
+	}
+
+	/** Lines End creatures up in front of the camera: flyers in the air, walkers on the ground. */
+	private static List<UUID> endLineup(TestSingleplayerContext world, List<String> species, double spacing, double distance, boolean walkers) {
+		ServerPlayer player = world.getConnection().getServerPlayer();
+		ServerLevel level = (ServerLevel) player.level();
+		List<UUID> ids = new ArrayList<>();
+		double start = player.getX() - spacing * (species.size() - 1) / 2.0;
+		for (int i = 0; i < species.size(); i++) {
+			Mob mob = ModCreatures.type(species.get(i)).create(level, EntitySpawnReason.COMMAND);
+			if (mob == null) {
+				continue;
+			}
+			double x = start + i * spacing;
+			double z = player.getZ() + distance;
+			double y = walkers ? level.getHeight(Heightmap.Types.MOTION_BLOCKING, (int) Math.floor(x), (int) Math.floor(z)) : player.getY() + 0.6;
+			// Walkers face the camera; flyers show their flanks.
+			float yaw = walkers ? 180.0F : 90.0F;
+			mob.snapTo(x, y, z, yaw, 0.0F);
+			mob.setYHeadRot(yaw);
+			mob.yBodyRot = yaw;
+			mob.setNoAi(true);
+			mob.setPersistenceRequired();
+			level.addFreshEntity(mob);
+			ids.add(mob.getUUID());
+		}
+		return ids;
 	}
 
 	// --- the treasures of the deep ------------------------------------------------------

@@ -129,6 +129,9 @@ CATEGORY_DEFAULT = {
 def category(sp):
     if sp["category"]:
         return sp["category"]
+    if sp["medium"] != "water":
+        # The creatures of the End: its hunters are monsters, the rest come and go like bats.
+        return "monster" if sp["behavior"] in ("hunter", "ambush", "pack", "boss") else "ambient"
     if sp["behavior"] in ("passive", "bottom") and sp["scale"] >= 1.3:
         return "water_creature"
     return CATEGORY_DEFAULT[sp["behavior"]]
@@ -171,7 +174,7 @@ def species_java(built):
             f"{f(sp['scale'])}, {f(w)}, {f(h)}, {float(default_health(sp))}, {float(sp['attack'])}, {float(sp['speed'])}, "
             f"{sp['group'][0]}, {sp['group'][1]}, {sp['weight']}, {str(sp['bucket']).lower()}, {str(bool(sp['glow'])).lower()}, "
             f"{str(sp['translucent']).lower()}, \"{sp['depth']}\", \"{sp['sound']}\", "
-            f"{model.get('segments', 0)}, List.of({habitats}), \"{sp['effect']}\")")
+            f"{model.get('segments', 0)}, List.of({habitats}), \"{sp['effect']}\", \"{sp['medium']}\")")
     out.append(",\n".join(rows))
     out.append("\t);")
     out.append("}")
@@ -193,6 +196,12 @@ DROP_ITEMS = {
     "crown": ("naturesmod:crown_of_the_deep", False),
     "diamond": ("minecraft:diamond", False),
     "netherite_scrap": ("minecraft:netherite_scrap", False),
+    "chorus_fruit": ("minecraft:chorus_fruit", False),
+    "ender_pearl": ("minecraft:ender_pearl", False),
+    "ender_pearl_rare": ("minecraft:ender_pearl", False),
+    "phantom_membrane": ("minecraft:phantom_membrane", False),
+    "raw_starmetal": ("naturesmod:raw_starmetal", False),
+    "void_crystal": ("naturesmod:void_crystal_cluster", False),
 }
 # Dropped exactly once, never more for looting.
 UNIQUE_DROPS = {"bone_sigil", "crown"}
@@ -238,6 +247,8 @@ def loot_table(sp):
             pool["condition"] = {"type": "minecraft:random_chance", "chance": 0.6}
         if drop == "abyssal_scale" and sp["behavior"] != "boss":
             pool["condition"] = {"type": "minecraft:random_chance", "chance": 0.5}
+        if drop in ("ender_pearl_rare", "raw_starmetal"):
+            pool["condition"] = {"type": "minecraft:random_chance", "chance": 0.25 if drop == "ender_pearl_rare" else 0.4}
         pools.append(pool)
     pools.append({"rolls": 1, "condition": {"type": "minecraft:random_chance", "chance": 0.05},
                   "entries": [{"type": "minecraft:item", "name": "minecraft:bone_meal"}]})

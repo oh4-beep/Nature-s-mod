@@ -385,6 +385,9 @@ final class SeaTest {
 		List<double[]> starts = new ArrayList<>();
 		int index = 0;
 		for (SpeciesData species : CreatureSpecies.ALL) {
+			if (!species.inWater()) {
+				continue;
+			}
 			EntityType<? extends Mob> type = ModCreatures.type(species.id());
 			int x = site.getX() - 28 + (index % 8) * 8;
 			int z = site.getZ() - 28 + (index / 8) * 8;

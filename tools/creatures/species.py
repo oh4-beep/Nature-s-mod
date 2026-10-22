@@ -26,18 +26,25 @@ HABITATS = {
     "abyss_midnight": ["naturesmod:midnight_zone", "naturesmod:glowing_reef"],
     "abyss_floor": ["naturesmod:abyssal_plains", "naturesmod:hydrothermal_vents", "naturesmod:bone_fields"],
     "abyss_vents": ["naturesmod:hydrothermal_vents"],
+    # The new End: its continents, their wilder corners and the isles in the sky.
+    "end_lands": ["naturesmod:chorus_forest", "naturesmod:crystal_highlands", "naturesmod:starfall_plains", "naturesmod:void_marsh",
+                  "naturesmod:shattered_spires", "naturesmod:enderglow_wilds", "end_highlands", "end_midlands", "end_barrens"],
+    "end_sky": ["naturesmod:sky_isles", "small_end_islands"],
+    "end_green": ["naturesmod:chorus_forest", "naturesmod:enderglow_wilds", "naturesmod:void_marsh", "end_highlands"],
+    "end_crystal": ["naturesmod:crystal_highlands", "naturesmod:starfall_plains"],
+    "end_dark": ["naturesmod:void_marsh", "naturesmod:shattered_spires", "naturesmod:starfall_plains"],
 }
 
 
 def S(id, name, plan, scale, behavior, habitats, colors, pattern="plain", variant=None, health=None, attack=0,
       speed=1.0, weight=10, group=(1, 2), glow=(), drops=("fillet",), bucket=False, translucent=False, depth="any",
-      hitbox=None, category=None, sound="fish", desc="", effect=""):
+      hitbox=None, category=None, sound="fish", desc="", effect="", medium="water"):
     return {
         "id": id, "name": name, "plan": plan, "variant": variant or {}, "scale": scale, "behavior": behavior,
         "habitats": list(habitats), "colors": colors, "pattern": pattern, "health": health, "attack": attack,
         "speed": speed, "weight": weight, "group": group, "glow": list(glow), "drops": list(drops), "bucket": bucket,
         "translucent": translucent, "depth": depth, "hitbox": hitbox, "category": category, "sound": sound,
-        "desc": desc, "effect": effect,
+        "desc": desc, "effect": effect, "medium": medium,
     }
 
 
@@ -331,6 +338,47 @@ SPECIES = [
       glow=["eyes", "veins", "lure"], health=500, attack=20, speed=1.0, weight=1, group=(1, 1),
       drops=("crown", "abyssal_heart", "abyssal_heart", "abyssal_scale", "abyssal_scale", "abyssal_scale"),
       category="water_creature", sound="leviathan", effect="darkness", desc="What the sigils kept asleep."),
+    # --- the new End -------------------------------------------------------------------------------
+    # The creatures of the End's open air swim through it the way fish swim through water.
+    S("void_jelly", "Void Jelly", "jelly", 1.3, "drifter", ["end_lands", "end_sky"],
+      c("#5a2a8a", "#7a3ab0", "#a070d0", "#c0a0f0", "#7af0ff"), "plain", variant={"tentacles": 10, "length": 14}, translucent=True,
+      glow=["rims", "bell"], health=10, attack=0, speed=0.35, weight=10, group=(2, 4), drops=("slime", "chorus_fruit"),
+      sound="squid", medium="air", desc="A great glowing bell drifting over the End, trailing its tentacles."),
+    S("voidfin", "Voidfin", "fish", 0.55, "school", ["end_lands", "end_sky"],
+      c("#1a1030", "#3a2060", "#6a50a0", "#8a60d0", "#c0a0ff"), "plain", glow=["photophores"], health=4, speed=1.2, weight=12,
+      group=(5, 9), drops=("chorus_fruit",), sound="phantom", medium="air", desc="Little fish that school through the End's sky."),
+    S("star_squid", "Star Squid", "squid", 1.0, "passive", ["end_crystal", "end_sky"],
+      c("#101c3a", "#1a2c5a", "#3a4c80", "#2a3c70", "#d0f0ff", "#90e0ff"), "plain", glow=["spots", "eyes"], health=12, speed=0.8,
+      weight=6, group=(1, 3), drops=("ink", "raw_starmetal"), sound="squid", medium="air",
+      desc="It swims through the dark sky dusted with stars of its own."),
+    S("skyray", "Skyray", "ray", 3.0, "passive", ["end_sky", "end_crystal", "end_green"],
+      c("#1a1438", "#2e2460", "#8a80c0", "#3a2e78", "#90f0ff"), "manta", variant={"manta": True}, glow=["spots"],
+      health=60, speed=1.0, weight=5, group=(1, 2), drops=("phantom_membrane", "phantom_membrane", "chorus_fruit"), hitbox=(2.6, 0.8),
+      sound="skyray", medium="air", desc="A great gentle ray of the End's skies. Saddle one, and it will carry you anywhere."),
+    S("void_serpent", "Void Serpent", "long", 1.8, "hunter", ["end_dark"],
+      c("#0c0818", "#1a1030", "#2e1e50", "#140c28", "#c040ff", "#ff60ff"), "plain", variant={"segments": 9, "fangs": True, "frill": True},
+      glow=["stripes", "eyes"], health=40, attack=7, speed=1.3, weight=3, group=(1, 1), drops=("ender_pearl", "phantom_membrane"),
+      sound="phantom", medium="air", effect="levitation", desc="Its bite lifts you off your feet... and then lets go."),
+    S("ender_shark", "Ender Shark", "shark", 1.6, "hunter", ["end_dark", "end_lands"],
+      c("#141020", "#221a34", "#3a2e50", "#1a1428", "#a040e0", "#e070ff"), "plain", glow=["eyes"], health=34, attack=8, speed=1.4,
+      weight=2, group=(1, 2), drops=("ender_pearl", "phantom_membrane"), sound="phantom", medium="air",
+      desc="A shark of the void that hunts whatever crosses its sky."),
+    # The creatures that walk the End's lands.
+    S("ender_beetle", "Ender Beetle", "beetle", 0.9, "neutral", ["end_green", "end_lands"],
+      c("#1c1030", "#2c1a48", "#4a3a60", "#140c20", "#d070ff", "#e0a0ff"), "plain", glow=["spots", "eyes"], health=16, attack=4,
+      speed=1.0, weight=8, group=(2, 4), drops=("chorus_fruit", "ender_pearl_rare"), hitbox=(0.9, 0.6), sound="beetle", medium="land",
+      desc="It grazes the chorus and the moss, and nips whoever bothers it."),
+    S("crystal_golem", "Crystal Golem", "golem", 1.5, "neutral", ["end_crystal"],
+      c("#b8b0d0", "#d0c8e8", "#a098c0", "#8880a8", "#7ae0ff", "#80ffff"), "rough", glow=["crystals", "eyes"], health=70, attack=11,
+      speed=0.7, weight=3, group=(1, 1), drops=("void_crystal", "void_crystal", "raw_starmetal"), hitbox=(1.4, 2.6), sound="golem",
+      medium="land", desc="Slow, patient and immensely strong; leave its crystals alone."),
+    S("void_stalker", "Void Stalker", "stalker", 1.4, "hunter", ["end_dark", "end_green"],
+      c("#0a0610", "#140c20", "#20142e", "#100818", "#ff40c0", "#ff70e0"), "plain", glow=["eyes"], health=36, attack=8, speed=1.1,
+      weight=4, group=(1, 1), drops=("ender_pearl", "ender_pearl"), hitbox=(1.0, 2.6), sound="ender", medium="land",
+      desc="It stalks on four stilts, and blinks away when struck."),
+    S("endling", "Endling", "hopper", 0.6, "passive", ["end_lands", "end_sky"],
+      c("#e8e0f0", "#d8c8f0", "#f8f0ff", "#f0a8d8", "#a080ff", "#402060"), "plain", health=6, speed=1.2, weight=10, group=(2, 5),
+      drops=("chorus_fruit",), hitbox=(0.45, 0.6), sound="critter", medium="land", desc="A shy little hopper of the End's moss."),
 ]
 
 assert len({s["id"] for s in SPECIES}) == len(SPECIES)
