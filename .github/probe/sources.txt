@@ -1,0 +1,22 @@
+ToolMaterial.java
+Item.java|public InteractionResult use\(|hurtEnemy|postHurtEnemy|public Item.Properties sword|Properties sword\(|Properties axe\(|Properties pickaxe\(|public Item.Properties attributes|Properties attributes\(|public Item.Properties enchantable|BASE_ATTACK_DAMAGE_ID|BASE_ATTACK_SPEED_ID|public void inventoryTick|public boolean isFoil|public void appendHoverText|TooltipDisplay
+ItemEnchantments.java|public static final|class Mutable|public void set\(|public int getLevel|entrySet|keySet|toImmutable|public boolean isEmpty|public Mutable\(|upgrade
+CustomData.java|public static|public CompoundTag copyTag|public boolean contains|public boolean isEmpty|update\(
+ItemLore.java|public ItemLore\(|record ItemLore|public static|withLineAdded
+ItemCooldowns.java|public void addCooldown|public boolean isOnCooldown
+EnchantmentHelper.java|public static ItemEnchantments|public static void setEnchantments|public static int getItemEnchantmentLevel|public static .* updateEnchantments
+MaceItem.java
+DataComponentType.java|public static <T> .*builder|persistent\(|networkSynchronized\(|public DataComponentType<T> build
+ServerBossEvent.java|public ServerBossEvent\(
+BossEvent.java|enum BossBarColor|enum BossBarOverlay|PINK|RED|GREEN|YELLOW|PURPLE|WHITE
+LivingEntity.java|public void knockback\(|public final void setHealth|public boolean addEffect\(final MobEffectInstance effect, final @Nullable Entity
+AttributeModifier.java|record AttributeModifier|public AttributeModifier\(
+ItemAttributeModifiers.java|public static .*builder|public .* add\(|record ItemAttributeModifiers|EMPTY
+WitherSkull.java|public WitherSkull\(
+SmallFireball.java|public SmallFireball\(
+ShulkerBullet.java|public ShulkerBullet\(
+EvokerFangs.java|public EvokerFangs\(
+AreaEffectCloud.java|public AreaEffectCloud\(|public void setRadius|public void setDuration|public void setWaitTime|public void setRadiusPerTick|public void addEffect|setPotionContents|public void setOwner|setCustomParticle
+ItemFrame.java|public ItemFrame\(|public void setItem\(|public boolean setItem
+LightningBolt.java|public LightningBolt\(|public void setVisualOnly|setCause
+EntityTypes.java|LIGHTNING_BOLT|EVOKER_FANGS|SHULKER_BULLET|WITHER_SKULL|AREA_EFFECT_CLOUD|ITEM_FRAME|GLOW_ITEM_FRAME
