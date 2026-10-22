@@ -646,7 +646,7 @@ final class LandMedium {
 		b.fill(-6, 0, -2, 6, 0, 8, b.mix(s(Blocks.COARSE_DIRT), s(Blocks.GRAVEL), s(Blocks.DIRT)));
 		for (int i = 0; i < 8; i++) {
 			int x = b.layout.nextInt(11) - 5;
-			int z = b.layout.nextInt(9) - 1;
+			int z = b.layout.nextInt(3) - 1;
 			b.set(x, 1, z, b.pick(x, 1, z, 85, s(Blocks.BONE_BLOCK), head(Blocks.SKELETON_SKULL, 3), s(Blocks.BONE_BLOCK)));
 		}
 		b.stand(3, 1, 6, Direction.WEST, new ItemStack(Items.CHAINMAIL_HELMET), new ItemStack(Items.LEATHER_CHESTPLATE), ItemStack.EMPTY,

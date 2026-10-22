@@ -325,6 +325,19 @@ final class LandTest {
 		int cz = field.getZ() >> 4;
 		server.getCommands().performPrefixedCommand(server.createCommandSourceStack().withLevel(level).withSuppressedOutput(),
 				String.format("forceload add %d %d %d %d", (cx - 2) * 16, (cz - 2) * 16, (cx + 2) * 16 + 15, (cz + 2) * 16 + 15));
+		// A level field of grass, cleared of trees, so nobody starts up in a tree or falls off one.
+		BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
+		for (int x = field.getX() - 20; x <= field.getX() + 20; x++) {
+			for (int z = field.getZ() - 18; z <= field.getZ() + 18; z++) {
+				for (int y = field.getY() + 1; y <= field.getY() + 20; y++) {
+					level.setBlock(pos.set(x, y, z), Blocks.AIR.defaultBlockState(), 2);
+				}
+				level.setBlock(pos.set(x, field.getY(), z), Blocks.GRASS_BLOCK.defaultBlockState(), 2);
+				for (int y = field.getY() - 1; y > field.getY() - 12 && level.getBlockState(pos.set(x, y, z)).isAir(); y--) {
+					level.setBlock(pos, Blocks.DIRT.defaultBlockState(), 2);
+				}
+			}
+		}
 		List<Mob> spawned = new ArrayList<>();
 		List<Vec3> starts = new ArrayList<>();
 		int index = 0;

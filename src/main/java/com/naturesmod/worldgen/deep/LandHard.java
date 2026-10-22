@@ -81,6 +81,11 @@ final class LandHard {
 		}
 	}
 
+	/** Whether (x, z) is within a block of (x0, z0): somewhere a keeper stands, to be kept clear. */
+	private static boolean near(int x, int z, int x0, int z0) {
+		return Math.abs(x - x0) <= 1 && Math.abs(z - z0) <= 1;
+	}
+
 	private static void ladder(DeepBuilder b, int x, int z, int y0, int y1, Direction facing) {
 		for (int y = y0; y <= y1; y++) {
 			b.set(x, y, z, facing(Blocks.LADDER, facing));
@@ -494,7 +499,7 @@ final class LandHard {
 			int x = b.layout.nextInt(41) - 20;
 			int z = b.layout.nextInt(41) - 20;
 			int m = Math.max(Math.abs(x), Math.abs(z));
-			if (m <= 4 || Math.abs(x) <= 2 && z < 0) {
+			if (m <= 4 || Math.abs(x) <= 2 && z < 0 || near(x, z, -14, 4) || near(x, z, 14, -4) || near(x, z, 6, 10)) {
 				continue;
 			}
 			int t = Math.min(4, (20 - m) / 4);
@@ -548,7 +553,7 @@ final class LandHard {
 		// Ice spikes in the courtyard.
 		for (int i = 0; i < 10; i++) {
 			double angle = b.layout.nextDouble() * Math.PI * 2;
-			double r = 13 + b.layout.nextDouble() * 6;
+			double r = 14 + b.layout.nextDouble() * 5;
 			int x = (int) Math.round(Math.cos(angle) * r);
 			int z = (int) Math.round(Math.sin(angle) * r);
 			int h = 3 + b.layout.nextInt(5);
@@ -594,9 +599,9 @@ final class LandHard {
 		b.keeper(0, 16, 2, EntityTypes.EVOKER);
 		b.keeper(-2, 1, 0, EntityTypes.STRAY);
 		b.keeper(2, 1, 0, EntityTypes.STRAY);
-		b.keeper(12, 1, 6, EntityTypes.POLAR_BEAR);
-		b.keeper(-12, 1, -6, EntityTypes.POLAR_BEAR);
-		b.keeper(-8, 1, 14, "snow_leopard");
+		b.keeper(11, 1, 3, EntityTypes.POLAR_BEAR);
+		b.keeper(-11, 1, -3, EntityTypes.POLAR_BEAR);
+		b.keeper(-6, 1, 11, "snow_leopard");
 	}
 
 	// --- a haunted manor -------------------------------------------------------------------------------
@@ -1122,7 +1127,7 @@ final class LandHard {
 		}
 		b.set(4, 27, -2, lantern(false, false));
 		if (jungle) {
-			b.keeper(5, 11, 4, "monkey");
+			b.keeper(3, 11, 5, "monkey");
 			b.keeper(-4, 19, -4, "monkey");
 			b.keeper(3, 27, 3, "toucan");
 			b.keeper(-3, 27, -2, "toucan");
