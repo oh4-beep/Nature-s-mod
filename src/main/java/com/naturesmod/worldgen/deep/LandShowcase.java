@@ -51,6 +51,9 @@ public final class LandShowcase {
 				level.getChunk(cx, cz);
 			}
 		}
+		// A showcase stands alone: the keepers of anything world generation already built here go.
+		level.getEntitiesOfClass(net.minecraft.world.entity.Mob.class, net.minecraft.world.phys.AABB.of(reach.inflatedBy(8)),
+				net.minecraft.world.entity.Mob::isPersistenceRequired).forEach(net.minecraft.world.entity.Entity::discard);
 		ChunkGenerator generator = level.getChunkSource().getGenerator();
 		int ground = generator.getBaseHeight(site.getX(), site.getZ(), Heightmap.Types.OCEAN_FLOOR_WG, level, level.getChunkSource().randomState()) - 1;
 		BlockPos center = new BlockPos(site.getX(), ground, site.getZ());
