@@ -7,6 +7,7 @@ import com.naturesmod.item.ModItems;
 import com.naturesmod.worldgen.WorldGenUtil;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.QuartPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -234,7 +235,9 @@ public final class DeepBuilder {
 	/** The climate at the middle of the structure, for the builders that dress themselves to suit it. */
 	Climate climate() {
 		if (climate == null) {
-			climate = Climate.of(level.getBiome(at(0, 0, 0)));
+			BlockPos middle = at(0, 0, 0);
+			climate = Climate.of(level.getUncachedNoiseBiome(QuartPos.fromBlock(middle.getX()), QuartPos.fromBlock(middle.getY()),
+					QuartPos.fromBlock(middle.getZ())));
 		}
 		return climate;
 	}

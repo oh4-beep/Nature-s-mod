@@ -3,6 +3,7 @@ package com.naturesmod.worldgen.deep;
 import com.naturesmod.worldgen.ModStructures;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.QuartPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
@@ -18,8 +19,8 @@ import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSeriali
 /**
  * One structure of the Overworld, drawn by its {@link LandKind} in every chunk it touches. A
  * structure placed by world generation knows only its tier at first: the first chunk to build it
- * reads the climate at its middle and picks the kind that suits it, and every other chunk comes to
- * the same choice from the same seed.
+ * reads the climate at its middle (from the biome noise, which every chunk reads alike) and picks
+ * the kind that suits it, and every other chunk comes to the same choice from the same seed.
  */
 public class LandPiece extends StructurePiece {
 	private final DeepKind.Tier tier;
@@ -110,7 +111,8 @@ public class LandPiece extends StructurePiece {
 			BoundingBox chunkBox, ChunkPos chunkPos, BlockPos pivot) {
 		Climate climate = this.climate;
 		if (climate == null) {
-			climate = Climate.of(level.getBiome(center()));
+			// Straight from the noise: the chunk at the middle may be outside the region being generated.
+			climate = Climate.of(level.getUncachedNoiseBiome(QuartPos.fromBlock(cx), QuartPos.fromBlock(cy), QuartPos.fromBlock(cz)));
 			this.climate = climate;
 		}
 		LandKind kind = this.kind;
