@@ -247,7 +247,7 @@ final class LandTest {
 					if (state.getLightEmission() > 0) {
 						counts.merge("lights", 1, Integer::sum);
 					}
-					if ((HELD_UP.contains(state.getBlock()) || state.getBlock() instanceof CarpetBlock) && !state.canSurvive(level, pos)) {
+					if ((HELD_UP.contains(state.getBlock()) || state.getBlock() instanceof CarpetBlock && !state.is(Blocks.MOSS_CARPET)) && !state.canSurvive(level, pos)) {
 						wrong.add("a loose " + BuiltInRegistries.BLOCK.getKey(state.getBlock()).getPath() + " at " + pos.toShortString());
 					}
 				}

@@ -74,8 +74,8 @@ final class LandHard2 {
 		for (int[] p : new int[][] {{-14, -10}, {14, 10}, {-14, 10}, {14, -10}}) {
 			b.pike(p[0], p[1], 1, 2, Blocks.OAK_FENCE);
 		}
-		b.keeper(-8, 1, -8, EntityTypes.WITHER_SKELETON);
-		b.keeper(8, 1, 8, EntityTypes.WITHER_SKELETON);
+		b.keeper(-17, 1, -9, EntityTypes.WITHER_SKELETON);
+		b.keeper(17, 1, 9, EntityTypes.WITHER_SKELETON);
 		b.keeper(0, 1, -10, EntityTypes.SKELETON);
 	}
 
@@ -303,15 +303,15 @@ final class LandHard2 {
 	static void wizardTower(DeepBuilder b) {
 		site(b, 14.5, 60);
 		DeepBuilder.Paint stone = b.worn(s(Blocks.STONE_BRICKS), s(Blocks.POLISHED_ANDESITE));
-		b.cylinder(0, 0, 6.5, 1, 48, stone, true);
+		b.cylinder(0, 0, 6.5, 1, 51, stone, true);
 		for (int y = 12; y <= 36; y += 12) {
 			b.disc(0, y, 0, 5.5, s(Blocks.DARK_OAK_PLANKS));
 		}
 		b.disc(0, 48, 0, 6.5, s(Blocks.DARK_OAK_PLANKS));
 		for (int k = 0; k <= 10; k++) {
-			b.disc(0, 49 + k, 0, 7.5 - k * 0.7, s(vanilla("purple_terracotta")));
+			b.disc(0, 52 + k, 0, 7.5 - k * 0.7, s(vanilla("purple_terracotta")));
 		}
-		b.set(0, 60, 0, s(Blocks.GOLD_BLOCK));
+		b.set(0, 63, 0, s(Blocks.GOLD_BLOCK));
 		b.clear(0, 1, -6, 0, 3, -6);
 		for (int floor = 0; floor <= 36; floor += 12) {
 			int side = floor % 24 == 0 ? 1 : -1;
@@ -349,7 +349,9 @@ final class LandHard2 {
 		b.set(0, -18, 1, s(vanilla("gray_concrete")));
 		b.set(0, -17, 1, s(vanilla("gray_concrete")));
 		for (int x = -16; x <= 16; x += 8) {
-			b.set(x, -17, 0, lantern(false, true));
+			if (x != 0) {
+				b.set(x, -17, 0, lantern(false, true));
+			}
 			b.fill(x - 3, -22, 5, x + 3, -16, 12, s(vanilla("light_gray_concrete")));
 			b.fill(x - 2, -21, 5, x + 2, -17, 11, b.open());
 			b.clear(x, -21, 4, x, -20, 4);
@@ -422,9 +424,9 @@ final class LandHard2 {
 		b.pillar(4, 0, 1, 11, s(Blocks.STONE_BRICKS));
 		b.chest(-2, 12, 2, Direction.EAST, "treasure");
 		b.spawner(0, 1, -2, EntityTypes.ZOMBIE);
-		b.keeper(-12, 1, 0, EntityTypes.ZOMBIE);
-		b.keeper(12, 1, 0, "raccoon");
-		b.keeper(0, 1, 12, EntityTypes.SKELETON);
-		b.keeper(0, 1, -12, EntityTypes.PILLAGER);
+		b.keeper(-8, 1, -8, EntityTypes.ZOMBIE);
+		b.keeper(8, 1, 8, "raccoon");
+		b.keeper(-8, 1, 8, EntityTypes.SKELETON);
+		b.keeper(8, 1, -8, EntityTypes.PILLAGER);
 	}
 }
