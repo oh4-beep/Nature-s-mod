@@ -27,6 +27,20 @@ public final class NetherOverhaul {
 	}
 
 	public static void register() {
+		// Lunar Client builds a throwaway vanilla world lookup at startup that cannot see datapack biomes;
+		// there the biomes are added once the client has started (see NaturesModClient).
+		if (!lunar()) {
+			addBiomes();
+		}
+		ServerTickEvents.END_SERVER_TICK.register(NetherOverhaul::tick);
+	}
+
+	public static boolean lunar() {
+		return System.getProperty("sun.java.command", "").toLowerCase().contains("lunar")
+				|| System.getProperty("java.class.path", "").toLowerCase().contains("lunarclient");
+	}
+
+	public static void addBiomes() {
 		// Down in the classic Nether, among the vanilla biomes.
 		NetherBiomes.addNetherBiome(biome("ember_wastes"), Climate.parameters(0.65F, -0.35F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F));
 		NetherBiomes.addNetherBiome(biome("brimstone_fields"), Climate.parameters(-0.45F, -0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F));
@@ -38,7 +52,6 @@ public final class NetherOverhaul {
 		NetherBiomes.addNetherBiome(biome("obsidian_spires"), Climate.parameters(Climate.Parameter.span(0.15F, 1.0F),
 				Climate.Parameter.span(-1.0F, 1.0F), Climate.Parameter.point(0.0F), Climate.Parameter.point(0.0F),
 				Climate.Parameter.span(0.55F, 1.6F), Climate.Parameter.point(0.0F), 0.0F));
-		ServerTickEvents.END_SERVER_TICK.register(NetherOverhaul::tick);
 	}
 
 	private static ResourceKey<Biome> biome(String name) {
