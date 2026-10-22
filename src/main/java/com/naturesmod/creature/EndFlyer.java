@@ -10,6 +10,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.Difficulty;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -105,6 +106,10 @@ public class EndFlyer extends PathfinderMob implements SeaCreature {
 	@Override
 	public void aiStep() {
 		super.aiStep();
+		if (!this.level().isClientSide() && this.level().getDifficulty() == Difficulty.PEACEFUL && this.species().behavior().isHostile()) {
+			this.discard();
+			return;
+		}
 		if (!this.level().isClientSide() && this.tickCount % 10 == 0) {
 			LivingEntity target = this.getTarget();
 			this.setAttacking(target != null && this.distanceToSqr(target) < 36.0);
@@ -123,11 +128,6 @@ public class EndFlyer extends PathfinderMob implements SeaCreature {
 			CreatureEffects.bite(this, this.species(), target);
 		}
 		return hit;
-	}
-
-	@Override
-	protected boolean shouldDespawnInPeaceful() {
-		return this.species().behavior().isHostile();
 	}
 
 	@Override
