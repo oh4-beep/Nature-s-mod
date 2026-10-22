@@ -43,6 +43,12 @@ def land_loot():
     rare = lambda *extra: pool(1, empty(8), item("enchanted_golden_apple"), item("totem_of_undying"), *extra)  # noqa: E731
     return {
         # Easy finds.
+        "meteor": chest(pool((3, 6), item("iron_ingot", 8, (2, 6)), item("raw_iron", 6, (2, 6)), item("magma_cream", 4, (1, 3)),
+                             item("obsidian", 5, (1, 4)), item("amethyst_shard", 5, (2, 6)), item("diamond", 2, (1, 2)),
+                             item("netherite_scrap", 1), item("fire_charge", 4, (1, 3)))),
+        "dragon": chest(pool((6, 10), *rich, item("gold_block", 8, (1, 4)), item("diamond_block", 2), item("netherite_ingot", 1),
+                             item("golden_horse_armor", 3), item("diamond_sword", 3, 1, DEEP_ENCHANT), item("diamond_chestplate", 2, 1, DEEP_ENCHANT)),
+                        rare(item("dragon_breath", 2))),
         "camp": chest(pool((3, 6), *food, *basic, item("leather", 5, (1, 3)), item("flint_and_steel", 2), item("saddle", 1))),
         "cabin": chest(pool((3, 6), *food, item("cooked_rabbit", 5, (1, 3)), item("rabbit_hide", 5, (1, 4)), item("leather", 6, (2, 5)),
                             item("bow", 3, 1, ENCHANT), item("iron_axe", 3, 1, ENCHANT), item("leather_chestplate", 2, 1, ENCHANT),
