@@ -59,7 +59,7 @@ final class LandHard2 {
 			}
 		}
 		// The skull at the west end, big enough to walk into.
-		b.ellipsoid(-23, 4, 0, 3.0, 4.0, 4.0, s(Blocks.BONE_BLOCK), true, -3);
+		b.ellipsoid(-23, 4, 0, 3.0, 4.0, 4.0, DeepBuilder.p(s(Blocks.BONE_BLOCK)), true, -3);
 		b.clear(-23, 1, -1, -23, 3, 1);
 		b.line(-23, 7, -2, -23, 11, -5, s(Blocks.CALCITE));
 		b.line(-23, 7, 2, -23, 11, 5, s(Blocks.CALCITE));
