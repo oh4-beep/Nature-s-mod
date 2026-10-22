@@ -424,7 +424,15 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 	/** Lines the Overworld's new animals up on a cleared field, then builds every kind of land structure and photographs it. */
 	private void lands(ClientGameTestContext context, TestSingleplayerContext world) {
 		command(world, "gamemode spectator @a");
-		BlockPos field = world.getServer().computeOnServer(server -> LandShowcase.drySite(server.overworld(), new BlockPos(640, 0, 640), 16));
+		BlockPos field = world.getServer().computeOnServer(server -> {
+			for (BlockPos from : List.of(new BlockPos(640, 0, 640), new BlockPos(-2000, 0, 1500), new BlockPos(3000, 0, -3000), new BlockPos(9000, 0, 9000))) {
+				BlockPos at = LandShowcase.drySite(server.overworld(), from, 10);
+				if (at != null) {
+					return at;
+				}
+			}
+			return null;
+		});
 		if (field == null) {
 			failures.add("lands: no dry land for the animals");
 		} else {
