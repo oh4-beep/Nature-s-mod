@@ -308,7 +308,7 @@ final class EndTest {
 		List<Vec3> starts = new ArrayList<>();
 		int index = 0;
 		for (SpeciesData species : CreatureSpecies.ALL) {
-			if (species.inWater()) {
+			if (species.inWater() || species.overworld()) {
 				continue;
 			}
 			int x = land.getX() - 12 + (index % 4) * 8;

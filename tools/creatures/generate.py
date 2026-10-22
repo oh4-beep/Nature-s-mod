@@ -126,9 +126,26 @@ CATEGORY_DEFAULT = {
 }
 
 
+def world(sp):
+    """Where a species lives: the seas (the Overworld's and the Abyss's), the new End, or the Overworld's lands and skies."""
+    if sp["medium"] == "water":
+        return "sea"
+    return "end" if any(h.startswith("end_") for h in sp["habitats"]) or not sp["habitats"] else "overworld"
+
+
+def seat(sp, model):
+    """How high a rider sits on a creature that can be saddled, in blocks; 0 for one that cannot."""
+    if not sp["ride"]:
+        return 0.0
+    return round(model["seat"] / 16.0 * sp["scale"], 3)
+
+
 def category(sp):
     if sp["category"]:
         return sp["category"]
+    if world(sp) == "overworld":
+        # The Overworld's beasts and birds are animals like any other; its predators come out at night.
+        return "monster" if sp["behavior"] in ("hunter", "ambush", "pack") else "creature"
     if sp["medium"] != "water":
         # The creatures of the End: its hunters are monsters, the rest come and go like bats.
         return "monster" if sp["behavior"] in ("hunter", "ambush", "pack", "boss") else "ambient"
@@ -174,7 +191,8 @@ def species_java(built):
             f"{f(sp['scale'])}, {f(w)}, {f(h)}, {float(default_health(sp))}, {float(sp['attack'])}, {float(sp['speed'])}, "
             f"{sp['group'][0]}, {sp['group'][1]}, {sp['weight']}, {str(sp['bucket']).lower()}, {str(bool(sp['glow'])).lower()}, "
             f"{str(sp['translucent']).lower()}, \"{sp['depth']}\", \"{sp['sound']}\", "
-            f"{model.get('segments', 0)}, List.of({habitats}), \"{sp['effect']}\", \"{sp['medium']}\")")
+            f"{model.get('segments', 0)}, List.of({habitats}), \"{sp['effect']}\", \"{sp['medium']}\", {f(seat(sp, model))}, "
+            f"\"{world(sp)}\")")
     out.append(",\n".join(rows))
     out.append("\t);")
     out.append("}")
@@ -203,6 +221,18 @@ DROP_ITEMS = {
     "raw_starmetal": ("naturesmod:raw_starmetal", False),
     "void_crystal": ("naturesmod:void_crystal_cluster", False),
     "star_fragment": ("naturesmod:star_fragment", False),
+    "leather": ("minecraft:leather", False),
+    "beef": ("minecraft:beef", True),
+    "mutton": ("minecraft:mutton", True),
+    "porkchop": ("minecraft:porkchop", True),
+    "chicken": ("minecraft:chicken", True),
+    "rabbit": ("minecraft:rabbit", True),
+    "rabbit_hide": ("minecraft:rabbit_hide", False),
+    "feather": ("minecraft:feather", False),
+    "bone": ("minecraft:bone", False),
+    "string": ("minecraft:string", False),
+    "spider_eye": ("minecraft:spider_eye", False),
+    "cod": ("minecraft:cod", True),
     "starmetal_ingot": ("naturesmod:starmetal_ingot", False),
     "dragon_breath": ("minecraft:dragon_breath", False),
     "elytra": ("minecraft:elytra", False),

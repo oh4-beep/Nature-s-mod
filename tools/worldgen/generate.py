@@ -27,6 +27,7 @@ import advancements  # noqa: E402
 import deep  # noqa: E402
 import end  # noqa: E402
 import features  # noqa: E402
+import land  # noqa: E402
 import nether  # noqa: E402
 import ocean  # noqa: E402
 import terrain  # noqa: E402
@@ -101,6 +102,7 @@ def main():
     files.update(deep.build(vanilla))
     files.update(nether.build(vanilla))
     files.update(end.build(vanilla))
+    files.update(land.build())
     files.update(ocean.build())
     buckets_dir = os.path.join(REPO, "src", "main", "resources", "assets", "naturesmod", "items")
     buckets = sorted(f"naturesmod:{name[:-5]}" for name in os.listdir(buckets_dir) if name.endswith("_bucket.json"))

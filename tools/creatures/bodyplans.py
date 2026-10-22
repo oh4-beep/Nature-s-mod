@@ -141,7 +141,8 @@ def long(v):
         size = max(1.2, size)
         seg_len = 5
         cubes = [cube("body" if i < n - 1 else "tail", (-size / 2, -size / 2, 0), (size, size, seg_len))]
-        cubes.append(cube("dorsal", (0, -size / 2 - 1.5, 0), (0, 1.5, seg_len)))
+        if not v.get("smooth"):
+            cubes.append(cube("dorsal", (0, -size / 2 - 1.5, 0), (0, 1.5, seg_len)))
         children = [chain] if chain else []
         if i == n - 1:
             children.append(part("tail_fin", (0, 0, seg_len), cubes=[cube("glow_tip" if v.get("glow_tail") else "tail_fin", (0, -2, 0), (0, 4, 3))]))
@@ -295,6 +296,10 @@ def beetle(v):
     ]
     if v.get("horn"):
         head_children.append(part("horn", (0, -1.5, -2), (-0.6, 0, 0), cubes=[cube("crystal", (-0.5, -5, -0.5), (1, 5, 1))]))
+    if v.get("pincers"):
+        for side in (1, -1):
+            head_children.append(part("left_pincer" if side > 0 else "right_pincer", (side * 2.2, 0.5, -2.5), (0, -side * 0.5, 0),
+                                      cubes=[cube("shell", (-0.75, -0.75, -4), (1.5, 1.5, 4)), cube("shell", (-1.25, -1, -7), (2.5, 2, 3))]))
     head = part("head", (0, -0.5, -4.5), cubes=[cube("head", (-2, -1.5, -3), (4, 3, 3))], children=head_children)
     legs = []
     for z in (-2.5, 0.5, 3.5):
@@ -302,8 +307,13 @@ def beetle(v):
             # Each leg reaches out sideways and down to the ground.
             legs.append(part(f"leg{len(legs)}", (side * 2.8, 1.2, z), (0, 0, -side * splay),
                              cubes=[cube("leg", (-0.5, 0, -0.5), (1, leg_len, 1), mirror=side < 0)]))
+    body_children = [head] + legs
+    if v.get("stinger"):
+        sting = part("tail_tip", (0, 0, 5), (1.3, 0, 0), cubes=[cube("shell", (-0.75, -0.75, 0), (1.5, 1.5, 4)),
+                                                              cube("teeth", (-0.5, -0.5, 4), (1, 1, 2))])
+        body_children.append(part("tail", (0, -2, 4.5), (0.9, 0, 0), cubes=[cube("shell", (-1, -1, 0), (2, 2, 5))], children=[sting]))
     body = part("body", (0, y0, 0), cubes=[cube("shell", (-3.5, -4, -4.5), (7, 4, 9)), cube("body", (-3, 0, -4), (6, 2, 8))],
-                children=[head] + legs)
+                children=body_children)
     return {"kind": "insect", "root": [body], "length": 15}
 
 
@@ -351,10 +361,236 @@ def hopper(v):
     return {"kind": "hopper", "root": [body] + feet, "length": 8}
 
 
+# --- the beasts and birds of the Overworld ----------------------------------------------------------
+
+def mammal(v):
+    """Four-legged beasts, from capybaras to elephants and giraffes. Options: body (w, h, l), leg, leg_w, hind (shorter
+    hind legs), neck, neck_w, neck_pitch, head (w, h, l), head_pitch, snout (w, h, l), ears (small/round/long/big/
+    elephant), horns (rhino/bull/ossicone), antlers (deer/moose), tusks (up/forward), trunk, mane (head/neck/shaggy),
+    hump, tail (thin/tuft/bushy/stub/long), tail_len."""
+    bw, bh, bl = v.get("body", (6, 6, 12))
+    leg = v.get("leg", 8)
+    lw = v.get("leg_w", 2)
+    hind = v.get("hind", leg)
+    hip = 24 - leg
+    hw, hh, hl = v.get("head", (4, 4, 6))
+    neck = v.get("neck", 0)
+    pitch = v.get("neck_pitch", 0.4)
+
+    # The head, with whatever grows on it.
+    head_cubes = [cube("head", (-hw / 2, -hh / 2, -hl), (hw, hh, hl))]
+    if v.get("snout"):
+        sw, sh, sl = v["snout"]
+        head_cubes.append(cube("snout", (-sw / 2, hh / 2 - sh, -hl - sl), (sw, sh, sl)))
+    snout_len = v["snout"][2] if v.get("snout") else 0
+    head_children = []
+    ears = v.get("ears")
+    for side in (1, -1) if ears else ():
+        name = "left_ear" if side > 0 else "right_ear"
+        if ears == "elephant":
+            head_children.append(part(name, (side * hw / 2, -hh / 2 + 1, -hl * 0.6), (0, side * 0.45, 0),
+                                      cubes=[cube("ear", (0 if side > 0 else -1, 0, 0), (1, 10, 8), mirror=side < 0)]))
+        else:
+            ew, eh, ed = {"small": (1, 2, 1), "round": (2, 2, 1), "long": (1, 4, 2), "big": (1, 3, 2)}[ears]
+            head_children.append(part(name, (side * (hw / 2 - 0.5), -hh / 2, -hl * 0.3), (0, 0, side * 0.35),
+                                      cubes=[cube("ear", (-ew / 2, -eh, -ed / 2), (ew, eh, ed), mirror=side < 0)]))
+    horns = v.get("horns")
+    if horns == "rhino":
+        head_children.append(part("horn", (0, hh / 2 - (v["snout"][1] if v.get("snout") else 2), -hl - snout_len + 1.5), (-0.35, 0, 0),
+                                  cubes=[cube("horn", (-1, -5, -1), (2, 5, 2))]))
+        head_children.append(part("second_horn", (0, -hh / 2, -hl * 0.75), (-0.2, 0, 0), cubes=[cube("horn", (-0.5, -2, -0.5), (1, 2, 1))]))
+    elif horns == "bull":
+        for side in (1, -1):
+            head_children.append(part("left_horn" if side > 0 else "right_horn", (side * hw / 2, -hh / 2 + 1, -hl * 0.7), (0, 0, 0),
+                                      cubes=[cube("horn", (0 if side > 0 else -3, -0.5, -0.5), (3, 1, 1)),
+                                             cube("horn", (2.2 if side > 0 else -3.2, -3, -0.5), (1, 3, 1))]))
+    elif horns == "ossicone":
+        for side in (1, -1):
+            head_children.append(part("left_horn" if side > 0 else "right_horn", (side * 1, -hh / 2, -hl * 0.35),
+                                      cubes=[cube("horn", (-0.5, -3, -0.5), (1, 3, 1))]))
+    antlers = v.get("antlers")
+    for side in (1, -1) if antlers else ():
+        name = "left_horn" if side > 0 else "right_horn"
+        if antlers == "deer":
+            head_children.append(part(name, (side * 1.2, -hh / 2, -hl * 0.35), (0.25, 0, side * 0.45),
+                                      cubes=[cube("horn", (-0.5, -8, -0.5), (1, 8, 1)), cube("horn", (-0.5, -5, -3), (1, 1, 3)),
+                                             cube("horn", (-0.5, -8, -2.5), (1, 1, 2.5))]))
+        else:
+            # A moose's broad palms.
+            x0 = 0 if side > 0 else -8
+            head_children.append(part(name, (side * hw / 2, -hh / 2 + 0.5, -hl * 0.4), (0, 0, -side * 0.75),
+                                      cubes=[cube("horn", (0 if side > 0 else -3, -1, -0.5), (3, 1, 1)),
+                                             cube("horn", (x0, -2, -3), (8, 1, 5))]))
+    if v.get("tusks"):
+        up = v["tusks"] == "up"
+        for side in (1, -1):
+            head_children.append(part("left_tusk" if side > 0 else "right_tusk", (side * (hw / 2 - 1), hh / 2 - 1, -hl - snout_len + 1),
+                                      (-0.9 if not up else 0.3, 0, 0),
+                                      cubes=[cube("tusk", (-0.5, -3 if up else 0, -0.5), (1, 3, 1) if up else (1, 6, 1))]))
+    if v.get("trunk"):
+        head_children.append(part("trunk", (0, hh / 2 - 2, -hl), (-0.12, 0, 0), cubes=[cube("snout", (-1.5, 0, -1.5), (3, v["trunk"], 3))]))
+    mane = v.get("mane")
+    if mane == "head":
+        head_cubes.append(cube("mane", (-hw / 2 - 2, -hh / 2 - 2, -2.5), (hw + 4, hh + 4, 4)))
+
+    # The neck, if it has one; the head rides on it or right on the front of the body.
+    if neck:
+        nw = v.get("neck_w", 3)
+        neck_cubes = [cube("body", (-nw / 2, -neck, -nw / 2), (nw, neck, nw))]
+        if mane == "neck":
+            neck_cubes.append(cube("mane", (-0.5, -neck - 1, nw / 2 - 0.5), (1, neck + 1, 2)))
+        head = part("head", (0, -neck + 1, 0), (-pitch + v.get("head_pitch", 0.3), 0, 0), cubes=head_cubes, children=head_children)
+        front = part("neck", (0, -bh / 2 + 1.5, -bl / 2 + 1.5), (pitch, 0, 0), cubes=neck_cubes, children=[head])
+    else:
+        front = part("head", (0, -bh / 2 + hh / 2 - 1 + v.get("head_drop", 0), -bl / 2 + 1), (v.get("head_pitch", 0.0), 0, 0),
+                     cubes=head_cubes, children=head_children)
+
+    body_cubes = [cube("body", (-bw / 2, -bh / 2, -bl / 2), (bw, bh, bl))]
+    if v.get("hump"):
+        body_cubes.append(cube("body", (-bw * 0.35, -bh / 2 - 3, -bl / 2 + 1), (bw * 0.7, 3, bl * 0.35)))
+    if mane == "shaggy":
+        body_cubes.append(cube("mane", (-bw / 2 - 1, -bh / 2 - 1.5, -bl / 2 - 1), (bw + 2, bh + 2.5, bl * 0.45)))
+
+    tail = v.get("tail", "thin")
+    tl = v.get("tail_len", 8)
+    body_children = [front]
+    if tail:
+        cubes, droop = {
+            "thin": ([cube("tail", (-0.5, 0, 0), (1, 1, tl))], -0.9),
+            "tuft": ([cube("tail", (-0.5, 0, 0), (1, 1, tl)), cube("mane", (-1, -0.5, tl - 1), (2, 2, 3))], -1.0),
+            "bushy": ([cube("tail", (-1.5, -1, 0), (3, 3, tl))], -0.6),
+            "stub": ([cube("tail", (-1, 0, 0), (2, 2, 2))], -0.3),
+            "long": ([cube("tail", (-0.75, 0, 0), (1.5, 1.5, tl))], -0.45),
+        }[tail]
+        body_children.append(part("tail", (0, -bh / 2 + 1, bl / 2), (droop, 0, 0), cubes=cubes))
+    slope = -math.atan2(leg - hind, bl) if hind != leg else 0.0
+    body = part("body", (0, hip - bh / 2, 0), (slope, 0, 0), cubes=body_cubes, children=body_children)
+
+    fx = bw / 2 - lw / 2 - 0.2
+    fz = -bl / 2 + lw / 2 + 1
+    hz = bl / 2 - lw / 2 - 1
+    legs = []
+    for name, x, z, height in [("left_front_leg", fx, fz, leg), ("right_front_leg", -fx, fz, leg),
+                               ("left_hind_leg", fx, hz, hind), ("right_hind_leg", -fx, hz, hind)]:
+        legs.append(part(name, (x, 24 - height, z), cubes=[cube("leg", (-lw / 2, 0, -lw / 2), (lw, height, lw), mirror=x < 0)]))
+    return {"kind": "quadruped", "root": [body] + legs, "length": bl + hl + snout_len + (2 if neck else 0), "seat": leg + bh}
+
+
+def primate(v):
+    """Apes and monkeys: long arms, a round head with a muzzle, and maybe a long curling tail. Options: knuckles (a
+    gorilla's knuckle-walk and bulk), tail."""
+    big = v.get("knuckles", False)
+    leg_h = 7 if big else 6
+    hip = 24 - leg_h
+    bw, bh, bd = (11, 11, 7) if big else (5, 7, 4)
+    lean = 0.95 if big else 0.6
+    arm_len = 15 if big else 9
+    aw = 4 if big else 2
+    hw, hh, hl = (8, 7, 7) if big else (5, 5, 4)
+    head_cubes = [cube("head", (-hw / 2, -hh, -hl / 2), (hw, hh, hl)),
+                  cube("snout", (-hw * 0.35, -hh * 0.45, -hl / 2 - 1.5), (hw * 0.7, hh * 0.45, 1.5))]
+    if big:
+        head_cubes.append(cube("head", (-hw / 2, -hh - 1, -hl / 2 - 0.5), (hw, 2, 2)))
+    head_children = [part("left_ear", (hw / 2, -hh * 0.6, 0), cubes=[cube("ear", (0, -1, -0.5), (1, 2, 1))]),
+                     part("right_ear", (-hw / 2, -hh * 0.6, 0), cubes=[cube("ear", (-1, -1, -0.5), (1, 2, 1), mirror=True)])]
+    children = [part("head", (0, -bh + 0.5, -bd * 0.2), (-lean, 0, 0), cubes=head_cubes, children=head_children)]
+    for side in (1, -1):
+        children.append(part("left_arm" if side > 0 else "right_arm", (side * (bw / 2 + aw / 2), -bh + 1.5, 0), (-lean, 0, 0),
+                             cubes=[cube("limb", (-aw / 2, 0, -aw / 2), (aw, arm_len, aw), mirror=side < 0)]))
+    if v.get("tail"):
+        tip = part("tail_tip", (0, 0, 9), (1.0, 0, 0), cubes=[cube("tail", (-0.5, -0.5, 0), (1, 1, 5))])
+        children.append(part("tail", (0, -1, bd / 2), (0.7, 0, 0), cubes=[cube("tail", (-0.5, -0.5, 0), (1, 1, 9))], children=[tip]))
+    body = part("body", (0, hip, 0.5), (lean, 0, 0), cubes=[cube("body", (-bw / 2, -bh, -bd / 2), (bw, bh, bd))], children=children)
+    lw = 4 if big else 2
+    legs = [part(name, (x, hip, 1.0), cubes=[cube("leg", (-lw / 2, 0, -lw / 2), (lw, leg_h, lw), mirror=x < 0)])
+            for name, x in (("left_leg", bw * 0.3), ("right_leg", -bw * 0.3))]
+    return {"kind": "biped", "root": [body] + legs, "length": 10}
+
+
+def bird(v):
+    """Birds that walk: ostriches, flamingos and penguins. Options: body (w, h, l), leg, neck, neck_pitch, beak, penguin."""
+    if v.get("penguin"):
+        body = part("body", (0, 22, 0), cubes=[cube("body", (-4, -11, -3.5), (8, 11, 7))], children=[
+            part("head", (0, -11, -0.5), cubes=[cube("head", (-3, -5, -3), (6, 5, 6)), cube("beak", (-1, -3, -5), (2, 1.5, 2))]),
+            part("left_wing", (4, -10, 0), (0, 0, -0.15), cubes=[cube("wing", (0, 0, -1.5), (1, 8, 3))]),
+            part("right_wing", (-4, -10, 0), (0, 0, 0.15), cubes=[cube("wing", (-1, 0, -1.5), (1, 8, 3), mirror=True)]),
+            part("tail", (0, -1, 3.5), (-0.6, 0, 0), cubes=[cube("tail", (-1.5, 0, 0), (3, 1, 2))]),
+        ])
+        feet = [part(name, (x, 22, 0), cubes=[cube("leg", (-1, 0, -2.5), (2, 2, 3), mirror=x < 0)]) for name, x in (("left_leg", 2), ("right_leg", -2))]
+        return {"kind": "biped", "root": [body] + feet, "length": 8}
+    bw, bh, bl = v.get("body", (6, 6, 9))
+    leg = v.get("leg", 10)
+    neck = v.get("neck", 8)
+    pitch = v.get("neck_pitch", 0.15)
+    hip = 24 - leg
+    beak = v.get("beak", (1, 1, 2))
+    head = part("head", (0, -neck, 0), (-pitch + v.get("head_pitch", 0.0), 0, 0),
+                cubes=[cube("head", (-1.5, -2.5, -3), (3, 3, 4)), cube("beak", (-beak[0] / 2, -1.5, -3 - beak[2]), beak)])
+    body = part("body", (0, hip - bh / 2, 0), cubes=[cube("body", (-bw / 2, -bh / 2, -bl / 2), (bw, bh, bl)),
+                                                      cube("tail", (-bw / 2 + 1, -bh / 2 - 1, bl / 2 - 1), (bw - 2, 3, 3))], children=[
+        part("neck", (0, -bh / 2 + 1, -bl / 2 + 1), (pitch, 0, 0), cubes=[cube("body", (-1, -neck, -1), (2, neck, 2))], children=[head]),
+        part("left_wing", (bw / 2, -bh / 2 + 1, -bl / 2 + 1.5), cubes=[cube("wing", (0, 0, 0), (1, bh - 1, bl - 2))]),
+        part("right_wing", (-bw / 2, -bh / 2 + 1, -bl / 2 + 1.5), cubes=[cube("wing", (-1, 0, 0), (1, bh - 1, bl - 2), mirror=True)]),
+    ])
+    legs = [part(name, (x, hip, 0.5), cubes=[cube("leg", (-0.5, 0, -0.5), (1, leg, 1)), cube("leg", (-1, leg - 1, -2.5), (2, 1, 3))])
+            for name, x in (("left_leg", 1.5), ("right_leg", -1.5))]
+    return {"kind": "biped", "root": [body] + legs, "length": bl + 4, "seat": leg + bh}
+
+
+def flybird(v):
+    """Birds of the open sky: eagles, vultures, owls and toucans. Options: body (w, h, l), span, beak (w, h, l), owl."""
+    bw, bh, bl = v.get("body", (5, 5, 9))
+    span = v.get("span", 12)
+    beak = v.get("beak", (2, 2, 2))
+    owl = v.get("owl", False)
+    hs = (6, 6, 5) if owl else (4, 4, 4)
+    head_children = []
+    if owl:
+        head_children += [part("left_ear", (2, -6, -1), (0, 0, 0.3), cubes=[cube("ear", (-0.5, -2, -0.5), (1, 2, 1))]),
+                          part("right_ear", (-2, -6, -1), (0, 0, -0.3), cubes=[cube("ear", (-0.5, -2, -0.5), (1, 2, 1), mirror=True)])]
+    head = part("head", (0, -bh / 2 + 1, -bl / 2 + 1), cubes=[cube("head", (-hs[0] / 2, -hs[1] + 1, -hs[2]), hs),
+                                                             cube("beak", (-beak[0] / 2, -1.5, -hs[2] - beak[2]), beak)],
+                children=head_children)
+    body = part("body", (0, 18, 0), cubes=[cube("body", (-bw / 2, -bh / 2, -bl / 2), (bw, bh, bl)),
+                                           cube("leg", (-1.5, bh / 2, 0), (1, 2, 1)), cube("leg", (0.5, bh / 2, 0), (1, 2, 1))], children=[
+        head,
+        part("left_wing", (bw / 2, -bh / 2 + 1, -bl / 2 + 2), cubes=[cube("wing", (0, 0, 0), (span, 1, bl - 2))]),
+        part("right_wing", (-bw / 2, -bh / 2 + 1, -bl / 2 + 2), cubes=[cube("wing", (-span, 0, 0), (span, 1, bl - 2), mirror=True)]),
+        part("tail", (0, -bh / 2 + 1, bl / 2), cubes=[cube("tail", (-2, 0, 0), (4, 1, 5))]),
+    ])
+    return {"kind": "bird", "root": [body], "length": bl + 4}
+
+
+def reptile(v):
+    """Low, long reptiles on sprawling legs: crocodiles and their kin. Options: body (w, h, l), head (w, h, l), tail."""
+    bw, bh, bl = v.get("body", (7, 4, 14))
+    hw, hh, hl = v.get("head", (5, 3, 10))
+    leg_len, splay = 4, 0.8
+    hip = 24 - leg_len * math.cos(splay)
+    tl = v.get("tail", 10)
+    head = part("head", (0, -bh / 2 + 1, -bl / 2), cubes=[cube("head", (-hw / 2, -hh / 2, -hl), (hw, hh, hl))], children=[
+        part("jaw", (0, hh / 2, -0.5), cubes=[cube("jaw", (-hw / 2 + 0.25, 0, -hl + 0.5), (hw - 0.5, 1, hl - 0.5))]),
+    ])
+    tip = part("tail_fin", (0, 0.5, tl), cubes=[cube("tail", (-1, 0, 0), (2, 2, tl))])
+    tail = part("tail", (0, -bh / 2 + 1, bl / 2), (-0.06, 0, 0), cubes=[cube("tail", (-2, 0, 0), (4, 3, tl))], children=[tip])
+    body = part("body", (0, hip - bh / 2, 0), cubes=[cube("body", (-bw / 2, -bh / 2, -bl / 2), (bw, bh, bl)),
+                                                      cube("spines", (-bw / 2 + 1, -bh / 2 - 1, -bl / 2 + 1), (bw - 2, 1, bl - 2))],
+                children=[head, tail])
+    legs = []
+    for name, x, z in [("left_front_leg", bw / 2, -bl / 2 + 2), ("right_front_leg", -bw / 2, -bl / 2 + 2),
+                       ("left_hind_leg", bw / 2, bl / 2 - 2), ("right_hind_leg", -bw / 2, bl / 2 - 2)]:
+        legs.append(part(name, (x, hip, z), (0, 0, -splay if x > 0 else splay),
+                         cubes=[cube("leg", (-1, 0, -1), (2, leg_len, 2), mirror=x < 0)]))
+    return {"kind": "quadruped", "root": [body] + legs, "length": bl + hl + tl}
+
+
 PLANS = {"fish": fish, "deep": deep, "long": long, "shark": shark, "ray": ray, "jelly": jelly, "squid": squid, "seahorse": seahorse,
-         "beetle": beetle, "golem": golem, "stalker": stalker, "hopper": hopper}
-# The body plans of creatures that walk on land.
-LAND_PLANS = {"beetle", "golem", "stalker", "hopper"}
+         "beetle": beetle, "golem": golem, "stalker": stalker, "hopper": hopper, "mammal": mammal, "primate": primate, "bird": bird,
+         "flybird": flybird, "reptile": reptile}
+# The body plans of creatures that live on land or in the air.
+LAND_PLANS = {"beetle", "golem", "stalker", "hopper", "mammal", "primate", "bird", "flybird", "reptile"}
+# Land creatures with their eyes on the front of the face; the rest have them on the sides of the head.
+FRONT_EYED = {"beetle", "golem", "stalker", "hopper", "primate"}
 
 
 # --- texture layout -----------------------------------------------------------------------------

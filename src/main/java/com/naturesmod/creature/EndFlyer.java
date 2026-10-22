@@ -16,6 +16,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.control.FlyingMoveControl;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -32,9 +33,10 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 /**
- * The creatures of the new End's open air: void jellies, voidfin, star squid, skyrays, ender
- * sharks and void serpents. They swim through the End's sky the way fish swim through water,
- * drifting over the lands and the void; the hunters among them swoop on whatever crosses it.
+ * The creatures of the open air: in the new End, void jellies, voidfin, star squid, skyrays, ender
+ * sharks and void serpents, which swim through its sky the way fish swim through water, drifting
+ * over the lands and the void; in the Overworld, its eagles, vultures, owls and toucans. The
+ * hunters among them swoop on whatever crosses their sky.
  */
 public class EndFlyer extends PathfinderMob implements SeaCreature {
 	private static final EntityDataAccessor<Boolean> ATTACKING = SynchedEntityData.defineId(EndFlyer.class, EntityDataSerializers.BOOLEAN);
@@ -128,6 +130,15 @@ public class EndFlyer extends PathfinderMob implements SeaCreature {
 			CreatureEffects.bite(this, this.species(), target);
 		}
 		return hit;
+	}
+
+	/** The Overworld's birds stay about, like its animals; the End's flyers come and go. */
+	@Override
+	public boolean removeWhenFarAway(double distSqr) {
+		if (this.species().overworld() && this.species().mobCategory() == MobCategory.CREATURE) {
+			return false;
+		}
+		return super.removeWhenFarAway(distSqr);
 	}
 
 	@Override

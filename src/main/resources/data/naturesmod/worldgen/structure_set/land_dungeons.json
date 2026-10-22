@@ -1,0 +1,18 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 1983621413,
+    "separation": 7,
+    "spacing": 22,
+    "exclusion_zone": {
+      "other_set": "naturesmod:land_structures",
+      "chunk_count": 3
+    }
+  },
+  "structures": [
+    {
+      "structure": "naturesmod:land_hard",
+      "weight": 1
+    }
+  ]
+}

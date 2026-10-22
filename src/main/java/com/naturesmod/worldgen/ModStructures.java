@@ -5,6 +5,8 @@ import com.naturesmod.worldgen.deep.DeepPiece;
 import com.naturesmod.worldgen.deep.DeepStructure;
 import com.naturesmod.worldgen.deep.EndPiece;
 import com.naturesmod.worldgen.deep.EndStructure;
+import com.naturesmod.worldgen.deep.LandPiece;
+import com.naturesmod.worldgen.deep.LandStructure;
 import com.naturesmod.worldgen.glacier.GlacierPiece;
 import com.naturesmod.worldgen.glacier.GlacierStructure;
 import com.naturesmod.worldgen.hell.HellPiece;
@@ -73,6 +75,15 @@ public final class ModStructures {
 			NaturesMod.id("end_hall"), () -> EndStructure.Hall.CODEC);
 	public static final StructureType<EndStructure.Citadel> END_CITADEL = Registry.register(BuiltInRegistries.STRUCTURE_TYPE,
 			NaturesMod.id("end_citadel"), () -> EndStructure.Citadel.CODEC);
+
+	public static final StructurePieceType LAND_PIECE = Registry.register(BuiltInRegistries.STRUCTURE_PIECE, NaturesMod.id("land"),
+			(StructurePieceType.ContextlessType) LandPiece::new);
+	public static final StructureType<LandStructure.Easy> LAND_EASY = Registry.register(BuiltInRegistries.STRUCTURE_TYPE,
+			NaturesMod.id("land_easy"), () -> LandStructure.Easy.CODEC);
+	public static final StructureType<LandStructure.Medium> LAND_MEDIUM = Registry.register(BuiltInRegistries.STRUCTURE_TYPE,
+			NaturesMod.id("land_medium"), () -> LandStructure.Medium.CODEC);
+	public static final StructureType<LandStructure.Hard> LAND_HARD = Registry.register(BuiltInRegistries.STRUCTURE_TYPE,
+			NaturesMod.id("land_hard"), () -> LandStructure.Hard.CODEC);
 
 	private ModStructures() {
 	}

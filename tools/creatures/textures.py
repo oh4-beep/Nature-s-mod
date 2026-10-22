@@ -171,9 +171,49 @@ class Painter:
         elif p == "veins":
             if self.vein(s, t):
                 base = acc
+        elif p == "giraffe":
+            # Big brown patches with pale lines between them.
+            d1, d2 = self.cells(px, py, 4.0)
+            base = mix(base, col["belly"], 0.5) if d2 - d1 < 0.22 else mix(acc, base, 0.2 * self.noise(px, py, 2.0))
+        elif p == "rosettes":
+            # A leopard's rosettes: dark rings round spots of a deeper gold.
+            d1, d2 = self.cells(px, py, 3.0)
+            if t < 0.75:
+                if 0.55 < d1 < 1.05:
+                    base = acc
+                elif d1 <= 0.55:
+                    base = shade(base, 0.85)
+        elif p == "fur":
+            n = self.noise(px, py, 1.4)
+            base = shade(base, 0.86 + 0.2 * n)
+        elif p == "bald":
+            # A bird with a pale head: the front of it is all accent.
+            if s < 0.3:
+                base = acc
+        elif p == "dapples":
+            # A fawn's white spots along the back.
+            if t < 0.45 and self.noise(px, py, 1.2) > 0.78:
+                base = acc
         # Subtle grain everywhere so flat colours don't look plastic.
         grain = 0.94 + 0.12 * self.noise(px * 1.7, py * 1.3, 1.0)
         return shade(base, grain)
+
+    def cells(self, x, y, size):
+        """Distances to the nearest and second-nearest jittered cell centre (in cell units): patches and rosettes."""
+        gx, gy = x / size, y / size
+        best = [9.0, 9.0]
+        for i in range(math.floor(gx) - 1, math.floor(gx) + 2):
+            for j in range(math.floor(gy) - 1, math.floor(gy) + 2):
+                n = (i * 374761393 + j * 668265263 + self.noise_seed * 1442695041) & 0xFFFFFFFF
+                n = (n ^ (n >> 13)) * 1274126177 & 0xFFFFFFFF
+                cx = i + (n & 0xFF) / 255.0
+                cy = j + ((n >> 8) & 0xFF) / 255.0
+                d = math.hypot(gx - cx, gy - cy) * 2.0
+                if d < best[0]:
+                    best = [d, best[0]]
+                elif d < best[1]:
+                    best[1] = d
+        return best[0], best[1]
 
     def vein(self, s, t):
         """Branching lines of the "veins" pattern."""
@@ -258,8 +298,9 @@ class Painter:
         side = face in ("west", "east")
         # Fraction from the front (snout) of this face, for eye placement.
         front = (1 - a) if face == "west" else a if face == "east" else 0.5
-        land = sp["plan"] in bodyplans.LAND_PLANS
-        if role in ("shell", "crystal", "ear", "leg", "limb"):
+        land = sp["plan"] in bodyplans.FRONT_EYED or sp["variant"].get("owl", False)
+        beast = sp["plan"] in bodyplans.LAND_PLANS and not land
+        if role in ("shell", "crystal", "ear", "leg", "limb", "horn", "tusk", "mane"):
             return self.land_pixel(role, face, a, b, px, py)
         if role in ("body", "tail", "mantle", "head", "snout", "wing"):
             if face == "top":
@@ -277,7 +318,15 @@ class Painter:
                     colour = col["eye"]
                     if "eyes" in self.glow:
                         glowing = col["eye"]
-            if role == "head" and side and not land:
+            if beast and role == "head" and side:
+                # Beasts and birds: an eye on each side of the head, towards the front and top.
+                if 0.55 < front < 0.95 and abs(b - 0.32) < 0.14 and abs(front - 0.72) < 0.12:
+                    colour = col["eye"]
+                    if "eyes" in self.glow:
+                        glowing = col["eye"]
+                    elif front > 0.74 and b < 0.3:
+                        colour = (235, 235, 230)
+            elif role == "head" and side and not land:
                 eye_t = 0.3 if sp["plan"] != "shark" else 0.4
                 big = "big_eyes" in sp["variant"] or sp["plan"] in ("squid",)
                 if front > 0.55 and abs(b - eye_t) < (0.18 if big else 0.12) and abs(front - 0.8) < (0.2 if big else 0.13):
@@ -351,7 +400,10 @@ class Painter:
         if role in ("barbel", "stalk", "bill", "beak"):
             colour = shade(col["fin"] if role == "barbel" else col["back"], 0.9 + 0.1 * self.noise(px, py, 1))
             if role == "beak":
-                colour = mix(col["side"], (230, 230, 210), 0.5)
+                if sp["plan"] in ("bird", "flybird"):
+                    colour = shade(col.get("beak", col["accent"]), 0.9 + 0.15 * (1 - b))
+                else:
+                    colour = mix(col["side"], (230, 230, 210), 0.5)
             return colour, 255, None
         if role == "lure":
             colour = col["accent"]
@@ -425,6 +477,14 @@ def _land_pixel(self, role, face, a, b, px, py):
     if role == "ear":
         inner = face in ("north", "south") and 0.25 < a < 0.75 and 0.15 < b < 0.9
         return (col["fin"] if inner else col["side"]), 255, None
+    if role == "horn":
+        colour = col.get("horn", col["accent"])
+        return shade(colour, 0.85 + 0.25 * (1.0 - b) * self.noise(px, py, 1.3)), 255, None
+    if role == "tusk":
+        return shade((236, 228, 205), 0.9 + 0.1 * (1.0 - b)), 255, None
+    if role == "mane":
+        colour = col.get("mane", col["accent"])
+        return shade(colour, 0.8 + 0.3 * self.noise(px * 1.3, py * 2.1, 1.0)), 255, None
     base = col["side"] if role == "limb" else col["fin"]
     colour = shade(base, 1.0 - 0.3 * b)
     if role == "leg" and b > 0.85:

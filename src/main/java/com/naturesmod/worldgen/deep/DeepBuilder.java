@@ -65,6 +65,8 @@ public final class DeepBuilder {
 	private final BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
 	/** For layout choices: every chunk replays the same sequence. */
 	final RandomSource layout;
+	/** The climate the structure was placed in, when its piece knows it. */
+	private Climate climate;
 
 	DeepBuilder(WorldGenLevel level, BoundingBox box, int cx, int cy, int cz, Rotation rotation, long seed, String lootFolder) {
 		this(level, box, cx, cy, cz, rotation, seed, lootFolder, WATER);
@@ -227,6 +229,19 @@ public final class DeepBuilder {
 
 	BlockState open() {
 		return open;
+	}
+
+	/** The climate at the middle of the structure, for the builders that dress themselves to suit it. */
+	Climate climate() {
+		if (climate == null) {
+			climate = Climate.of(level.getBiome(at(0, 0, 0)));
+		}
+		return climate;
+	}
+
+	DeepBuilder withClimate(Climate climate) {
+		this.climate = climate;
+		return this;
 	}
 
 	/** A closed room: walls, floor and roof with water inside. */

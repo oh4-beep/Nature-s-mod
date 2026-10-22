@@ -1,0 +1,22 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 1983621409,
+    "separation": 3,
+    "spacing": 10,
+    "exclusion_zone": {
+      "other_set": "minecraft:villages",
+      "chunk_count": 3
+    }
+  },
+  "structures": [
+    {
+      "structure": "naturesmod:land_easy",
+      "weight": 2
+    },
+    {
+      "structure": "naturesmod:land_medium",
+      "weight": 1
+    }
+  ]
+}

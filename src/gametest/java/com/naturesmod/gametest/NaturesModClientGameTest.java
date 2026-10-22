@@ -41,6 +41,8 @@ import com.naturesmod.creature.SeaCreature;
 import com.naturesmod.worldgen.deep.DeepKind;
 import com.naturesmod.worldgen.deep.DeepPiece;
 import com.naturesmod.worldgen.deep.DeepShowcase;
+import com.naturesmod.worldgen.deep.LandKind;
+import com.naturesmod.worldgen.deep.LandShowcase;
 
 /**
  * Plays through Nature's Mod's sea and Nether in a real client and screenshots what it sees:
@@ -99,6 +101,7 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 			scene("abyss", () -> abyss(context, world));
 			scene("nether", () -> nether(context, world));
 			scene("end", () -> end(context, world));
+			scene("lands", () -> lands(context, world));
 			// Last: building and visiting all 55 treasures loads the server more than anything else.
 			scene("treasures", () -> treasures(context, world));
 		}
@@ -409,6 +412,99 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 			ids.add(mob.getUUID());
 		}
 		return ids;
+	}
+
+	// --- the Overworld's lands ----------------------------------------------------------------
+
+	private static final List<List<String>> LAND_LINEUPS = List.of(List.of("giraffe", "elephant", "rhino", "hippo"),
+			List.of("moose", "bison", "grizzly_bear", "gorilla"), List.of("zebra", "lion", "jaguar", "snow_leopard", "hyena"),
+			List.of("ostrich", "deer", "boar", "crocodile", "flamingo"), List.of("monkey", "capybara", "penguin", "scorpion", "rattlesnake"),
+			List.of("vulture", "eagle", "owl", "toucan"));
+
+	/** Lines the Overworld's new animals up on a cleared field, then builds every kind of land structure and photographs it. */
+	private void lands(ClientGameTestContext context, TestSingleplayerContext world) {
+		command(world, "gamemode spectator @a");
+		BlockPos field = world.getServer().computeOnServer(server -> LandShowcase.drySite(server.overworld(), new BlockPos(640, 0, 640), 16));
+		if (field == null) {
+			failures.add("lands: no dry land for the animals");
+		} else {
+			teleport(context, world, Level.OVERWORLD, field.getX() + 0.5, field.getY() + 2.6, field.getZ() + 0.5, 0.0F, 8.0F);
+			command(world, String.format("fill %d %d %d %d %d %d minecraft:air", field.getX() - 16, field.getY() + 1, field.getZ() - 4,
+					field.getX() + 16, field.getY() + 14, field.getZ() + 28));
+			command(world, String.format("fill %d %d %d %d %d %d minecraft:grass_block", field.getX() - 16, field.getY(), field.getZ() - 4,
+					field.getX() + 16, field.getY(), field.getZ() + 28));
+			context.waitTicks(10);
+			for (List<String> lineup : LAND_LINEUPS) {
+				double biggest = lineup.stream().mapToDouble(id -> ModCreatures.species(ModCreatures.type(id)).scale()).max().orElse(1.0);
+				double spacing = 1.4 + biggest * 1.5;
+				double distance = 4.0 + biggest * 3.0 + lineup.size() * spacing * 0.35;
+				boolean walkers = ModCreatures.species(ModCreatures.type(lineup.getFirst())).walks();
+				double eye = walkers ? field.getY() + 2.6 + biggest * 0.8 : field.getY() + 7.0;
+				teleport(context, world, Level.OVERWORLD, field.getX() + 0.5, eye, field.getZ() + 0.5, 0.0F, walkers ? 8.0F : 0.0F);
+				List<UUID> ids = world.getServer().computeOnServer(server -> endLineup(world, lineup, spacing, distance, walkers));
+				context.waitTicks(20);
+				shoot(context, "land_creatures_" + lineup.getFirst());
+				world.getServer().runOnServer(server -> {
+					for (UUID id : ids) {
+						Entity entity = server.overworld().getEntity(id);
+						if (entity != null) {
+							entity.discard();
+						}
+					}
+				});
+			}
+		}
+		// Every kind of land structure, built facing the camera.
+		BlockPos site = new BlockPos(9000, 0, 9000);
+		for (LandKind kind : LandKind.values()) {
+			int reach = kind.tier().reach();
+			BlockPos from = site;
+			BlockPos center = world.getServer().computeOnServer(server -> {
+				BlockPos at = LandShowcase.drySite(server.overworld(), from, reach);
+				return at == null ? null : LandShowcase.build(server.overworld(), kind, at, Rotation.NONE).center();
+			});
+			if (center == null) {
+				failures.add("lands: no dry land for " + kind.id());
+				return;
+			}
+			double distance = reach * 1.6 + 8.0;
+			double[] view = world.getServer().computeOnServer(server -> landViewpoint(server.overworld(), center, reach, distance));
+			double x = view[0];
+			double z = view[1];
+			double y = Math.max(center.getY() + reach * 0.8 + 4.0, view[2] + 3.0);
+			double dx = center.getX() + 0.5 - x;
+			double dz = center.getZ() + 0.5 - z;
+			float yaw = (float) Math.toDegrees(-Math.atan2(dx, dz));
+			float pitch = (float) Math.toDegrees(Math.atan2(y - (center.getY() + reach * 0.3), Math.sqrt(dx * dx + dz * dz)));
+			teleport(context, world, Level.OVERWORLD, x, y, z, yaw, pitch);
+			context.waitTicks(10);
+			shoot(context, "land_" + kind.id());
+			site = center.offset(reach * 2 + 40, 0, 0);
+			if (site.getX() > 10400) {
+				site = new BlockPos(9000, 0, site.getZ() + 300);
+			}
+		}
+	}
+
+	/** A camera spot (x, z and the top of whatever stands under it) round a land structure, in front where the land allows. */
+	private static double[] landViewpoint(ServerLevel level, BlockPos center, int reach, double distance) {
+		double[] best = null;
+		for (int k = 0; k < 8; k++) {
+			double angle = Math.toRadians(45.0 * k);
+			double ox = -distance * 0.4;
+			double oz = -distance;
+			double x = center.getX() + 0.5 + ox * Math.cos(angle) - oz * Math.sin(angle);
+			double z = center.getZ() + 0.5 + ox * Math.sin(angle) + oz * Math.cos(angle);
+			level.getChunk((int) Math.floor(x) >> 4, (int) Math.floor(z) >> 4);
+			int ground = level.getHeight(Heightmap.Types.MOTION_BLOCKING, (int) Math.floor(x), (int) Math.floor(z));
+			if (best == null || ground < best[2]) {
+				best = new double[] {x, z, ground};
+			}
+			if (ground <= center.getY() + reach * 0.6) {
+				return new double[] {x, z, ground};
+			}
+		}
+		return best;
 	}
 
 	// --- the treasures of the deep ------------------------------------------------------

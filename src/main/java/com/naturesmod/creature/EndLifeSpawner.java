@@ -158,7 +158,7 @@ public final class EndLifeSpawner {
 		if (byBiome == null) {
 			Map<Identifier, List<SpeciesData>> map = new HashMap<>();
 			for (SpeciesData species : CreatureSpecies.ALL) {
-				if (species.inWater()) {
+				if (species.inWater() || species.overworld()) {
 					continue;
 				}
 				for (String habitat : species.habitats()) {

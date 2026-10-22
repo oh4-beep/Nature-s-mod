@@ -23,7 +23,8 @@ import net.minecraft.world.entity.MobCategory;
  */
 public record SpeciesData(String id, String plan, Behavior behavior, String category, float scale, float width, float height,
 		double health, double attack, double speed, int groupMin, int groupMax, int weight, boolean bucket, boolean glow,
-		boolean translucent, String depth, String sound, int segments, List<String> habitats, String effect, String medium) {
+		boolean translucent, String depth, String sound, int segments, List<String> habitats, String effect, String medium, float seat,
+		String world) {
 
 	public MobCategory mobCategory() {
 		return switch (category) {
@@ -46,6 +47,16 @@ public record SpeciesData(String id, String plan, Behavior behavior, String cate
 
 	public boolean walks() {
 		return "land".equals(medium);
+	}
+
+	/** A beast or bird of the Overworld's lands and skies (rather than of the seas or of the End). */
+	public boolean overworld() {
+		return "overworld".equals(world);
+	}
+
+	/** Whether it can be saddled and ridden; {@link #seat} is how high its rider sits, in blocks. */
+	public boolean rideable() {
+		return seat > 0.0F;
 	}
 
 	public boolean isJelly() {

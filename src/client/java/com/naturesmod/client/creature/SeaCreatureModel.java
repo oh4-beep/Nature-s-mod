@@ -14,7 +14,7 @@ import com.naturesmod.creature.SpeciesData;
 /**
  * Animates any creature model built from one of the body plans: tails that beat and bodies that
  * ripple, fins that scull, wings that flap, bells that pulse and jaws that snap, and the legs of
- * the End's walkers.
+ * everything that walks, in the End and in the Overworld.
  */
 public class SeaCreatureModel extends EntityModel<CreatureRenderState> {
 	private static final float DEG = (float) (Math.PI / 180.0);
@@ -58,6 +58,14 @@ public class SeaCreatureModel extends EntityModel<CreatureRenderState> {
 	private final ModelPart rightAntenna;
 	private final ModelPart leftMandible;
 	private final ModelPart rightMandible;
+	// The Overworld's beasts and birds.
+	private final ModelPart neck;
+	private final ModelPart trunk;
+	private final ModelPart tailTip;
+	private final ModelPart leftPincer;
+	private final ModelPart rightPincer;
+	/** How long the legs are, in model pixels: long legs take long, slow strides. */
+	private final float legLength;
 
 	public SeaCreatureModel(ModelPart root, SpeciesData species) {
 		super(root, species.translucent() ? RenderTypes::entityTranslucent : RenderTypes::entityCutout);
@@ -100,6 +108,13 @@ public class SeaCreatureModel extends EntityModel<CreatureRenderState> {
 		this.rightAntenna = parts.apply("right_antenna");
 		this.leftMandible = parts.apply("left_mandible");
 		this.rightMandible = parts.apply("right_mandible");
+		this.neck = parts.apply("neck");
+		this.trunk = parts.apply("trunk");
+		this.tailTip = parts.apply("tail_tip");
+		this.leftPincer = parts.apply("left_pincer");
+		this.rightPincer = parts.apply("right_pincer");
+		ModelPart leg = this.leftFrontLeg != null ? this.leftFrontLeg : this.leftLeg;
+		this.legLength = leg != null ? Math.max(2.0F, 24.0F - leg.y) : 8.0F;
 	}
 
 	private static List<ModelPart> numbered(Function<String, ModelPart> parts, String prefix) {
@@ -132,6 +147,11 @@ public class SeaCreatureModel extends EntityModel<CreatureRenderState> {
 			case "golem" -> this.animateGolem(state, age);
 			case "stalker" -> this.animateStalker(state, age);
 			case "hopper" -> this.animateHopper(state, age);
+			case "mammal" -> this.animateBeast(state, age);
+			case "primate" -> this.animatePrimate(state, age);
+			case "bird" -> this.animateBird(state, age);
+			case "flybird" -> this.animateFlight(age);
+			case "reptile" -> this.animateReptile(state, age);
 			default -> this.animateFish(age, tempo, moving, stranded);
 		}
 		this.animateJaw(state, age);
@@ -143,6 +163,174 @@ public class SeaCreatureModel extends EntityModel<CreatureRenderState> {
 			}
 		} else if (this.body != null && !"jelly".equals(this.species.plan()) && !"seahorse".equals(this.species.plan())) {
 			this.body.xRot += state.xRot * DEG;
+		}
+	}
+
+	// --- the Overworld's beasts and birds ---------------------------------------------------------------
+
+	/** Stride frequency for these legs: the longer the leg, the slower and longer the stride. */
+	private float stride() {
+		return 0.6662F * Mth.sqrt(8.0F / this.legLength);
+	}
+
+	/** A four-legged walk (diagonal pairs together), the head nodding, tail swishing, ears and trunk swaying. */
+	private void animateBeast(CreatureRenderState state, float age) {
+		float pos = state.walkAnimationPos * this.stride();
+		float speed = Mth.clamp(state.walkAnimationSpeed, 0.0F, 1.0F);
+		float swing = Mth.cos(pos) * 1.1F * speed;
+		if (this.leftFrontLeg != null) {
+			this.leftFrontLeg.xRot += swing;
+		}
+		if (this.rightHindLeg != null) {
+			this.rightHindLeg.xRot += swing;
+		}
+		if (this.rightFrontLeg != null) {
+			this.rightFrontLeg.xRot -= swing;
+		}
+		if (this.leftHindLeg != null) {
+			this.leftHindLeg.xRot -= swing;
+		}
+		if (this.neck != null) {
+			this.neck.xRot += Mth.sin(pos * 2.0F) * 0.06F * speed + Mth.sin(age * 0.03F) * 0.03F;
+		}
+		if (this.head != null && state.attacking) {
+			// Head down to charge, gore or bite.
+			this.head.xRot += 0.35F + 0.15F * Mth.sin(age * 0.5F);
+		}
+		if (this.tail != null) {
+			this.tail.yRot += Mth.sin(age * 0.11F) * 0.3F;
+			this.tail.xRot += Mth.sin(age * 0.07F) * 0.08F;
+		}
+		if (this.trunk != null) {
+			this.trunk.xRot += Mth.sin(age * 0.05F) * 0.12F - (state.attacking ? 0.9F : 0.0F);
+			this.trunk.zRot += Mth.sin(age * 0.04F + 1.0F) * 0.08F;
+		}
+		// Ears flick now and then; an elephant's fan slowly.
+		float flick = Mth.sin(age * 0.09F) > 0.92F ? 0.3F : 0.0F;
+		if (this.leftEar != null) {
+			this.leftEar.zRot += flick;
+			this.leftEar.yRot += Mth.sin(age * 0.04F) * 0.12F;
+		}
+		if (this.rightEar != null) {
+			this.rightEar.zRot -= flick;
+			this.rightEar.yRot -= Mth.sin(age * 0.04F) * 0.12F;
+		}
+	}
+
+	/** Apes and monkeys: legs and long arms swing in turn; a monkey's tail curls and uncurls; a gorilla beats its chest. */
+	private void animatePrimate(CreatureRenderState state, float age) {
+		float pos = state.walkAnimationPos * 0.9F;
+		float speed = Mth.clamp(state.walkAnimationSpeed, 0.0F, 1.0F);
+		float swing = Mth.cos(pos) * 1.0F * speed;
+		if (this.leftLeg != null) {
+			this.leftLeg.xRot += swing;
+		}
+		if (this.rightLeg != null) {
+			this.rightLeg.xRot -= swing;
+		}
+		if (state.attacking) {
+			// Arms up, and down on whatever is in front of it.
+			float beat = Mth.sin(age * 0.6F);
+			if (this.leftArm != null) {
+				this.leftArm.xRot += -1.8F + beat * 0.6F;
+			}
+			if (this.rightArm != null) {
+				this.rightArm.xRot += -1.8F - beat * 0.6F;
+			}
+		} else {
+			if (this.leftArm != null) {
+				this.leftArm.xRot -= swing;
+				this.leftArm.zRot -= 0.05F + Mth.sin(age * 0.05F) * 0.03F;
+			}
+			if (this.rightArm != null) {
+				this.rightArm.xRot += swing;
+				this.rightArm.zRot += 0.05F + Mth.sin(age * 0.05F) * 0.03F;
+			}
+		}
+		if (this.tail != null) {
+			this.tail.xRot += Mth.sin(age * 0.06F) * 0.2F;
+			this.tail.yRot += Mth.sin(age * 0.045F) * 0.25F;
+		}
+		if (this.tailTip != null) {
+			this.tailTip.xRot += Mth.sin(age * 0.06F - 0.8F) * 0.35F;
+		}
+	}
+
+	/** Birds that walk: long strides, the head bobbing with every step; a penguin waddles, wings out. */
+	private void animateBird(CreatureRenderState state, float age) {
+		float pos = state.walkAnimationPos * this.stride() * 1.2F;
+		float speed = Mth.clamp(state.walkAnimationSpeed, 0.0F, 1.0F);
+		float swing = Mth.cos(pos) * 1.2F * speed;
+		if (this.leftLeg != null) {
+			this.leftLeg.xRot += swing;
+		}
+		if (this.rightLeg != null) {
+			this.rightLeg.xRot -= swing;
+		}
+		if (this.neck != null) {
+			this.neck.xRot += Mth.sin(pos * 2.0F) * 0.12F * speed;
+			// Now and then, a peck at the ground.
+			float peck = Mth.sin(age * 0.05F);
+			if (speed < 0.1F && peck > 0.85F) {
+				this.neck.xRot += (peck - 0.85F) * 6.0F;
+			}
+		}
+		boolean penguin = this.neck == null;
+		if (penguin && this.body != null) {
+			this.body.zRot += Mth.sin(pos) * 0.18F * speed;
+		}
+		float flap = penguin ? 0.25F + 0.4F * speed : 0.15F * speed * Math.abs(Mth.sin(age * 0.6F));
+		if (this.leftWing != null) {
+			this.leftWing.zRot -= flap * (penguin ? 1.0F : Mth.sin(age * 0.6F));
+		}
+		if (this.rightWing != null) {
+			this.rightWing.zRot += flap * (penguin ? 1.0F : Mth.sin(age * 0.6F));
+		}
+	}
+
+	/** Birds on the wing: a few strong beats, then a long glide on outstretched wings. */
+	private void animateFlight(float age) {
+		float cycle = age % 140.0F;
+		float flap = cycle < 70.0F ? Mth.sin(age * 0.45F) * 0.7F : 0.08F + Mth.sin(age * 0.05F) * 0.04F;
+		if (this.leftWing != null) {
+			this.leftWing.zRot += flap;
+		}
+		if (this.rightWing != null) {
+			this.rightWing.zRot -= flap;
+		}
+		if (this.tail != null) {
+			this.tail.xRot += Mth.sin(age * 0.04F) * 0.12F;
+		}
+		if (this.head != null) {
+			this.head.yRot += Mth.sin(age * 0.03F) * 0.3F;
+		}
+	}
+
+	/** A crocodile's sprawling walk: the legs reach and push, the body and tail snake from side to side. */
+	private void animateReptile(CreatureRenderState state, float age) {
+		float pos = state.walkAnimationPos * 0.8F;
+		float speed = Mth.clamp(state.walkAnimationSpeed, 0.0F, 1.0F);
+		float swing = Mth.cos(pos) * 0.8F * speed;
+		if (this.leftFrontLeg != null) {
+			this.leftFrontLeg.yRot += swing;
+		}
+		if (this.rightHindLeg != null) {
+			this.rightHindLeg.yRot += swing;
+		}
+		if (this.rightFrontLeg != null) {
+			this.rightFrontLeg.yRot -= swing;
+		}
+		if (this.leftHindLeg != null) {
+			this.leftHindLeg.yRot -= swing;
+		}
+		if (this.body != null) {
+			this.body.yRot += Mth.sin(pos) * 0.1F * speed;
+		}
+		if (this.tail != null) {
+			this.tail.yRot += Mth.sin(pos - 1.0F) * 0.3F * speed + Mth.sin(age * 0.04F) * 0.08F;
+		}
+		if (this.tailFin != null) {
+			this.tailFin.yRot += Mth.sin(pos - 2.0F) * 0.4F * speed + Mth.sin(age * 0.04F - 0.8F) * 0.12F;
 		}
 	}
 
@@ -162,6 +350,20 @@ public class SeaCreatureModel extends EntityModel<CreatureRenderState> {
 		}
 		this.sway(this.leftAntenna, age, 0.0F);
 		this.sway(this.rightAntenna, age, 2.0F);
+		// A scorpion's sting quivers over its back, and strikes; its pincers snap.
+		if (this.tail != null) {
+			this.tail.xRot += Mth.sin(age * 0.08F) * 0.08F + (state.attacking ? 0.35F * Math.abs(Mth.sin(age * 0.5F)) : 0.0F);
+		}
+		if (this.tailTip != null) {
+			this.tailTip.xRot += Mth.sin(age * 0.08F + 0.5F) * 0.1F;
+		}
+		float snap = state.attacking ? 0.35F * Math.abs(Mth.sin(age * 0.45F)) : 0.05F * Mth.sin(age * 0.1F);
+		if (this.leftPincer != null) {
+			this.leftPincer.yRot -= snap;
+		}
+		if (this.rightPincer != null) {
+			this.rightPincer.yRot += snap;
+		}
 		float chew = state.attacking ? 0.4F * Math.abs(Mth.sin(age * 0.5F)) : 0.08F * Mth.sin(age * 0.15F);
 		if (this.leftMandible != null) {
 			this.leftMandible.yRot -= chew;

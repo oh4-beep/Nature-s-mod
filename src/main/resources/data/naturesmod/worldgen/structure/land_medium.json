@@ -1,0 +1,6 @@
+{
+  "type": "naturesmod:land_medium",
+  "biomes": "#naturesmod:has_structure/land_structure",
+  "spawn_overrides": {},
+  "step": "surface_structures"
+}
