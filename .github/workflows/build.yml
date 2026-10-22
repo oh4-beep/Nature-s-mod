@@ -54,7 +54,13 @@ jobs:
           max-tick-time=-1
           EOF
       - name: run worldgen smoke test
-        run: ./gradlew runSmokeTest
+        run: mkdir -p /tmp/jfr && ./gradlew runSmokeTest
+        env:
+          # A CPU profile of the run, to find what the mod costs (see .github/profile).
+          JAVA_TOOL_OPTIONS: -XX:StartFlightRecording=filename=/tmp/jfr/server-%p.jfr,settings=profile,dumponexit=true
+      - name: print cpu profile
+        if: always()
+        run: python3 .github/profile/hotspots.py /tmp/jfr/*.jfr || true
       - name: print terrain report
         if: always()
         run: cat run/smoketest/naturesmod-report.txt || true
@@ -91,7 +97,12 @@ jobs:
           echo "eula=true" > build/run/clientGameTest/eula.txt
           printf 'version:4896\npreferredGraphicsBackend:"opengl"\nrenderDistance:6\nsimulationDistance:6\nmaxFps:30\n' > build/run/clientGameTest/options.txt
       - name: run client game test
-        run: chmod +x ./gradlew && xvfb-run -a -s "-screen 0 1280x720x24" ./gradlew runClientGameTest --stacktrace
+        run: mkdir -p /tmp/jfr && chmod +x ./gradlew && xvfb-run -a -s "-screen 0 1280x720x24" ./gradlew runClientGameTest --stacktrace
+        env:
+          JAVA_TOOL_OPTIONS: -XX:StartFlightRecording=filename=/tmp/jfr/client-%p.jfr,settings=profile,dumponexit=true
+      - name: print cpu profile
+        if: always()
+        run: python3 .github/profile/hotspots.py /tmp/jfr/*.jfr || true
       - name: print screenshots
         if: always()
         # Shrunk to small JPEGs so the whole set fits in the log.
@@ -106,4 +117,3 @@ jobs:
             base64 -w 3000 "/tmp/$n" | sed 's/^/[map] /'
             echo "[map-end $n]"
           done
-  # Temporary development aid: prints the vanilla sources the new content builds on.
