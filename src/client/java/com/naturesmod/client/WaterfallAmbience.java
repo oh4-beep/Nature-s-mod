@@ -28,6 +28,10 @@ public final class WaterfallAmbience {
 	private static final int SLICES = 16;
 	private static final int MIN_FALL = 3;
 	private static final double MAX_DISTANCE_SQR = 48 * 48;
+	/** Far falls are seen through haze anyway: beyond this they mist at half the rate. */
+	private static final double NEAR_DISTANCE_SQR = 24 * 24;
+	/** However many falls are in view, never more particles than this a tick. */
+	private static final int PARTICLE_BUDGET = 48;
 
 	private static Long2IntMap impacts = new Long2IntOpenHashMap();
 	private static Long2IntMap scanning = new Long2IntOpenHashMap();
@@ -100,6 +104,7 @@ public final class WaterfallAmbience {
 			return;
 		}
 		RandomSource random = level.getRandom();
+		int budget = PARTICLE_BUDGET;
 		for (Long2IntMap.Entry entry : impacts.long2IntEntrySet()) {
 			long key = entry.getLongKey();
 			int height = entry.getIntValue();
@@ -109,14 +114,16 @@ public final class WaterfallAmbience {
 			double dx = x - player.getX();
 			double dy = y - player.getY();
 			double dz = z - player.getZ();
-			if (dx * dx + dy * dy + dz * dz > MAX_DISTANCE_SQR) {
+			double distanceSqr = dx * dx + dy * dy + dz * dz;
+			if (distanceSqr > MAX_DISTANCE_SQR) {
 				continue;
 			}
 			double power = Math.min(height, 40) / 10.0;
 
-			if (config.waterfallMist) {
-				double mist = power * 0.9 * config.mistDensity;
-				int count = (int) mist + (random.nextDouble() < mist - (int) mist ? 1 : 0);
+			if (config.waterfallMist && budget > 0) {
+				double mist = power * 0.9 * config.mistDensity * (distanceSqr > NEAR_DISTANCE_SQR ? 0.5 : 1.0);
+				int count = Math.min(budget, (int) mist + (random.nextDouble() < mist - (int) mist ? 1 : 0));
+				budget -= count + 1;
 				for (int i = 0; i < count; i++) {
 					level.addParticle(ParticleTypes.CLOUD,
 							x + random.nextGaussian() * 0.7, y + 0.2 + random.nextDouble() * 0.6, z + random.nextGaussian() * 0.7,

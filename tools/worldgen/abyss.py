@@ -420,10 +420,14 @@ def material_rule():
         cond(STEEP, cond(under_floor, block("tuff"))),
         cond(on_floor, seq(cond(patch(0.35), block("gravel")), cond(patch(-0.3, 0.35), block("tuff")), block("cobbled_deepslate"))),
     ))
+    # Every rule paints the floor or just under it: the hundreds of blocks of stone below that, in
+    # every column, skip the lot (and the biome lookups that go with it) rather than test each one.
     return seq(
         "minecraft:bedrock_floor",
-        cond(STEEP, cond(under_floor, seq(cond(patch(0.3, 1.0e9, "detail"), block("tuff")), block("deepslate")))),
-        vents, reef, bones, plains, slopes,
+        cond(under_floor, seq(
+            cond(STEEP, seq(cond(patch(0.3, 1.0e9, "detail"), block("tuff")), block("deepslate"))),
+            vents, reef, bones, plains, slopes,
+        )),
     )
 
 
@@ -502,7 +506,9 @@ def features():
         "ore_copper": ore("copper", 12, 8, 8, 600),
         "ore_riches_diamond": riches_ore("diamond", 8, 8, 8, 150),
         "ore_riches_debris": riches_ore("ancient_debris", 3, 6, 8, 150),
-        "glow_lichen": ("minecraft:glow_lichen", [count(90), IN_SQUARE, height_range(8, 900), BIOME]),
+        # Lichen only grows on rock: tries out in the open water above the floor are wasted (each one
+        # searches the water around it for a wall), so it keeps to the heights the floor reaches.
+        "glow_lichen": ("minecraft:glow_lichen", [count(50), IN_SQUARE, height_range(8, 820), BIOME]),
         "giant_kelp": (abyss_feature("giant_kelp"), floor_placement(n=5)),
         "garden_reef": ({"type": f"{NS}:sea_garden", "style": "abyss_reef"}, floor_placement(n=4)),
         "garden_vents": ({"type": f"{NS}:sea_garden", "style": "abyss_vents"}, floor_placement(n=4)),

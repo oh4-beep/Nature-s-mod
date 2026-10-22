@@ -307,11 +307,8 @@ def material_rule():
     moss = mod_block("end_moss")
     voidstone = mod_block("voidstone")
     rules = [
-        # Bare cliffs and the undersides of the new lands are dark voidstone.
-        cond(in_biome(*BIOMES), seq(
-            cond(ON_CEILING, voidstone),
-            cond(STEEP, cond(UNDER_FLOOR, voidstone)),
-        )),
+        # Bare cliffs are dark voidstone (the undersides of the lands are, below).
+        cond(in_biome(*BIOMES), cond(STEEP, voidstone)),
         cond(in_biome("chorus_forest", "enderglow_wilds", "sky_isles"), cond(ON_FLOOR, seq(cond(patch(-1.0e9, -0.55), block("end_stone")), moss))),
         cond(in_biome("void_marsh"), seq(
             cond(ON_FLOOR, seq(cond(patch(-1.0e9, -0.35), voidstone), moss)),
@@ -331,7 +328,12 @@ def material_rule():
             cond(UNDER_FLOOR, voidstone),
         )),
     ]
-    return seq(*rules)
+    # Every rule paints the ground's surface, just under it, or the undersides of the lands: the
+    # stone deep inside the continents skips the lot (and its biome lookups) rather than test each block.
+    return seq(
+        cond(ON_CEILING, cond(in_biome(*BIOMES), voidstone)),
+        cond(UNDER_FLOOR, seq(*rules)),
+    )
 
 
 # --- features -----------------------------------------------------------------------------
