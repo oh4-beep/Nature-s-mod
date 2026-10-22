@@ -331,7 +331,17 @@ final class EndTest {
 			starts.add(mob.position());
 		}
 		test.line("spawned %d creatures of the End around %s", spawned.size(), land);
+		// How far each has been from where it started, at any time over the ten seconds.
+		double[] farthest = new double[spawned.size()];
+		for (int t = 10; t < 200; t += 10) {
+			ServerScheduler.schedule(t, () -> {
+				for (int i = 0; i < spawned.size(); i++) {
+					farthest[i] = Math.max(farthest[i], spawned.get(i).position().distanceTo(starts.get(i)));
+				}
+			});
+		}
 		ServerScheduler.schedule(200, () -> {
+			int still = 0;
 			int alive = 0;
 			int moved = 0;
 			StringBuilder report = new StringBuilder();
@@ -343,9 +353,13 @@ final class EndTest {
 					continue;
 				}
 				alive++;
-				double distance = mob.position().distanceTo(starts.get(i));
+				double distance = Math.max(farthest[i], mob.position().distanceTo(starts.get(i)));
 				if (distance > 0.5) {
 					moved++;
+				}
+				if (!end.isPositionEntityTicking(mob.blockPosition())) {
+					still++;
+					report.append("(not ticking) ");
 				}
 				report.append(String.format("%s:%.1f@y%d ", id, distance, mob.getBlockY()));
 				if (ModCreatures.species(mob.getType()).flies() && mob.getY() < land.getY() - 20) {
@@ -357,7 +371,9 @@ final class EndTest {
 			if (alive < spawned.size() - 1) {
 				test.fail("End creatures died within ten seconds of being let loose");
 			}
-			if (moved * 2 < alive) {
+			if (still > 0) {
+				test.line("%d of them stood in chunks that were not ticking, so their movement says nothing", still);
+			} else if (moved * 2 < alive) {
 				test.fail("most End creatures did not move about");
 			}
 			done.run();

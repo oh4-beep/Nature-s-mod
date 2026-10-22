@@ -77,6 +77,7 @@ public final class SmokeTest {
 		ServerLifecycleEvents.SERVER_STARTING.register(server -> System.out.println("[smoketest] server starting"));
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
 			running = new SmokeTest(server);
+			Profile.start();
 			running.start();
 		});
 		// Never let a stuck test hold CI hostage, but keep what it found so far.
@@ -92,6 +93,7 @@ public final class SmokeTest {
 				test.fail("timed out after 16 minutes");
 				test.writeReport();
 			}
+			Profile.save();
 			Runtime.getRuntime().halt(2);
 		}, "naturesmod-smoketest-watchdog");
 		watchdog.setDaemon(true);
@@ -569,6 +571,7 @@ public final class SmokeTest {
 
 	private void finish() {
 		writeReport();
+		Profile.save();
 		if (failed) {
 			Runtime.getRuntime().halt(1);
 		}

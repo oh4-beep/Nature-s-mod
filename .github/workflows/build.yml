@@ -54,13 +54,11 @@ jobs:
           max-tick-time=-1
           EOF
       - name: run worldgen smoke test
-        run: mkdir -p /tmp/jfr && ./gradlew runSmokeTest
-        env:
-          # A CPU profile of the run, to find what the mod costs (see .github/profile).
-          JAVA_TOOL_OPTIONS: -XX:StartFlightRecording=filename=/tmp/jfr/server-%p.jfr,settings=profile,dumponexit=true
+        run: ./gradlew runSmokeTest
       - name: print cpu profile
+        # The test records a CPU profile of itself, to find what the mod costs (see .github/profile).
         if: always()
-        run: python3 .github/profile/hotspots.py /tmp/jfr/*.jfr || true
+        run: python3 .github/profile/hotspots.py run/smoketest/profile.jfr || true
       - name: print terrain report
         if: always()
         run: cat run/smoketest/naturesmod-report.txt || true
