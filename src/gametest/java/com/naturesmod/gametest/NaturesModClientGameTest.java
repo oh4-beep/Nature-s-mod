@@ -88,8 +88,8 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 			world.getConnection().waitForChunksRender();
 			// F1: hide the hotbar and crosshair so the screenshots show only the world.
 			context.getInput().pressKey(KEY_F1);
-			world.getServer().runCommand("time set noon");
-			world.getServer().runCommand("weather clear");
+			command(world, "time set noon");
+			command(world, "weather clear");
 			scene("spawn", () -> context.takeScreenshot("nm_overworld_spawn"));
 			scene("armor", () -> armor(context, world));
 			scene("creatures", () -> creatures(context, world));
@@ -118,11 +118,17 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 
 	private static void teleport(ClientGameTestContext context, TestSingleplayerContext world, ResourceKey<Level> dimension,
 			double x, double y, double z, float yaw, float pitch) {
-		world.getServer().runCommand(String.format(java.util.Locale.ROOT, "execute in %s run tp @a %.2f %.2f %.2f %.1f %.1f",
+		command(world, String.format(java.util.Locale.ROOT, "execute in %s run tp @a %.2f %.2f %.2f %.1f %.1f",
 				dimension.identifier(), x, y, z, yaw, pitch));
 		context.waitTicks(5);
 		world.getConnection().waitForChunksRender();
 		context.waitTicks(10);
+	}
+
+	/** Runs a command quietly, so its feedback does not end up in the chat on the screenshots. */
+	private static void command(TestSingleplayerContext world, String command) {
+		world.getServer().runOnServer(server -> server.getCommands().performPrefixedCommand(server.createCommandSourceStack().withSuppressedOutput(),
+				command));
 	}
 
 	private static void shoot(ClientGameTestContext context, String name) {
@@ -132,7 +138,7 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 	// --- the diving suits ----------------------------------------------------------------
 
 	private void armor(ClientGameTestContext context, TestSingleplayerContext world) {
-		world.getServer().runCommand("gamemode creative @a");
+		command(world, "gamemode creative @a");
 		BlockPos ground = world.getServer().computeOnServer(server -> {
 			ServerPlayer player = world.getConnection().getServerPlayer();
 			ServerLevel level = server.overworld();
@@ -141,27 +147,27 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 			return new BlockPos(x, level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z), z);
 		});
 		// Stand on a pillar in the sky so nothing gets between the camera and the diver.
-		world.getServer().runCommand(String.format(java.util.Locale.ROOT, "fill %d %d %d %d %d %d minecraft:dark_prismarine",
+		command(world, String.format(java.util.Locale.ROOT, "fill %d %d %d %d %d %d minecraft:dark_prismarine",
 				ground.getX(), ground.getY() + 40, ground.getZ(), ground.getX(), ground.getY() + 44, ground.getZ()));
 		teleport(context, world, Level.OVERWORLD, ground.getX() + 0.5, ground.getY() + 45, ground.getZ() + 0.5, 180.0F, 0.0F);
 		context.runOnClient(client -> client.options.setCameraType(CameraType.THIRD_PERSON_FRONT));
 		for (String set : new String[] {"tidewalker", "abyssal"}) {
 			for (String[] piece : new String[][] {{"head", "helmet"}, {"chest", "chestplate"}, {"legs", "leggings"}, {"feet", "boots"}}) {
-				world.getServer().runCommand("item replace entity @a armor." + piece[0] + " with naturesmod:" + set + "_" + piece[1]);
+				command(world, "item replace entity @a armor." + piece[0] + " with naturesmod:" + set + "_" + piece[1]);
 			}
 			context.waitTicks(10);
 			shoot(context, "armor_" + set);
 		}
 		context.runOnClient(client -> client.options.setCameraType(CameraType.FIRST_PERSON));
-		world.getServer().runCommand("clear @a");
+		command(world, "clear @a");
 	}
 
 	// --- the creatures -------------------------------------------------------------------
 
 	private void creatures(ClientGameTestContext context, TestSingleplayerContext world) {
 		// Open water high up in the Abyss: nothing for the line-ups to hide in.
-		world.getServer().runCommand("gamemode spectator @a");
-		world.getServer().runCommand("effect give @a minecraft:night_vision infinite 0 true");
+		command(world, "gamemode spectator @a");
+		command(world, "effect give @a minecraft:night_vision infinite 0 true");
 		teleport(context, world, Abyss.LEVEL, 3000.5, 960, 3000.5, 0.0F, 0.0F);
 		// Let the eyes get used to the water so the fog lifts.
 		context.waitTicks(80);
@@ -249,11 +255,11 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 
 	private void abyss(ClientGameTestContext context, TestSingleplayerContext world) {
 		world.getServer().runOnServer(server -> Abyss.buildArrival(server.getLevel(Abyss.LEVEL), new BlockPos(0, Abyss.SEA_LEVEL - 1, 0)));
-		world.getServer().runCommand("gamemode creative @a");
+		command(world, "gamemode creative @a");
 		teleport(context, world, Abyss.LEVEL, 3.5, Abyss.SEA_LEVEL, 0.5, 90.0F, 25.0F);
 		shoot(context, "abyss_arrival");
-		world.getServer().runCommand("gamemode spectator @a");
-		world.getServer().runCommand("effect give @a minecraft:night_vision infinite 0 true");
+		command(world, "gamemode spectator @a");
+		command(world, "effect give @a minecraft:night_vision infinite 0 true");
 		teleport(context, world, Abyss.LEVEL, 3.5, Abyss.SEA_LEVEL - 20, 0.5, 90.0F, 25.0F);
 		context.waitTicks(80);
 		for (String biome : new String[] {"glowing_reef", "hydrothermal_vents", "bone_fields", "abyssal_plains"}) {
@@ -296,8 +302,8 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 
 	/** Builds every kind of treasure on the floor of the Abyss and photographs it from the front. */
 	private void treasures(ClientGameTestContext context, TestSingleplayerContext world) {
-		world.getServer().runCommand("gamemode spectator @a");
-		world.getServer().runCommand("effect give @a minecraft:night_vision infinite 0 true");
+		command(world, "gamemode spectator @a");
+		command(world, "effect give @a minecraft:night_vision infinite 0 true");
 		BlockPos site = new BlockPos(6000, 0, 6000);
 		for (DeepKind kind : DeepKind.values()) {
 			int reach = kind.tier().reach();
@@ -315,12 +321,13 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 				failures.add("treasures: no level floor for " + kind.id());
 				return;
 			}
-			// From in front and a little to the left, up high enough to see over the walls.
+			// From in front and a little to the left, up high enough to see over the walls; if a seamount
+			// stands there, from whichever side is open.
 			double distance = reach * 1.45 + 6.0;
-			double x = center.getX() + 0.5 - distance * 0.4;
-			double z = center.getZ() + 0.5 - distance;
-			int ground = world.getServer().computeOnServer(server -> floor(server.getLevel(Abyss.LEVEL), (int) Math.floor(x), (int) Math.floor(z)));
-			double y = Math.max(center.getY() + reach * 0.75 + 3.0, ground + 3.0);
+			double[] view = world.getServer().computeOnServer(server -> viewpoint(server.getLevel(Abyss.LEVEL), center, reach, distance));
+			double x = view[0];
+			double z = view[1];
+			double y = Math.max(center.getY() + reach * 0.75 + 3.0, view[2] + 3.0);
 			double dx = center.getX() + 0.5 - x;
 			double dz = center.getZ() + 0.5 - z;
 			float yaw = (float) Math.toDegrees(-Math.atan2(dx, dz));
@@ -334,16 +341,36 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 			}
 		}
 		// And one as a diver would really see it, without night vision.
-		world.getServer().runCommand("effect clear @a minecraft:night_vision");
+		command(world, "effect clear @a minecraft:night_vision");
 		context.waitTicks(40);
 		shoot(context, "treasure_last_without_night_vision");
+	}
+
+	/** A camera spot (x, z and the ground under it) around a structure, where the ground is not much higher than the structure. */
+	private static double[] viewpoint(ServerLevel level, BlockPos center, int reach, double distance) {
+		double[] best = null;
+		for (int k = 0; k < 8; k++) {
+			double angle = Math.toRadians(45.0 * k);
+			double ox = -distance * 0.4;
+			double oz = -distance;
+			double x = center.getX() + 0.5 + ox * Math.cos(angle) - oz * Math.sin(angle);
+			double z = center.getZ() + 0.5 + ox * Math.sin(angle) + oz * Math.cos(angle);
+			int ground = floor(level, (int) Math.floor(x), (int) Math.floor(z));
+			if (best == null || ground < best[2]) {
+				best = new double[] {x, z, ground};
+			}
+			if (ground <= center.getY() + reach * 0.6) {
+				return new double[] {x, z, ground};
+			}
+		}
+		return best;
 	}
 
 	// --- the Nether ----------------------------------------------------------------------
 
 	private void nether(ClientGameTestContext context, TestSingleplayerContext world) {
-		world.getServer().runCommand("gamemode spectator @a");
-		world.getServer().runCommand("effect give @a minecraft:night_vision infinite 0 true");
+		command(world, "gamemode spectator @a");
+		command(world, "effect give @a minecraft:night_vision infinite 0 true");
 		BlockPos cavern = world.getServer().computeOnServer(server -> openAir(server.getLevel(Level.NETHER), 150, 190));
 		if (cavern != null) {
 			teleport(context, world, Level.NETHER, cavern.getX() + 0.5, cavern.getY(), cavern.getZ() + 0.5, 0.0F, 8.0F);
@@ -353,7 +380,7 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 		} else {
 			failures.add("nether: no open cavern found");
 		}
-		world.getServer().runCommand("effect clear @a minecraft:night_vision");
+		command(world, "effect clear @a minecraft:night_vision");
 		for (String[] spot : new String[][] {{"ember_wastes", "60"}, {"brimstone_fields", "60"}, {"flesh_caverns", "60"},
 				{"minecraft:nether_wastes", "60"}, {"minecraft:soul_sand_valley", "60"}, {"glowstone_grotto", "170"}, {"obsidian_spires", "170"}}) {
 			String biome = spot[0];
@@ -371,7 +398,7 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 			shoot(context, "nether_" + biome.replace("minecraft:", ""));
 		}
 		// The strongholds of Hell, framed from inside their walls; night vision to see the detail.
-		world.getServer().runCommand("effect give @a minecraft:night_vision infinite 0 true");
+		command(world, "effect give @a minecraft:night_vision infinite 0 true");
 		for (String structure : new String[] {"infernal_citadel", "bone_pit", "ritual_circle"}) {
 			BlockPos at = world.getServer().computeOnServer(server -> locate(server.getLevel(Level.NETHER), NaturesMod.id(structure)));
 			if (at == null) {
@@ -403,7 +430,7 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 			teleport(context, world, Level.NETHER, camera[0], camera[1], camera[2], 0.0F, (float) camera[3]);
 			shoot(context, "nether_" + structure);
 		}
-		world.getServer().runCommand("effect clear @a minecraft:night_vision");
+		command(world, "effect clear @a minecraft:night_vision");
 	}
 
 	// --- finding places ------------------------------------------------------------------

@@ -12,6 +12,7 @@ import com.naturesmod.abyss.Abyss;
 import com.naturesmod.abyss.AltarBlock;
 import com.naturesmod.abyss.RiftBlock;
 import com.naturesmod.block.ModBlocks;
+import com.naturesmod.creature.Behavior;
 import com.naturesmod.creature.CreatureSpecies;
 import com.naturesmod.creature.ModCreatures;
 import com.naturesmod.creature.SpeciesData;
@@ -399,6 +400,7 @@ final class SeaTest {
 			try {
 				int alive = 0;
 				int moved = 0;
+				int swimmers = 0;
 				int inWater = 0;
 				StringBuilder still = new StringBuilder();
 				for (int i = 0; i < spawned.size(); i++) {
@@ -408,24 +410,29 @@ final class SeaTest {
 						continue;
 					}
 					alive++;
+					// Bosses lie in wait until something comes to fight them; everything else should roam.
+					boolean boss = ModCreatures.species(mob.getType()).behavior() == Behavior.BOSS;
 					double distance = Math.sqrt(mob.distanceToSqr(start[0], start[1], start[2]));
 					if (distance > 0.5) {
 						moved++;
 					} else {
 						still.append(BuiltInRegistries.ENTITY_TYPE.getKey(mob.getType()).getPath()).append(' ');
 					}
+					if (!boss) {
+						swimmers++;
+					}
 					if (mob.isInWater() || mob.level().getFluidState(mob.blockPosition()).is(FluidTags.WATER)) {
 						inWater++;
 					}
 				}
-				test.line("after 10s: %d alive, %d moved, %d in the water", alive, moved, inWater);
+				test.line("after 10s: %d alive (%d of them not bosses), %d moved, %d in the water", alive, swimmers, moved, inWater);
 				if (still.length() > 0) {
 					test.line("did not move: %s", still);
 				}
 				if (alive < spawned.size() * 3 / 4) {
 					test.fail("too many sea creatures died or vanished in 10 seconds");
 				}
-				if (moved < alive / 2) {
+				if (moved < swimmers / 2) {
 					test.fail("most sea creatures did not swim about");
 				}
 				for (Mob mob : spawned) {

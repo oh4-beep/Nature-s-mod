@@ -116,6 +116,16 @@ final class Vaults {
 		}
 		b.water(-1, 1, -6, 1, 3, -6);
 		b.set(0, 4, -6, Blocks.CHISELED_DEEPSLATE);
+		for (int x = -2; x <= 2; x += 4) {
+			b.pillar(x, -6, 1, 5, s(Blocks.CHISELED_DEEPSLATE));
+			b.set(x, 6, -6, Blocks.SEA_LANTERN);
+			b.lampPost(x * 2, -9, 1, 3, s(Blocks.DEEPSLATE_BRICK_WALL), lantern(true, false));
+		}
+		// Tall windows down both sides, lit from within.
+		for (int z = -4; z <= 5; z += 3) {
+			b.fill(-8, 3, z, -8, 6, z, joined(Blocks.GLASS_PANE, false));
+			b.fill(8, 3, z, 8, 6, z, joined(Blocks.GLASS_PANE, false));
+		}
 		// Rows of shelves either side of the aisle.
 		for (int side = -1; side <= 1; side += 2) {
 			for (int z = -4; z <= 3; z += 2) {
@@ -422,6 +432,17 @@ final class Vaults {
 		b.fill(-5, 0, -9, 5, 0, 9, Blocks.DARK_PRISMARINE);
 		b.fill(-1, 0, -9, 1, 0, 6, vanilla("red_wool"));
 		b.water(-1, 1, -10, 1, 4, -10);
+		// A lit portico before the door, and windows between the pillars.
+		for (int x = -3; x <= 3; x += 6) {
+			b.pillar(x, -11, 1, 7, s(Blocks.PRISMARINE_BRICKS));
+			b.set(x, 8, -11, Blocks.SEA_LANTERN);
+		}
+		b.fill(-3, 8, -12, 3, 8, -11, slab(Blocks.DARK_PRISMARINE_SLAB, false));
+		b.fill(-2, 0, -12, 2, 0, -11, Blocks.DARK_PRISMARINE);
+		for (int z = -6; z <= 6; z += 4) {
+			b.fill(-6, 4, z, -6, 8, z, joined(Blocks.GLASS_PANE, false));
+			b.fill(6, 4, z, 6, 8, z, joined(Blocks.GLASS_PANE, false));
+		}
 		for (int z = -8; z <= 8; z += 4) {
 			b.pillar(-6, z, 1, 10, s(Blocks.DARK_PRISMARINE));
 			b.pillar(6, z, 1, 10, s(Blocks.DARK_PRISMARINE));
