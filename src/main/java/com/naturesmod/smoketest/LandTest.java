@@ -161,7 +161,8 @@ final class LandTest {
 			for (int tries = 0; tries < 80 && site == null; tries++) {
 				BlockPos candidate = LandShowcase.drySite(level, cursor, reach);
 				if (candidate == null) {
-					break;
+					cursor = new BlockPos(3000, 0, cursor.getZ() + 700);
+					continue;
 				}
 				BoundingBox box = kind.bounds(candidate).inflatedBy(4);
 				if (built.stream().anyMatch(other -> other.intersects(box))) {
