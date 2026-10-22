@@ -178,7 +178,7 @@ public class AltarBlock extends Block {
 		}
 	}
 
-	static void award(ServerLevel level, ServerPlayer player, String advancement) {
+	public static void award(ServerLevel level, ServerPlayer player, String advancement) {
 		Identifier id = NaturesMod.id(advancement);
 		for (AdvancementHolder holder : level.getServer().getAdvancements().getAllAdvancements()) {
 			if (holder.id().equals(id)) {

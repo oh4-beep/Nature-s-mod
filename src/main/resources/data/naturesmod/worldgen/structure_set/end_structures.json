@@ -1,0 +1,22 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 771203945,
+    "separation": 3,
+    "spacing": 9
+  },
+  "structures": [
+    {
+      "structure": "naturesmod:end_outpost",
+      "weight": 6
+    },
+    {
+      "structure": "naturesmod:end_hall",
+      "weight": 3
+    },
+    {
+      "structure": "naturesmod:end_citadel",
+      "weight": 1
+    }
+  ]
+}

@@ -23,7 +23,7 @@ Vanilla's End Highlands keep a share of the continents, so the End Cities still 
 their own (they stand in the new biomes too).
 """
 
-from abyss import noise_json
+from abyss import DEEP_ENCHANT, ENCHANT, chest, empty, item, noise_json, pool
 
 NS = "naturesmod"
 DF = f"{NS}:end"
@@ -403,6 +403,67 @@ def features():
     return files
 
 
+# --- structures ----------------------------------------------------------------------------
+
+END_TIERS = {"end_outpost": 6, "end_hall": 3, "end_citadel": 1}
+WEAPONS = ["voidblade", "starcaller", "gravity_hammer", "skyrider_glaive"]
+
+
+def end_loot():
+    star = lambda w=1, n=1: item(f"{NS}:star_fragment", w, n)  # noqa: E731
+    weapon = [item(f"{NS}:{w}") for w in WEAPONS]
+    base = [item("ender_pearl", 10, (1, 3)), item("chorus_fruit", 8, (2, 6)), item("gold_ingot", 8, (2, 5)), item("iron_ingot", 8, (2, 6)),
+            item("emerald", 6, (1, 4)), item("diamond", 4, (1, 2)), item(f"{NS}:raw_starmetal", 8, (1, 4)), item("experience_bottle", 6, (1, 4)),
+            item(f"{NS}:void_crystal_cluster", 5, (1, 3)), item("book", 4, 1, ENCHANT)]
+    rich = [item("diamond", 12, (2, 5)), item("gold_ingot", 8, (4, 10)), item("emerald", 8, (3, 8)), item(f"{NS}:starmetal_ingot", 10, (1, 4)),
+            item("ender_pearl", 8, (2, 5)), item("experience_bottle", 6, (3, 8)), item("book", 8, 1, DEEP_ENCHANT), item("golden_apple", 4),
+            item("shulker_shell", 5, (1, 2)), item("dragon_breath", 3, (1, 2)), item("netherite_scrap", 3, (1, 2))]
+    return {
+        "outpost": chest(pool((3, 6), *base), pool(1, empty(3), star())),
+        "star": chest(pool((3, 5), item(f"{NS}:raw_starmetal", 12, (2, 6)), item(f"{NS}:starmetal_ingot", 6, (1, 2)), item(f"{NS}:meteorite", 6, (1, 3)),
+                           item("diamond", 4, (1, 3)), item("firework_rocket", 6, (2, 6)), item("fire_charge", 4, (1, 3))), pool(1, empty(1), star(1, (1, 2)))),
+        "nest": chest(pool((3, 6), item("shulker_shell", 10, (1, 3)), *base), pool(1, empty(3), star()), pool(1, empty(12), item("elytra"))),
+        "library": chest(pool((4, 7), item("book", 14, 1, DEEP_ENCHANT), item("book", 8, 1, ENCHANT), item("paper", 8, (3, 10)),
+                              item("lapis_lazuli", 8, (4, 12)), item("experience_bottle", 8, (3, 10)), item("name_tag", 2)), pool(1, empty(2), star())),
+        "observatory": chest(pool((3, 6), item("spyglass", 6), item("compass", 5), item("clock", 5), item("map", 4), item("firework_rocket", 6, (3, 8)),
+                                  item("amethyst_shard", 6, (2, 6)), item("glowstone_dust", 6, (2, 8)), *base[:4]), pool(1, empty(1), star(1, (1, 2)))),
+        "temple": chest(pool((4, 8), *rich), pool(1, empty(1), star(1, (1, 2))), pool(1, empty(8), *weapon)),
+        "ship": chest(pool((4, 8), item("firework_rocket", 10, (4, 12)), *rich),
+                      pool(1, empty(4), item("elytra")), pool(1, empty(1), star()), pool(1, empty(10), *weapon)),
+        "forge": chest(pool((4, 8), item(f"{NS}:starmetal_ingot", 14, (2, 6)), item(f"{NS}:raw_starmetal", 10, (3, 8)),
+                            item(f"{NS}:starmetal_block", 2), item("netherite_scrap", 6, (1, 3)), item("diamond", 8, (2, 4)),
+                            item("netherite_upgrade_smithing_template", 3), item("lava_bucket", 3)), pool(1, empty(2), star()),
+                       pool(1, empty(8), *weapon)),
+        "tower": chest(pool((4, 7), item("firework_rocket", 10, (4, 12)), item("phantom_membrane", 6, (1, 4)), item("feather", 6, (3, 8)), *rich),
+                       pool(1, empty(1), star(1, (1, 2))), pool(1, empty(8), item("elytra")), pool(1, empty(10), *weapon)),
+        "hall": chest(pool((4, 7), *rich), pool(1, empty(2), star())),
+        "citadel": chest(pool((5, 9), *rich, item("diamond_block", 3), item("enchanted_golden_apple", 2), item("totem_of_undying", 2)),
+                         pool(1, star(1, (2, 4))), pool(1, empty(2), item("elytra")), pool(1, empty(3), *weapon)),
+        "colossus": chest(pool((5, 9), item("ender_eye", 6, (1, 4)), *rich, item("netherite_ingot", 3)),
+                          pool(1, star(1, (1, 3))), pool(1, empty(3), *weapon), pool(1, empty(6), item("dragon_head"))),
+        "palace": chest(pool((5, 9), item("gold_block", 8, (1, 3)), item("diamond_block", 4, (1, 2)), item("emerald_block", 6, (1, 3)),
+                             item("netherite_ingot", 4, (1, 2)), item("enchanted_golden_apple", 3), *rich),
+                        pool(1, star(1, (2, 4))), pool(1, empty(2), item("elytra")), pool(1, empty(2), *weapon)),
+    }
+
+
+def structures():
+    files = {}
+    for name in END_TIERS:
+        files[f"{NS}/worldgen/structure/{name}.json"] = {
+            "type": f"{NS}:{name}", "biomes": f"#{NS}:has_structure/end_structure", "spawn_overrides": {}, "step": "surface_structures"}
+    files[f"{NS}/worldgen/structure_set/end_structures.json"] = {
+        "placement": {"type": "minecraft:random_spread", "salt": 771203945, "separation": 3, "spacing": 9},
+        "structures": [{"structure": f"{NS}:{name}", "weight": weight} for name, weight in END_TIERS.items()],
+    }
+    files[f"{NS}/tags/worldgen/biome/has_structure/end_structure.json"] = {
+        "values": [f"{NS}:{b}" for b in BIOMES if b != "sky_isles"] + ["minecraft:end_highlands"]}
+    files[f"{NS}/tags/worldgen/structure/end_structures.json"] = {"values": [f"{NS}:{name}" for name in END_TIERS]}
+    for name, table in end_loot().items():
+        files[f"{NS}/loot_table/chests/end/{name}.json"] = table
+    return files
+
+
 def build(vanilla):
     out = {
         "minecraft/worldgen/noise_settings/end.json": noise_settings(),
@@ -415,6 +476,7 @@ def build(vanilla):
     for name, b in biomes().items():
         out[f"{NS}/worldgen/biome/{name}.json"] = b
     out.update(features())
+    out.update(structures())
     # End cities stand in the new lands too.
     out["minecraft/tags/worldgen/biome/has_structure/end_city.json"] = {
         "replace": False, "values": [f"{NS}:{b}" for b in BIOMES if b != "sky_isles"]}

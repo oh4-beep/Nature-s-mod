@@ -1,0 +1,114 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": {
+        "type": "minecraft:uniform",
+        "min": 3,
+        "max": 5
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "naturesmod:raw_starmetal",
+          "weight": 12,
+          "modifier": {
+            "type": "minecraft:set_count",
+            "count": {
+              "type": "minecraft:uniform",
+              "min": 2,
+              "max": 6
+            }
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "naturesmod:starmetal_ingot",
+          "weight": 6,
+          "modifier": {
+            "type": "minecraft:set_count",
+            "count": {
+              "type": "minecraft:uniform",
+              "min": 1,
+              "max": 2
+            }
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "naturesmod:meteorite",
+          "weight": 6,
+          "modifier": {
+            "type": "minecraft:set_count",
+            "count": {
+              "type": "minecraft:uniform",
+              "min": 1,
+              "max": 3
+            }
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:diamond",
+          "weight": 4,
+          "modifier": {
+            "type": "minecraft:set_count",
+            "count": {
+              "type": "minecraft:uniform",
+              "min": 1,
+              "max": 3
+            }
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:firework_rocket",
+          "weight": 6,
+          "modifier": {
+            "type": "minecraft:set_count",
+            "count": {
+              "type": "minecraft:uniform",
+              "min": 2,
+              "max": 6
+            }
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:fire_charge",
+          "weight": 4,
+          "modifier": {
+            "type": "minecraft:set_count",
+            "count": {
+              "type": "minecraft:uniform",
+              "min": 1,
+              "max": 3
+            }
+          }
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:empty",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "naturesmod:star_fragment",
+          "weight": 1,
+          "modifier": {
+            "type": "minecraft:set_count",
+            "count": {
+              "type": "minecraft:uniform",
+              "min": 1,
+              "max": 2
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

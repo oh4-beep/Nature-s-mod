@@ -202,9 +202,15 @@ DROP_ITEMS = {
     "phantom_membrane": ("minecraft:phantom_membrane", False),
     "raw_starmetal": ("naturesmod:raw_starmetal", False),
     "void_crystal": ("naturesmod:void_crystal_cluster", False),
+    "star_fragment": ("naturesmod:star_fragment", False),
+    "starmetal_ingot": ("naturesmod:starmetal_ingot", False),
+    "dragon_breath": ("minecraft:dragon_breath", False),
+    "elytra": ("minecraft:elytra", False),
 }
+# The weapons of the stars: the Void Wyrm always leaves one of them behind.
+END_WEAPONS = ["voidblade", "starcaller", "gravity_hammer", "skyrider_glaive"]
 # Dropped exactly once, never more for looting.
-UNIQUE_DROPS = {"bone_sigil", "crown"}
+UNIQUE_DROPS = {"bone_sigil", "crown", "elytra"}
 
 SMELT_CONDITION = {
     "type": "minecraft:any_of",
@@ -223,6 +229,9 @@ def loot_table(sp):
     for d in sp["drops"]:
         counts[d] = counts.get(d, 0) + 1
     for drop, n in counts.items():
+        if drop == "end_weapon":
+            pools.append({"rolls": 1, "entries": [{"type": "minecraft:item", "name": f"naturesmod:{w}"} for w in END_WEAPONS]})
+            continue
         if drop.startswith("weapon:"):
             # One of the lost weapons of the Abyss, now and then.
             pools.append({"rolls": 1, "condition": {"type": "minecraft:random_chance", "chance": 0.25},

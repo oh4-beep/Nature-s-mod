@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " V ",
+    "SCS",
+    "OOO"
+  ],
+  "key": {
+    "V": "naturesmod:void_crystal",
+    "S": "naturesmod:starmetal_ingot",
+    "C": "minecraft:end_crystal",
+    "O": "minecraft:obsidian"
+  },
+  "result": {
+    "id": "naturesmod:star_altar",
+    "count": 1
+  }
+}

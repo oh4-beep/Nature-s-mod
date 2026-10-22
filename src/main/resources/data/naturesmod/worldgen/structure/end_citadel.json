@@ -1,0 +1,6 @@
+{
+  "type": "naturesmod:end_citadel",
+  "biomes": "#naturesmod:has_structure/end_structure",
+  "spawn_overrides": {},
+  "step": "surface_structures"
+}

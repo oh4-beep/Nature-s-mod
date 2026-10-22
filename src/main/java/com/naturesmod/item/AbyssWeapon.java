@@ -242,7 +242,7 @@ public class AbyssWeapon extends Item {
 
 	// --- helpers ------------------------------------------------------------------------------
 
-	private static DamageSource source(LivingEntity attacker) {
+	static DamageSource source(LivingEntity attacker) {
 		return attacker instanceof Player player ? attacker.damageSources().playerAttack(player) : attacker.damageSources().mobAttack(attacker);
 	}
 
@@ -276,12 +276,12 @@ public class AbyssWeapon extends Item {
 		level.addFreshEntity(bolt);
 	}
 
-	private static void push(LivingEntity entity, Vec3 horizontal, double up) {
+	static void push(LivingEntity entity, Vec3 horizontal, double up) {
 		entity.push(horizontal.x, up + horizontal.y * 0.5, horizontal.z);
 		sync(entity);
 	}
 
-	private static void sync(Entity entity) {
+	static void sync(Entity entity) {
 		entity.needsSync = true;
 		if (entity instanceof ServerPlayer player) {
 			player.connection.send(new ClientboundSetEntityMotionPacket(player));

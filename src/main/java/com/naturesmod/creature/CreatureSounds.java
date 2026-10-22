@@ -15,6 +15,7 @@ final class CreatureSounds {
 	static SoundEvent ambient(SpeciesData species) {
 		return switch (species.sound()) {
 			case "phantom" -> SoundEvents.PHANTOM_AMBIENT;
+			case "wyrm" -> SoundEvents.ENDER_DRAGON_AMBIENT;
 			case "skyray" -> SoundEvents.ALLAY_AMBIENT_WITHOUT_ITEM;
 			case "ender" -> SoundEvents.ENDERMAN_AMBIENT;
 			case "beetle" -> SoundEvents.SILVERFISH_AMBIENT;
@@ -29,6 +30,7 @@ final class CreatureSounds {
 	static SoundEvent hurt(SpeciesData species) {
 		return switch (species.sound()) {
 			case "phantom", "skyray" -> SoundEvents.PHANTOM_HURT;
+			case "wyrm" -> SoundEvents.ENDER_DRAGON_HURT;
 			case "ender" -> SoundEvents.ENDERMAN_HURT;
 			case "beetle" -> SoundEvents.SILVERFISH_HURT;
 			case "golem" -> SoundEvents.IRON_GOLEM_HURT;
@@ -42,6 +44,7 @@ final class CreatureSounds {
 	static SoundEvent death(SpeciesData species) {
 		return switch (species.sound()) {
 			case "phantom", "skyray" -> SoundEvents.PHANTOM_DEATH;
+			case "wyrm" -> SoundEvents.ENDER_DRAGON_DEATH;
 			case "ender" -> SoundEvents.ENDERMAN_DEATH;
 			case "beetle" -> SoundEvents.SILVERFISH_DEATH;
 			case "golem" -> SoundEvents.IRON_GOLEM_DEATH;

@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "top": "naturesmod:block/starmetal_block",
+    "side": "naturesmod:block/voidstone_bricks",
+    "bottom": "naturesmod:block/polished_voidstone"
+  }
+}

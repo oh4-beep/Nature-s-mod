@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "fragments=0": {
+      "model": "naturesmod:block/star_altar"
+    },
+    "fragments=1": {
+      "model": "naturesmod:block/star_altar"
+    },
+    "fragments=2": {
+      "model": "naturesmod:block/star_altar"
+    },
+    "fragments=3": {
+      "model": "naturesmod:block/star_altar"
+    },
+    "fragments=4": {
+      "model": "naturesmod:block/star_altar"
+    }
+  }
+}

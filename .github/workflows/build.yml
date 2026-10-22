@@ -107,17 +107,3 @@ jobs:
             echo "[map-end $n]"
           done
   # Temporary development aid: prints the vanilla sources the new content builds on.
-  source-probe:
-    runs-on: ubuntu-24.04
-    steps:
-      - name: checkout repository
-        uses: actions/checkout@v6
-      - name: setup jdk
-        uses: actions/setup-java@v5
-        with:
-          java-version: '25'
-          distribution: 'microsoft'
-      - name: decompile minecraft
-        run: chmod +x ./gradlew && ./gradlew genSources --stacktrace
-      - name: print sources
-        run: bash .github/probe/sources.sh

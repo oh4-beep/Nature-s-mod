@@ -509,11 +509,13 @@ def write(assets, data_root):
         _json(path, {"replace": False, "values": values})
 
     merge("mineable/pickaxe", ["end_moss", "voidstone", "voidstone_bricks", "polished_voidstone", "void_crystal", "void_crystal_cluster",
-                               "starmetal_ore", "starmetal_block", "meteorite", "updraft_vent"])
+                               "starmetal_ore", "starmetal_block", "meteorite", "updraft_vent", "star_altar"])
     merge("mineable/shovel", ["stardust"])
     merge("mineable/axe", ["chorus_log", "bounce_stem"])
     merge("mineable/hoe", ["chorus_bulb", "bounce_bloom"])
     merge("needs_iron_tool", ["starmetal_ore", "starmetal_block", "meteorite"])
+    merge("needs_diamond_tool", ["star_altar"])
+    merge("dragon_immune", ["star_altar"])
     # The dragon's breath and the End's own creatures may not dig into them.
     merge("dragon_immune", ["updraft_vent"])
     # Chorus grows on the new ground as it does on end stone, and endermen carry it about.

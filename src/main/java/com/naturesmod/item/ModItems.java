@@ -63,7 +63,9 @@ public final class ModItems {
 	public static Item EMBER_SHARD;
 	public static Item RAW_STARMETAL;
 	public static Item STARMETAL_INGOT;
+	public static Item STAR_FRAGMENT;
 	public static final Map<AbyssWeapon.Kind, Item> WEAPONS = new EnumMap<>(AbyssWeapon.Kind.class);
+	public static final Map<EndWeapon.Kind, Item> END_WEAPONS = new EnumMap<>(EndWeapon.Kind.class);
 
 	private ModItems() {
 	}
@@ -99,6 +101,16 @@ public final class ModItems {
 		}
 		RAW_STARMETAL = register("raw_starmetal", Item::new, new Item.Properties());
 		STARMETAL_INGOT = register("starmetal_ingot", Item::new, new Item.Properties().rarity(Rarity.UNCOMMON));
+
+		// The Void Wyrm's call: four star fragments set in a Star Altar, and the weapons of the stars it keeps.
+		STAR_FRAGMENT = register("star_fragment", Item::new, new Item.Properties().rarity(Rarity.RARE).stacksTo(16).fireResistant()
+				.component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true));
+		register("star_altar", properties -> new BlockItem(ModBlocks.STAR_ALTAR, properties),
+				new Item.Properties().useBlockDescriptionPrefix().rarity(Rarity.EPIC));
+		for (EndWeapon.Kind kind : EndWeapon.Kind.values()) {
+			END_WEAPONS.put(kind, register(kind.id, properties -> new EndWeapon(properties, kind),
+					new Item.Properties().sword(EndWeapon.MATERIAL, kind.damage, kind.speed).rarity(Rarity.EPIC).fireResistant()));
+		}
 
 		armor("tidewalker", DivingArmor.TIDEWALKER, TIDEWALKER_SET);
 		armor("abyssal", DivingArmor.ABYSSAL, ABYSSAL_SET);

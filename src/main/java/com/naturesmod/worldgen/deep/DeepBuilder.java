@@ -20,6 +20,7 @@ import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.boss.enderdragon.EndCrystal;
 import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -37,8 +38,9 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.storage.loot.LootTable;
 
 /**
- * Places the blocks of one treasure of the deep inside one chunk. Structures are drawn in local
- * coordinates: x to the right, y up from the sea floor (y = 0 is the ground the structure stands
+ * Places the blocks of one structure inside one chunk: a treasure of the deep, or one of the new
+ * End's structures (built in open air rather than water). Structures are drawn in local
+ * coordinates: x to the right, y up from the ground (y = 0 is the ground the structure stands
  * on), z forward; the builder turns them to the structure's rotation. Every chunk the structure
  * touches draws all of it and keeps only its own blocks, so choices come either from
  * {@link #rand} (a hash of the position) or from {@link #layout}, a random sequence that every
@@ -58,13 +60,20 @@ public final class DeepBuilder {
 	private final long seed;
 	/** Where the loot tables of the chests are: the treasures of the floor, or the poorer highland ruins. */
 	private final String lootFolder;
+	/** What fills the space the structure leaves open: water at the bottom of the Abyss, air in the End. */
+	private final BlockState open;
 	private final BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
 	/** For layout choices: every chunk replays the same sequence. */
 	final RandomSource layout;
 
 	DeepBuilder(WorldGenLevel level, BoundingBox box, int cx, int cy, int cz, Rotation rotation, long seed, String lootFolder) {
+		this(level, box, cx, cy, cz, rotation, seed, lootFolder, WATER);
+	}
+
+	DeepBuilder(WorldGenLevel level, BoundingBox box, int cx, int cy, int cz, Rotation rotation, long seed, String lootFolder, BlockState open) {
 		this.level = level;
 		this.lootFolder = lootFolder;
+		this.open = open;
 		this.box = box;
 		this.cx = cx;
 		this.cy = cy;
@@ -105,7 +114,7 @@ public final class DeepBuilder {
 
 	/** A paint with holes in it, where the ruin has crumbled away. */
 	Paint ruin(Paint paint, double crumble) {
-		return (x, y, z) -> crumbled(x, y, z, crumble) ? WATER : paint.at(x, y, z);
+		return (x, y, z) -> crumbled(x, y, z, crumble) ? open : paint.at(x, y, z);
 	}
 
 	/** Bands of one block every {@code every} courses of another. */
@@ -147,7 +156,7 @@ public final class DeepBuilder {
 	BlockState get(int x, int y, int z) {
 		pos.set(worldX(x, z), cy + y, worldZ(x, z));
 		if (!box.isInside(pos)) {
-			return WATER;
+			return open;
 		}
 		return level.getBlockState(pos);
 	}
@@ -206,9 +215,18 @@ public final class DeepBuilder {
 		fill(x0, y0, z0, x1, y1, z1, p(block.defaultBlockState()));
 	}
 
-	/** Clears a box to open water. */
+	/** Clears a box to open water (or open air, in the End). */
 	void water(int x0, int y0, int z0, int x1, int y1, int z1) {
-		fill(x0, y0, z0, x1, y1, z1, WATER);
+		fill(x0, y0, z0, x1, y1, z1, open);
+	}
+
+	/** Clears a box to open space: the same as {@link #water}, named for the End. */
+	void clear(int x0, int y0, int z0, int x1, int y1, int z1) {
+		fill(x0, y0, z0, x1, y1, z1, open);
+	}
+
+	BlockState open() {
+		return open;
 	}
 
 	/** A closed room: walls, floor and roof with water inside. */
@@ -290,7 +308,7 @@ public final class DeepBuilder {
 		foundation(x, -1, z, base);
 		set(x, 0, z, ground.at(x, 0, z));
 		for (int y = 1; y <= clear; y++) {
-			set(x, y, z, WATER);
+			set(x, y, z, open);
 		}
 	}
 
@@ -543,6 +561,11 @@ public final class DeepBuilder {
 		container(x, y, z, facing(Blocks.BARREL, facing), loot);
 	}
 
+	/** A purple shulker box with loot in it, the way the star-folk of the End kept their things. */
+	void shulkerBox(int x, int y, int z, Direction facing, String loot) {
+		container(x, y, z, facing(vanilla("purple_shulker_box"), facing), loot);
+	}
+
 	private void container(int x, int y, int z, BlockState state, String loot) {
 		BlockPos at = at(x, y, z);
 		if (!box.isInside(at)) {
@@ -623,6 +646,34 @@ public final class DeepBuilder {
 		level.addFreshEntityWithPassengers(keeper);
 	}
 
+	/** A vanilla creature that keeps the place: a shulker in its nest, an enderman on guard. */
+	void keeper(int x, int y, int z, EntityType<? extends Mob> type) {
+		BlockPos at = at(x, y, z);
+		if (type == null || !box.isInside(at)) {
+			return;
+		}
+		Mob keeper = type.create(level.getLevel(), EntitySpawnReason.STRUCTURE);
+		if (keeper == null) {
+			return;
+		}
+		keeper.snapTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, layout.nextFloat() * 360.0F, 0.0F);
+		keeper.finalizeSpawn(level, level.getCurrentDifficultyAt(at), EntitySpawnReason.STRUCTURE, null);
+		keeper.setPersistenceRequired();
+		level.addFreshEntityWithPassengers(keeper);
+	}
+
+	/** An End crystal resting on a block of bedrock at (x, y, z). */
+	void crystal(int x, int y, int z) {
+		BlockPos at = at(x, y, z);
+		if (!box.isInside(at)) {
+			return;
+		}
+		set(x, y, z, Blocks.BEDROCK);
+		EndCrystal crystal = new EndCrystal(level.getLevel(), at.getX() + 0.5, at.getY() + 1.0, at.getZ() + 0.5);
+		crystal.setShowBottom(true);
+		level.addFreshEntity(crystal);
+	}
+
 	// --- chance -------------------------------------------------------------------------------
 
 	/** A random number in [0, 1) that depends only on the position (in the structure) and the salt. */
@@ -652,7 +703,7 @@ public final class DeepBuilder {
 		return wear[(int) ((r - 0.7) / 0.3 * wear.length)];
 	}
 
-	/** A ruin is never whole: with this chance a block has crumbled away to water. */
+	/** A ruin is never whole: with this chance a block has crumbled away to water (or air). */
 	boolean crumbled(int x, int y, int z, double p) {
 		return rand(x, y, z, 406) < p;
 	}

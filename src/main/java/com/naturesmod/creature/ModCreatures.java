@@ -50,7 +50,8 @@ public final class ModCreatures {
 				case SCHOOL -> register(species, SchoolingFish::new);
 				case LARGE -> register(species, LargeSwimmer::new);
 				case JELLY -> register(species, Jellyfish::new);
-				case FLYER -> "skyray".equals(species.id()) ? register(species, Skyray::new) : register(species, EndFlyer::new);
+				case FLYER -> species.behavior() == Behavior.BOSS ? register(species, VoidWyrm::new)
+						: "skyray".equals(species.id()) ? register(species, Skyray::new) : register(species, EndFlyer::new);
 				case WALKER -> register(species, EndWalker::new);
 			};
 			// The End's creatures are brought out by the End's own life spawner (see EndLifeSpawner).

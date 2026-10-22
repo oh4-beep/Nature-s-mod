@@ -42,6 +42,10 @@ public record EndFeature(Style style) implements Feature {
 	@Override
 	public boolean place(WorldGenLevel level, ChunkGenerator generator, RandomSource random, BlockPos origin) {
 		WorldGenUtil.Window window = WorldGenUtil.Window.around(origin, 1);
+		// The structures of the End are built after these features: keep out of their way.
+		if (style != Style.CRYSTAL_CLUSTERS && !clearOfStructures(level, origin, 8)) {
+			return false;
+		}
 		boolean placed = switch (style) {
 			case CHORUS_TREE -> chorusTree(level, window, random, origin);
 			case CRYSTAL_SPIKES -> crystalSpikes(level, window, random, origin);
@@ -62,6 +66,17 @@ public record EndFeature(Style style) implements Feature {
 	}
 
 	// --- helpers -------------------------------------------------------------------------
+
+	private static boolean clearOfStructures(WorldGenLevel level, BlockPos origin, int reach) {
+		for (int dx = -reach; dx <= reach; dx += reach) {
+			for (int dz = -reach; dz <= reach; dz += reach) {
+				if (!WorldGenUtil.isStructureFree(level, origin.offset(dx, 0, dz))) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
 
 	private static boolean solid(WorldGenLevel level, BlockPos pos) {
 		BlockState state = level.getBlockState(pos);

@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "naturesmod:updraft_vent"
+    "naturesmod:updraft_vent",
+    "naturesmod:star_altar"
   ]
 }

@@ -20,6 +20,7 @@ import com.naturesmod.abyss.RiftBlock;
 import com.naturesmod.end.BounceBloomBlock;
 import com.naturesmod.end.EndPlantBlock;
 import com.naturesmod.end.HangingVineBlock;
+import com.naturesmod.end.StarAltarBlock;
 import com.naturesmod.end.UpdraftVentBlock;
 import com.naturesmod.nether.BoneSpikesBlock;
 import com.naturesmod.nether.BrazierBlock;
@@ -191,6 +192,13 @@ public final class ModBlocks {
 	public static final Block ENDER_GRASS = register("ender_grass", props -> new EndPlantBlock(props, false), endPlant(MapColor.COLOR_PURPLE, 0, true));
 	public static final Block VOID_BLOOM = register("void_bloom", props -> new EndPlantBlock(props, true), endPlant(MapColor.COLOR_MAGENTA, 9, true));
 	public static final Block VOID_VINES = register("void_vines", HangingVineBlock::new, endPlant(MapColor.COLOR_CYAN, 7, false));
+	public static final Block STAR_ALTAR = register("star_altar", StarAltarBlock::new, BlockBehaviour.Properties.of()
+			.mapColor(MapColor.COLOR_PURPLE)
+			.requiresCorrectToolForDrops()
+			.strength(30.0F, 1200.0F)
+			.lightLevel(state -> 4 + 2 * state.getValue(StarAltarBlock.FRAGMENTS))
+			.noOcclusion()
+			.sound(SoundType.DEEPSLATE_BRICKS));
 
 	/** Every block of the new End, in creative tab order. */
 	public static final Block[] END = {END_MOSS, VOIDSTONE, VOIDSTONE_BRICKS, POLISHED_VOIDSTONE, VOID_CRYSTAL, VOID_CRYSTAL_CLUSTER, STARMETAL_ORE,
