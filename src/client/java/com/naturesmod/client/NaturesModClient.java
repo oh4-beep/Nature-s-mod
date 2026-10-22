@@ -10,9 +10,5 @@ public class NaturesModClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		ClientTickEvents.END_CLIENT_TICK.register(WaterfallAmbience::tick);
 		CreatureRenderers.register();
-		if (com.naturesmod.nether.NetherOverhaul.lunar()) {
-			net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents.CLIENT_STARTED
-					.register(client -> com.naturesmod.nether.NetherOverhaul.addBiomes());
-		}
 	}
 }
