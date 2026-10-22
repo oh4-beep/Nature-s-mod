@@ -8,7 +8,9 @@ import com.naturesmod.worldgen.WorldGenUtil;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.RandomizableContainer;
@@ -71,6 +73,11 @@ public final class DeepBuilder {
 
 	static BlockState s(Block block) {
 		return block.defaultBlockState();
+	}
+
+	/** A vanilla block by id: the dyed and copper families are reached this way rather than by field. */
+	static Block vanilla(String id) {
+		return BuiltInRegistries.BLOCK.getValue(Identifier.withDefaultNamespace(id));
 	}
 
 	/** Chooses the block for each position of a shape. */

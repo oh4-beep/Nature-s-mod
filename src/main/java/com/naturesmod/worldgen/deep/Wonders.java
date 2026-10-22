@@ -11,6 +11,7 @@ import static com.naturesmod.worldgen.deep.DeepBuilder.pickles;
 import static com.naturesmod.worldgen.deep.DeepBuilder.s;
 import static com.naturesmod.worldgen.deep.DeepBuilder.slab;
 import static com.naturesmod.worldgen.deep.DeepBuilder.stairs;
+import static com.naturesmod.worldgen.deep.DeepBuilder.vanilla;
 import static com.naturesmod.worldgen.deep.DeepBuilder.weapon;
 
 import com.naturesmod.block.ModBlocks;
@@ -27,8 +28,8 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 /** The wonders of the deep: rare, vast, and the richest places in the world. */
 final class Wonders {
-	private static final Block[] STAINED_GLASS = {Blocks.BLUE_STAINED_GLASS, Blocks.CYAN_STAINED_GLASS, Blocks.PURPLE_STAINED_GLASS,
-			Blocks.LIGHT_BLUE_STAINED_GLASS, Blocks.MAGENTA_STAINED_GLASS, Blocks.LIME_STAINED_GLASS};
+	private static final Block[] STAINED_GLASS = {vanilla("blue_stained_glass"), vanilla("cyan_stained_glass"), vanilla("purple_stained_glass"),
+			vanilla("light_blue_stained_glass"), vanilla("magenta_stained_glass"), vanilla("lime_stained_glass")};
 
 	private Wonders() {
 	}
@@ -110,7 +111,7 @@ final class Wonders {
 				b.fill(tx - half, 29 + level, -19 - half, tx + half, 29 + level, -19 + half, s(Blocks.DEEPSLATE_TILES));
 			}
 			b.set(tx, 38, -19, Blocks.SEA_LANTERN);
-			b.set(tx, 39, -19, Blocks.LIGHTNING_ROD);
+			b.set(tx, 39, -19, vanilla("lightning_rod"));
 		}
 		// Pillars down the nave and pews between them.
 		for (int z = -12; z <= 10; z += 4) {
@@ -130,8 +131,8 @@ final class Wonders {
 		b.fill(-5, 1, 10, 5, 1, 14, Blocks.POLISHED_DEEPSLATE);
 		b.fill(-3, 2, 12, 3, 2, 14, Blocks.POLISHED_DEEPSLATE);
 		b.fill(-1, 3, 13, 1, 3, 13, Blocks.GOLD_BLOCK);
-		b.set(-1, 4, 13, Blocks.CANDLE);
-		b.set(1, 4, 13, Blocks.CANDLE);
+		b.set(-1, 4, 13, vanilla("candle"));
+		b.set(1, 4, 13, vanilla("candle"));
 		b.chest(0, 4, 13, Direction.NORTH, "legendary");
 		b.frame(0, 9, 14, Direction.NORTH, Items.ELYTRA);
 		b.set(-1, 9, 14, Blocks.SEA_LANTERN);
@@ -253,7 +254,7 @@ final class Wonders {
 				new ItemStack(Items.DIAMOND_LEGGINGS), new ItemStack(Items.DIAMOND_BOOTS), new ItemStack(Items.DIAMOND_SWORD));
 		// Middle floor: the lord's chamber.
 		b.chest(6, 8, 9, Direction.WEST, "vault");
-		b.bed(-5, 8, -2, Direction.SOUTH, Blocks.RED_BED);
+		b.bed(-5, 8, -2, Direction.SOUTH, vanilla("red_bed"));
 		// Top floor: the treasure.
 		b.hoard(0, 14, 5, 2.5, s(Blocks.GOLD_BLOCK), s(Blocks.GOLD_BLOCK), s(Blocks.DIAMOND_BLOCK), s(Blocks.GOLD_BLOCK));
 		b.chest(-6, 14, 9, Direction.EAST, "legendary");
@@ -341,7 +342,7 @@ final class Wonders {
 		// A house in each quarter, each of its own stone.
 		BlockState[][] styles = {
 				{s(Blocks.STONE_BRICKS), s(Blocks.SPRUCE_PLANKS), s(Blocks.DARK_OAK_PLANKS)},
-				{s(Blocks.CUT_SANDSTONE), s(Blocks.SMOOTH_SANDSTONE), s(Blocks.ORANGE_TERRACOTTA)},
+				{s(Blocks.CUT_SANDSTONE), s(Blocks.SMOOTH_SANDSTONE), s(vanilla("orange_terracotta"))},
 				{s(Blocks.MUD_BRICKS), s(Blocks.PACKED_MUD), s(Blocks.MANGROVE_PLANKS)},
 				{s(Blocks.TUFF_BRICKS), s(Blocks.POLISHED_TUFF), s(Blocks.DEEPSLATE_TILES)}};
 		int[][] corners = {{-14, -14}, {14, -14}, {-14, 14}, {14, 14}};
@@ -350,7 +351,7 @@ final class Wonders {
 		}
 		// A market stall and a well in the square.
 		b.fill(6, 1, -8, 9, 1, -8, Blocks.SPRUCE_PLANKS);
-		b.fill(6, 4, -9, 9, 4, -7, Blocks.RED_WOOL);
+		b.fill(6, 4, -9, 9, 4, -7, vanilla("red_wool"));
 		b.pillar(6, -7, 1, 3, s(Blocks.SPRUCE_FENCE));
 		b.pillar(9, -7, 1, 3, s(Blocks.SPRUCE_FENCE));
 		b.barrel(7, 2, -8, Direction.SOUTH, "ruin");
@@ -376,7 +377,7 @@ final class Wonders {
 		b.set(hx, 3, hz - dz * 4, joined(Blocks.GLASS_PANE, true));
 		b.set(hx, 6, hz, lantern(false, true));
 		b.chest(hx - dx * 3, 1, hz - dz * 3, Direction.NORTH, index == 3 ? "vault" : "ruin");
-		b.bed(hx + dx * 2, 1, hz - dz * 3, dz > 0 ? Direction.SOUTH : Direction.NORTH, Blocks.WHITE_BED);
+		b.bed(hx + dx * 2, 1, hz - dz * 3, dz > 0 ? Direction.SOUTH : Direction.NORTH, vanilla("white_bed"));
 		b.set(hx - dx * 3, 1, hz + dz * 2, Blocks.CRAFTING_TABLE);
 		b.set(hx - dx * 3, 1, hz, Blocks.BOOKSHELF);
 	}
@@ -778,7 +779,7 @@ final class Wonders {
 		// Two shacks, the ore that came out, and the lamps round the rim.
 		shack(b, -17, 7);
 		shack(b, 16, 9);
-		b.hoard(-16, 1, -10, 2.5, s(Blocks.RAW_IRON_BLOCK), s(Blocks.RAW_GOLD_BLOCK), s(Blocks.COAL_BLOCK), s(Blocks.RAW_COPPER_BLOCK));
+		b.hoard(-16, 1, -10, 2.5, s(Blocks.RAW_IRON_BLOCK), s(Blocks.RAW_GOLD_BLOCK), s(Blocks.COAL_BLOCK), s(vanilla("raw_copper_block")));
 		b.hoard(10, 1, 19, 2.0, s(Blocks.RAW_GOLD_BLOCK), s(Blocks.DIAMOND_BLOCK), s(Blocks.RAW_IRON_BLOCK), s(Blocks.ANCIENT_DEBRIS));
 		for (int i = 0; i < 8; i++) {
 			double a = i * Math.PI / 4 + 0.3;
@@ -825,9 +826,9 @@ final class Wonders {
 		}
 		for (int[] d : domes) {
 			b.cylinder(d[0], d[1], 6.5, 0, 1, s(Blocks.IRON_BLOCK), false);
-			b.sphere(d[0], 1, d[1], 6.5, (x, y, z) -> b.chance(x, y, z, 33, 0.08) ? lit(Blocks.WAXED_COPPER_BULB) : s(Blocks.GLASS), true, 1);
+			b.sphere(d[0], 1, d[1], 6.5, (x, y, z) -> b.chance(x, y, z, 33, 0.08) ? lit(vanilla("waxed_copper_bulb")) : s(Blocks.GLASS), true, 1);
 			b.sphere(d[0], 1, d[1], 5.5, WATER, false, 1);
-			b.disc(d[0], 1, d[1], 5.5, s(Blocks.WHITE_CONCRETE));
+			b.disc(d[0], 1, d[1], 5.5, s(vanilla("white_concrete")));
 			b.set(d[0], 7, d[1], Blocks.SEA_LANTERN);
 		}
 		for (int i = 0; i < 3; i++) {

@@ -11,6 +11,7 @@ import static com.naturesmod.worldgen.deep.DeepBuilder.pickles;
 import static com.naturesmod.worldgen.deep.DeepBuilder.s;
 import static com.naturesmod.worldgen.deep.DeepBuilder.slab;
 import static com.naturesmod.worldgen.deep.DeepBuilder.stairs;
+import static com.naturesmod.worldgen.deep.DeepBuilder.vanilla;
 import static com.naturesmod.worldgen.deep.DeepBuilder.weapon;
 
 import com.naturesmod.block.ModBlocks;
@@ -88,8 +89,8 @@ final class Vaults {
 			b.set(4, y, 2, facing(Blocks.LADDER, Direction.WEST));
 		}
 		// Upstairs: beds and the strongbox.
-		b.bed(-3, 6, -2, Direction.SOUTH, Blocks.BLUE_BED);
-		b.bed(-1, 6, -2, Direction.SOUTH, Blocks.BLUE_BED);
+		b.bed(-3, 6, -2, Direction.SOUTH, vanilla("blue_bed"));
+		b.bed(-1, 6, -2, Direction.SOUTH, vanilla("blue_bed"));
 		b.chest(-4, 6, 2, Direction.EAST, "vault");
 		b.set(0, 6, 3, Blocks.BOOKSHELF);
 		b.set(1, 11, 0, lantern(false, true));
@@ -102,7 +103,7 @@ final class Vaults {
 		b.pad(-10, -9, 10, 9, b.mix(s(Blocks.COBBLED_DEEPSLATE), s(Blocks.GRAVEL)), s(Blocks.COBBLED_DEEPSLATE), 14);
 		b.shell(-8, 0, -6, 8, 9, 7, wall);
 		b.fill(-7, 0, -5, 7, 0, 6, Blocks.POLISHED_DEEPSLATE);
-		b.fill(-1, 0, -5, 1, 0, 6, Blocks.RED_WOOL);
+		b.fill(-1, 0, -5, 1, 0, 6, vanilla("red_wool"));
 		// Pillars along the walls, and lamps in the roof.
 		for (int z = -5; z <= 6; z += 3) {
 			b.pillar(-8, z, 1, 8, s(Blocks.CHISELED_DEEPSLATE));
@@ -321,7 +322,7 @@ final class Vaults {
 			int width = y > 15 ? 2 : 4;
 			for (int x = -width; x <= width; x++) {
 				if (x != 0 && !b.crumbled(x, y, -1, 0.08)) {
-					b.set(x, y, -1, Blocks.MAGENTA_WOOL);
+					b.set(x, y, -1, vanilla("magenta_wool"));
 				}
 			}
 		}
@@ -329,8 +330,8 @@ final class Vaults {
 		// The stern cabin, where the wings hang.
 		b.shell(-3, 5, 6, 3, 10, 12, b.worn(s(Blocks.END_STONE_BRICKS), s(Blocks.PURPUR_BLOCK)));
 		b.water(0, 6, 6, 0, 7, 6);
-		b.set(-3, 8, 9, joined(Blocks.MAGENTA_STAINED_GLASS_PANE, false));
-		b.set(3, 8, 9, joined(Blocks.MAGENTA_STAINED_GLASS_PANE, false));
+		b.set(-3, 8, 9, joined(vanilla("magenta_stained_glass_pane"), false));
+		b.set(3, 8, 9, joined(vanilla("magenta_stained_glass_pane"), false));
 		b.frame(0, 8, 11, Direction.NORTH, Items.ELYTRA);
 		b.set(-1, 8, 11, Blocks.END_ROD);
 		b.set(1, 8, 11, Blocks.END_ROD);
@@ -385,7 +386,7 @@ final class Vaults {
 			return Math.abs(r - 5.0) < 0.5 || Math.abs(r - 2.0) < 0.5 ? s(Blocks.AMETHYST_BLOCK) : s(Blocks.POLISHED_DEEPSLATE);
 		});
 		b.cylinder(0, 0, 8.0, 1, 6, b.worn(s(Blocks.CALCITE), s(Blocks.POLISHED_DEEPSLATE)), true);
-		b.sphere(0, 6, 0, 8.0, (x, y, z) -> b.chance(x, y, z, 14, 0.15) ? s(Blocks.AMETHYST_BLOCK) : s(Blocks.PURPLE_STAINED_GLASS), true, 1);
+		b.sphere(0, 6, 0, 8.0, (x, y, z) -> b.chance(x, y, z, 14, 0.15) ? s(Blocks.AMETHYST_BLOCK) : s(vanilla("purple_stained_glass")), true, 1);
 		b.water(-1, 1, -8, 1, 3, -7);
 		for (int i = 0; i < 8; i++) {
 			double a = i * Math.PI / 4 + Math.PI / 8;
@@ -419,7 +420,7 @@ final class Vaults {
 		b.pad(-9, -12, 9, 12, b.mix(s(Blocks.PRISMARINE), s(Blocks.GRAVEL)), s(Blocks.COBBLED_DEEPSLATE), 16);
 		b.shell(-6, 0, -10, 6, 11, 10, b.worn(s(Blocks.PRISMARINE_BRICKS), s(Blocks.PRISMARINE)));
 		b.fill(-5, 0, -9, 5, 0, 9, Blocks.DARK_PRISMARINE);
-		b.fill(-1, 0, -9, 1, 0, 6, Blocks.RED_WOOL);
+		b.fill(-1, 0, -9, 1, 0, 6, vanilla("red_wool"));
 		b.water(-1, 1, -10, 1, 4, -10);
 		for (int z = -8; z <= 8; z += 4) {
 			b.pillar(-6, z, 1, 10, s(Blocks.DARK_PRISMARINE));
@@ -505,7 +506,7 @@ final class Vaults {
 				for (int yy = y - 4; yy < y; yy++) {
 					for (int x = -4; x <= 4; x++) {
 						if (x != 0 && !b.crumbled(x, yy, mast[0], 0.3)) {
-							b.set(x, yy, mast[0] + 1, Blocks.WHITE_WOOL);
+							b.set(x, yy, mast[0] + 1, vanilla("white_wool"));
 						}
 					}
 				}
@@ -518,7 +519,7 @@ final class Vaults {
 	/** A submarine of riveted copper, still lit inside after all these years. */
 	static void submarine(DeepBuilder b) {
 		b.pad(-7, -15, 7, 15, b.mix(s(Blocks.SAND), s(Blocks.GRAVEL)), s(Blocks.SANDSTONE), 16);
-		DeepBuilder.Paint copper = (x, y, z) -> b.chance(x, y, z, 15, 0.2) ? s(Blocks.WEATHERED_CUT_COPPER) : s(Blocks.OXIDIZED_CUT_COPPER);
+		DeepBuilder.Paint copper = (x, y, z) -> b.chance(x, y, z, 15, 0.2) ? s(vanilla("weathered_cut_copper")) : s(vanilla("oxidized_cut_copper"));
 		for (int z = -12; z <= 12; z++) {
 			double radius = Math.abs(z) <= 8 ? 3.5 : 3.5 * Math.sqrt(1.0 - Math.pow((Math.abs(z) - 8) / 4.5, 2));
 			for (int x = -4; x <= 4; x++) {
@@ -533,7 +534,7 @@ final class Vaults {
 				}
 			}
 		}
-		b.fill(-1, 2, -8, 1, 2, 8, Blocks.OXIDIZED_COPPER_GRATE);
+		b.fill(-1, 2, -8, 1, 2, 8, vanilla("oxidized_copper_grate"));
 		// The conning tower and its periscope.
 		b.fill(-1, 7, -3, 1, 11, 2, copper);
 		b.water(0, 7, -2, 0, 11, 1);
@@ -544,10 +545,10 @@ final class Vaults {
 		b.fill(0, 2, 13, 0, 6, 13, Blocks.IRON_BARS);
 		// Inside: lights, bunks, stores.
 		for (int z = -6; z <= 6; z += 4) {
-			b.set(0, 7, z, lit(Blocks.WAXED_COPPER_BULB));
+			b.set(0, 7, z, lit(vanilla("waxed_copper_bulb")));
 		}
-		b.bed(-2, 3, -6, Direction.SOUTH, Blocks.GRAY_BED);
-		b.bed(2, 3, -6, Direction.SOUTH, Blocks.GRAY_BED);
+		b.bed(-2, 3, -6, Direction.SOUTH, vanilla("gray_bed"));
+		b.bed(2, 3, -6, Direction.SOUTH, vanilla("gray_bed"));
 		b.chest(-2, 3, 4, Direction.EAST, "ship");
 		b.chest(2, 3, 4, Direction.WEST, "mine");
 		b.barrel(0, 3, 8, Direction.UP, "ruin");
@@ -613,7 +614,7 @@ final class Vaults {
 			b.set(2, 2, z, Blocks.SEA_LANTERN);
 		}
 		b.water(-4, 1, -4, 4, 6, 4);
-		b.fill(-4, 0, -4, 4, 0, 4, (x, y, z) -> (x + z) % 2 == 0 ? s(Blocks.CUT_SANDSTONE) : s(Blocks.ORANGE_TERRACOTTA));
+		b.fill(-4, 0, -4, 4, 0, 4, (x, y, z) -> (x + z) % 2 == 0 ? s(Blocks.CUT_SANDSTONE) : s(vanilla("orange_terracotta")));
 		b.set(0, 7, 0, Blocks.SEA_LANTERN);
 		b.hoard(0, 1, 2, 2.2, s(Blocks.GOLD_BLOCK), s(Blocks.RAW_GOLD_BLOCK), s(Blocks.GOLD_BLOCK));
 		b.chest(-3, 1, 3, Direction.EAST, "treasury");
@@ -673,9 +674,9 @@ final class Vaults {
 		b.water(-1, 1, -8, 1, 3, -7);
 		// The telescope on its mount.
 		b.fill(-1, 1, -1, 1, 1, 1, Blocks.POLISHED_DEEPSLATE);
-		b.pillar(0, 0, 2, 4, s(Blocks.LIGHTNING_ROD));
-		b.line(-2, 4, -2, 3, 11, 3, s(Blocks.COPPER_BLOCK));
-		b.line(-2, 5, -2, 3, 12, 3, s(Blocks.WAXED_COPPER_BLOCK));
+		b.pillar(0, 0, 2, 4, s(vanilla("lightning_rod")));
+		b.line(-2, 4, -2, 3, 11, 3, s(vanilla("copper_block")));
+		b.line(-2, 5, -2, 3, 12, 3, s(vanilla("waxed_copper_block")));
 		b.set(3, 13, 3, Blocks.GLASS);
 		// Star charts and instruments round the wall.
 		b.frame(-6, 3, 0, Direction.EAST, Items.COMPASS);
@@ -719,7 +720,7 @@ final class Vaults {
 		b.spawner(-6, 1, 4, EntityTypes.DROWNED);
 		// The warden's desk.
 		b.set(7, 1, 0, Blocks.POLISHED_DEEPSLATE);
-		b.set(7, 2, 0, Blocks.CANDLE);
+		b.set(7, 2, 0, vanilla("candle"));
 		b.chest(8, 1, 0, Direction.WEST, "vault");
 		b.chest(8, 1, -1, Direction.WEST, "armory");
 		b.frame(8, 3, 1, Direction.WEST, Items.TRIPWIRE_HOOK);
@@ -818,8 +819,8 @@ final class Vaults {
 		b.set(2, 1, 2, Blocks.SEA_LANTERN);
 		b.set(-2, 1, -2, Blocks.SEA_LANTERN);
 		// Stalls round the square, each with its awning and its wares.
-		Block[] awnings = {Blocks.RED_WOOL, Blocks.YELLOW_WOOL, Blocks.BLUE_WOOL, Blocks.GREEN_WOOL,
-				Blocks.ORANGE_WOOL, Blocks.PURPLE_WOOL};
+		Block[] awnings = {vanilla("red_wool"), vanilla("yellow_wool"), vanilla("blue_wool"), vanilla("green_wool"),
+				vanilla("orange_wool"), vanilla("purple_wool")};
 		Item[] wares = {Items.EMERALD, Items.DIAMOND, Items.GOLD_INGOT, Items.HEART_OF_THE_SEA, Items.NAUTILUS_SHELL,
 				Items.ENCHANTED_BOOK, Items.GOLDEN_APPLE, Items.AMETHYST_SHARD};
 		int[][] stalls = {{-9, -9}, {0, -10}, {9, -9}, {-9, 9}, {0, 10}, {9, 9}};

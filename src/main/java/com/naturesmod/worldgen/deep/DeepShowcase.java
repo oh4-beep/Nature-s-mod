@@ -54,8 +54,8 @@ public final class DeepShowcase {
 		BoundingBox bounds = piece.getBoundingBox();
 		// Like a chunk being decorated: the whole height of the columns the piece covers.
 		BoundingBox columns = new BoundingBox(bounds.minX(), level.getMinY() + 1, bounds.minZ(), bounds.maxX(), level.getMaxY() - 1, bounds.maxZ());
-		piece.postProcess(level, level.structureManager(), level.getChunkSource().getGenerator(), level.getRandom(), columns, new ChunkPos(center),
-				center);
+		piece.postProcess(level, level.structureManager(), level.getChunkSource().getGenerator(), level.getRandom(), columns,
+				new ChunkPos(center.getX() >> 4, center.getZ() >> 4), center);
 		return piece;
 	}
 }

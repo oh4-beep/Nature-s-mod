@@ -10,6 +10,7 @@ import static com.naturesmod.worldgen.deep.DeepBuilder.pickles;
 import static com.naturesmod.worldgen.deep.DeepBuilder.s;
 import static com.naturesmod.worldgen.deep.DeepBuilder.slab;
 import static com.naturesmod.worldgen.deep.DeepBuilder.stairs;
+import static com.naturesmod.worldgen.deep.DeepBuilder.vanilla;
 
 import com.naturesmod.block.ModBlocks;
 
@@ -213,11 +214,11 @@ final class Ruins {
 		b.water(0, 1, -3, 0, 2, -3);
 		b.set(-3, 2, 0, joined(Blocks.GLASS_PANE, false));
 		b.set(3, 2, 0, joined(Blocks.GLASS_PANE, false));
-		b.bed(-2, 1, 0, Direction.SOUTH, Blocks.BROWN_BED);
+		b.bed(-2, 1, 0, Direction.SOUTH, vanilla("brown_bed"));
 		b.fill(0, 1, 2, 2, 3, 2, Blocks.BOOKSHELF);
 		b.set(2, 1, 0, facing(Blocks.LECTERN, Direction.WEST));
 		b.barrel(2, 1, -2, Direction.UP, "library");
-		b.set(-2, 1, -2, Blocks.CANDLE);
+		b.set(-2, 1, -2, vanilla("candle"));
 		b.set(0, 4, 0, lantern(false, true));
 	}
 
@@ -237,7 +238,7 @@ final class Ruins {
 		}
 		// The spill.
 		b.hoard(3, 1, 2, 2.4, s(Blocks.RAW_IRON_BLOCK), s(Blocks.RAW_GOLD_BLOCK), s(Blocks.COAL_BLOCK), s(Blocks.RAW_IRON_BLOCK),
-				s(Blocks.DEEPSLATE_DIAMOND_ORE), s(Blocks.RAW_COPPER_BLOCK));
+				s(Blocks.DEEPSLATE_DIAMOND_ORE), s(vanilla("raw_copper_block")));
 		b.set(-3, 1, 3, Blocks.RAW_GOLD_BLOCK);
 		b.set(-3, 1, 4, Blocks.DEEPSLATE_DIAMOND_ORE);
 		b.chest(-3, 1, -3, Direction.EAST, "mine");
@@ -276,8 +277,8 @@ final class Ruins {
 	static void divingBell(DeepBuilder b) {
 		b.padRound(0, 0, 6.5, b.mix(s(Blocks.SAND), s(Blocks.GRAVEL)), s(Blocks.SANDSTONE), 14);
 		b.sphere(0, 0, 0, 4.5, (x, y, z) -> y == 2 && (x == 0 || z == 0) ? s(Blocks.GLASS)
-				: b.chance(x, y, z, 7, 0.3) ? s(Blocks.WEATHERED_COPPER) : s(Blocks.OXIDIZED_COPPER), true, 0);
-		b.disc(0, 0, 0, 4.2, s(Blocks.OXIDIZED_CUT_COPPER));
+				: b.chance(x, y, z, 7, 0.3) ? s(vanilla("weathered_copper")) : s(vanilla("oxidized_copper")), true, 0);
+		b.disc(0, 0, 0, 4.2, s(vanilla("oxidized_cut_copper")));
 		b.water(-1, 1, -4, 1, 2, -4);
 		b.set(0, 3, 0, lantern(false, true));
 		b.pillar(0, 0, 5, 13, axis(Blocks.IRON_CHAIN, Direction.Axis.Y));
@@ -305,8 +306,8 @@ final class Ruins {
 		b.fill(0, 8, -5, 0, 8, 6, axis(Blocks.BONE_BLOCK, Direction.Axis.Z));
 		b.fill(-1, 1, -1, 1, 1, 1, Blocks.BONE_BLOCK);
 		b.set(0, 2, 0, Blocks.WITHER_SKELETON_SKULL);
-		b.set(-1, 2, -1, Blocks.CANDLE);
-		b.set(1, 2, -1, Blocks.CANDLE);
+		b.set(-1, 2, -1, vanilla("candle"));
+		b.set(1, 2, -1, vanilla("candle"));
 		b.chest(0, 1, 2, Direction.NORTH, "tomb");
 		for (int[] p : new int[][] {{-6, -4}, {6, -4}, {-6, 4}, {6, 4}}) {
 			b.pike(p[0], p[1], 1, 2, Blocks.BONE_BLOCK);
@@ -440,7 +441,7 @@ final class Ruins {
 	/** A lighthouse that guided ships to a coast that sank: the tower stands, its lamp lies in the sand. */
 	static void lighthouseRuin(DeepBuilder b) {
 		b.padRound(0, 0, 9.0, b.mix(s(Blocks.SAND), s(Blocks.GRAVEL)), s(Blocks.SANDSTONE), 10);
-		DeepBuilder.Paint stripes = (x, y, z) -> Math.floorMod(y + z, 6) < 3 ? s(Blocks.WHITE_TERRACOTTA) : s(Blocks.RED_TERRACOTTA);
+		DeepBuilder.Paint stripes = (x, y, z) -> Math.floorMod(y + z, 6) < 3 ? s(vanilla("white_terracotta")) : s(vanilla("red_terracotta"));
 		b.cylinder(0, -5, 3.5, 0, 7, b.ruin(stripes, 0.04), true);
 		b.disc(0, 0, -5, 2.6, s(Blocks.STONE_BRICKS));
 		b.water(0, 1, -8, 0, 2, -8);
@@ -491,13 +492,13 @@ final class Ruins {
 		b.padRound(0, 0, 7.5, b.mix(s(Blocks.SAND), s(Blocks.GRAVEL), s(Blocks.SAND)), s(Blocks.SANDSTONE), 8);
 		// The tent.
 		for (int z = -3; z <= 2; z++) {
-			b.set(-2, 1, z, Blocks.BROWN_WOOL);
-			b.set(2, 1, z, Blocks.BROWN_WOOL);
-			b.set(-1, 2, z, Blocks.BROWN_WOOL);
-			b.set(1, 2, z, Blocks.BROWN_WOOL);
-			b.set(0, 3, z, Blocks.BROWN_WOOL);
+			b.set(-2, 1, z, vanilla("brown_wool"));
+			b.set(2, 1, z, vanilla("brown_wool"));
+			b.set(-1, 2, z, vanilla("brown_wool"));
+			b.set(1, 2, z, vanilla("brown_wool"));
+			b.set(0, 3, z, vanilla("brown_wool"));
 		}
-		b.bed(0, 1, -2, Direction.SOUTH, Blocks.RED_BED);
+		b.bed(0, 1, -2, Direction.SOUTH, vanilla("red_bed"));
 		b.set(0, 2, -1, lantern(false, true));
 		// The fire pit.
 		for (int[] c : new int[][] {{3, -5}, {5, -5}, {4, -6}, {4, -4}}) {

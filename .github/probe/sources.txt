@@ -8,3 +8,5 @@ StructurePiece.java|public abstract void postProcess|protected void addAdditiona
 ServerLevel.java|public StructureManager structureManager
 AbstractSkullBlock.java|public abstract class|public class
 BlockStateProperties.java|VERTICAL_DIRECTION|DRAG|ROTATION_16|PICKLES|BED_PART|SLAB_TYPE
+ChunkPos.java|public record ChunkPos|public static ChunkPos containing|public ChunkPos\(
+Blocks.java|public static final .*(WOOL|_BED|TERRACOTTA|COPPER|CANDLE|LIGHTNING_ROD|CONCRETE|STAINED_GLASS)
