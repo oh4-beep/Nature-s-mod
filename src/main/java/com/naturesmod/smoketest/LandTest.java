@@ -158,14 +158,14 @@ final class LandTest {
 		for (LandKind kind : LandKind.values()) {
 			int reach = kind.tier().reach();
 			BlockPos site = null;
-			for (int tries = 0; tries < 20 && site == null; tries++) {
+			for (int tries = 0; tries < 80 && site == null; tries++) {
 				BlockPos candidate = LandShowcase.drySite(level, cursor, reach);
 				if (candidate == null) {
 					break;
 				}
 				BoundingBox box = kind.bounds(candidate).inflatedBy(4);
 				if (built.stream().anyMatch(other -> other.intersects(box))) {
-					cursor = cursor.offset(64, 0, 0);
+					cursor = cursor.getX() > 3800 ? new BlockPos(3000, 0, cursor.getZ() + 64) : cursor.offset(64, 0, 0);
 				} else {
 					site = candidate;
 				}
