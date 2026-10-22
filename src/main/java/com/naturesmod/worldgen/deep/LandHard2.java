@@ -337,20 +337,20 @@ final class LandHard2 {
 	static void bunker(DeepBuilder b) {
 		site(b, 12.5, 6);
 		// The main hall and its rooms.
-		b.fill(-20, -22, -4, 20, -16, 4, s(Blocks.GRAY_CONCRETE));
+		b.fill(-20, -22, -4, 20, -16, 4, s(vanilla("gray_concrete")));
 		b.fill(-19, -21, -3, 19, -17, 3, b.open());
 		// The shaft down from the hatch, its ladder on the south wall.
-		b.fill(-1, -16, -1, 1, 1, 1, s(Blocks.GRAY_CONCRETE));
+		b.fill(-1, -16, -1, 1, 1, 1, s(vanilla("gray_concrete")));
 		b.clear(0, -16, 0, 0, 1, 0);
 		ladder(b, 0, 0, -21, 1, Direction.NORTH);
-		b.set(0, -21, 1, s(Blocks.GRAY_CONCRETE));
-		b.set(0, -20, 1, s(Blocks.GRAY_CONCRETE));
-		b.set(0, -19, 1, s(Blocks.GRAY_CONCRETE));
-		b.set(0, -18, 1, s(Blocks.GRAY_CONCRETE));
-		b.set(0, -17, 1, s(Blocks.GRAY_CONCRETE));
+		b.set(0, -21, 1, s(vanilla("gray_concrete")));
+		b.set(0, -20, 1, s(vanilla("gray_concrete")));
+		b.set(0, -19, 1, s(vanilla("gray_concrete")));
+		b.set(0, -18, 1, s(vanilla("gray_concrete")));
+		b.set(0, -17, 1, s(vanilla("gray_concrete")));
 		for (int x = -16; x <= 16; x += 8) {
 			b.set(x, -17, 0, lantern(false, true));
-			b.fill(x - 3, -22, 5, x + 3, -16, 12, s(Blocks.LIGHT_GRAY_CONCRETE));
+			b.fill(x - 3, -22, 5, x + 3, -16, 12, s(vanilla("light_gray_concrete")));
 			b.fill(x - 2, -21, 5, x + 2, -17, 11, b.open());
 			b.clear(x, -21, 4, x, -20, 4);
 		}

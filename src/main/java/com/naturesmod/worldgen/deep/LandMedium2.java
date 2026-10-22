@@ -174,7 +174,7 @@ final class LandMedium2 {
 	/** A research station on the ice, its instruments frozen and its samples in the cold store. */
 	static void frozenLab(DeepBuilder b) {
 		site(b, -14, -12, 14, 12, 0, 10);
-		LandParts.house(b, -10, -6, 10, 6, 4, DeepBuilder.p(s(Blocks.WHITE_CONCRETE)), s(Blocks.POLISHED_ANDESITE), s(Blocks.SMOOTH_STONE));
+		LandParts.house(b, -10, -6, 10, 6, 4, DeepBuilder.p(s(vanilla("white_concrete"))), s(Blocks.POLISHED_ANDESITE), s(Blocks.SMOOTH_STONE));
 		b.fill(-10, 5, -6, 10, 5, 6, s(Blocks.SMOOTH_STONE_SLAB));
 		b.clear(0, 1, -6, 0, 2, -6);
 		for (int x = -6; x <= 6; x += 6) {
