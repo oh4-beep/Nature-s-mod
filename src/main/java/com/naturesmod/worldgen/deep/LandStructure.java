@@ -1,5 +1,6 @@
 package com.naturesmod.worldgen.deep;
 
+import java.util.Locale;
 import java.util.Optional;
 
 import com.mojang.serialization.MapCodec;
@@ -8,7 +9,6 @@ import com.naturesmod.worldgen.FeatureStats;
 import com.naturesmod.worldgen.ModStructures;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.QuartPos;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -18,8 +18,8 @@ import net.minecraft.world.level.levelgen.structure.StructureType;
 
 /**
  * The structures of the Overworld's lands, in three sizes: easy finds, harder halls and the great
- * dungeons. Each picks a kind that suits the climate it stands in, on ground that is level, dry and
- * solid all the way round.
+ * dungeons, on ground that is level, dry and solid all the way round. Each picks a kind that suits
+ * the climate it stands in when it is built (see {@link LandPiece}).
  */
 public abstract class LandStructure extends Structure {
 	private final DeepKind.Tier tier;
@@ -55,15 +55,12 @@ public abstract class LandStructure extends Structure {
 		if (high - low > tier.maxSlope() + 2) {
 			return Optional.empty();
 		}
-		Climate climate = Climate.of(context.biomeSource().getNoiseBiome(QuartPos.fromBlock(x), QuartPos.fromBlock(ground), QuartPos.fromBlock(z),
-				context.randomState().sampler()));
 		WorldgenRandom random = context.random();
-		LandKind kind = LandKind.pick(tier, climate, random);
 		Rotation rotation = Rotation.getRandom(random);
 		long seed = random.nextLong();
 		BlockPos center = new BlockPos(x, ground, z);
-		FeatureStats.placed("land/" + kind.id(), center);
-		return Optional.of(new GenerationStub(center, builder -> builder.addPiece(new LandPiece(kind, center, rotation, seed, climate))));
+		FeatureStats.placed("land/" + tier.name().toLowerCase(Locale.ROOT), center);
+		return Optional.of(new GenerationStub(center, builder -> builder.addPiece(new LandPiece(tier, center, rotation, seed))));
 	}
 
 	/** Y of the top block of solid ground. */

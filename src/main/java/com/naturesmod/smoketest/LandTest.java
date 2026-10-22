@@ -129,9 +129,14 @@ final class LandTest {
 							level.getChunk(cx, cz);
 						}
 					}
-					Map<String, Integer> counts = inspect(land, "the wild " + land.kind().id());
-					test.line("%s: a %s (%s) at %s, found and built in %.1fs: %s", name, land.kind().id(), land.climate().name().toLowerCase(),
-							land.center(), (System.currentTimeMillis() - began) / 1000.0, counts);
+					String kind = land.kind() == null ? "(unbuilt)" : land.kind().id();
+					String climate = land.climate() == null ? "?" : land.climate().name().toLowerCase();
+					Map<String, Integer> counts = inspect(land, "the wild " + kind);
+					test.line("%s: a %s (%s) at %s, found and built in %.1fs: %s", name, kind, climate, land.center(),
+							(System.currentTimeMillis() - began) / 1000.0, counts);
+					if (land.kind() == null) {
+						test.fail("the %s at %s was never built", name, land.center());
+					}
 				}
 			}
 		}

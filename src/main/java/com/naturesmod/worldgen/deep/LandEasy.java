@@ -77,6 +77,7 @@ final class LandEasy {
 		b.chest(3, 1, 2, Direction.WEST, "cabin");
 		b.set(3, 1, -2, facing(Blocks.SMOKER, Direction.WEST));
 		b.set(-3, 1, -2, Blocks.CRAFTING_TABLE);
+		b.fill(-3, 5, 0, 3, 5, 0, axis(Blocks.SPRUCE_LOG, Direction.Axis.X));
 		b.set(0, 4, 0, lantern(false, true));
 		b.frame(0, 2, 2, Direction.NORTH, Items.BOW);
 		b.set(-1, 1, 2, carpet("brown"));
@@ -192,8 +193,9 @@ final class LandEasy {
 						b.set(x, -1, z, Blocks.WATER);
 					}
 				} else if (d <= 5.4) {
-					b.set(x, 0, z, b.chance(x, 0, z, 74, 0.5) ? s(Blocks.GRASS_BLOCK) : s(Blocks.SAND));
-					if (b.chance(x, 1, z, 75, 0.3)) {
+					boolean grass = b.chance(x, 0, z, 74, 0.5);
+					b.set(x, 0, z, grass ? s(Blocks.GRASS_BLOCK) : s(Blocks.SAND));
+					if (grass && b.chance(x, 1, z, 75, 0.3)) {
 						b.set(x, 1, z, Blocks.SHORT_GRASS);
 					}
 				}
@@ -213,8 +215,9 @@ final class LandEasy {
 			}
 			b.set(tx, 7, z, leaves(Blocks.JUNGLE_LEAVES));
 		}
-		b.set(-4, 1, 4, Blocks.SUGAR_CANE);
-		b.set(-4, 2, 4, Blocks.SUGAR_CANE);
+		b.set(-3, 0, 3, Blocks.SAND);
+		b.set(-3, 1, 3, Blocks.SUGAR_CANE);
+		b.set(-3, 2, 3, Blocks.SUGAR_CANE);
 		b.set(4, 1, -4, Blocks.DEAD_BUSH);
 		b.chest(6, 0, -2, Direction.WEST, "desert");
 		b.keeper(-6, 1, 1, EntityTypes.CAMEL);
@@ -276,7 +279,7 @@ final class LandEasy {
 		}
 		b.chest(1, 4, 1, Direction.WEST, "jungle");
 		b.set(-1, 4, 1, carpet("green"));
-		b.set(0, 6, 0, lantern(false, true));
+		b.set(0, 9, 0, lantern(false, true));
 	}
 
 	/** A fort of packed snow, kept by two snow golems who throw snowballs at anything that comes near. */
@@ -323,15 +326,15 @@ final class LandEasy {
 			b.pillar(c[0], c[1], 8, 10, s(Blocks.ACACIA_FENCE));
 		}
 		b.fill(-3, 7, -3, 3, 7, 3, s(Blocks.ACACIA_PLANKS));
-		b.walls(-3, 8, -3, 3, 8, 3, joined(Blocks.ACACIA_FENCE, true));
+		LandParts.railing(b, -3, 8, -3, 3, 8, 3, Blocks.ACACIA_FENCE);
 		b.fill(-3, 11, -3, 3, 11, 3, slab(Blocks.ACACIA_SLAB, false));
 		b.pillar(0, -2, 1, 6, log(Blocks.ACACIA_LOG));
 		for (int y = 1; y <= 7; y++) {
 			b.set(0, y, -3, facing(Blocks.LADDER, Direction.NORTH));
 		}
 		b.clear(0, 8, -3, 0, 8, -3);
-		b.chest(2, 8, 2, Direction.WEST, "savanna");
-		b.set(-2, 8, 2, Blocks.BARREL);
+		b.chest(1, 8, 1, Direction.WEST, "savanna");
+		b.set(-1, 8, 2, Blocks.BARREL);
 	}
 
 	/** A towering termite mound of clay, hollow inside, and still busy. */
@@ -390,6 +393,8 @@ final class LandEasy {
 			b.pillar(c[0], c[1], 1, 3, s(Blocks.DARK_OAK_FENCE));
 			b.set(c[0], 4, c[1], lantern(true, false));
 		}
+		b.set(2, 0, -2, Blocks.PODZOL);
+		b.set(-2, 0, -2, Blocks.PODZOL);
 		b.set(2, 1, -2, Blocks.RED_MUSHROOM);
 		b.set(-2, 1, -2, Blocks.BROWN_MUSHROOM);
 		b.set(3, 1, 2, head(Blocks.SKELETON_SKULL, 8));
@@ -402,6 +407,7 @@ final class LandEasy {
 		site(b, 6.5, 16);
 		DeepBuilder.Paint stone = b.ruin(b.worn(s(Blocks.STONE_BRICKS), s(Blocks.MOSSY_STONE_BRICKS), s(Blocks.CRACKED_STONE_BRICKS)), 0.12);
 		LandParts.tower(b, 0, 0, 3.5, 12, 5, stone, s(Blocks.SPRUCE_PLANKS));
+		b.pillar(3, 0, 1, 12, s(Blocks.STONE_BRICKS));
 		b.chest(-1, 11, 1, Direction.EAST, "common");
 		b.set(1, 6, -1, Blocks.BARREL);
 		for (int i = 0; i < 6; i++) {

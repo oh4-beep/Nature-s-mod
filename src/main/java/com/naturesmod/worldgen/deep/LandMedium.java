@@ -104,7 +104,7 @@ final class LandMedium {
 		for (int k = 0; k <= 6; k++) {
 			b.disc(0, 19 + k, 0, 5.5 - k * 0.85, k % 2 == 0 ? s(vanilla("purple_terracotta")) : s(vanilla("magenta_terracotta")));
 		}
-		b.set(0, 26, 0, Blocks.LIGHTNING_ROD);
+		b.set(0, 26, 0, vanilla("lightning_rod"));
 		for (int y = 3; y <= 15; y += 6) {
 			b.set(-4, y, 0, joined(Blocks.IRON_BARS, false));
 			b.set(0, y + 1, 4, joined(Blocks.IRON_BARS, true));

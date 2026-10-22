@@ -57,7 +57,7 @@ public class Mount extends EndWalker {
 			if (!this.level().isClientSide()) {
 				this.setSaddledMount(true);
 				stack.consume(1, player);
-				this.playSound(SoundEvents.LLAMA_SWAG, 1.0F, 1.0F);
+				this.playSound(SoundEvents.LLAMA_SWAG.value(), 1.0F, 1.0F);
 			}
 			return InteractionResult.SUCCESS;
 		}

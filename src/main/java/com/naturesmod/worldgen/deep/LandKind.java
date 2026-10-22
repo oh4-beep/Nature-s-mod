@@ -114,6 +114,11 @@ public enum LandKind {
 
 	/** The box it is built in: as wide as a treasure of the deep of its size, and taller and deeper for the towers and crypts. */
 	public BoundingBox bounds(BlockPos center) {
+		return bounds(tier, center);
+	}
+
+	/** The box any kind of a tier is built in. */
+	public static BoundingBox bounds(DeepKind.Tier tier, BlockPos center) {
 		BoundingBox box = tier.bounds(center);
 		int above = tier == DeepKind.Tier.WONDER ? 40 : 24;
 		return new BoundingBox(box.minX(), box.minY(), box.minZ(), box.maxX(), box.maxY() + above, box.maxZ());
