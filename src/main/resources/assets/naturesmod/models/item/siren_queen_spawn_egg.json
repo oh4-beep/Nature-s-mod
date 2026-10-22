@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "naturesmod:item/siren_queen_spawn_egg"
+  }
+}

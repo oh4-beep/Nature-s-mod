@@ -46,7 +46,9 @@ public class SeaCreatureRenderer extends MobRenderer<Mob, CreatureRenderState, S
 	public void extractRenderState(Mob entity, CreatureRenderState state, float partialTicks) {
 		super.extractRenderState(entity, state, partialTicks);
 		state.attacking = entity instanceof SeaCreature creature && creature.isAttacking();
-		state.pulse = entity instanceof Jellyfish jelly ? jelly.pulseTime(partialTicks) : 100.0F;
+		// A jellyfish boss swims like the other bosses but still pulses its bell every couple of seconds.
+		state.pulse = entity instanceof Jellyfish jelly ? jelly.pulseTime(partialTicks)
+				: this.species.isJelly() ? (entity.tickCount + partialTicks) % 45.0F : 100.0F;
 	}
 
 	@Override

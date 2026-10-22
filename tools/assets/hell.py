@@ -439,7 +439,7 @@ def write(assets, data_root):
     ns = lambda names: [f"naturesmod:{n}" for n in names]
     _json(os.path.join(tags, "mineable", "pickaxe.json"), {"replace": False, "values": ns([
         "brimstone", "brimstone_bricks", "scorched_netherrack", "scorched_bricks", "ember_crystal", "hellfire_brazier", "soul_brazier",
-        "nether_geyser", "pearl_block"])})
+        "nether_geyser", "pearl_block", "abyssal_enchanting_table"])})
     _json(os.path.join(tags, "mineable", "shovel.json"), {"replace": False, "values": ns(["ash_block"])})
     _json(os.path.join(tags, "mineable", "hoe.json"), {"replace": False, "values": ns(["flesh_block"])})
     _json(os.path.join(tags, "mineable", "axe.json"), {"replace": False, "values": ns(["charred_log"])})

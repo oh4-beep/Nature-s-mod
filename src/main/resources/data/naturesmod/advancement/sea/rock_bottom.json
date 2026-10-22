@@ -1,0 +1,45 @@
+{
+  "criteria": {
+    "bottom": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "dimension": "naturesmod:abyss",
+              "position": {
+                "y": {
+                  "max": 160.0
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.naturesmod.sea.rock_bottom.description"
+    },
+    "icon": {
+      "id": "minecraft:netherite_ingot"
+    },
+    "title": {
+      "translate": "advancements.naturesmod.sea.rock_bottom.title"
+    },
+    "frame": "challenge"
+  },
+  "requirements": [
+    [
+      "bottom"
+    ]
+  ],
+  "sends_telemetry_event": false,
+  "parent": "naturesmod:sea/crushing_depths",
+  "rewards": {
+    "experience": 500
+  }
+}

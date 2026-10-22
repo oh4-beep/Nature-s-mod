@@ -68,6 +68,18 @@ public final class CreatureSpecies {
 		new SpeciesData("pale_lurker", "fish", Behavior.AMBUSH, "water_creature", 1.8F, 1.41F, 0.81F, 36.0, 9.0, 1.6, 1, 1, 5, false, false, false, "any", "fish", 0, List.of("naturesmod:abyssal_plains", "naturesmod:hydrothermal_vents", "naturesmod:bone_fields"), "blindness"),
 		new SpeciesData("abyssal_maw", "fish", Behavior.AMBUSH, "water_creature", 3.0F, 2.06F, 1.35F, 90.0, 14.0, 1.1, 1, 1, 3, false, true, false, "any", "fish", 0, List.of("naturesmod:abyssal_plains", "naturesmod:hydrothermal_vents", "naturesmod:bone_fields"), "darkness"),
 		new SpeciesData("abyssal_leviathan", "long", Behavior.BOSS, "water_creature", 6.0F, 3.5F, 2.5F, 300.0, 18.0, 1.1, 1, 1, 1, false, true, false, "any", "leviathan", 10, List.of(), ""),
+		new SpeciesData("tidewyrm", "long", Behavior.BOSS, "water_creature", 4.5F, 3.5F, 2.02F, 160.0, 11.0, 1.3, 1, 1, 1, false, true, false, "any", "leviathan", 10, List.of(), "nausea"),
+		new SpeciesData("razorjaw", "shark", Behavior.BOSS, "water_creature", 5.0F, 3.5F, 2.25F, 180.0, 13.0, 1.6, 1, 1, 1, false, true, false, "any", "leviathan", 0, List.of(), "wither"),
+		new SpeciesData("gloomlantern", "fish", Behavior.BOSS, "water_creature", 4.5F, 3.3F, 2.02F, 200.0, 12.0, 1.1, 1, 1, 1, false, true, false, "any", "leviathan", 0, List.of(), "blindness"),
+		new SpeciesData("stormcoil", "long", Behavior.BOSS, "water_creature", 4.0F, 3.5F, 1.8F, 210.0, 12.0, 1.4, 1, 1, 1, false, true, false, "any", "leviathan", 9, List.of(), ""),
+		new SpeciesData("kraken", "squid", Behavior.BOSS, "water_creature", 4.0F, 3.12F, 1.8F, 240.0, 13.0, 1.0, 1, 1, 1, false, true, false, "any", "squid", 0, List.of(), ""),
+		new SpeciesData("siren_queen", "jelly", Behavior.BOSS, "water_creature", 4.5F, 2.9F, 3.8F, 220.0, 10.0, 0.8, 1, 1, 1, false, true, true, "any", "leviathan", 0, List.of(), "poison"),
+		new SpeciesData("bonewarden", "long", Behavior.BOSS, "water_creature", 5.0F, 3.5F, 2.25F, 260.0, 15.0, 1.2, 1, 1, 1, false, true, false, "any", "leviathan", 11, List.of(), "wither"),
+		new SpeciesData("abyssal_manta", "ray", Behavior.BOSS, "water_creature", 5.5F, 3.5F, 1.475F, 230.0, 14.0, 1.5, 1, 1, 1, false, true, false, "any", "leviathan", 0, List.of(), "darkness"),
+		new SpeciesData("hollow_king", "deep", Behavior.BOSS, "water_creature", 4.5F, 1.97F, 2.5F, 280.0, 14.0, 1.0, 1, 1, 1, false, true, false, "any", "leviathan", 0, List.of(), "darkness"),
+		new SpeciesData("dunkleosteus", "fish", Behavior.BOSS, "water_creature", 5.5F, 3.5F, 2.48F, 320.0, 18.0, 1.1, 1, 1, 1, false, true, false, "any", "leviathan", 0, List.of(), "crush"),
+		new SpeciesData("twin_terror", "long", Behavior.BOSS, "water_creature", 4.5F, 3.5F, 2.02F, 300.0, 15.0, 1.3, 1, 1, 1, false, true, false, "any", "leviathan", 9, List.of(), "poison"),
+		new SpeciesData("megalodon", "shark", Behavior.BOSS, "water_creature", 7.0F, 3.5F, 2.5F, 400.0, 22.0, 1.5, 1, 1, 1, false, true, false, "any", "leviathan", 0, List.of(), "wither"),
 		new SpeciesData("abyssal_horror", "fish", Behavior.BOSS, "water_creature", 5.5F, 3.5F, 2.48F, 500.0, 20.0, 1.0, 1, 1, 1, false, true, false, "any", "leviathan", 0, List.of(), "darkness")
 	);
 }

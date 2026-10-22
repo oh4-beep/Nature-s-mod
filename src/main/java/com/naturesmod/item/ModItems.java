@@ -1,7 +1,9 @@
 package com.naturesmod.item;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab;
@@ -59,6 +61,7 @@ public final class ModItems {
 	public static Item EMBER_SIGIL;
 	public static Item CROWN_OF_THE_DEEP;
 	public static Item EMBER_SHARD;
+	public static final Map<AbyssWeapon.Kind, Item> WEAPONS = new EnumMap<>(AbyssWeapon.Kind.class);
 
 	private ModItems() {
 	}
@@ -100,6 +103,14 @@ public final class ModItems {
 				.rarity(Rarity.EPIC).fireResistant());
 		register("abyssal_altar", properties -> new BlockItem(ModBlocks.ABYSSAL_ALTAR, properties),
 				new Item.Properties().useBlockDescriptionPrefix().rarity(Rarity.EPIC));
+
+		// The treasures at the bottom of the Abyss.
+		register("abyssal_enchanting_table", properties -> new BlockItem(ModBlocks.ABYSSAL_ENCHANTING_TABLE, properties),
+				new Item.Properties().useBlockDescriptionPrefix().rarity(Rarity.EPIC));
+		for (AbyssWeapon.Kind kind : AbyssWeapon.Kind.values()) {
+			WEAPONS.put(kind, register(kind.id, properties -> new AbyssWeapon(properties, kind),
+					new Item.Properties().sword(AbyssWeapon.MATERIAL, kind.damage, kind.speed).rarity(Rarity.EPIC).fireResistant()));
+		}
 
 		for (SpeciesData species : CreatureSpecies.ALL) {
 			EntityType<? extends Mob> type = ModCreatures.type(species.id());

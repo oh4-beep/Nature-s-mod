@@ -50,18 +50,55 @@ public class LargeSwimmer extends WaterAnimal implements SeaCreature {
 	/** Where an ambush predator lurks. */
 	private BlockPos home;
 	private ServerBossEvent bossEvent;
-	private int roarCooldown = 200;
-	private int chargeCooldown = 160;
-	private int chargeTicks;
+	// The boss powers (see BossPowers) and the charge every boss has.
+	int powerCooldown = 100;
+	int broodCooldown = 300;
+	int chargeCooldown = 160;
+	int chargeTicks;
+	int diveTicks;
+	int frenzyCharges;
+	private double chargeSpeed = 1.4;
+	/** Ticks a hunting boss of the descent has been left without a diver near it. */
+	private int lonelyTicks;
+	private Boolean hunter;
 
 	public LargeSwimmer(EntityType<? extends LargeSwimmer> type, Level level) {
 		super(type, level);
 		this.moveControl = new SmoothSwimmingMoveControl<>(this, 85, 10, 0.02F, 0.1F, true);
 		this.lookControl = new SmoothSwimmingLookControl(this, 10);
 		if (this.species().behavior() == Behavior.BOSS) {
-			this.bossEvent = new ServerBossEvent(this.getUUID(), this.getDisplayName(), BossEvent.BossBarColor.BLUE, BossEvent.BossBarOverlay.NOTCHED_10);
+			this.bossEvent = new ServerBossEvent(this.getUUID(), this.getDisplayName(), barColor(this.species().id()), BossEvent.BossBarOverlay.NOTCHED_10);
 			this.bossEvent.setDarkenScreen(true);
 		}
+	}
+
+	private static BossEvent.BossBarColor barColor(String id) {
+		return switch (id) {
+			case "tidewyrm", "twin_terror" -> BossEvent.BossBarColor.GREEN;
+			case "razorjaw", "kraken", "hollow_king", "megalodon" -> BossEvent.BossBarColor.RED;
+			case "gloomlantern" -> BossEvent.BossBarColor.YELLOW;
+			case "siren_queen" -> BossEvent.BossBarColor.PINK;
+			case "bonewarden", "dunkleosteus" -> BossEvent.BossBarColor.WHITE;
+			case "abyssal_horror" -> BossEvent.BossBarColor.PURPLE;
+			default -> BossEvent.BossBarColor.BLUE;
+		};
+	}
+
+	/** Whether this boss was sent by the Abyss to hunt a diver on the way down. */
+	public boolean isHunter() {
+		if (this.hunter == null) {
+			// The mark is kept as an entity tag so it survives saving; adding it tells whether it was there.
+			this.hunter = !this.addTag(AbyssBosses.HUNTER_TAG);
+			if (!this.hunter) {
+				this.removeTag(AbyssBosses.HUNTER_TAG);
+			}
+		}
+		return this.hunter;
+	}
+
+	void markHunter() {
+		this.addTag(AbyssBosses.HUNTER_TAG);
+		this.hunter = true;
 	}
 
 	@Override
@@ -231,41 +268,60 @@ public class LargeSwimmer extends WaterAnimal implements SeaCreature {
 		return hit;
 	}
 
-	/** The Leviathan: a darkening roar, charges that knock divers about, and slow regeneration. */
+	/** Every boss: its powers, a charge that knocks divers about, and slow regeneration. */
 	private void bossTick(ServerLevel level, LivingEntity target) {
 		this.bossEvent.setProgress(this.getHealth() / this.getMaxHealth());
+		if (this.isHunter() && this.tickCount % 20 == 0) {
+			// A hunter that has lost its prey gives up and sinks back into the dark.
+			this.lonelyTicks = level.getNearestPlayer(this, 96.0) == null ? this.lonelyTicks + 20 : 0;
+			if (this.lonelyTicks > 1200) {
+				this.discard();
+				return;
+			}
+		}
 		if (target == null) {
 			if (this.tickCount % 40 == 0) {
 				this.heal(2.0F);
 			}
 			return;
 		}
-		if (--this.roarCooldown <= 0) {
-			this.roarCooldown = 300 + this.random.nextInt(200);
-			this.playSound(SoundEvents.ELDER_GUARDIAN_CURSE, 4.0F, 0.5F);
-			List<ServerPlayer> players = level.getEntitiesOfClass(ServerPlayer.class, this.getBoundingBox().inflate(48.0));
-			for (ServerPlayer player : players) {
-				if (!player.isCreative() && !player.isSpectator()) {
-					player.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 200, 0), this);
-					player.addEffect(new MobEffectInstance(MobEffects.MINING_FATIGUE, 600, 1), this);
-				}
-			}
-		}
+		BossPowers.tick(this, level, target);
 		double distance = this.distanceToSqr(target);
 		if (this.chargeTicks > 0) {
 			this.chargeTicks--;
-			for (LivingEntity victim : level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(1.0), e -> e != this && e.isAlive())) {
+			for (LivingEntity victim : level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(1.0), e -> e != this && e.isAlive()
+					&& !(e instanceof LargeSwimmer other && other.species().behavior() == Behavior.BOSS))) {
 				if (victim.hurtServer(level, this.damageSources().mobAttack(this), (float) this.species().attack() * 0.75F)) {
-					Vec3 push = victim.position().subtract(this.position()).normalize().scale(1.6);
-					victim.push(push.x, 0.4 + push.y * 0.5, push.z);
+					Vec3 push = victim.position().subtract(this.position()).normalize().scale(this.chargeSpeed + 0.2);
+					BossPowers.push(victim, new Vec3(push.x, 0.4 + push.y * 0.5, push.z));
+					CreatureEffects.bite(this, this.species(), victim);
 				}
 			}
-		} else if (--this.chargeCooldown <= 0 && distance > 64.0 && distance < 900.0) {
-			this.chargeCooldown = 140 + this.random.nextInt(120);
-			this.chargeTicks = 12;
-			Vec3 dash = target.getEyePosition().subtract(this.position()).normalize().scale(1.4);
-			this.setDeltaMovement(dash);
-			this.playSound(SoundEvents.ELDER_GUARDIAN_HURT, 3.0F, 0.4F);
+		} else if (--this.chargeCooldown <= 0 && distance > 36.0 && distance < 900.0) {
+			boolean frenzy = this.frenzyCharges > 0;
+			if (frenzy) {
+				this.frenzyCharges--;
+			}
+			boolean enraged = this.getHealth() < this.getMaxHealth() * 0.5F;
+			this.chargeCooldown = frenzy ? 25 : (140 + this.random.nextInt(120)) / (enraged ? 2 : 1);
+			this.charge(target, frenzy ? 1.7 : 1.4, 12);
+		}
+	}
+
+	/** Dashes at the target, hurting and hurling whatever it hits on the way. */
+	void charge(LivingEntity target, double speed, int ticks) {
+		this.chargeTicks = ticks;
+		this.chargeSpeed = speed;
+		Vec3 dash = target.getEyePosition().subtract(this.position()).normalize().scale(speed);
+		this.setDeltaMovement(dash);
+		this.playSound(SoundEvents.ELDER_GUARDIAN_HURT, 3.0F, 0.4F);
+	}
+
+	@Override
+	public void die(DamageSource source) {
+		super.die(source);
+		if (this.level() instanceof ServerLevel level && this.isHunter()) {
+			AbyssBosses.defeated(level, this);
 		}
 	}
 

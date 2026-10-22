@@ -41,6 +41,10 @@ public record SpeciesData(String id, String plan, Behavior behavior, String cate
 
 	/** Which kind of entity carries this species. */
 	public Kind kind() {
+		if (behavior == Behavior.BOSS) {
+			// Every boss, whatever its shape, is a big smooth swimmer with a boss bar.
+			return Kind.LARGE;
+		}
 		if (isJelly()) {
 			return Kind.JELLY;
 		}

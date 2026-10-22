@@ -1,0 +1,203 @@
+{
+  "criteria": {
+    "tidewyrm": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "naturesmod:tidewyrm"
+          }
+        }
+      }
+    },
+    "razorjaw": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "naturesmod:razorjaw"
+          }
+        }
+      }
+    },
+    "gloomlantern": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "naturesmod:gloomlantern"
+          }
+        }
+      }
+    },
+    "stormcoil": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "naturesmod:stormcoil"
+          }
+        }
+      }
+    },
+    "kraken": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "naturesmod:kraken"
+          }
+        }
+      }
+    },
+    "siren_queen": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "naturesmod:siren_queen"
+          }
+        }
+      }
+    },
+    "bonewarden": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "naturesmod:bonewarden"
+          }
+        }
+      }
+    },
+    "abyssal_manta": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "naturesmod:abyssal_manta"
+          }
+        }
+      }
+    },
+    "hollow_king": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "naturesmod:hollow_king"
+          }
+        }
+      }
+    },
+    "dunkleosteus": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "naturesmod:dunkleosteus"
+          }
+        }
+      }
+    },
+    "twin_terror": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "naturesmod:twin_terror"
+          }
+        }
+      }
+    },
+    "megalodon": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "naturesmod:megalodon"
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.naturesmod.sea.lord_of_the_deep.description"
+    },
+    "icon": {
+      "id": "naturesmod:sovereign_staff"
+    },
+    "title": {
+      "translate": "advancements.naturesmod.sea.lord_of_the_deep.title"
+    },
+    "frame": "challenge"
+  },
+  "requirements": [
+    [
+      "tidewyrm"
+    ],
+    [
+      "razorjaw"
+    ],
+    [
+      "gloomlantern"
+    ],
+    [
+      "stormcoil"
+    ],
+    [
+      "kraken"
+    ],
+    [
+      "siren_queen"
+    ],
+    [
+      "bonewarden"
+    ],
+    [
+      "abyssal_manta"
+    ],
+    [
+      "hollow_king"
+    ],
+    [
+      "dunkleosteus"
+    ],
+    [
+      "twin_terror"
+    ],
+    [
+      "megalodon"
+    ]
+  ],
+  "sends_telemetry_event": false,
+  "parent": "naturesmod:sea/guardian_slayer",
+  "rewards": {
+    "experience": 2000
+  }
+}

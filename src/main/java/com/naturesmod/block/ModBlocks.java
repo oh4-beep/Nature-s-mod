@@ -14,6 +14,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 
 import com.naturesmod.NaturesMod;
+import com.naturesmod.abyss.AbyssalEnchantingTableBlock;
 import com.naturesmod.abyss.AltarBlock;
 import com.naturesmod.abyss.RiftBlock;
 import com.naturesmod.nether.BoneSpikesBlock;
@@ -75,6 +76,15 @@ public final class ModBlocks {
 			.noLootTable()
 			.lightLevel(state -> 4 + 2 * AltarBlock.sigils(state) + (state.getValue(AltarBlock.AWAKENED) ? 3 : 0))
 			.sound(SoundType.DEEPSLATE_BRICKS));
+
+	public static final Block ABYSSAL_ENCHANTING_TABLE = register("abyssal_enchanting_table", AbyssalEnchantingTableBlock::new,
+			BlockBehaviour.Properties.of()
+					.mapColor(MapColor.COLOR_CYAN)
+					.requiresCorrectToolForDrops()
+					.strength(5.0F, 1200.0F)
+					.lightLevel(state -> 12)
+					.noOcclusion()
+					.sound(SoundType.DEEPSLATE_BRICKS));
 
 	// --- the hellish Nether ------------------------------------------------------------------
 	public static final Block BRIMSTONE = register("brimstone", BrimstoneBlock::new, BlockBehaviour.Properties.of()

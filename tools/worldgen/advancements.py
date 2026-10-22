@@ -41,6 +41,16 @@ def player_where(predicate):
             "conditions": {"player": {"type": "minecraft:entity_properties", "entity": "this", "predicate": predicate}}}
 
 
+# The guardians of the descent, from the top of the Abyss down (see AbyssBosses).
+GUARDIANS = ["tidewyrm", "razorjaw", "gloomlantern", "stormcoil", "kraken", "siren_queen", "bonewarden", "abyssal_manta",
+             "hollow_king", "dunkleosteus", "twin_terror", "megalodon"]
+
+
+def killed(entity):
+    return {"trigger": "minecraft:player_killed_entity", "conditions": {"entity": {
+        "type": "minecraft:entity_properties", "entity": "this", "predicate": {"minecraft:entity_type": entity}}}}
+
+
 def suit(name):
     return {"wearing": player_where({"minecraft:equipment": {
         "head": {"items": f"{NS}:{name}_helmet"}, "chest": {"items": f"{NS}:{name}_chestplate"},
@@ -70,6 +80,15 @@ def build(buckets):
             "trigger": "minecraft:player_killed_entity", "conditions": {"entity": {
                 "type": "minecraft:entity_properties", "entity": "this", "predicate": {"minecraft:entity_type": f"{NS}:abyssal_leviathan"}}}}},
             display("sea.slayer_of_the_deep", f"{NS}:abyssal_heart", frame="challenge"), rewards={"experience": 500}),
+        # The descent: twelve guardians between the surface of the Abyss and its treasures.
+        "sea/guardian_slayer": advancement(f"{sea}/into_the_abyss", {g: killed(f"{NS}:{g}") for g in GUARDIANS},
+                                           display("sea.guardian_slayer", f"{NS}:tidecleaver", frame="goal"), rewards={"experience": 250}),
+        "sea/rock_bottom": advancement(f"{sea}/crushing_depths", {"bottom": player_where({"minecraft:location": {
+            "dimension": f"{NS}:abyss", "position": {"y": {"max": 160.0}}}})},
+            display("sea.rock_bottom", "minecraft:netherite_ingot", frame="challenge"), rewards={"experience": 500}),
+        "sea/lord_of_the_deep": advancement(f"{sea}/guardian_slayer", {g: killed(f"{NS}:{g}") for g in GUARDIANS},
+                                            display("sea.lord_of_the_deep", f"{NS}:sovereign_staff", frame="challenge"),
+                                            rewards={"experience": 2000}, any_of=False),
         # The Drowned Expedition: the mission of the Abyss.
         "sea/sigil_seeker": advancement(f"{sea}/into_the_abyss",
                                         has(f"{NS}:tide_sigil", f"{NS}:deep_sigil", f"{NS}:bone_sigil", f"{NS}:ember_sigil"),
@@ -122,6 +141,9 @@ LANG = {
     "sea.awaken_the_abyss": ("Awaken the Abyss", "Set all four sigils into the altar of a Drowned Sanctum"),
     "sea.the_horror_below": ("The Horror Below", "Defeat the Abyssal Horror"),
     "sea.crowned": ("Ruler of the Deep", "Wear the Crown of the Deep"),
+    "sea.guardian_slayer": ("Guardian Slayer", "Defeat one of the twelve guardians of the descent"),
+    "sea.rock_bottom": ("Rock Bottom", "Reach the bottom of the Abyss, alive"),
+    "sea.lord_of_the_deep": ("Lord of the Deep", "Defeat all twelve guardians of the descent"),
     "nether.above_the_lava_sea": ("Above the Lava Sea", "Climb into the great caverns of the upper Nether"),
     "nether.ember_wastes": ("Ash and Embers", "Cross the Ember Wastes"),
     "nether.glowstone_grotto": ("Chandeliers of Light", "Find the Glowstone Grotto"),

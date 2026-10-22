@@ -191,6 +191,8 @@ DROP_ITEMS = {
     "rotten_flesh": ("minecraft:rotten_flesh", False),
     "bone_sigil": ("naturesmod:bone_sigil", False),
     "crown": ("naturesmod:crown_of_the_deep", False),
+    "diamond": ("minecraft:diamond", False),
+    "netherite_scrap": ("minecraft:netherite_scrap", False),
 }
 # Dropped exactly once, never more for looting.
 UNIQUE_DROPS = {"bone_sigil", "crown"}
@@ -212,13 +214,18 @@ def loot_table(sp):
     for d in sp["drops"]:
         counts[d] = counts.get(d, 0) + 1
     for drop, n in counts.items():
+        if drop.startswith("weapon:"):
+            # One of the lost weapons of the Abyss, now and then.
+            pools.append({"rolls": 1, "condition": {"type": "minecraft:random_chance", "chance": 0.25},
+                          "entries": [{"type": "minecraft:item", "name": f"naturesmod:{drop[7:]}"}]})
+            continue
         item, smelts = DROP_ITEMS[drop]
         entry = {"type": "minecraft:item", "name": item}
         if drop in UNIQUE_DROPS:
             pools.append({"rolls": 1, "entries": [entry]})
             continue
         modifiers = []
-        top = n + (1 if sp["scale"] >= 1.5 else 0)
+        top = n + (1 if sp["scale"] >= 1.5 else 0) + (3 if drop == "diamond" else 0)
         if top > 1:
             modifiers.append({"type": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 1, "max": top}})
         modifiers.append({"type": "minecraft:enchanted_count_increase", "count": {"type": "minecraft:uniform", "min": 0.0, "max": 1.0},

@@ -48,6 +48,10 @@ public final class NaturesConfig {
 	public boolean hostileSeaCreatures = true;
 	/** How much sea life to keep around players in the water (1 = lively, 0 = vanilla spawning only). */
 	public double seaLifeDensity = 1.0;
+	/** The twelve guardians of the Abyss hunt divers on their way down to the bottom. */
+	public boolean abyssBosses = true;
+	/** Minutes before a slain guardian of the descent comes hunting the same diver again. */
+	public int bossRespawnMinutes = 20;
 
 	// Client effects
 	/** Mist, spray and roar at the foot of waterfalls. */
@@ -71,6 +75,14 @@ public final class NaturesConfig {
 
 	public static double seaLifeDensity() {
 		return instance.seaLifeDensity;
+	}
+
+	public static boolean abyssBosses() {
+		return instance.abyssBosses && instance.hostileSeaCreatures;
+	}
+
+	public static int bossRespawnMinutes() {
+		return Math.max(1, instance.bossRespawnMinutes);
 	}
 
 	public static void load() {

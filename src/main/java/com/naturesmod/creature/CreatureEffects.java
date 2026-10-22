@@ -23,6 +23,10 @@ final class CreatureEffects {
 			}
 			case "poison" -> victim.addEffect(new MobEffectInstance(MobEffects.POISON, 120, 1), attacker);
 			case "blindness" -> victim.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 100, 0), attacker);
+			case "crush" -> {
+				victim.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 80, 2), attacker);
+				victim.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 100, 1), attacker);
+			}
 			default -> {
 			}
 		}

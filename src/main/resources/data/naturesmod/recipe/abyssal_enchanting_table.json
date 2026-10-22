@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " H ",
+    "DED",
+    "NNN"
+  ],
+  "key": {
+    "H": "naturesmod:abyssal_heart",
+    "D": "minecraft:diamond_block",
+    "E": "minecraft:enchanting_table",
+    "N": "minecraft:netherite_ingot"
+  },
+  "result": {
+    "count": 1,
+    "id": "naturesmod:abyssal_enchanting_table"
+  }
+}
