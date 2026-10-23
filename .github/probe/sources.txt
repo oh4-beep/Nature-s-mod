@@ -1,0 +1,20 @@
+BiomeSource.java
+MultiNoiseBiomeSource.java
+BiomeSources.java
+Climate.java|record Sampler|TargetPoint sample\(|public static long quantizeCoord|record TargetPoint
+SimplexNoise.java|public
+Biome.java|CODEC|getTemperature\(BlockPos|shouldSnow|coldEnoughToSnow
+SweetBerryBushBlock.java
+VegetationBlock.java
+BushBlock.java
+FlowerBlock.java|public FlowerBlock|MapCodec|class FlowerBlock
+DoublePlantBlock.java|public|class DoublePlantBlock
+MushroomBlock.java|public MushroomBlock|canSurvive|class MushroomBlock|growMushroom
+HugeMushroomBlock.java|public HugeMushroomBlock|class HugeMushroomBlock
+WaterlilyBlock.java|class WaterlilyBlock|public WaterlilyBlock|mayPlaceOn
+Items.java|SWEET_BERRIES|GLOW_BERRIES|LILY_PAD|COCOA_BEANS|PITCHER_POD
+Blocks.java|SWEET_BERRY_BUSH =|FIREFLY_BUSH =|LEAF_LITTER =|WILDFLOWERS =|PALE_HANGING_MOSS =|COCOA =|LILY_PAD =|SHORT_DRY_GRASS =|BUSH =
+BlockBehaviour.java|public BlockBehaviour.Properties [a-zA-Z]+\(
+Item.java|public Item.Properties [a-zA-Z]+\(
+Foods.java|SWEET_BERRIES|GLOW_BERRIES|APPLE
+CocoaBlock.java|class CocoaBlock|canSurvive|getShape
