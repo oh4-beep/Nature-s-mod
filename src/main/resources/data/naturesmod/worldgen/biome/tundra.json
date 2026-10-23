@@ -121,18 +121,7 @@
       },
       "modifier": "overlay"
     },
-    "minecraft:visual/sky_color": "#a2c2ee",
-    "minecraft:visual/ambient_particles": {
-      "argument": [
-        {
-          "particle": {
-            "type": "minecraft:snowflake"
-          },
-          "probability": 0.0008
-        }
-      ],
-      "modifier": "append"
-    }
+    "minecraft:visual/sky_color": "#a2c2ee"
   },
   "carvers": [
     "minecraft:cave",
@@ -207,8 +196,10 @@
       "naturesmod:wild/tundra_shrubs",
       "naturesmod:wild/tundra_moss"
     ],
-    []
+    [
+      "minecraft:freeze_top_layer"
+    ]
   ],
   "has_precipitation": true,
-  "temperature": 0.05
+  "temperature": 0.2
 }

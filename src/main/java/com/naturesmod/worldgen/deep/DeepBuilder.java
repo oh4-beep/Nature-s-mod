@@ -164,6 +164,11 @@ public final class DeepBuilder {
 		return level.getBlockState(pos);
 	}
 
+	/** Whether the block there holds up whatever stands on it: not a plant, a flower bed or a path. */
+	boolean sturdy(int x, int y, int z) {
+		return get(x, y, z).isFaceSturdy(level, pos, Direction.UP);
+	}
+
 	/** Solid ground: anything but water, air and the plants that grow in the water. */
 	boolean solid(int x, int y, int z) {
 		BlockState state = get(x, y, z);

@@ -48,12 +48,15 @@ final class LandParts {
 		}, true);
 	}
 
-	/** The natural ground of a column near y = 0: the top block that is neither air, water, a plant, a log nor leaves. */
+	/**
+	 * The natural ground of a column near y = 0: the top block that is neither air, water, a plant, a log nor leaves,
+	 * and that a block can stand on. Snow counts, and becomes a snow block when the site is levelled.
+	 */
 	static int groundY(DeepBuilder b, int x, int z) {
 		for (int y = 10; y >= -14; y--) {
 			BlockState state = b.get(x, y, z);
-			if (!state.isAir() && state.getFluidState().isEmpty() && !state.canBeReplaced() && !state.is(BlockTags.LEAVES)
-					&& !state.is(BlockTags.LOGS)) {
+			if (state.is(Blocks.SNOW) || state.getFluidState().isEmpty() && !state.is(BlockTags.LEAVES) && !state.is(BlockTags.LOGS)
+					&& b.sturdy(x, y, z)) {
 				return y;
 			}
 		}

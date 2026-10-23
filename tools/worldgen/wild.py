@@ -382,11 +382,13 @@ BIOMES = {
         "climate": "swamp",
     },
     "tundra": {
-        "template": "snowy_plains", "temperature": 0.05, "downfall": 0.4,
+        # Bare ground amid the snowy plains: just warm enough that no snow settles, but on the hilltops. Snow is laid
+        # chunk by chunk by whichever biome owns the chunk's corner, column by column as cold as each is, so the
+        # tundra must be too warm for it rather than go without: snowless chunks would cut squares out of the snow.
+        "template": "snowy_plains", "temperature": 0.2, "downfall": 0.4,
         "effects": {"grass_color": "#a0a66c", "foliage_color": "#8d9a62", "water_color": "#3d57d6"},
-        "sky": "#a2c2ee", "music": None, "particles": [("snowflake", 0.0008)],
-        # Bare ground between storms: snow only stays when it falls.
-        "remove": ["freeze_top_layer", "patch_pumpkin", "flower_default"],
+        "sky": "#a2c2ee", "music": None,
+        "remove": ["patch_pumpkin", "flower_default"],
         "add": {VEGETAL: ["tundra_shrubs", "tundra_moss"]},
         "creatures": [spawn("fox", 8, 2, 4), spawn("wolf", 4, 2, 4)],
         "climate": "snowy",
