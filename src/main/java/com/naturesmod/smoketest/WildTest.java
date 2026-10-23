@@ -11,7 +11,6 @@ import com.naturesmod.worldgen.wild.WildBiomeSource;
 import com.naturesmod.worldgen.wild.WildOverworld;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.QuartPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
@@ -89,7 +88,7 @@ final class WildTest {
 			test.fail("no %s within %d blocks of spawn", name, SEARCH_RADIUS);
 			return;
 		}
-		BlockPos at = heart(found.getFirst(), key);
+		BlockPos at = WildOverworld.heart(level, found.getFirst(), key);
 		double seconds = (System.currentTimeMillis() - start) / 1000.0;
 		int cx = at.getX() >> 4;
 		int cz = at.getZ() >> 4;
@@ -143,33 +142,6 @@ final class WildTest {
 		if (signature != null && signature.stream().noneMatch(counts::containsKey)) {
 			test.fail("the %s around %s has none of %s", name, at.toShortString(), signature);
 		}
-	}
-
-	/**
-	 * The spot within a dozen chunks of where a biome was first found that has the most of it around: the closest
-	 * point of a biome is on its edge, and what grows in a biome is best seen inside it.
-	 */
-	private BlockPos heart(BlockPos at, ResourceKey<Biome> key) {
-		int qy = QuartPos.fromBlock(at.getY());
-		BlockPos best = at;
-		int most = -1;
-		for (int dx = -192; dx <= 192; dx += 32) {
-			for (int dz = -192; dz <= 192; dz += 32) {
-				int count = 0;
-				for (int sx = -24; sx < 24; sx += 8) {
-					for (int sz = -24; sz < 24; sz += 8) {
-						if (level.getUncachedNoiseBiome(QuartPos.fromBlock(at.getX() + dx + sx), qy, QuartPos.fromBlock(at.getZ() + dz + sz)).is(key)) {
-							count++;
-						}
-					}
-				}
-				if (count > most) {
-					most = count;
-					best = at.offset(dx, 0, dz);
-				}
-			}
-		}
-		return best;
 	}
 
 	private static Map<String, Integer> wildFeatures() {
