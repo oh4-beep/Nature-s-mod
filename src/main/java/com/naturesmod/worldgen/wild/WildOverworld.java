@@ -39,15 +39,36 @@ public final class WildOverworld {
 	}
 
 	/**
-	 * The spot within a few hundred blocks of {@code at} with the most of a biome around it, at the same height,
-	 * and on the surface the most of it on dry land. The closest point of a biome, which a search finds, lies on
-	 * its edge or out in a lake; what grows in it is best seen inside. For tests and tools: it only works the
-	 * biomes and the lie of the land out, and generates nothing.
+	 * Somewhere in the thick of a biome near {@code at}, at the same height, and on the surface where most of it
+	 * lies on dry land. The closest point of a biome, which a search finds, lies on its edge or out in a lake, and
+	 * what grows in it is best seen inside: this looks over the few hundred blocks around, and when little of the
+	 * biome is there, over a few thousand. For tests and tools: it only works the biomes and the lie of the land
+	 * out, and generates nothing.
 	 */
 	public static BlockPos heart(ServerLevel level, BlockPos at, ResourceKey<Biome> key, boolean dry) {
-		int reach = 384;
-		int step = 24;
-		int n = 2 * reach / step + 1;
+		Spot near = thickest(level, at, key, dry, 24);
+		if (near.count() >= 12) {
+			return near.at();
+		}
+		Spot far = thickest(level, at, key, dry, 96);
+		if (far.count() == 0) {
+			return near.at();
+		}
+		Spot there = thickest(level, far.at(), key, dry, 24);
+		return there.count() > near.count() ? there.at() : near.at();
+	}
+
+	/** A spot, and how many of the 25 places around it are good ones. */
+	private record Spot(BlockPos at, int count) {
+	}
+
+	/**
+	 * Looks at the biome on a 33 by 33 grid of places {@code step} blocks apart, centred on {@code at}, and finds
+	 * the middle of the five by five places with the most of the biome (on dry land, when {@code dry}).
+	 */
+	private static Spot thickest(ServerLevel level, BlockPos at, ResourceKey<Biome> key, boolean dry, int step) {
+		int n = 33;
+		int reach = n / 2 * step;
 		boolean[][] good = new boolean[n][n];
 		ChunkGenerator generator = level.getChunkSource().getGenerator();
 		RandomState random = level.getChunkSource().randomState();
@@ -69,9 +90,7 @@ public final class WildOverworld {
 				good[i][j] = true;
 			}
 		}
-		// The middle of the five by five spots (a hundred blocks across) with the most good ones.
-		BlockPos best = at;
-		int most = 0;
+		Spot best = new Spot(at, 0);
 		for (int i = 2; i < n - 2; i++) {
 			for (int j = 2; j < n - 2; j++) {
 				int count = 0;
@@ -82,9 +101,8 @@ public final class WildOverworld {
 						}
 					}
 				}
-				if (count > most) {
-					most = count;
-					best = new BlockPos(at.getX() - reach + i * step, at.getY(), at.getZ() - reach + j * step);
+				if (count > best.count()) {
+					best = new Spot(new BlockPos(at.getX() - reach + i * step, at.getY(), at.getZ() - reach + j * step), count);
 				}
 			}
 		}

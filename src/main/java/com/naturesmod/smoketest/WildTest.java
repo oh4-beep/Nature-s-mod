@@ -88,7 +88,8 @@ final class WildTest {
 			test.fail("no %s within %d blocks of spawn", name, SEARCH_RADIUS);
 			return;
 		}
-		BlockPos at = WildOverworld.heart(level, found.getFirst(), key, !cave);
+		// Caves are looked at where they were found: their heart by the biome alone is as likely to be solid rock.
+		BlockPos at = cave ? found.getFirst() : WildOverworld.heart(level, found.getFirst(), key, true);
 		double seconds = (System.currentTimeMillis() - start) / 1000.0;
 		int cx = at.getX() >> 4;
 		int cz = at.getZ() >> 4;
