@@ -255,10 +255,9 @@ final class DisasterEvents {
 			pos = pos.add(velocity);
 			velocity = velocity.scale(Eruption.DRAG).add(0.0, -Eruption.GRAVITY, 0.0);
 			Fx.spark(pos.x, pos.y, pos.z).size(0.5F + size * 0.6F).color(1.0F, 0.55F, 0.15F).glow().alpha(1.0F).life(3).fade(0.0F, 0.5F).spawn();
-			if (age % 2 == 0) {
-				Fx.cloud(pos.x, pos.y, pos.z).size(0.8F + size).gray((float) Fx.range(0.3, 0.42)).alpha(0.6F).life(40 + Fx.random.nextInt(40))
-						.grow(1.6F).spawn();
-			}
+			Vec3 back = pos.subtract(velocity.scale(0.5));
+			Fx.cloud(back.x, back.y, back.z).size(1.0F + size).gray((float) Fx.range(0.3, 0.42)).alpha(0.55F).life(40 + Fx.random.nextInt(40))
+					.grow(2.0F).fade(0.05F, 0.6F).spawn();
 			BlockState state = Fx.level.getBlockState(BlockPos.containing(pos));
 			return ++age < 600 && !(velocity.y < 0 && !state.isAir() && !state.canBeReplaced());
 		}

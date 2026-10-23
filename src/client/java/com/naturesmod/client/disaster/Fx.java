@@ -34,7 +34,7 @@ final class Fx {
 		int setting = minecraft.options.particles().get().ordinal();
 		density *= setting == 0 ? 1.0F : setting == 1 ? 0.5F : 0.2F;
 		spawned = 0;
-		viewLimit = Math.max(40.0, minecraft.options.getEffectiveRenderDistance() * 16.0 * 0.78);
+		viewLimit = Math.max(40.0, minecraft.options.getEffectiveRenderDistance() * 16.0 * 0.6);
 	}
 
 	/** Whether the disasters' particle textures have loaded (the particle calls below may be relied on once they have). */

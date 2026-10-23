@@ -102,7 +102,8 @@ final class TornadoFx {
 					p.color(brown, brown * 0.84F, brown * 0.66F);
 				}
 				p.vortex(axis, Fx.random.nextDouble() * Math.PI * 2.0, r, angular, Fx.range(0.04, 0.2), Fx.range(0.0, 0.05))
-						.size((float) Fx.range(1.6, 4.0)).alpha(0.78F).life(20 + Fx.random.nextInt(28)).grow(0.6F).fade(0.1F, 0.45F).spawn();
+						.size((float) Fx.range(2.5, 5.5)).alpha(0.6F).life(20 + Fx.random.nextInt(28)).grow(0.9F).fade(0.15F, 0.5F)
+						.spin((float) Fx.range(-0.06, 0.06)).spawn();
 			}
 			if (!water) {
 				int chunks = (int) (budget * 0.12);
@@ -146,9 +147,12 @@ final class TornadoFx {
 		double stone = d.extra(12);
 		int count = Fx.round(28 * inside * Fx.density);
 		for (int i = 0; i < count; i++) {
-			Fx.flake(Fx.eye.x + Fx.range(-11.0, 11.0), Fx.eye.y + Fx.range(6.0, 14.0), Fx.eye.z + Fx.range(-11.0, 11.0))
+			// Not right in front of the eyes: a ring about the viewer.
+			double angle = Fx.random.nextDouble() * Math.PI * 2.0;
+			double r = Fx.range(2.5, 12.0);
+			Fx.flake(Fx.eye.x + Math.cos(angle) * r, Fx.eye.y + Fx.range(6.0, 14.0), Fx.eye.z + Math.sin(angle) * r)
 					.velocity(d.dirX * 0.12 + Fx.range(-0.03, 0.03), -Fx.range(0.8, 1.1), d.dirZ * 0.12 + Fx.range(-0.03, 0.03)).drag(1.0).fall(0.05)
-					.size((float) (stone * Fx.range(0.6, 1.4))).color(0.88F, 0.91F, 0.96F).alpha(1.0F).bounce().life(45).fade(0.0F, 0.1F).spawn();
+					.size((float) (stone * Fx.range(0.3, 0.7))).color(0.88F, 0.91F, 0.96F).alpha(1.0F).bounce().life(45).fade(0.0F, 0.1F).spawn();
 		}
 	}
 

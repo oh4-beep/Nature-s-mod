@@ -322,7 +322,7 @@ public final class DisasterParticle extends SingleQuadParticle {
 				this.quadSize = (float) (drawn * k);
 				this.far = true;
 				// The air between: further off, fainter.
-				this.haze = (float) Math.max(0.3, 1.0 - (d - limit) / (limit * 6.0));
+				this.haze = (float) Math.max(0.55, 1.0 - (d - limit) / (limit * 12.0));
 				return;
 			}
 		}

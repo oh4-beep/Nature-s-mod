@@ -35,7 +35,7 @@ final class FireFx {
 			}
 			int smoke = Fx.budget(2, distance, 800.0);
 			for (int k = 0; k < smoke; k++) {
-				float tone = (float) Fx.range(0.33, 0.45);
+				float tone = (float) Fx.range(0.24, 0.36);
 				Fx.cloud(sx + Fx.range(-2.0, 2.0), sy + Fx.range(1.0, 3.0), sz + Fx.range(-2.0, 2.0))
 						.velocity(d.dirX * drift, Fx.range(0.2, 0.38), d.dirZ * drift).drag(0.99).size((float) Fx.range(4.0, 7.0))
 						.color(tone, tone * 0.92F, tone * 0.84F).alpha(0.7F).life(110 + Fx.random.nextInt(80)).grow(2.5F).fade(0.08F, 0.5F).spawn();
