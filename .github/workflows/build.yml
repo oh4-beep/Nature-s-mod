@@ -100,6 +100,8 @@ jobs:
           JAVA_TOOL_OPTIONS: -XX:StartFlightRecording=filename=/tmp/jfr/client-%p.jfr,settings=profile,dumponexit=true
       - name: print cpu profile
         if: always()
+        timeout-minutes: 5
+        continue-on-error: true
         run: python3 .github/profile/hotspots.py /tmp/jfr/*.jfr || true
       - name: print screenshots
         if: always()
