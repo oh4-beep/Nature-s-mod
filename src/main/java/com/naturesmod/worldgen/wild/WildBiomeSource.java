@@ -210,22 +210,16 @@ public final class WildBiomeSource extends BiomeSource {
 		}
 	}
 
-	/** The seed of the world a climate sampler belongs to. */
+	/**
+	 * The seed of the world a climate sampler belongs to: a hash of the climate at a few far-off
+	 * spots, which only the world seed decides. Every sampler of a world (cached or not, made for a
+	 * chunk or for a search) gives the same one, so every view of the world agrees on its biomes.
+	 */
 	private static final class WorldSeed {
 		private WorldSeed() {
 		}
 
 		static long of(Climate.Sampler sampler) {
-			try {
-				// Fabric's biome API hands every climate sampler the seed of its world.
-				return ((net.fabricmc.fabric.impl.biome.MultiNoiseSamplerHooks) (Object) sampler).fabric_getSeed();
-			} catch (Throwable missing) {
-				return sampled(sampler);
-			}
-		}
-
-		/** Without the hook: a hash of the climate at a few far-off spots, which only the seed decides. */
-		private static long sampled(Climate.Sampler sampler) {
 			long hash = 0x2545F4914F6CDD1DL;
 			for (int i = 1; i <= 3; i++) {
 				Climate.TargetPoint point = sampler.sample(QuartPos.fromBlock(1913 * i), 16, QuartPos.fromBlock(-7177 * i));

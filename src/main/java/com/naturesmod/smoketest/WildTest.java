@@ -34,7 +34,7 @@ final class WildTest {
 			"red_sand", "mud", "sweet_berry_bush", "large_fern", "glow_lichen");
 	/** For each biome, blocks one of which must be found in it: its ground, or something that grows in every chunk of it. */
 	private static final Map<String, Set<String>> SIGNATURES = Map.of("lavender_fields", Set.of("lavender"), "salt_flats", Set.of("salt_block"),
-			"volcanic_peaks", Set.of("blackstone", "basalt"), "heather_moors", Set.of("heather"), "petrified_forest", Set.of("petrified_log"),
+			"volcanic_peaks", Set.of("blackstone", "basalt", "magma_block", "ash_block", "steam_vent"), "heather_moors", Set.of("heather"), "petrified_forest", Set.of("petrified_log"),
 			"crystal_caverns", Set.of("azure_crystal", "azure_crystal_cluster", "citrine_crystal", "citrine_crystal_cluster", "amethyst_cluster"),
 			"fungal_grotto", Set.of("glowcap", "mycelium", "glowcap_block"));
 
