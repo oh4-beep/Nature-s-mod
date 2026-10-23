@@ -30,6 +30,9 @@ final class Fx {
 		eye = minecraft.player.getEyePosition();
 		random = level.getRandom();
 		density = Math.max(0.0F, NaturesConfig.get().disasterParticles);
+		// The game's own particle setting too: all, decreased or minimal.
+		int setting = minecraft.options.particles().get().ordinal();
+		density *= setting == 0 ? 1.0F : setting == 1 ? 0.5F : 0.2F;
 		spawned = 0;
 		viewLimit = Math.max(40.0, minecraft.options.getEffectiveRenderDistance() * 16.0 * 0.78);
 	}
