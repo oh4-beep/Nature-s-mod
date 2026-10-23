@@ -4,6 +4,52 @@ name: build
 on: [pull_request, push, workflow_dispatch]
 
 jobs:
+  # Temporary development aid: prints the vanilla and Fabric API sources the natural disasters build on.
+  probe-server:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v6
+      - name: setup jdk
+        uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'microsoft'
+      - name: decompile minecraft
+        run: chmod +x ./gradlew && ./gradlew genSources --quiet
+      - name: print sources
+        run: bash .github/probe/sources.sh .github/probe/server.txt
+
+  probe-client:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v6
+      - name: setup jdk
+        uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'microsoft'
+      - name: decompile minecraft
+        run: chmod +x ./gradlew && ./gradlew genSources --quiet
+      - name: print sources
+        run: bash .github/probe/sources.sh .github/probe/client.txt
+
+  probe-fabric:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v6
+      - name: setup jdk
+        uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'microsoft'
+      - name: fetch fabric api
+        run: chmod +x ./gradlew && ./gradlew compileJava --quiet
+      - name: print fabric api
+        run: bash .github/probe/fabric.sh
+
   build:
     runs-on: ubuntu-24.04
     steps:

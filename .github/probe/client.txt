@@ -1,0 +1,16 @@
+Camera.java
+SingleQuadParticle.java
+Particle.java|protected [a-zA-Z<>]+ [a-zA-Z]+( =|;)|public [A-Za-z<>?, .]+ [a-zA-Z]+\(|protected [A-Za-z<>?, .]+ [a-zA-Z]+\(
+SnowflakeParticle.java
+ParticleProvider.java
+ParticleEngine.java|public [A-Za-z<>?, .]+ [a-zA-Z]+\(|private <T extends ParticleOptions> void register|register\(
+FogRenderer.java
+FogEnvironment.java
+AtmosphericFogEnvironment.java
+FogData.java
+AbstractTickableSoundInstance.java
+AbstractSoundInstance.java
+SimpleSoundInstance.java|public static SimpleSoundInstance
+SoundManager.java|public [A-Za-z<>?, .]+ [a-zA-Z]+\(
+EnvironmentAttributes.java|(FOG|SKY|CLOUD|SUN|WATER_FOG|AMBIENT|PARTICLE)[A-Z_]* =
+GameRenderer.java|bobHurt|bobView|private void bob|renderLevel\(|public void render\(

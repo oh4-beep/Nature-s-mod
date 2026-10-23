@@ -1,0 +1,24 @@
+Commands.java|literal\(|argument\(|hasPermission|LEVEL_|PermissionLevel|permission|Permission
+CommandSourceStack.java|public [A-Za-z<>?,. \[\]]+ [a-zA-Z]+\(
+WeatherCommand.java
+CustomPacketPayload.java
+ByteBufCodecs.java|StreamCodec<ByteBuf, (Boolean|Byte|Short|Integer|Long|Float|Double|String)> [A-Z_]+ =
+StreamCodec.java|static <[^>]*> StreamCodec<[^>]*> (composite|of|unit|ofMember)\(
+BrandPayload.java
+ServerPlayer.java|public void (sendSystemMessage|displayClientMessage|sendOverlayMessage)|ServerGamePacketListenerImpl connection
+Player.java|public void displayClientMessage|public void sendOverlayMessage
+FallingBlockEntity.java|public static FallingBlockEntity|public void (setHurtsEntities|disableDrop)|private FallingBlockEntity\(|public boolean dropItem|cancelDrop
+Entity.java|public (void|boolean|int|float) (setTicksFrozen|getTicksFrozen|getTicksRequiredToFreeze|isFullyFrozen|canFreeze|push|setDeltaMovement|resetFallDistance|hurtServer|igniteForSeconds|setRemainingFireTicks|isInWaterOrRain|isInWater|isOnFire|setOnGround|addDeltaMovement)\(
+LivingEntity.java|public (void|boolean) (hurtServer|knockback|addEffect|canFreeze)\(
+ServerLevel.java|public [A-Za-z<>?, .]+ (sendParticles|isThundering|isRaining|setWeatherParameters|players|explode|getRandomPlayer|isRainingAt|getDayTime|isDarkOutside|isBrightOutside|getSeaLevel|levelEvent|playSound|globalLevelEvent)\(
+Level.java|public [A-Za-z<>?, .]+ (explode|isRainingAt|isThundering|isRaining|isDarkOutside|isBrightOutside|getRainLevel|getThunderLevel|playSound|levelEvent)\(
+DamageSources.java|public DamageSource [a-zA-Z]+\(
+Biome.java|public (boolean|float) (shouldFreeze|shouldSnow|coldEnoughToSnow|warmEnoughToRain|getBaseTemperature|getTemperature|hasPrecipitation)\(
+SoundEvent.java
+SoundEvents.java|(ELYTRA_FLYING|WEATHER_RAIN|AMBIENT_BASALT_DELTAS|WIND_CHARGE|BREEZE_WIND|BREEZE_IDLE|GENERIC_EXPLODE|FIRE_AMBIENT|FIRE_EXTINGUISH|LAVA_POP|LAVA_AMBIENT|LIGHTNING_BOLT_THUNDER|LIGHTNING_BOLT_IMPACT|POWDER_SNOW_STEP|DEEPSLATE_BREAK|GLASS_BREAK|BASALT_BREAK|RAVAGER_ROAR|WARDEN_HEARTBEAT|AMBIENT_CAVE|BELL_BLOCK|GRAVEL_BREAK|STONE_BREAK|WOOD_BREAK|PLAYER_HURT_FREEZE|DRAGON_FIREBALL_EXPLODE|FIREWORK_ROCKET_BLAST|FIREWORK_ROCKET_LARGE_BLAST) =
+SoundSource.java
+ParticleTypes.java
+FireBlock.java|public [A-Za-z<>?, .]+ [a-zA-Z]+\(|private int get(Ignite|Burn)Odds|canBurn
+BaseFireBlock.java|public static [A-Za-z<>?, .]+ [a-zA-Z]+\(
+LevelEvent.java|int [A-Z_]+ = 
+Level.java|enum ExplosionInteraction|ExplosionInteraction \{
