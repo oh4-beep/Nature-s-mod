@@ -521,7 +521,7 @@ public final class SmokeTest {
 
 	private void seaTest() {
 		new SeaTest(server, this).run(() -> new NetherTest(server, this).run(() -> new EndTest(server, this)
-				.run(() -> new LandTest(server, this).run(() -> new WildTest(server, this).run(this::finish)))));
+				.run(() -> new LandTest(server, this).run(() -> new WildTest(server, this).run(() -> new DisasterTest(server, this).run(this::finish))))));
 	}
 
 	private BlockPos findTreeBase() {

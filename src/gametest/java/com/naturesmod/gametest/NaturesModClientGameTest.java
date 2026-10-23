@@ -28,16 +28,24 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.phys.Vec3;
 
 import com.naturesmod.NaturesMod;
 import com.naturesmod.abyss.Abyss;
 import com.naturesmod.creature.ModCreatures;
 import com.naturesmod.creature.SeaCreature;
+import com.naturesmod.disaster.Disaster;
+import com.naturesmod.disaster.DisasterType;
+import com.naturesmod.disaster.Disasters;
+import com.naturesmod.disaster.Eruption;
+import com.naturesmod.disaster.MeteorShower;
+import com.naturesmod.disaster.Tornado;
 import com.naturesmod.worldgen.deep.DeepKind;
 import com.naturesmod.worldgen.deep.DeepPiece;
 import com.naturesmod.worldgen.deep.DeepShowcase;
@@ -104,8 +112,10 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 			scene("end", () -> end(context, world));
 			scene("wilds", () -> wilds(context, world));
 			scene("lands", () -> lands(context, world));
-			// Last: building and visiting all 55 treasures loads the server more than anything else.
+			// Building and visiting all 55 treasures loads the server more than anything else.
 			scene("treasures", () -> treasures(context, world));
+			// Last: the disasters wreck the land they happen on.
+			scene("disasters", () -> disasters(context, world));
 		}
 		if (!failures.isEmpty()) {
 			throw new AssertionError("Some scenes failed: " + failures);
@@ -712,6 +722,244 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 				command(world, "effect clear @a minecraft:night_vision");
 			}
 		}
+	}
+
+	// --- natural disasters ---------------------------------------------------------------
+
+	/** Lets each kind of natural disaster loose somewhere out of the way and photographs it as it happens. */
+	private void disasters(ClientGameTestContext context, TestSingleplayerContext world) {
+		command(world, "gamemode spectator @a");
+		List<Runnable> scenes = List.of(() -> tornado(context, world), () -> earthquake(context, world), () -> meteors(context, world),
+				() -> eruption(context, world), () -> wildfire(context, world), () -> sandstorm(context, world), () -> blizzard(context, world));
+		for (Runnable scene : scenes) {
+			command(world, "time set noon");
+			command(world, "weather clear");
+			try {
+				scene.run();
+			} catch (Throwable t) {
+				failures.add("disasters: " + t);
+				t.printStackTrace(System.out);
+			}
+			world.getServer().runOnServer(server -> Disasters.stop(server.overworld(), disaster -> true));
+			context.waitTicks(5);
+		}
+		world.getServer().runOnServer(server -> {
+			for (String failure : Disasters.failures()) {
+				failures.add("disasters: " + failure);
+			}
+		});
+	}
+
+	/** Dry, fairly level land out from a place: its middle, on the ground. */
+	private static Vec3 dryLand(TestSingleplayerContext world, BlockPos from) {
+		return world.getServer().computeOnServer(server -> {
+			ServerLevel level = server.overworld();
+			BlockPos site = LandShowcase.drySite(level, from, 30);
+			return site == null ? null : new Vec3(site.getX() + 0.5, floor(level, site.getX(), site.getZ()), site.getZ() + 0.5);
+		});
+	}
+
+	/**
+	 * Puts the camera `back` blocks from a place, the given way round (an angle in degrees, 0 to the
+	 * south), `up` blocks over the ground there, looking at a point `aim` blocks above the place.
+	 */
+	private static void view(ClientGameTestContext context, TestSingleplayerContext world, Vec3 at, double angle, double back, double up, double aim) {
+		double x = at.x - Math.sin(Math.toRadians(angle)) * back;
+		double z = at.z + Math.cos(Math.toRadians(angle)) * back;
+		int ground = world.getServer().computeOnServer(server -> floor(server.overworld(), (int) Math.floor(x), (int) Math.floor(z)));
+		double y = Math.max(ground, at.y) + up;
+		double dx = at.x - x;
+		double dy = at.y + aim - (y + 1.62);
+		double dz = at.z - z;
+		float yaw = (float) Math.toDegrees(Math.atan2(-dx, dz));
+		float pitch = (float) -Math.toDegrees(Math.atan2(dy, Math.sqrt(dx * dx + dz * dz)));
+		teleport(context, world, Level.OVERWORLD, x, y, z, yaw, pitch);
+	}
+
+	/** Where the disaster of a kind under way is now. */
+	private static Vec3 where(TestSingleplayerContext world, DisasterType type) {
+		return world.getServer().computeOnServer(server -> Disasters.active(server.overworld()).stream().filter(d -> d.type == type).findFirst()
+				.map(Disaster::position).orElse(null));
+	}
+
+	private void tornado(ClientGameTestContext context, TestSingleplayerContext world) {
+		Vec3 at = dryLand(world, new BlockPos(-6000, 0, 6000));
+		if (at == null) {
+			failures.add("disasters: no land for the tornado");
+			return;
+		}
+		view(context, world, at.add(-20.0, 0.0, 0.0), 0.0, 110.0, 4.0, 35.0);
+		world.getServer().runOnServer(server -> {
+			// Already down on the ground, heading west across the view.
+			Tornado tornado = (Tornado) Disasters.start(DisasterType.TORNADO, server.overworld(), at, 4.0F, false);
+			tornado.skip(230);
+			tornado.aim(at.add(-300.0, 0.0, 0.0));
+		});
+		context.waitTicks(80);
+		shoot(context, "disaster_tornado");
+		Vec3 now = where(world, DisasterType.TORNADO);
+		if (now != null) {
+			view(context, world, now.add(-8.0, 0.0, 0.0), 20.0, 45.0, 2.0, 18.0);
+			context.waitTicks(30);
+			shoot(context, "disaster_tornado_close");
+		}
+	}
+
+	private void earthquake(ClientGameTestContext context, TestSingleplayerContext world) {
+		Vec3 at = dryLand(world, new BlockPos(6000, 0, 6000));
+		if (at == null) {
+			failures.add("disasters: no land for the earthquake");
+			return;
+		}
+		view(context, world, at, 30.0, 30.0, 20.0, 0.0);
+		world.getServer().runOnServer(server -> Disasters.start(DisasterType.EARTHQUAKE, server.overworld(), at, 7.8F, false));
+		context.waitTicks(30);
+		shoot(context, "disaster_earthquake");
+	}
+
+	private void meteors(ClientGameTestContext context, TestSingleplayerContext world) {
+		Vec3 at = dryLand(world, new BlockPos(6000, 0, -6000));
+		if (at == null) {
+			failures.add("disasters: no land for the meteor shower");
+			return;
+		}
+		command(world, "time set midnight");
+		Vec3 radiant = world.getServer().computeOnServer(server -> {
+			Disaster shower = Disasters.start(DisasterType.METEOR_SHOWER, server.overworld(), at, 5.0F, false);
+			float[] r = shower.extra();
+			return new Vec3(r[0], r[1], r[2]);
+		});
+		// Looking up toward the radiant, the point of the sky the meteors all come from (they travel along `radiant`).
+		float yaw = (float) Math.toDegrees(Math.atan2(radiant.x, -radiant.z));
+		float pitch = (float) -Math.toDegrees(Math.atan2(-radiant.y, Math.sqrt(radiant.x * radiant.x + radiant.z * radiant.z)));
+		teleport(context, world, Level.OVERWORLD, at.x, at.y + 2.0, at.z, yaw, Math.max(-60.0F, pitch + 20.0F));
+		world.getServer().runOnServer(server -> Disasters.active(server.overworld()).stream().filter(d -> d instanceof MeteorShower)
+				.forEach(d -> {
+					for (int i = 0; i < 5; i++) {
+						((MeteorShower) d).launchNow();
+					}
+				}));
+		context.waitTicks(25);
+		shoot(context, "disaster_meteors");
+		// A big one strikes the ground nearby.
+		BlockPos strike = BlockPos.containing(at.add(0.0, 0.0, -50.0));
+		world.getServer().runOnServer(server -> Disasters.active(server.overworld()).stream().filter(d -> d instanceof MeteorShower).findFirst()
+				.ifPresent(d -> ((MeteorShower) d).impact(new BlockPos(strike.getX(), floor(server.overworld(), strike.getX(), strike.getZ()) - 1,
+						strike.getZ()), 5.0)));
+		teleport(context, world, Level.OVERWORLD, at.x, at.y + 4.0, at.z, 180.0F, 4.0F);
+		context.waitTicks(4);
+		shoot(context, "disaster_meteor_impact");
+		command(world, "time set noon");
+		view(context, world, new Vec3(strike.getX() + 0.5, at.y, strike.getZ() + 0.5), 0.0, 24.0, 18.0, -4.0);
+		context.waitTicks(40);
+		shoot(context, "disaster_meteor_crater");
+	}
+
+	private void eruption(ClientGameTestContext context, TestSingleplayerContext world) {
+		ResourceKey<Biome> peaks = WildOverworld.biome("volcanic_peaks");
+		Vec3 at = world.getServer().computeOnServer(server -> {
+			ServerLevel level = server.overworld();
+			Pair<BlockPos, Holder<Biome>> found = level.findClosestBiome3d(holder -> holder.is(peaks), new BlockPos(0, 120, 0), 9000, 32, 64);
+			if (found == null) {
+				return null;
+			}
+			BlockPos heart = WildOverworld.heart(level, found.getFirst(), peaks, true);
+			for (int dx = -4; dx <= 4; dx++) {
+				for (int dz = -4; dz <= 4; dz++) {
+					level.getChunk((heart.getX() >> 4) + dx, (heart.getZ() >> 4) + dz);
+				}
+			}
+			Eruption eruption = (Eruption) Disasters.start(DisasterType.ERUPTION, level, Vec3.atBottomCenterOf(heart), 4.0F, false);
+			// On to the height of the eruption, its column fully risen.
+			eruption.skip(eruption.unrestTicks() + 400 - eruption.age());
+			return Vec3.atBottomCenterOf(eruption.vent());
+		});
+		if (at == null) {
+			failures.add("disasters: no volcanic peaks to erupt");
+			return;
+		}
+		view(context, world, at, 200.0, 190.0, 30.0, 90.0);
+		context.waitTicks(100);
+		shoot(context, "disaster_eruption");
+		// The column collapsing: pyroclastic flows racing down the mountain.
+		world.getServer().runOnServer(server -> Disasters.active(server.overworld()).stream().filter(d -> d instanceof Eruption).forEach(d -> {
+			Eruption eruption = (Eruption) d;
+			eruption.skip(eruption.unrestTicks() + (int) (eruption.eruptionTicks() * 0.92) - eruption.age());
+		}));
+		view(context, world, at, 160.0, 130.0, 20.0, 10.0);
+		context.waitTicks(80);
+		shoot(context, "disaster_pyroclastic_flow");
+	}
+
+	private void wildfire(ClientGameTestContext context, TestSingleplayerContext world) {
+		Vec3 at = world.getServer().computeOnServer(server -> {
+			ServerLevel level = server.overworld();
+			Pair<BlockPos, Holder<Biome>> found = level.findClosestBiome3d(holder -> holder.is(Biomes.FOREST) || holder.is(Biomes.BIRCH_FOREST),
+					new BlockPos(3000, 80, 3000), 6400, 64, 64);
+			if (found == null) {
+				return null;
+			}
+			BlockPos spot = found.getFirst();
+			return new Vec3(spot.getX() + 0.5, floor(level, spot.getX(), spot.getZ()), spot.getZ() + 0.5);
+		});
+		if (at == null) {
+			failures.add("disasters: no forest to burn");
+			return;
+		}
+		view(context, world, at, 90.0, 70.0, 16.0, 6.0);
+		world.getServer().runOnServer(server -> Disasters.start(DisasterType.WILDFIRE, server.overworld(), at, 4.0F, false));
+		context.waitTicks(200);
+		shoot(context, "disaster_wildfire");
+	}
+
+	private void sandstorm(ClientGameTestContext context, TestSingleplayerContext world) {
+		Vec3 at = world.getServer().computeOnServer(server -> {
+			ServerLevel level = server.overworld();
+			Pair<BlockPos, Holder<Biome>> found = level.findClosestBiome3d(holder -> holder.is(Biomes.DESERT), new BlockPos(-3000, 80, -3000), 6400, 64,
+					64);
+			if (found == null) {
+				return null;
+			}
+			BlockPos spot = found.getFirst();
+			return new Vec3(spot.getX() + 0.5, floor(level, spot.getX(), spot.getZ()), spot.getZ() + 0.5);
+		});
+		if (at == null) {
+			failures.add("disasters: no desert for the sandstorm");
+			return;
+		}
+		Vec3 wind = world.getServer().computeOnServer(server -> Disasters.start(DisasterType.SANDSTORM, server.overworld(), at, 4.0F, false).direction());
+		// From the middle of the storm, looking upwind at the wall of dust coming on.
+		double upwind = Math.toDegrees(Math.atan2(wind.x, -wind.z));
+		int ground = world.getServer().computeOnServer(server -> floor(server.overworld(), (int) Math.floor(at.x), (int) Math.floor(at.z)));
+		teleport(context, world, Level.OVERWORLD, at.x, ground + 3.0, at.z, (float) upwind, -12.0F);
+		context.waitTicks(60);
+		shoot(context, "disaster_sandstorm");
+		// Inside it.
+		world.getServer().runOnServer(server -> Disasters.active(server.overworld()).stream().filter(d -> d.type == DisasterType.SANDSTORM)
+				.forEach(d -> d.skip(420)));
+		context.waitTicks(40);
+		shoot(context, "disaster_sandstorm_inside");
+	}
+
+	private void blizzard(ClientGameTestContext context, TestSingleplayerContext world) {
+		Vec3 at = world.getServer().computeOnServer(server -> {
+			ServerLevel level = server.overworld();
+			Pair<BlockPos, Holder<Biome>> found = level.findClosestBiome3d(holder -> holder.is(Biomes.SNOWY_PLAINS) || holder.is(Biomes.SNOWY_TAIGA),
+					new BlockPos(0, 80, 0), 6400, 64, 64);
+			if (found == null) {
+				return null;
+			}
+			BlockPos spot = found.getFirst();
+			return new Vec3(spot.getX() + 0.5, floor(level, spot.getX(), spot.getZ()), spot.getZ() + 0.5);
+		});
+		if (at == null) {
+			failures.add("disasters: no snowy land for the blizzard");
+			return;
+		}
+		teleport(context, world, Level.OVERWORLD, at.x, at.y + 1.0, at.z, 30.0F, 0.0F);
+		world.getServer().runOnServer(server -> Disasters.start(DisasterType.BLIZZARD, server.overworld(), at, 5.0F, false).skip(200));
+		context.waitTicks(60);
+		shoot(context, "disaster_blizzard");
 	}
 
 	// --- finding places ------------------------------------------------------------------

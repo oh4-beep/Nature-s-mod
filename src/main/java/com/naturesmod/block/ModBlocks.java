@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DoublePlantBlock;
 import net.minecraft.world.level.block.FlowerBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
+import net.minecraft.world.level.block.SnowLayerBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
@@ -127,6 +128,15 @@ public final class ModBlocks {
 			.mapColor(MapColor.COLOR_GRAY)
 			.strength(0.5F)
 			.sound(SoundType.SAND));
+	/** Volcanic ash settling over the land like snow, layer by layer; it doesn't melt. */
+	public static final Block ASH_LAYER = register("ash_layer", SnowLayerBlock::new, BlockBehaviour.Properties.of()
+			.mapColor(MapColor.COLOR_GRAY)
+			.replaceable()
+			.forceSolidOff()
+			.strength(0.1F)
+			.sound(SoundType.SAND)
+			.isViewBlocking((state, level, pos) -> state.getValue(SnowLayerBlock.LAYERS) >= 8)
+			.pushReaction(PushReaction.POPPED));
 	public static final Block FLESH_BLOCK = register("flesh_block", FleshBlock::new, BlockBehaviour.Properties.of()
 			.mapColor(MapColor.COLOR_RED)
 			.strength(0.8F)

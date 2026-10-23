@@ -106,6 +106,7 @@ public final class ModItems {
 			register(BuiltInRegistries.BLOCK.getKey(block).getPath(), properties -> new BlockItem(block, properties),
 					new Item.Properties().useBlockDescriptionPrefix());
 		}
+		register("ash_layer", properties -> new BlockItem(ModBlocks.ASH_LAYER, properties), new Item.Properties().useBlockDescriptionPrefix());
 		COCONUT = register("coconut", properties -> new BlockItem(ModBlocks.COCONUT, properties), new Item.Properties()
 				.food(new FoodProperties.Builder().nutrition(4).saturationModifier(0.5F).build()).useItemDescriptionPrefix());
 		BLUEBERRIES = register("blueberries", properties -> new BlockItem(ModBlocks.BLUEBERRY_BUSH, properties), new Item.Properties()

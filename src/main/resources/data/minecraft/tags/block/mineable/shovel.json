@@ -2,6 +2,7 @@
   "replace": false,
   "values": [
     "naturesmod:ash_block",
-    "naturesmod:stardust"
+    "naturesmod:stardust",
+    "naturesmod:ash_layer"
   ]
 }

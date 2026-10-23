@@ -1,0 +1,152 @@
+{
+  "disaster.tornado.roar": {
+    "sounds": [
+      {
+        "name": "naturesmod:disaster/tornado_roar",
+        "stream": true,
+        "attenuation_distance": 380
+      }
+    ],
+    "subtitle": "subtitles.naturesmod.disaster.tornado.roar"
+  },
+  "disaster.tornado.siren": {
+    "sounds": [
+      {
+        "name": "naturesmod:disaster/siren",
+        "stream": true
+      }
+    ],
+    "subtitle": "subtitles.naturesmod.disaster.tornado.siren"
+  },
+  "disaster.wind.howl": {
+    "sounds": [
+      {
+        "name": "naturesmod:disaster/wind_howl",
+        "stream": true,
+        "attenuation_distance": 320
+      }
+    ],
+    "subtitle": "subtitles.naturesmod.disaster.wind.howl"
+  },
+  "disaster.blizzard.wind": {
+    "sounds": [
+      {
+        "name": "naturesmod:disaster/blizzard_wind",
+        "stream": true
+      }
+    ],
+    "subtitle": "subtitles.naturesmod.disaster.blizzard.wind"
+  },
+  "disaster.sandstorm.wind": {
+    "sounds": [
+      {
+        "name": "naturesmod:disaster/sandstorm_wind",
+        "stream": true
+      }
+    ],
+    "subtitle": "subtitles.naturesmod.disaster.sandstorm.wind"
+  },
+  "disaster.quake.rumble": {
+    "sounds": [
+      {
+        "name": "naturesmod:disaster/quake_rumble",
+        "stream": true
+      }
+    ],
+    "subtitle": "subtitles.naturesmod.disaster.quake.rumble"
+  },
+  "disaster.quake.jolt": {
+    "sounds": [
+      {
+        "name": "naturesmod:disaster/quake_jolt1"
+      },
+      {
+        "name": "naturesmod:disaster/quake_jolt2"
+      },
+      {
+        "name": "naturesmod:disaster/quake_jolt3"
+      }
+    ],
+    "subtitle": "subtitles.naturesmod.disaster.quake.jolt"
+  },
+  "disaster.eruption.blast": {
+    "sounds": [
+      {
+        "name": "naturesmod:disaster/eruption_blast1",
+        "attenuation_distance": 2400
+      },
+      {
+        "name": "naturesmod:disaster/eruption_blast2",
+        "attenuation_distance": 2400
+      },
+      {
+        "name": "naturesmod:disaster/eruption_blast3",
+        "attenuation_distance": 2400
+      }
+    ],
+    "subtitle": "subtitles.naturesmod.disaster.eruption.blast"
+  },
+  "disaster.eruption.roar": {
+    "sounds": [
+      {
+        "name": "naturesmod:disaster/eruption_roar",
+        "stream": true,
+        "attenuation_distance": 700
+      }
+    ],
+    "subtitle": "subtitles.naturesmod.disaster.eruption.roar"
+  },
+  "disaster.meteor.whoosh": {
+    "sounds": [
+      {
+        "name": "naturesmod:disaster/meteor_whoosh1",
+        "attenuation_distance": 320
+      },
+      {
+        "name": "naturesmod:disaster/meteor_whoosh2",
+        "attenuation_distance": 320
+      }
+    ],
+    "subtitle": "subtitles.naturesmod.disaster.meteor.whoosh"
+  },
+  "disaster.meteor.impact": {
+    "sounds": [
+      {
+        "name": "naturesmod:disaster/meteor_impact1",
+        "attenuation_distance": 1600
+      },
+      {
+        "name": "naturesmod:disaster/meteor_impact2",
+        "attenuation_distance": 1600
+      },
+      {
+        "name": "naturesmod:disaster/meteor_impact3",
+        "attenuation_distance": 1600
+      }
+    ],
+    "subtitle": "subtitles.naturesmod.disaster.meteor.impact"
+  },
+  "disaster.meteor.boom": {
+    "sounds": [
+      {
+        "name": "naturesmod:disaster/sonic_boom1",
+        "attenuation_distance": 2400
+      },
+      {
+        "name": "naturesmod:disaster/sonic_boom2",
+        "attenuation_distance": 2400
+      }
+    ],
+    "subtitle": "subtitles.naturesmod.disaster.meteor.boom"
+  },
+  "disaster.fire.roar": {
+    "sounds": [
+      {
+        "name": "naturesmod:disaster/fire_roar",
+        "stream": true,
+        "attenuation_distance": 140
+      }
+    ],
+    "subtitle": "subtitles.naturesmod.disaster.fire.roar"
+  }
+}

@@ -53,7 +53,28 @@ public final class NaturesConfig {
 	/** Minutes before a slain guardian of the descent comes hunting the same diver again. */
 	public int bossRespawnMinutes = 20;
 
+	// Natural disasters
+	/** Tornadoes, earthquakes, meteor showers, eruptions, wildfires, sandstorms and blizzards happen on their own. */
+	public boolean naturalDisasters = true;
+	/** How often natural disasters happen (1 = normal, 2 = twice as often, 0.5 = half as often). */
+	public double disasterFrequency = 1.0;
+	/** Disasters change the land: tornadoes tear up buildings, quakes open fissures, meteors leave craters, fires burn forests. */
+	public boolean disasterDamage = true;
+	/** Players near a disaster are warned in chat (tornado warnings, earthquake alerts, the sirens). */
+	public boolean disasterWarnings = true;
+	public boolean tornadoes = true;
+	public boolean earthquakes = true;
+	public boolean meteorShowers = true;
+	public boolean eruptions = true;
+	public boolean wildfires = true;
+	public boolean sandstorms = true;
+	public boolean blizzards = true;
+
 	// Client effects
+	/** The view shakes in earthquakes and under great blasts. */
+	public boolean cameraShake = true;
+	/** Multiplier for the number of particles natural disasters show (1 = full, 0.5 = half). */
+	public float disasterParticles = 1.0f;
 	/** Mist, spray and roar at the foot of waterfalls. */
 	public boolean waterfallMist = true;
 	/** Multiplier for the amount of waterfall mist particles. */
