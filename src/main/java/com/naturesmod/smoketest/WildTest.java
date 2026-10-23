@@ -1,5 +1,7 @@
 package com.naturesmod.smoketest;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -97,6 +99,8 @@ final class WildTest {
 			}
 		}
 		Map<String, Integer> counts = new TreeMap<>();
+		Map<String, Integer> ground = new TreeMap<>();
+		long heights = 0;
 		int columns = 0;
 		int inside = 0;
 		BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
@@ -108,6 +112,11 @@ final class WildTest {
 				columns++;
 				if (level.getBiome(pos.set(x, cave ? at.getY() : top - 1, z)).is(key)) {
 					inside++;
+					if (!cave) {
+						int floor = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z) - 1;
+						heights += floor;
+						ground.merge(BuiltInRegistries.BLOCK.getKey(level.getBlockState(pos.set(x, floor, z)).getBlock()).getPath(), 1, Integer::sum);
+					}
 				}
 				for (int y = low; y <= high; y++) {
 					BlockState state = level.getBlockState(pos.set(x, y, z));
@@ -124,6 +133,12 @@ final class WildTest {
 		test.line("%s: found at %s, looked at %s, %d blocks from spawn, in %.1fs; %d%% of the area around it is %s: %s", name,
 				found.getFirst().toShortString(), at.toShortString(), (int) Math.sqrt(at.getX() * (double) at.getX() + at.getZ() * (double) at.getZ()),
 				seconds, 100 * inside / columns, name, counts);
+		if (!ground.isEmpty()) {
+			// What the biome stands on, most of it first: its own ground, or water, ice or snow where it has little.
+			List<Map.Entry<String, Integer>> most = new ArrayList<>(ground.entrySet());
+			most.sort(Map.Entry.<String, Integer>comparingByValue().reversed());
+			test.line("    its ground, at y = %d or so: %s", heights / inside, most.subList(0, Math.min(6, most.size())));
+		}
 		Set<String> signature = SIGNATURES.get(name);
 		if (signature != null && signature.stream().noneMatch(counts::containsKey)) {
 			test.fail("the %s around %s has none of %s", name, at.toShortString(), signature);
@@ -131,15 +146,15 @@ final class WildTest {
 	}
 
 	/**
-	 * The spot within a few chunks of where a biome was first found that has the most of it around: the closest
+	 * The spot within a dozen chunks of where a biome was first found that has the most of it around: the closest
 	 * point of a biome is on its edge, and what grows in a biome is best seen inside it.
 	 */
 	private BlockPos heart(BlockPos at, ResourceKey<Biome> key) {
 		int qy = QuartPos.fromBlock(at.getY());
 		BlockPos best = at;
 		int most = -1;
-		for (int dx = -96; dx <= 96; dx += 16) {
-			for (int dz = -96; dz <= 96; dz += 16) {
+		for (int dx = -192; dx <= 192; dx += 32) {
+			for (int dz = -192; dz <= 192; dz += 32) {
 				int count = 0;
 				for (int sx = -24; sx < 24; sx += 8) {
 					for (int sz = -24; sz < 24; sz += 8) {
