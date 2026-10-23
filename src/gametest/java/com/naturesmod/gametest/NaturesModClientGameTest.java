@@ -36,6 +36,7 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.phys.Vec3;
 
+import com.naturesmod.NaturesConfig;
 import com.naturesmod.NaturesMod;
 import com.naturesmod.abyss.Abyss;
 import com.naturesmod.creature.ModCreatures;
@@ -88,6 +89,8 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 
 	@Override
 	public void runTest(ClientGameTestContext context) {
+		// No disaster of its own accord in the middle of the other scenes; the disasters' scene calls them up.
+		NaturesConfig.get().naturalDisasters = false;
 		try (TestSingleplayerContext world = context.worldBuilder()
 				.setUseConsistentSettings(false)
 				.adjustSettings(creator -> {

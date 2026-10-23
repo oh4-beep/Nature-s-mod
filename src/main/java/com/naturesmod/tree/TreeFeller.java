@@ -64,6 +64,14 @@ public final class TreeFeller {
 	 * touches the ground falls in {@code direction}. Returns the number of logs that fell.
 	 */
 	public static int fellAround(ServerLevel level, BlockPos cutPos, Vec3 direction) {
+		return fellAround(level, cutPos, direction, NaturesConfig.get().maxTreeLogs, MAX_FALLING_LEAVES, MAX_FALLING_LOGS);
+	}
+
+	/**
+	 * As {@link #fellAround(ServerLevel, BlockPos, Vec3)}, for trees of at most {@code maxLogs} logs, of
+	 * which at most {@code fallingLeaves} leaves and {@code fallingLogs} logs fall as blocks.
+	 */
+	public static int fellAround(ServerLevel level, BlockPos cutPos, Vec3 direction, int maxLogs, int fallingLeaves, int fallingLogs) {
 		NaturesConfig config = NaturesConfig.get();
 		LongSet visited = new LongOpenHashSet();
 		int felled = 0;
@@ -74,11 +82,11 @@ public final class TreeFeller {
 					if (visited.contains(start.asLong()) || !isLog(level.getBlockState(start))) {
 						continue;
 					}
-					TreePart part = scan(level, start, visited, config.maxTreeLogs);
+					TreePart part = scan(level, start, visited, maxLogs);
 					if (part == null || part.grounded() || !part.natural()) {
 						continue;
 					}
-					topple(level, part, cutPos, direction, config.fallingTreesHurt);
+					topple(level, part, cutPos, direction, config.fallingTreesHurt, fallingLeaves, fallingLogs);
 					felled += part.logs().size();
 				}
 			}
@@ -183,6 +191,12 @@ public final class TreeFeller {
 
 	/** Swings a tree part down around its base. */
 	public static void topple(ServerLevel level, TreePart part, BlockPos pivot, Vec3 direction, boolean hurts) {
+		topple(level, part, pivot, direction, hurts, MAX_FALLING_LEAVES, MAX_FALLING_LOGS);
+	}
+
+	/** As above, with at most so many leaves and logs falling as blocks; the rest of the leaves are shredded, the rest of the logs dropped. */
+	public static void topple(ServerLevel level, TreePart part, BlockPos pivot, Vec3 direction, boolean hurts, int maxFallingLeaves,
+			int maxFallingLogs) {
 		RandomSource random = level.getRandom();
 		Vec3 dir = new Vec3(direction.x, 0, direction.z);
 		if (dir.lengthSqr() < 1.0e-6) {
@@ -204,7 +218,7 @@ public final class TreeFeller {
 		// Leaves first, so falling logs never leave a floating canopy behind.
 		LongList leafOrder = part.leaves();
 		int falling = 0;
-		int keepEvery = Math.max(1, leafOrder.size() / MAX_FALLING_LEAVES);
+		int keepEvery = Math.max(1, leafOrder.size() / Math.max(1, maxFallingLeaves));
 		BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
 		for (int i = 0; i < leafOrder.size(); i++) {
 			pos.set(leafOrder.getLong(i));
@@ -212,7 +226,7 @@ public final class TreeFeller {
 			if (!state.is(BlockTags.LEAVES)) {
 				continue;
 			}
-			if (i % keepEvery == 0 && falling < MAX_FALLING_LEAVES) {
+			if (i % keepEvery == 0 && falling < maxFallingLeaves) {
 				BlockState landed = state;
 				if (landed.hasProperty(LeavesBlock.DISTANCE)) {
 					landed = landed.setValue(LeavesBlock.DISTANCE, LeavesBlock.DECAY_DISTANCE);
@@ -240,7 +254,7 @@ public final class TreeFeller {
 			if (!isLog(state)) {
 				continue;
 			}
-			if (logsFalling >= MAX_FALLING_LOGS) {
+			if (logsFalling >= maxFallingLogs) {
 				Block.dropResources(state, level, pos);
 				level.setBlock(pos, net.minecraft.world.level.block.Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
 				continue;

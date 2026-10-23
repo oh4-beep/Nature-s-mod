@@ -76,7 +76,14 @@ final class DisasterTest {
 			done.run();
 			return;
 		}
-		Runnable next = () -> chain(steps, index + 1, done);
+		long began = System.nanoTime();
+		long tick = server.getTickCount();
+		System.out.println("[smoketest] disaster test " + (index + 1) + " of " + steps.size());
+		Runnable next = () -> {
+			double seconds = (System.nanoTime() - began) / 1.0E9;
+			test.line("    (%.1f s for %d ticks)", seconds, server.getTickCount() - tick);
+			chain(steps, index + 1, done);
+		};
 		try {
 			steps.get(index).run(next);
 		} catch (Throwable t) {
@@ -150,7 +157,7 @@ final class DisasterTest {
 	// --- the tornado -------------------------------------------------------------------------
 
 	private void tornado(Runnable next) {
-		BlockPos site = site(new BlockPos(2400, 0, -2400), 4);
+		BlockPos site = site(new BlockPos(2400, 0, -2400), 3);
 		if (site == null) {
 			test.fail("no dry land for the tornado test");
 			next.run();

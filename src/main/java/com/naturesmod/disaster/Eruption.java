@@ -7,7 +7,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.naturesmod.block.ModBlocks;
-import com.naturesmod.tree.TreeEvents;
 import com.naturesmod.tree.TreeFeller;
 
 import net.minecraft.core.BlockPos;
@@ -269,7 +268,7 @@ public final class Eruption extends Disaster {
 				}
 				BlockPos top = new BlockPos(bx, level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, bx, bz) - 1, bz);
 				if (TreeFeller.isLog(level.getBlockState(top))) {
-					TreeEvents.snapTrunk(level, top, new Vec3(Math.cos(angle), 0.0, Math.sin(angle)), 0);
+					fellTree(top, new Vec3(Math.cos(angle), 0.0, Math.sin(angle)), 0, 4 + vei * 2);
 				}
 			}
 		}

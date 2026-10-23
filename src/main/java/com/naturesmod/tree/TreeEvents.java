@@ -93,7 +93,16 @@ public final class TreeEvents {
 	 * rest fall. Returns false if the logs at {@code anyLog} don't belong to a natural tree.
 	 */
 	public static boolean snapTrunk(ServerLevel level, BlockPos anyLog, Vec3 direction, int heightAboveBase) {
-		TreeFeller.TreePart tree = TreeFeller.scan(level, anyLog, new LongOpenHashSet(), NaturesConfig.get().maxTreeLogs);
+		return snapTrunk(level, anyLog, direction, heightAboveBase, NaturesConfig.get().maxTreeLogs, -1, -1);
+	}
+
+	/**
+	 * As above, for trees of at most {@code maxLogs} logs, of which at most {@code fallingLeaves} leaves
+	 * and {@code fallingLogs} logs fall as blocks (all of them when these are negative).
+	 */
+	public static boolean snapTrunk(ServerLevel level, BlockPos anyLog, Vec3 direction, int heightAboveBase, int maxLogs, int fallingLeaves,
+			int fallingLogs) {
+		TreeFeller.TreePart tree = TreeFeller.scan(level, anyLog, new LongOpenHashSet(), maxLogs);
 		if (tree == null || !tree.natural() || !tree.grounded() || tree.logs().size() < 4) {
 			return false;
 		}
@@ -110,7 +119,11 @@ public final class TreeEvents {
 				}
 			}
 		}
-		return cut != null && TreeFeller.fellAround(level, cut, direction) > 0;
+		if (cut == null) {
+			return false;
+		}
+		return (fallingLeaves < 0 ? TreeFeller.fellAround(level, cut, direction)
+				: TreeFeller.fellAround(level, cut, direction, maxLogs, fallingLeaves, fallingLogs)) > 0;
 	}
 
 	/** During thunderstorms the wind occasionally topples a tree near a player. */

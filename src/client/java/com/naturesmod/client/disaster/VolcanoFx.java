@@ -64,14 +64,14 @@ final class VolcanoFx {
 					.spawn();
 		}
 		// The umbrella, spreading downwind at the top.
-		int umbrella = (int) (budget * 0.2);
+		int umbrella = Fx.round(budget * 0.1);
 		for (int i = 0; i < umbrella; i++) {
 			double along = column * 0.3 + Fx.random.nextDouble() * column * 0.9;
 			double across = Fx.random.nextGaussian() * column * 0.25;
 			double ux = d.x + windX * along - windZ * across;
 			double uz = d.z + windZ * along + windX * across;
 			Fx.cloud(ux, ventY + column * Fx.range(0.92, 1.05), uz).velocity(windX * 0.15, 0.0, windZ * 0.15).drag(0.995)
-					.size((float) Fx.range(18.0, 34.0)).color(0.3F, 0.29F, 0.28F).alpha(0.72F).life(200 + Fx.random.nextInt(120)).fade(0.2F, 0.4F).spawn();
+					.size((float) Fx.range(24.0, 40.0)).color(0.3F, 0.29F, 0.28F).alpha(0.72F).life(220 + Fx.random.nextInt(120)).fade(0.2F, 0.4F).spawn();
 		}
 		// The lava fountain.
 		int lava = (int) (budget * 0.15);

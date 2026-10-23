@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import com.naturesmod.tree.TreeEvents;
 import com.naturesmod.tree.TreeFeller;
 
 import net.minecraft.core.BlockPos;
@@ -272,7 +271,7 @@ public final class Tornado extends Disaster {
 					break;
 				}
 				if (TreeFeller.isLog(state)) {
-					TreeEvents.snapTrunk(level, pos.immutable(), throwDir, random.nextInt(3));
+					fellTree(pos.immutable(), throwDir, random.nextInt(3), 1 + rating / 2);
 					break;
 				}
 				if (WindDamage.isGround(state)) {
@@ -289,14 +288,15 @@ public final class Tornado extends Disaster {
 		if (gust > 70.0 && state.is(Blocks.GRASS_BLOCK) && random.nextInt(3) == 0) {
 			level.setBlock(pos, Blocks.DIRT.defaultBlockState(), Block.UPDATE_ALL);
 			level.sendParticles(ParticleTypes.POOF, pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5, 3, 0.4, 0.2, 0.4, 0.05);
-		} else if (gust > 95.0 && random.nextInt(8) == 0 && state.is(Blocks.DIRT)) {
+		} else if (gust > 95.0 && random.nextInt(8) == 0 && state.is(Blocks.DIRT) && debrisNearby <= 30 + rating * 15) {
 			launch(pos, state, new Vec3(0, 1, 0), gust);
 		}
 	}
 
 	private void tearAway(BlockPos pos, BlockState state, Vec3 throwDir, double gust) {
 		if (state.hasBlockEntity() || WindDamage.shatters(state) || !state.isCollisionShapeFullBlock(level, pos) || debrisNearby > 30 + rating * 15) {
-			level.destroyBlock(pos, state.hasBlockEntity() || random.nextInt(5) == 0);
+			// Shredded: now and then something of it is left to fall.
+			level.destroyBlock(pos, state.hasBlockEntity() || random.nextInt(WindDamage.shatters(state) ? 40 : 5) == 0);
 			return;
 		}
 		launch(pos, state, throwDir, gust);

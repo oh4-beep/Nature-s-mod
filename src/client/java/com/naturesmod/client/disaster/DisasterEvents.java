@@ -8,6 +8,7 @@ import com.naturesmod.disaster.DisasterNet;
 import com.naturesmod.disaster.DisasterSounds;
 import com.naturesmod.disaster.Eruption;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.level.block.state.BlockState;
@@ -45,6 +46,12 @@ final class DisasterEvents {
 	}
 
 	static void handle(DisasterNet.Event event) {
+		Minecraft mc = Minecraft.getInstance();
+		if (!Fx.ready() || mc.level == null || mc.player == null) {
+			return;
+		}
+		Fx.level = mc.level;
+		Fx.eye = mc.player.getEyePosition();
 		Vec3 at = new Vec3(event.x(), event.y(), event.z());
 		switch (event.kind()) {
 			case DisasterNet.Event.METEOR -> MOVERS.add(new Fireball(at, new Vec3(event.data(0), event.data(1), event.data(2)), event.data(3),

@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.naturesmod.block.ModBlocks;
-import com.naturesmod.tree.TreeEvents;
 import com.naturesmod.tree.TreeFeller;
 
 import net.minecraft.core.BlockPos;
@@ -295,7 +294,7 @@ public final class MeteorShower extends Disaster {
 			int top = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, bx, bz) - 1;
 			BlockPos pos = new BlockPos(bx, top, bz);
 			if (TreeFeller.isLog(level.getBlockState(pos))) {
-				TreeEvents.snapTrunk(level, pos, new Vec3(Math.cos(angle), 0.0, Math.sin(angle)), 0);
+				fellTree(pos, new Vec3(Math.cos(angle), 0.0, Math.sin(angle)), 0, 4 + radius);
 			}
 		}
 	}

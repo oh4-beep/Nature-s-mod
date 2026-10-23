@@ -51,6 +51,8 @@ public final class Earthquake extends Disaster {
 	private final int depth;
 	private double carved;
 	private boolean quiet;
+	/** Blocks shaken loose to fall this tick: no more than a few, or the falling blocks would bring the server down with them. */
+	private int falls;
 
 	Earthquake(ServerLevel level, Vec3 at, float magnitude, boolean natural, boolean aftershock) {
 		super(DisasterType.EARTHQUAKE, level, at, magnitude, natural, 0);
@@ -117,6 +119,7 @@ public final class Earthquake extends Disaster {
 	// --- the land ----------------------------------------------------------------------------
 
 	private void shakeLand() {
+		falls = 0;
 		int samples = (int) (20 + 30 * (magnitude - 4.0));
 		double reach = Math.min(felt, 600.0);
 		BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
@@ -155,7 +158,9 @@ public final class Earthquake extends Disaster {
 		}
 		BlockState below = level.getBlockState(pos.below());
 		if (block instanceof FallingBlock && FallingBlock.isFree(below)) {
-			FallingBlockEntity.fall(level, pos.immutable(), state);
+			if (falls++ < 8) {
+				FallingBlockEntity.fall(level, pos.immutable(), state);
+			}
 			return;
 		}
 		Block cracked = CRACKED.get(block);
@@ -215,6 +220,9 @@ public final class Earthquake extends Disaster {
 	}
 
 	private void fall(BlockPos pos, BlockState state) {
+		if (falls++ >= 8) {
+			return;
+		}
 		FallingBlockEntity block = FallingBlockEntity.fall(level, pos, state);
 		block.setHurtsEntities(2.0F, 30);
 	}

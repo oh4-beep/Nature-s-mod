@@ -1,0 +1,181 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "naturesmod:ash_layer",
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "condition": {
+        "type": "minecraft:block_state_property",
+        "block": "naturesmod:ash_layer",
+        "properties": {
+          "layers": "1"
+        }
+      }
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "naturesmod:ash_layer",
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "count": 2
+            }
+          ]
+        }
+      ],
+      "condition": {
+        "type": "minecraft:block_state_property",
+        "block": "naturesmod:ash_layer",
+        "properties": {
+          "layers": "2"
+        }
+      }
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "naturesmod:ash_layer",
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "count": 3
+            }
+          ]
+        }
+      ],
+      "condition": {
+        "type": "minecraft:block_state_property",
+        "block": "naturesmod:ash_layer",
+        "properties": {
+          "layers": "3"
+        }
+      }
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "naturesmod:ash_layer",
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "count": 4
+            }
+          ]
+        }
+      ],
+      "condition": {
+        "type": "minecraft:block_state_property",
+        "block": "naturesmod:ash_layer",
+        "properties": {
+          "layers": "4"
+        }
+      }
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "naturesmod:ash_layer",
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "count": 5
+            }
+          ]
+        }
+      ],
+      "condition": {
+        "type": "minecraft:block_state_property",
+        "block": "naturesmod:ash_layer",
+        "properties": {
+          "layers": "5"
+        }
+      }
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "naturesmod:ash_layer",
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "count": 6
+            }
+          ]
+        }
+      ],
+      "condition": {
+        "type": "minecraft:block_state_property",
+        "block": "naturesmod:ash_layer",
+        "properties": {
+          "layers": "6"
+        }
+      }
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "naturesmod:ash_layer",
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "count": 7
+            }
+          ]
+        }
+      ],
+      "condition": {
+        "type": "minecraft:block_state_property",
+        "block": "naturesmod:ash_layer",
+        "properties": {
+          "layers": "7"
+        }
+      }
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "naturesmod:ash_layer",
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "count": 8
+            }
+          ]
+        }
+      ],
+      "condition": {
+        "type": "minecraft:block_state_property",
+        "block": "naturesmod:ash_layer",
+        "properties": {
+          "layers": "8"
+        }
+      }
+    }
+  ]
+}

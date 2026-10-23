@@ -33,12 +33,12 @@ final class FireFx {
 				ny = sy;
 				nz = sz;
 			}
-			int smoke = Fx.budget(3, distance, 800.0);
+			int smoke = Fx.budget(2, distance, 800.0);
 			for (int k = 0; k < smoke; k++) {
 				float tone = (float) Fx.range(0.33, 0.45);
 				Fx.cloud(sx + Fx.range(-2.0, 2.0), sy + Fx.range(1.0, 3.0), sz + Fx.range(-2.0, 2.0))
-						.velocity(d.dirX * drift, Fx.range(0.15, 0.3), d.dirZ * drift).drag(0.99).size((float) Fx.range(3.0, 6.0))
-						.color(tone, tone * 0.92F, tone * 0.84F).alpha(0.7F).life(150 + Fx.random.nextInt(110)).grow(2.5F).fade(0.08F, 0.5F).spawn();
+						.velocity(d.dirX * drift, Fx.range(0.2, 0.38), d.dirZ * drift).drag(0.99).size((float) Fx.range(4.0, 7.0))
+						.color(tone, tone * 0.92F, tone * 0.84F).alpha(0.7F).life(110 + Fx.random.nextInt(80)).grow(2.5F).fade(0.08F, 0.5F).spawn();
 			}
 			if (distance < 96.0) {
 				int embers = Fx.round(2 * Fx.density);

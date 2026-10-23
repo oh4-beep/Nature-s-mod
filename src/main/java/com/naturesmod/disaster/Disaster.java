@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.naturesmod.NaturesConfig;
+import com.naturesmod.tree.TreeEvents;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -43,6 +44,8 @@ public abstract class Disaster {
 	protected double z;
 	protected int age;
 	protected int duration;
+	private int treeSecond = -1;
+	private int treeTries;
 	private boolean done;
 
 	protected Disaster(DisasterType type, ServerLevel level, Vec3 at, float intensity, boolean natural, int duration) {
@@ -169,6 +172,24 @@ public abstract class Disaster {
 			pos.move(0, -1, 0);
 		}
 		return pos.getY();
+	}
+
+	/**
+	 * Brings down the tree a log belongs to, falling `direction`, if this disaster may fell another this
+	 * second: felling is costly, a forest of falling blocks more so. Giant trees stand (too big to fell),
+	 * and only part of a big crown falls whole; the rest is shredded.
+	 */
+	protected boolean fellTree(BlockPos log, Vec3 direction, int heightAboveBase, int perSecond) {
+		int second = age / 20;
+		if (second != treeSecond) {
+			treeSecond = second;
+			treeTries = 0;
+		}
+		if (treeTries >= perSecond) {
+			return false;
+		}
+		treeTries++;
+		return TreeEvents.snapTrunk(level, log, direction, heightAboveBase, 320, 24, 48);
 	}
 
 	/** Makes an entity move at `velocity`, by pushing it as much as it takes (which also tells the client). */
