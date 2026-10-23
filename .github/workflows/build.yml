@@ -100,9 +100,13 @@ jobs:
           JAVA_TOOL_OPTIONS: -XX:StartFlightRecording=filename=/tmp/jfr/client-%p.jfr,settings=profile,dumponexit=true
       - name: print screenshots
         if: always()
-        # Shrunk to small JPEGs so the whole set fits in the log.
+        # Shrunk to small JPEGs so the whole set fits in the log. The ones named like FOCUS (what is being worked on)
+        # come last, where a look at the tail of the log finds them.
+        env:
+          FOCUS: wild_
         run: |
-          for f in build/run/clientGameTest/screenshots/*.png; do
+          shots=$(ls build/run/clientGameTest/screenshots/*.png 2>/dev/null || true)
+          for f in $(echo "$shots" | grep -v -- "$FOCUS"; echo "$shots" | grep -- "$FOCUS"); do
             [ -f "$f" ] || continue
             n=$(basename "$f" .png).jpg
             size=854x480
