@@ -163,7 +163,7 @@ public abstract class Disaster {
 		}
 		while (pos.getY() > level.getMinY()) {
 			BlockState state = level.getBlockState(pos);
-			if (!state.is(BlockTags.LOGS) && !state.is(BlockTags.LEAVES) && !state.canBeReplaced() && state.blocksMotion()) {
+			if (!state.is(BlockTags.LOGS) && !state.is(BlockTags.LEAVES) && !state.canBeReplaced() && !state.getCollisionShape(level, pos).isEmpty()) {
 				break;
 			}
 			pos.move(0, -1, 0);

@@ -135,7 +135,7 @@ public final class ModBlocks {
 			.forceSolidOff()
 			.strength(0.1F)
 			.sound(SoundType.SAND)
-			.isViewBlocking((state, level, pos) -> state.getValue(SnowLayerBlock.LAYERS) >= 8)
+			.isViewBlocking((state, level, pos, view) -> state.getValue(SnowLayerBlock.LAYERS) >= 8)
 			.pushReaction(PushReaction.POPPED));
 	public static final Block FLESH_BLOCK = register("flesh_block", FleshBlock::new, BlockBehaviour.Properties.of()
 			.mapColor(MapColor.COLOR_RED)
