@@ -12,6 +12,7 @@ public final class DisasterDamage {
 	public static final ResourceKey<DamageType> EARTHQUAKE = key("earthquake");
 	public static final ResourceKey<DamageType> METEOR = key("meteor");
 	public static final ResourceKey<DamageType> PYROCLASTIC = key("pyroclastic");
+	public static final ResourceKey<DamageType> HAIL = key("hail");
 
 	private DisasterDamage() {
 	}

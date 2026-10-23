@@ -22,6 +22,7 @@ public final class DisasterSounds {
 	public static final SoundEvent METEOR_IMPACT = register("disaster.meteor.impact");
 	public static final SoundEvent METEOR_BOOM = register("disaster.meteor.boom");
 	public static final SoundEvent FIRE_ROAR = register("disaster.fire.roar");
+	public static final SoundEvent HAIL = register("disaster.hail");
 
 	private DisasterSounds() {
 	}

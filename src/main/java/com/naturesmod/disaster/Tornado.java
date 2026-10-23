@@ -10,6 +10,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -110,8 +111,70 @@ public final class Tornado extends Disaster {
 	public float[] extra() {
 		double fade = fade();
 		double tilt = 0.1 + 0.55 * (1.0 - fade);
+		double hail = hailStrength();
 		return new float[] {(float) coreNow, (float) cloudBase, rating, (float) wind, (float) formation(), (float) (-Math.cos(heading) * tilt),
-				(float) (-Math.sin(heading) * tilt), overWater ? 1.0F : 0.0F, (float) fade};
+				(float) (-Math.sin(heading) * tilt), overWater ? 1.0F : 0.0F, (float) fade, (float) hailX(), (float) hailZ(),
+				(float) (hail > 0.05 ? hailRadius() * hail : 0.0), (float) (0.06 + rating * 0.03)};
+	}
+
+	// --- the hail -----------------------------------------------------------------------------
+
+	/** The storm's hail falls hardest in its forward flank: ahead of the tornado and to its left. */
+	private double hailX() {
+		return x + Math.cos(heading) * 55.0 + Math.sin(heading) * 45.0;
+	}
+
+	private double hailZ() {
+		return z + Math.sin(heading) * 55.0 - Math.cos(heading) * 45.0;
+	}
+
+	private double hailRadius() {
+		return 40.0 + rating * 8.0;
+	}
+
+	/** How hard it hails: once the storm has matured, until it dies. */
+	private double hailStrength() {
+		return Math.max(0.0, Math.min(1.0, (formation() - 0.3) * 2.5)) * Math.min(1.0, fade() * 2.0);
+	}
+
+	/** The hail: bruising what is caught out in it, shredding the crops, and the bigger stones breaking windows. */
+	private void hail() {
+		double strength = hailStrength();
+		if (strength <= 0.05) {
+			return;
+		}
+		double hx = hailX();
+		double hz = hailZ();
+		double reach = hailRadius();
+		if (age % 20 == 0) {
+			AABB box = new AABB(hx - reach, y - 30, hz - reach, hx + reach, y + 60, hz + reach);
+			for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, box, e -> !immune(e))) {
+				double d = distance2d(entity, hx, hz);
+				if (d < reach && !sheltered(entity) && random.nextDouble() < strength * (1.0 - d / reach) * 0.6) {
+					hurt(entity, DisasterDamage.HAIL, (float) (0.5 + rating * 0.35));
+				}
+			}
+		}
+		if (!griefing() || age % 5 != 0) {
+			return;
+		}
+		for (int i = 0; i < 4; i++) {
+			double angle = random.nextDouble() * Math.PI * 2.0;
+			double r = reach * Math.sqrt(random.nextDouble());
+			int bx = (int) Math.floor(hx + Math.cos(angle) * r);
+			int bz = (int) Math.floor(hz + Math.sin(angle) * r);
+			if (!loaded(bx, bz) || random.nextDouble() > strength) {
+				continue;
+			}
+			BlockPos top = new BlockPos(bx, level.getHeight(Heightmap.Types.WORLD_SURFACE, bx, bz) - 1, bz);
+			BlockState state = level.getBlockState(top);
+			if (state.is(BlockTags.CROPS)) {
+				level.destroyBlock(top, random.nextBoolean());
+			} else if (rating >= 3 && random.nextInt(5) == 0 && WindDamage.shatters(state) && !state.is(BlockTags.LEAVES)
+					&& !state.canBeReplaced()) {
+				level.destroyBlock(top, false);
+			}
+		}
 	}
 
 	@Override
@@ -127,6 +190,7 @@ public final class Tornado extends Disaster {
 			touchedDown = true;
 			announce();
 		}
+		hail();
 		if (touchedDown && wind > 20.0) {
 			affectEntities();
 			if (griefing() && !overWater) {

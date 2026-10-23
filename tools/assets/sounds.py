@@ -437,6 +437,32 @@ def siren(seed=160):
     return finish(x, 0.85)
 
 
+def hail(seed=180):
+    """A hailstorm: a hard rattle of ice on the ground, sharper cracks off stone and roofs, the odd big stone
+    thudding down, under the hiss of the rain that comes with it."""
+    seconds = 12.0
+    surge = wander(seconds, 0.4, seed + 1, 0.6, 1.0)
+    x = np.zeros(int(seconds * SR))
+    for k, at in enumerate(poisson(seconds, lambda s: 260 * surge(s), seed + 2)):
+        r = rng(seed + 1000 + k)
+        if r.uniform() < 0.75:
+            hit = burst(0.03, 2500, 10000, r.uniform(0.002, 0.007), seed + 2000 + k, attack=0.0001)
+            gain = r.uniform(0.1, 0.5)
+        else:
+            hit = burst(0.08, 500, 3000, r.uniform(0.008, 0.025), seed + 2000 + k, attack=0.0002)
+            gain = r.uniform(0.25, 0.8)
+        place(x, at * SR, hit / (np.max(np.abs(hit)) + 1e-9), gain * r.choice([-1, 1]))
+    x /= np.sqrt(np.mean(x ** 2)) + 1e-9
+
+    def rain(t, f):
+        return surge(t) * highpass(f, 500, 2) * lowpass(f, 8000, 2)
+
+    hiss = spectral_noise(seconds, rain, seed + 3)
+    x += 0.35 * hiss / (np.sqrt(np.mean(hiss ** 2)) + 1e-9)
+    x = reverb(x, 1.0, seed + 4, wet=0.25, damping=6000)
+    return finish(looped(x, 1.0), 0.24, loop=True)
+
+
 # --- the sound events ------------------------------------------------------------------------
 
 # event: (files [(name, synthesizer)], subtitle, streamed, attenuation distance or None for sounds heard all around)
@@ -457,6 +483,7 @@ EVENTS = {
                                1600),
     "disaster.meteor.boom": ([(f"sonic_boom{k + 1}", lambda k=k: sonic_boom(230 + 10 * k)) for k in range(2)], "Sonic boom", False, 2400),
     "disaster.fire.roar": ([("fire_roar", fire_roar)], "Wildfire roars", True, 140),
+    "disaster.hail": ([("hail", hail)], "Hail clatters", True, None),
 }
 
 

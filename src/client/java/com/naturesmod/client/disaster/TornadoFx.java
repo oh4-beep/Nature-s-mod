@@ -61,6 +61,7 @@ final class TornadoFx {
 			float thick = (float) (0.85 * (1.0 - distance / (core * 2.5)));
 			DisasterClient.fog(thick, water ? 0.8F : 0.45F, water ? 0.84F : 0.39F, water ? 0.88F : 0.32F, 10.0F);
 		}
+		hail(d);
 		int budget = Fx.budget(110, distance, 1200.0);
 		if (budget <= 0) {
 			return;
@@ -126,6 +127,28 @@ final class TornadoFx {
 			p.vortex(axis, Fx.random.nextDouble() * Math.PI * 2.0, r, -(0.004 + 0.012 * (1.0 - r / reach)), 0.0, 0.0)
 					.size((float) Fx.range(10.0, 22.0)).gray((float) Fx.range(0.26, 0.36)).alpha(0.8F).life(140 + Fx.random.nextInt(80))
 					.fade(0.25F, 0.35F).spawn();
+		}
+	}
+
+	/** Under the storm's hail core: stones pelting down and bouncing, the clatter of them, the air grey with it. */
+	private static void hail(ClientDisaster d) {
+		double reach = d.extra(11);
+		if (reach <= 0.0) {
+			return;
+		}
+		double distance = Fx.horizontal(d.extra(9), d.extra(10));
+		float inside = (float) Math.max(0.0, Math.min(1.0, (reach + 15.0 - distance) / 30.0));
+		if (inside <= 0.0F) {
+			return;
+		}
+		DisasterAudio.loop("hail" + d.id, DisasterSounds.HAIL, false, inside * 0.9F, 0, 0, 0);
+		DisasterClient.fog(0.3F * inside, 0.72F, 0.75F, 0.8F, 70.0F);
+		double stone = d.extra(12);
+		int count = Fx.round(28 * inside * Fx.density);
+		for (int i = 0; i < count; i++) {
+			Fx.flake(Fx.eye.x + Fx.range(-11.0, 11.0), Fx.eye.y + Fx.range(6.0, 14.0), Fx.eye.z + Fx.range(-11.0, 11.0))
+					.velocity(d.dirX * 0.12 + Fx.range(-0.03, 0.03), -Fx.range(0.8, 1.1), d.dirZ * 0.12 + Fx.range(-0.03, 0.03)).drag(1.0).fall(0.05)
+					.size((float) (stone * Fx.range(0.6, 1.4))).color(0.88F, 0.91F, 0.96F).alpha(1.0F).bounce().life(45).fade(0.0F, 0.1F).spawn();
 		}
 	}
 

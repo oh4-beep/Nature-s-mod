@@ -28,6 +28,7 @@ DAMAGE = {
     "earthquake": ("%1$s was crushed in an earthquake", "%1$s was crushed in an earthquake while fighting %2$s"),
     "meteor": ("%1$s was struck by a meteorite", "%1$s was struck by a meteorite while fighting %2$s"),
     "pyroclastic": ("%1$s was engulfed by a pyroclastic flow", "%1$s was engulfed by a pyroclastic flow while fleeing %2$s"),
+    "hail": ("%1$s was battered to death by hail", "%1$s was battered to death by hail while fighting %2$s"),
 }
 
 

@@ -10,8 +10,12 @@ import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 /**
  * The particle the disasters are drawn with: a soft billow of cloud or dust, a speck of debris, a
@@ -61,6 +65,8 @@ public final class DisasterParticle extends SingleQuadParticle {
 	private float growth;
 	private float spin;
 	private boolean glow;
+	/** Bounces off the ground (hailstones), so many times before it lies still. */
+	private int bounces = -1;
 	/** Drawn nearer than it is, past the view distance. */
 	private boolean far;
 	private float haze = 1.0F;
@@ -180,6 +186,11 @@ public final class DisasterParticle extends SingleQuadParticle {
 		return this;
 	}
 
+	DisasterParticle bounce() {
+		this.bounces = 0;
+		return this;
+	}
+
 	/** Turns it on screen so that its texture's length lies along `direction`, as the viewer sees it: for streaks. */
 	DisasterParticle along(Vec3 direction) {
 		LocalPlayer player = Minecraft.getInstance().player;
@@ -253,12 +264,42 @@ public final class DisasterParticle extends SingleQuadParticle {
 			this.xd *= this.drag;
 			this.yd = this.yd * this.drag - this.fall;
 			this.zd *= this.drag;
+			if (this.bounces >= 0 && this.yd < 0.0) {
+				land();
+			}
 		}
 		this.roll += this.spin;
 		float t = (float) this.age / this.lifetime;
 		float fade = t < this.fadeIn ? t / this.fadeIn : t > 1.0F - this.fadeOut ? (1.0F - t) / this.fadeOut : 1.0F;
 		place();
 		this.alpha = this.peakAlpha * Mth.clamp(fade, 0.0F, 1.0F) * this.haze;
+	}
+
+	/** Hitting the ground it bounces, a little less each time, then lies there a moment. */
+	private void land() {
+		BlockPos at = BlockPos.containing(this.px, this.py, this.pz);
+		BlockState state = this.level.getBlockState(at);
+		VoxelShape shape = state.getCollisionShape(this.level, at);
+		boolean wet = !state.getFluidState().isEmpty();
+		if (shape.isEmpty() && !wet) {
+			return;
+		}
+		if (wet || this.bounces >= 2) {
+			// Into the water, or come to rest.
+			this.py = wet ? this.py : at.getY() + shape.max(Direction.Axis.Y) + 0.02;
+			this.xd = 0.0;
+			this.yd = 0.0;
+			this.zd = 0.0;
+			this.fall = 0.0;
+			this.bounces = -1;
+			this.lifetime = Math.min(this.lifetime, this.age + (wet ? 1 : 8));
+			return;
+		}
+		this.py = at.getY() + shape.max(Direction.Axis.Y) + 0.02;
+		this.yd = -this.yd * (0.28 + this.random.nextFloat() * 0.12);
+		this.xd = this.xd * 0.5 + (this.random.nextFloat() - 0.5) * 0.08;
+		this.zd = this.zd * 0.5 + (this.random.nextFloat() - 0.5) * 0.08;
+		this.bounces++;
 	}
 
 	/** Where it is drawn, and how big: where it is, or nearer in proportion if it is past the view distance. */

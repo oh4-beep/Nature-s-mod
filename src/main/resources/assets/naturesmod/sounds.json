@@ -148,5 +148,14 @@
       }
     ],
     "subtitle": "subtitles.naturesmod.disaster.fire.roar"
+  },
+  "disaster.hail": {
+    "sounds": [
+      {
+        "name": "naturesmod:disaster/hail",
+        "stream": true
+      }
+    ],
+    "subtitle": "subtitles.naturesmod.disaster.hail"
   }
 }
