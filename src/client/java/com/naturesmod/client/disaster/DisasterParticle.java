@@ -8,20 +8,30 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * The particle the disasters are drawn with: a soft billow of cloud or dust, a speck of debris, a
- * glowing spark or a flake of snow, set up for its job with a few calls and then added. It either
- * drifts (with its own velocity, drag and gravity) or turns about the axis of a vortex, following the
- * vortex as it moves: that is how a tornado's funnel spins and climbs as it crosses the land.
+ * glowing spark, a flake of snow or the streak of a shooting star, set up for its job with a few calls
+ * and then added. It either drifts (with its own velocity, drag and gravity) or turns about the axis of
+ * a vortex, following the vortex as it moves: that is how a tornado's funnel spins and climbs as it
+ * crosses the land.
+ *
+ * <p>Disasters are seen from far off, further than the world is drawn: a tornado on the horizon, the
+ * column of an eruption, the wall of a sandstorm. The game's fog swallows anything beyond its view
+ * distance, so a particle further out than that is drawn nearer along the same line of sight, made
+ * smaller in proportion: on screen it is the same, and the fog leaves it be. A little haze is laid
+ * over it instead, more the further it really is.
  */
 public final class DisasterParticle extends SingleQuadParticle {
 	static SpriteSet cloudSprites;
 	static SpriteSet debrisSprites;
 	static SpriteSet sparkSprites;
 	static SpriteSet flakeSprites;
+	static SpriteSet streakSprites;
 
 	/** The axis a particle turns about, at a height. */
 	interface Axis {
@@ -32,6 +42,10 @@ public final class DisasterParticle extends SingleQuadParticle {
 		double z(double height);
 	}
 
+	/** Where it really is (its x, y and z are where it is drawn). */
+	private double px;
+	private double py;
+	private double pz;
 	private Axis axis;
 	private double angle;
 	private double orbit;
@@ -43,10 +57,13 @@ public final class DisasterParticle extends SingleQuadParticle {
 	private float peakAlpha = 1.0F;
 	private float fadeIn = 0.12F;
 	private float fadeOut = 0.35F;
-	private float startSize;
+	private float size;
 	private float growth;
 	private float spin;
 	private boolean glow;
+	/** Drawn nearer than it is, past the view distance. */
+	private boolean far;
+	private float haze = 1.0F;
 
 	private DisasterParticle(ClientLevel level, double x, double y, double z, TextureAtlasSprite sprite) {
 		super(level, x, y, z, sprite);
@@ -57,7 +74,10 @@ public final class DisasterParticle extends SingleQuadParticle {
 		this.yd = 0.0;
 		this.zd = 0.0;
 		this.alpha = 0.0F;
-		this.startSize = this.quadSize;
+		this.px = x;
+		this.py = y;
+		this.pz = z;
+		this.size = this.quadSize;
 		this.lifetime = 40;
 	}
 
@@ -79,6 +99,10 @@ public final class DisasterParticle extends SingleQuadParticle {
 			flakeSprites = sprites;
 			return (options, level, x, y, z, xd, yd, zd, random) -> create(level, sprites, x, y, z).velocity(xd, yd, zd).size(0.1F).life(30);
 		});
+		registry.register(DisasterParticles.STREAK, sprites -> {
+			streakSprites = sprites;
+			return (options, level, x, y, z, xd, yd, zd, random) -> create(level, sprites, x, y, z).velocity(xd, yd, zd).size(2.0F).glow().life(4);
+		});
 	}
 
 	private static DisasterParticle create(ClientLevel level, SpriteSet sprites, double x, double y, double z) {
@@ -99,8 +123,7 @@ public final class DisasterParticle extends SingleQuadParticle {
 	}
 
 	DisasterParticle size(float size) {
-		this.quadSize = size;
-		this.startSize = size;
+		this.size = size;
 		return this;
 	}
 
@@ -157,6 +180,29 @@ public final class DisasterParticle extends SingleQuadParticle {
 		return this;
 	}
 
+	/** Turns it on screen so that its texture's length lies along `direction`, as the viewer sees it: for streaks. */
+	DisasterParticle along(Vec3 direction) {
+		LocalPlayer player = Minecraft.getInstance().player;
+		if (player != null) {
+			double yaw = Math.toRadians(player.getYRot());
+			double pitch = Math.toRadians(player.getXRot());
+			// The viewer's right and up.
+			double rx = -Math.cos(yaw);
+			double rz = -Math.sin(yaw);
+			double fx = -Math.sin(yaw) * Math.cos(pitch);
+			double fy = -Math.sin(pitch);
+			double fz = Math.cos(yaw) * Math.cos(pitch);
+			double ux = -rz * fy;
+			double uy = rz * fx - rx * fz;
+			double uz = rx * fy;
+			double sx = direction.x * rx + direction.z * rz;
+			double sy = direction.x * ux + direction.y * uy + direction.z * uz;
+			this.roll = (float) Math.atan2(sy, sx);
+			this.oRoll = this.roll;
+		}
+		return this;
+	}
+
 	/** Turns about an axis: starting `angle` round it at `radius`, turning `angular` radians a tick, rising `climb` and moving out `outward` blocks a tick. */
 	DisasterParticle vortex(Axis axis, double angle, double radius, double angular, double climb, double outward) {
 		this.axis = axis;
@@ -165,15 +211,17 @@ public final class DisasterParticle extends SingleQuadParticle {
 		this.angular = angular;
 		this.climb = climb;
 		this.outward = outward;
-		this.x = axis.x(this.y) + Math.cos(angle) * radius;
-		this.z = axis.z(this.y) + Math.sin(angle) * radius;
-		this.xo = this.x;
-		this.zo = this.z;
+		this.px = axis.x(this.py) + Math.cos(angle) * radius;
+		this.pz = axis.z(this.py) + Math.sin(angle) * radius;
 		return this;
 	}
 
 	void spawn() {
 		Fx.spawned++;
+		place();
+		this.xo = this.x;
+		this.yo = this.y;
+		this.zo = this.z;
 		Minecraft.getInstance().particleEngine.add(this);
 	}
 
@@ -194,14 +242,14 @@ public final class DisasterParticle extends SingleQuadParticle {
 			} else {
 				this.angle += this.angular;
 				this.orbit = Math.max(0.2, this.orbit + this.outward);
-				this.y += this.climb;
-				this.x = this.axis.x(this.y) + Math.cos(this.angle) * this.orbit;
-				this.z = this.axis.z(this.y) + Math.sin(this.angle) * this.orbit;
+				this.py += this.climb;
+				this.px = this.axis.x(this.py) + Math.cos(this.angle) * this.orbit;
+				this.pz = this.axis.z(this.py) + Math.sin(this.angle) * this.orbit;
 			}
 		} else {
-			this.x += this.xd;
-			this.y += this.yd;
-			this.z += this.zd;
+			this.px += this.xd;
+			this.py += this.yd;
+			this.pz += this.zd;
 			this.xd *= this.drag;
 			this.yd = this.yd * this.drag - this.fall;
 			this.zd *= this.drag;
@@ -209,8 +257,40 @@ public final class DisasterParticle extends SingleQuadParticle {
 		this.roll += this.spin;
 		float t = (float) this.age / this.lifetime;
 		float fade = t < this.fadeIn ? t / this.fadeIn : t > 1.0F - this.fadeOut ? (1.0F - t) / this.fadeOut : 1.0F;
-		this.alpha = this.peakAlpha * Mth.clamp(fade, 0.0F, 1.0F);
-		this.quadSize = this.startSize * (1.0F + this.growth * t);
+		place();
+		this.alpha = this.peakAlpha * Mth.clamp(fade, 0.0F, 1.0F) * this.haze;
+	}
+
+	/** Where it is drawn, and how big: where it is, or nearer in proportion if it is past the view distance. */
+	private void place() {
+		float t = (float) this.age / this.lifetime;
+		float drawn = this.size * (1.0F + this.growth * t);
+		LocalPlayer player = Minecraft.getInstance().player;
+		double limit = Fx.viewLimit;
+		if (player != null && limit > 0.0) {
+			Vec3 eye = player.getEyePosition();
+			double dx = this.px - eye.x;
+			double dy = this.py - eye.y;
+			double dz = this.pz - eye.z;
+			double d = Math.sqrt(dx * dx + dy * dy + dz * dz);
+			if (d > limit) {
+				double k = limit / d;
+				this.x = eye.x + dx * k;
+				this.y = eye.y + dy * k;
+				this.z = eye.z + dz * k;
+				this.quadSize = (float) (drawn * k);
+				this.far = true;
+				// The air between: further off, fainter.
+				this.haze = (float) Math.max(0.3, 1.0 - (d - limit) / (limit * 6.0));
+				return;
+			}
+		}
+		this.x = this.px;
+		this.y = this.py;
+		this.z = this.pz;
+		this.quadSize = drawn;
+		this.far = false;
+		this.haze = 1.0F;
 	}
 
 	@Override
@@ -220,6 +300,10 @@ public final class DisasterParticle extends SingleQuadParticle {
 
 	@Override
 	protected int getLightCoords(float partialTick) {
-		return this.glow ? 0xF000F0 : super.getLightCoords(partialTick);
+		if (this.glow) {
+			return 0xF000F0;
+		}
+		// Far off it is out in the open sky (and maybe where the world isn't loaded): lit by the sky.
+		return this.far ? 0xF00000 : super.getLightCoords(partialTick);
 	}
 }

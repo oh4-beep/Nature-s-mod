@@ -27,7 +27,7 @@ final class SkyFx {
 			double length = Fx.range(30.0, 90.0);
 			int ticks = 6 + Fx.random.nextInt(8);
 			boolean green = Fx.random.nextInt(4) == 0;
-			DisasterEvents.streak(start, radiant.scale(length / ticks), ticks, (float) Fx.range(0.35, 0.8), green);
+			DisasterEvents.streak(start, radiant.scale(length / ticks), ticks, (float) Fx.range(0.5, 1.2), green);
 		}
 	}
 }

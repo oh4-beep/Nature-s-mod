@@ -43,7 +43,7 @@ final class VolcanoFx {
 		}
 		int flows = (int) d.extra(8);
 		for (int i = 0; i < flows; i++) {
-			flow(d.extra(9 + i * 3), d.extra(10 + i * 3), d.extra(11 + i * 3), windX, windZ);
+			flow(d, d.extra(9 + i * 3), d.extra(10 + i * 3), d.extra(11 + i * 3));
 		}
 	}
 
@@ -87,15 +87,30 @@ final class VolcanoFx {
 		}
 	}
 
-	/** A pyroclastic flow: a wall of searing grey cloud boiling along the ground. */
-	private static void flow(double fx, double fy, double fz, double windX, double windZ) {
-		int count = Fx.budget(8, Fx.horizontal(fx, fz), 900.0);
+	/**
+	 * A pyroclastic flow: an avalanche of searing ash and gas racing down the mountain, hugging the ground,
+	 * its front a rolling wall of grey cloud and its back billowing up as it loses its load (the ash
+	 * cloud that rises off it).
+	 */
+	private static void flow(ClientDisaster d, double fx, double fy, double fz) {
+		double dx = fx - d.x;
+		double dz = fz - d.z;
+		double length = Math.max(1.0, Math.sqrt(dx * dx + dz * dz));
+		double ux = dx / length;
+		double uz = dz / length;
+		int count = Fx.budget(16, Fx.horizontal(fx, fz), 1200.0);
 		for (int i = 0; i < count; i++) {
-			float tone = (float) Fx.range(0.38, 0.48);
-			Fx.cloud(fx + Fx.range(-10.0, 10.0), fy + Fx.range(0.0, 6.0), fz + Fx.range(-10.0, 10.0))
-					.velocity(windX * 0.05 + Fx.range(-0.1, 0.1), Fx.range(0.1, 0.3), windZ * 0.05 + Fx.range(-0.1, 0.1)).drag(0.97)
-					.size((float) Fx.range(8.0, 16.0)).color(tone, tone * 0.95F, tone * 0.88F).alpha(0.9F).life(100 + Fx.random.nextInt(80)).grow(1.5F)
-					.spawn();
+			// Along the flow's body, thickest at its head.
+			double back = Math.pow(Fx.random.nextDouble(), 1.8) * Math.min(length, 40.0);
+			double side = Fx.random.nextGaussian() * 6.0;
+			double x = fx - ux * back - uz * side;
+			double z = fz - uz * back + ux * side;
+			boolean rising = Fx.random.nextInt(4) == 0;
+			float tone = (float) Fx.range(0.36, 0.48);
+			Fx.cloud(x, fy + Fx.range(0.0, rising ? 8.0 : 3.0), z)
+					.velocity(ux * Fx.range(0.3, 0.7), rising ? Fx.range(0.06, 0.16) : Fx.range(0.0, 0.03), uz * Fx.range(0.3, 0.7)).drag(0.97)
+					.size((float) Fx.range(4.0, 9.0)).color(tone, tone * 0.95F, tone * 0.88F).alpha(0.92F).life(70 + Fx.random.nextInt(70))
+					.grow(rising ? 2.6F : 1.6F).fade(0.08F, 0.5F).spin((float) Fx.range(-0.03, 0.03)).spawn();
 		}
 		if (Fx.horizontal(fx, fz) < 30.0) {
 			DisasterClient.fog(0.95F, 0.4F, 0.37F, 0.33F, 6.0F);

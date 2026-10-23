@@ -87,19 +87,23 @@ final class DisasterEvents {
 		DELAYED.add(new Delayed(new int[] {ticks}, action));
 	}
 
-	/** A shooting star: a head and a trail, gone in a moment. */
+	/** A shooting star: a bright head and a glowing trail behind it, gone in a moment. */
 	static void streak(Vec3 start, Vec3 velocity, int ticks, float size, boolean green) {
 		MOVERS.add(new Mover(start, velocity) {
 			@Override
 			boolean tick() {
 				pos = pos.add(velocity);
-				DisasterParticle head = Fx.spark(pos.x, pos.y, pos.z);
-				if (green) {
-					head.color(0.7F, 1.0F, 0.75F);
-				} else {
-					head.color(1.0F, 0.97F, 0.85F);
-				}
-				head.size(size).glow().alpha(1.0F).life(7).fade(0.0F, 0.9F).spawn();
+				double distance = Fx.distance(pos.x, pos.y, pos.z);
+				// Brightest in the middle of its flight.
+				float bright = (float) Math.sin(Math.PI * (age + 0.5) / ticks);
+				float r = green ? 0.7F : 1.0F;
+				float g = green ? 1.0F : 0.97F;
+				float b = green ? 0.75F : 0.85F;
+				Vec3 mid = pos.subtract(velocity.scale(1.5));
+				Fx.streak(mid.x, mid.y, mid.z).along(velocity).size((float) (velocity.length() * 1.5)).color(r, g, b).alpha(0.9F * bright).life(2)
+						.fade(0.0F, 0.6F).spawn();
+				Fx.spark(pos.x, pos.y, pos.z).size(Fx.apparent(size, distance, 0.0035)).color(r, g, b).glow().alpha(bright).life(2).fade(0.0F, 0.7F)
+						.spawn();
 				return ++age < ticks;
 			}
 		});
@@ -125,9 +129,14 @@ final class DisasterEvents {
 			pos = pos.add(velocity);
 			age++;
 			double distance = Fx.distance(pos.x, pos.y, pos.z);
-			float glow = 1.4F + size * 2.0F;
+			float glow = Fx.apparent(1.4F + size * 2.0F, distance, 0.012 + size * 0.004);
 			// The head, white-hot, and the fire streaming off it.
 			Fx.spark(pos.x, pos.y, pos.z).size(glow).color(1.0F, 0.95F, 0.82F).glow().alpha(1.0F).life(3).fade(0.0F, 0.5F).spawn();
+			Vec3 mid = pos.subtract(velocity.scale(2.5));
+			Fx.streak(mid.x, mid.y, mid.z).along(velocity).size((float) (velocity.length() * 2.5)).color(1.0F, 0.75F, 0.4F).alpha(0.95F).life(2)
+					.fade(0.0F, 0.5F).spawn();
+			Fx.streak(mid.x, mid.y, mid.z).along(velocity).size((float) (velocity.length() * 2.2)).color(1.0F, 0.98F, 0.9F).alpha(1.0F).life(2)
+					.fade(0.0F, 0.5F).spawn();
 			int trail = distance < 900 ? 2 : 1;
 			for (int i = 0; i < trail; i++) {
 				Vec3 back = pos.subtract(velocity.scale(Fx.random.nextDouble()));
@@ -188,12 +197,21 @@ final class DisasterEvents {
 					.size((float) Fx.range(radius * 0.5, radius)).color(1.0F, (float) Fx.range(0.45, 0.7), 0.15F).glow().alpha(0.95F)
 					.life(18 + Fx.random.nextInt(14)).grow(1.0F).fade(0.0F, 0.6F).spawn();
 		}
-		// The dust and smoke boiling up into a mushroom.
+		// The dust and smoke boiling up into a mushroom and drifting off.
 		for (int i = 0; i < 40; i++) {
 			float tone = (float) Fx.range(0.32, 0.48);
 			Fx.cloud(at.x + Fx.range(-radius, radius), at.y + 1, at.z + Fx.range(-radius, radius))
-					.velocity(Fx.range(-0.15, 0.15), Fx.range(0.15, 0.7), Fx.range(-0.15, 0.15)).drag(0.965).size((float) Fx.range(3.0, 6.0))
-					.color(tone, tone * 0.88F, tone * 0.75F).alpha(0.85F).life(160 + Fx.random.nextInt(120)).grow(2.5F).fade(0.05F, 0.5F).spawn();
+					.velocity(Fx.range(-0.15, 0.15), Fx.range(0.35, 1.0), Fx.range(-0.15, 0.15)).drag(0.97).size((float) Fx.range(3.0, 6.0))
+					.color(tone, tone * 0.88F, tone * 0.75F).alpha(0.8F).life(110 + Fx.random.nextInt(80)).grow(3.0F).fade(0.05F, 0.6F).spawn();
+		}
+		// A skirt of dust racing out along the ground with the blast.
+		for (int i = 0; i < 24; i++) {
+			double angle = Fx.random.nextDouble() * Math.PI * 2.0;
+			double speed = Fx.range(0.5, 1.1);
+			float tone = (float) Fx.range(0.38, 0.5);
+			Fx.cloud(at.x, at.y + 1, at.z).velocity(Math.cos(angle) * speed, Fx.range(0.0, 0.08), Math.sin(angle) * speed).drag(0.92)
+					.size((float) Fx.range(2.0, 4.0)).color(tone, tone * 0.9F, tone * 0.78F).alpha(0.7F).life(50 + Fx.random.nextInt(40)).grow(2.0F)
+					.fade(0.0F, 0.6F).spawn();
 		}
 		// Ejecta.
 		for (int i = 0; i < 40; i++) {

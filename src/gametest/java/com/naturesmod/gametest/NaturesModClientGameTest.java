@@ -791,7 +791,8 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 			failures.add("disasters: no land for the tornado");
 			return;
 		}
-		view(context, world, at.add(-20.0, 0.0, 0.0), 0.0, 110.0, 4.0, 35.0);
+		// From well above the land round about, so no hill hides it.
+		view(context, world, at.add(-20.0, 0.0, 0.0), 0.0, 90.0, 26.0, 22.0);
 		world.getServer().runOnServer(server -> {
 			// Already down on the ground, heading west across the view.
 			Tornado tornado = (Tornado) Disasters.start(DisasterType.TORNADO, server.overworld(), at, 4.0F, false);
@@ -802,7 +803,7 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 		shoot(context, "disaster_tornado");
 		Vec3 now = where(world, DisasterType.TORNADO);
 		if (now != null) {
-			view(context, world, now.add(-8.0, 0.0, 0.0), 20.0, 45.0, 2.0, 18.0);
+			view(context, world, now.add(-8.0, 0.0, 0.0), 20.0, 45.0, 9.0, 16.0);
 			context.waitTicks(30);
 			shoot(context, "disaster_tornado_close");
 		}
@@ -854,7 +855,8 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 		shoot(context, "disaster_meteor_impact");
 		command(world, "time set noon");
 		view(context, world, new Vec3(strike.getX() + 0.5, at.y, strike.getZ() + 0.5), 0.0, 24.0, 18.0, -4.0);
-		context.waitTicks(40);
+		// Once the dust has drifted off.
+		context.waitTicks(220);
 		shoot(context, "disaster_meteor_crater");
 	}
 
@@ -881,7 +883,7 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 			failures.add("disasters: no volcanic peaks to erupt");
 			return;
 		}
-		view(context, world, at, 200.0, 190.0, 30.0, 90.0);
+		view(context, world, at, 200.0, 95.0, 26.0, 55.0);
 		context.waitTicks(100);
 		shoot(context, "disaster_eruption");
 		// The column collapsing: pyroclastic flows racing down the mountain.
@@ -889,7 +891,7 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 			Eruption eruption = (Eruption) d;
 			eruption.skip(eruption.unrestTicks() + (int) (eruption.eruptionTicks() * 0.92) - eruption.age());
 		}));
-		view(context, world, at, 160.0, 130.0, 20.0, 10.0);
+		view(context, world, at, 160.0, 85.0, 26.0, -6.0);
 		context.waitTicks(80);
 		shoot(context, "disaster_pyroclastic_flow");
 	}
@@ -909,9 +911,9 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 			failures.add("disasters: no forest to burn");
 			return;
 		}
-		view(context, world, at, 90.0, 70.0, 16.0, 6.0);
+		view(context, world, at, 90.0, 55.0, 24.0, 4.0);
 		world.getServer().runOnServer(server -> Disasters.start(DisasterType.WILDFIRE, server.overworld(), at, 4.0F, false));
-		context.waitTicks(200);
+		context.waitTicks(280);
 		shoot(context, "disaster_wildfire");
 	}
 
@@ -959,7 +961,8 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 			failures.add("disasters: no snowy land for the blizzard");
 			return;
 		}
-		teleport(context, world, Level.OVERWORLD, at.x, at.y + 1.0, at.z, 30.0F, 0.0F);
+		// Just over the trees, looking out across the land.
+		teleport(context, world, Level.OVERWORLD, at.x, at.y + 3.0, at.z, 30.0F, 8.0F);
 		world.getServer().runOnServer(server -> Disasters.start(DisasterType.BLIZZARD, server.overworld(), at, 5.0F, false).skip(200));
 		context.waitTicks(60);
 		shoot(context, "disaster_blizzard");

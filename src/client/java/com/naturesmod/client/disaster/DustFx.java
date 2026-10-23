@@ -2,9 +2,6 @@ package com.naturesmod.client.disaster;
 
 import com.naturesmod.disaster.DisasterSounds;
 
-import net.minecraft.core.particles.BlockParticleOption;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.world.level.block.Blocks;
 
 /**
  * Draws a sandstorm. Seen from ahead it is a wall of dust towering over the desert and rolling toward
@@ -52,10 +49,14 @@ final class DustFx {
 			Fx.cloud(x, y, z).velocity(wx * gust, Fx.range(-0.02, 0.03), wz * gust).drag(1.0).size((float) Fx.range(0.5, 1.4))
 					.color(tone, tone * 0.78F, tone * 0.55F).alpha(0.35F).life(20 + Fx.random.nextInt(20)).spawn();
 		}
-		int grains = Fx.round(6 * inside * Fx.density);
+		// Sand flying past: fine grains streaming on the wind, close about the viewer.
+		int grains = Fx.round(30 * inside * Fx.density);
 		for (int i = 0; i < grains; i++) {
-			Fx.level.addParticle(new BlockParticleOption(ParticleTypes.FALLING_DUST, Blocks.SAND.defaultBlockState()), Fx.eye.x + Fx.range(-6.0, 6.0),
-					Fx.eye.y + Fx.range(-1.0, 3.0), Fx.eye.z + Fx.range(-6.0, 6.0), 0.0, 0.0, 0.0);
+			double gust = speed * Fx.range(2.5, 4.5);
+			float tone = (float) Fx.range(0.7, 0.86);
+			Fx.debris(Fx.eye.x - wx * 5.0 + Fx.range(-5.0, 5.0), Fx.eye.y + Fx.range(-1.5, 2.5), Fx.eye.z - wz * 5.0 + Fx.range(-5.0, 5.0))
+					.velocity(wx * gust, Fx.range(-0.03, 0.03), wz * gust).drag(1.0).size((float) Fx.range(0.015, 0.04))
+					.color(tone, tone * 0.82F, tone * 0.6F).alpha(0.9F).life(8 + Fx.random.nextInt(8)).fade(0.1F, 0.3F).spawn();
 		}
 	}
 

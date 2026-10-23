@@ -18,6 +18,8 @@ final class Fx {
 	static RandomSource random = RandomSource.create();
 	static float density = 1.0F;
 	static int spawned;
+	/** How far off a particle may be drawn where it is: past this the fog would hide it (see {@link DisasterParticle}). */
+	static double viewLimit = 96.0;
 
 	private Fx() {
 	}
@@ -29,12 +31,13 @@ final class Fx {
 		random = level.getRandom();
 		density = Math.max(0.0F, NaturesConfig.get().disasterParticles);
 		spawned = 0;
+		viewLimit = Math.max(40.0, minecraft.options.getEffectiveRenderDistance() * 16.0 * 0.78);
 	}
 
 	/** Whether the disasters' particle textures have loaded (the particle calls below may be relied on once they have). */
 	static boolean ready() {
 		return DisasterParticle.cloudSprites != null && DisasterParticle.debrisSprites != null && DisasterParticle.sparkSprites != null
-				&& DisasterParticle.flakeSprites != null;
+				&& DisasterParticle.flakeSprites != null && DisasterParticle.streakSprites != null;
 	}
 
 	/** How many particles a disaster may spend this tick: `base` close by, fewer the further off (none past `far`). */
@@ -80,5 +83,14 @@ final class Fx {
 
 	static DisasterParticle flake(double x, double y, double z) {
 		return DisasterParticle.of(DisasterParticle.flakeSprites, x, y, z);
+	}
+
+	static DisasterParticle streak(double x, double y, double z) {
+		return DisasterParticle.of(DisasterParticle.streakSprites, x, y, z);
+	}
+
+	/** A size that looks at least `angle` radians across from here, at a distance. */
+	static float apparent(float size, double distance, double angle) {
+		return (float) Math.max(size, distance * angle);
 	}
 }

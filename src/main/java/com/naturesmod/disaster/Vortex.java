@@ -38,11 +38,19 @@ public final class Vortex {
 		return new Vec3(tx * tangential + rx * radial, updraft, tz * tangential + rz * radial);
 	}
 
-	/** The radius of the visible funnel at a fraction `f` of the way up from the ground to the cloud (0 to 1). */
+	/**
+	 * The radius of the visible condensation funnel at a fraction `f` of the way up from the ground to the
+	 * cloud (0 to 1): a cone, narrow at the ground and flaring into the cloud above, the weak ones slender,
+	 * the violent ones broad wedges; dying, a thin rope.
+	 */
 	public static double funnel(double f, double core, double rating, boolean rope) {
-		double width = rope ? 0.35 : 0.55 + rating * 0.06;
-		double flare = rope ? 0.6 : 0.45;
-		return core * width * (0.55 + flare * Math.pow(clamp(f, 0.0, 1.0), 1.6) + (rating >= 4 && !rope ? 0.35 * (1.0 - f) : 0.0));
+		f = clamp(f, 0.0, 1.0);
+		if (rope) {
+			return core * (0.18 + 0.3 * f * f);
+		}
+		double foot = 0.3 + 0.09 * rating;
+		double top = 1.0 + 0.12 * rating;
+		return core * (foot + (top - foot) * Math.pow(f, 2.2));
 	}
 
 	static double clamp(double v, double lo, double hi) {

@@ -52,6 +52,7 @@ jobs:
           simulation-distance=4
           sync-chunk-writes=false
           max-tick-time=-1
+          pause-when-empty-seconds=0
           EOF
       - name: run worldgen smoke test
         run: ./gradlew runSmokeTest

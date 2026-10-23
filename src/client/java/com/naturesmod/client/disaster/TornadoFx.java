@@ -61,31 +61,34 @@ final class TornadoFx {
 			float thick = (float) (0.85 * (1.0 - distance / (core * 2.5)));
 			DisasterClient.fog(thick, water ? 0.8F : 0.45F, water ? 0.84F : 0.39F, water ? 0.88F : 0.32F, 10.0F);
 		}
-		int budget = Fx.budget(80, distance, 1000.0);
+		int budget = Fx.budget(110, distance, 1200.0);
 		if (budget <= 0) {
 			return;
 		}
 		DisasterParticle.Axis axis = axis(d);
 		boolean rope = fade < 0.6;
 		double peak = wind * Vortex.WIND_SCALE;
-		// The funnel, lowering out of the cloud as the tornado forms.
+		// The funnel, lowering out of the cloud as the tornado forms: condensation spinning up its surface,
+		// pale grey above, darkened near the ground by the dust and debris drawn into it.
 		double lowered = Math.min(1.0, formation * 1.25);
 		double bottom = cloudBase - depth * lowered;
-		int funnel = (int) (budget * 0.45);
+		int funnel = (int) (budget * 0.55);
 		for (int i = 0; i < funnel; i++) {
-			double h = bottom + Fx.random.nextDouble() * (cloudBase - bottom);
-			double f = (h - d.y) / depth;
-			double r = Vortex.funnel(f, core, rating, rope) * Fx.range(0.85, 1.15);
-			double angular = -Math.max(0.05, Math.min(0.45, (peak * 1.4 + 0.25) / Math.max(r, 1.0)));
-			float shade = (float) (0.5 + 0.2 * f + Fx.random.nextDouble() * 0.08);
+			double f = Math.pow(Fx.random.nextDouble(), 0.8);
+			double h = bottom + f * (cloudBase - bottom);
+			double up = (h - d.y) / depth;
+			double surface = Vortex.funnel(up, core, rating, rope);
+			double r = surface * Fx.range(0.82, 1.02);
+			double angular = -Math.max(0.05, Math.min(0.5, (peak * 1.4 + 0.25) / Math.max(r, 1.0)));
+			float shade = (float) (up < 0.15 && down ? 0.42 + up * 1.2 : 0.6 + 0.16 * up) + (float) Fx.range(-0.04, 0.04);
 			DisasterParticle p = Fx.cloud(d.x, h, d.z);
-			p.vortex(axis, Fx.random.nextDouble() * Math.PI * 2.0, r, angular, Fx.range(0.06, 0.18), 0.0)
-					.size((float) (Math.max(1.3, r * 0.9) * Fx.range(0.8, 1.3))).gray(shade).alpha(0.88F).life(30 + Fx.random.nextInt(30))
-					.fade(0.15F, 0.4F).spin((float) Fx.range(-0.08, 0.08)).spawn();
+			p.vortex(axis, Fx.random.nextDouble() * Math.PI * 2.0, r, angular, Fx.range(0.08, 0.2), 0.0)
+					.size((float) (Math.max(1.4, surface * 0.55) * Fx.range(0.75, 1.15))).gray(shade).alpha(0.9F).life(24 + Fx.random.nextInt(24))
+					.fade(0.18F, 0.4F).spin((float) Fx.range(-0.1, 0.1)).spawn();
 		}
 		if (down) {
 			// The swirl of dust and debris (or spray) round its foot.
-			int swirl = (int) (budget * 0.32);
+			int swirl = (int) (budget * 0.25);
 			for (int i = 0; i < swirl; i++) {
 				double h = d.y + Math.pow(Fx.random.nextDouble(), 2.0) * (6.0 + rating * 3.0);
 				double r = core * Fx.range(0.9, 2.5);
@@ -101,7 +104,7 @@ final class TornadoFx {
 						.size((float) Fx.range(1.6, 4.0)).alpha(0.78F).life(20 + Fx.random.nextInt(28)).grow(0.6F).fade(0.1F, 0.45F).spawn();
 			}
 			if (!water) {
-				int chunks = (int) (budget * 0.15);
+				int chunks = (int) (budget * 0.12);
 				for (int i = 0; i < chunks; i++) {
 					double r = core * Fx.range(0.3, 1.2);
 					DisasterParticle p = Fx.debris(d.x, d.y + Fx.range(0.0, 4.0), d.z);
@@ -113,7 +116,7 @@ final class TornadoFx {
 			}
 		}
 		// The wall cloud and the mesocyclone it hangs from, turning slowly.
-		int storm = Math.max(1, (int) (budget * 0.1));
+		int storm = Math.max(1, (int) (budget * 0.08));
 		double reach = core * 9.0 + 40.0;
 		for (int i = 0; i < storm; i++) {
 			double r = reach * Math.sqrt(Fx.random.nextDouble());

@@ -8,6 +8,7 @@ import math
 import os
 import random
 
+import numpy as np
 from PIL import Image
 
 from hell import _json
@@ -32,43 +33,86 @@ DAMAGE = {
 
 # --- particle textures -----------------------------------------------------------------------
 
-def smooth_noise(size, cells, rng):
-    """Value noise on a size x size grid, a random value every size/cells pixels, smoothly blended."""
-    grid = [[rng.random() for _ in range(cells + 1)] for _ in range(cells + 1)]
-    out = [[0.0] * size for _ in range(size)]
-    for y in range(size):
-        for x in range(size):
-            gx = x / size * cells
-            gy = y / size * cells
-            ix, iy = int(gx), int(gy)
-            fx, fy = gx - ix, gy - iy
-            fx = fx * fx * (3 - 2 * fx)
-            fy = fy * fy * (3 - 2 * fy)
-            top = grid[iy][ix] * (1 - fx) + grid[iy][ix + 1] * fx
-            bottom = grid[iy + 1][ix] * (1 - fx) + grid[iy + 1][ix + 1] * fx
-            out[y][x] = top * (1 - fy) + bottom * fy
-    return out
+def fractal(size, rng, octaves=5, base=4):
+    """Fractal value noise in [0, 1]: smooth billows with finer detail on top, tileable or not."""
+    total = np.zeros((size, size))
+    weight = 0.0
+    amplitude = 1.0
+    cells = base
+    for _ in range(octaves):
+        grid = rng.random((cells + 1, cells + 1))
+        t = np.linspace(0, cells, size, endpoint=False)
+        i = t.astype(int)
+        f = t - i
+        f = f * f * (3 - 2 * f)
+        rows = grid[i][:, i] * (1 - f)[None, :] + grid[i][:, i + 1] * f[None, :]
+        rows2 = grid[i + 1][:, i] * (1 - f)[None, :] + grid[i + 1][:, i + 1] * f[None, :]
+        total += (rows * (1 - f)[:, None] + rows2 * f[:, None]) * amplitude
+        weight += amplitude
+        amplitude *= 0.5
+        cells *= 2
+    return total / weight
 
 
 def cloud(seed):
-    """A soft, lumpy billow of cloud: white, lit from above and shaded beneath, fading out at its edges."""
-    size = 32
-    rng = random.Random(seed)
-    coarse = smooth_noise(size, 3, rng)
-    fine = smooth_noise(size, 7, rng)
-    img = Image.new("RGBA", (size, size))
-    for y in range(size):
-        for x in range(size):
-            dx = (x + 0.5) / size * 2 - 1
-            dy = (y + 0.5) / size * 2 - 1
-            r = math.sqrt(dx * dx + dy * dy)
-            lump = coarse[y][x] * 0.65 + fine[y][x] * 0.35
-            density = max(0.0, 1.0 - r * (1.05 - 0.45 * lump)) ** 0.9
-            alpha = min(1.0, density * (0.75 + 0.5 * lump) * 1.6)
-            light = 0.78 + 0.22 * (1 - (dy + 1) / 2) + 0.08 * (fine[y][x] - 0.5)
-            v = int(max(0, min(255, 255 * light)))
-            img.putpixel((x, y), (v, v, v, int(255 * max(0.0, min(1.0, alpha)))))
-    return img
+    """A soft, lumpy billow of cloud, big enough not to show its pixels close up: white, lit from above and
+    shaded beneath, its edge broken into smaller billows that thin out to nothing."""
+    size = 128
+    rng = np.random.default_rng(seed)
+    noise = fractal(size, rng)
+    detail = fractal(size, rng, octaves=4, base=8)
+    y, x = np.mgrid[0:size, 0:size]
+    dx = (x + 0.5) / size * 2 - 1
+    dy = (y + 0.5) / size * 2 - 1
+    r = np.sqrt(dx * dx + dy * dy)
+    # The edge wanders in and out with the billows.
+    edge = 0.62 + 0.38 * noise
+    density = np.clip(1.0 - r / edge, 0.0, 1.0)
+    density = density ** 0.75 * (0.7 + 0.6 * detail)
+    alpha = np.clip(density * 1.5, 0.0, 1.0)
+    alpha = alpha * alpha * (3 - 2 * alpha)
+    # Light from above: the top of each billow bright, the underside grey.
+    light = 0.80 + 0.20 * (1 - (dy + 1) / 2) + 0.12 * (detail - 0.5) + 0.08 * (noise - 0.5)
+    v = np.clip(light * 255, 0, 255).astype(np.uint8)
+    a = np.clip(alpha * 255, 0, 255).astype(np.uint8)
+    return Image.fromarray(np.dstack([v, v, v, a]), "RGBA")
+
+
+def streak(seed):
+    """A thin bright line fading out at both ends: a shooting star's trail, turned on screen to lie along its path."""
+    size = 64
+    y, x = np.mgrid[0:size, 0:size]
+    across = (y + 0.5 - size / 2) / (1.2 + seed * 0.5)
+    along = (x + 0.5) / size * 2 - 1
+    alpha = np.exp(-across * across) * np.clip(1.0 - np.abs(along) ** 1.6, 0.0, 1.0)
+    a = np.clip(alpha * 255, 0, 255).astype(np.uint8)
+    w = np.full((size, size), 255, np.uint8)
+    return Image.fromarray(np.dstack([w, w, w, a]), "RGBA")
+
+
+def soft_spark(seed, size=32):
+    """A point of light: white at its heart, its glow falling away smoothly."""
+    y, x = np.mgrid[0:size, 0:size]
+    dx = (x + 0.5) / size * 2 - 1
+    dy = (y + 0.5) / size * 2 - 1
+    r = np.sqrt(dx * dx + dy * dy)
+    alpha = np.clip(1.0 - r, 0.0, 1.0) ** (1.4 + seed * 0.6)
+    a = np.clip(alpha * 255, 0, 255).astype(np.uint8)
+    w = np.full((size, size), 255, np.uint8)
+    return Image.fromarray(np.dstack([w, w, w, a]), "RGBA")
+
+
+def soft_flake(seed, size=16):
+    """A flake of driven snow: a soft dot."""
+    rng = np.random.default_rng(seed)
+    y, x = np.mgrid[0:size, 0:size]
+    dx = (x + 0.5) / size * 2 - 1 + rng.uniform(-0.1, 0.1)
+    dy = (y + 0.5) / size * 2 - 1 + rng.uniform(-0.1, 0.1)
+    r = np.sqrt(dx * dx + dy * dy)
+    alpha = np.clip(1.0 - r * 1.1, 0.0, 1.0) ** 0.7
+    a = np.clip(alpha * 255, 0, 255).astype(np.uint8)
+    w = np.full((size, size), 255, np.uint8)
+    return Image.fromarray(np.dstack([w, w, w, a]), "RGBA")
 
 
 def debris(seed):
@@ -98,42 +142,15 @@ def inside(point, polygon):
     return hit
 
 
-def spark(seed, size=8):
-    """A point of light: white at its heart, its glow falling away."""
-    img = Image.new("RGBA", (size, size))
-    for y in range(size):
-        for x in range(size):
-            dx = (x + 0.5) / size * 2 - 1
-            dy = (y + 0.5) / size * 2 - 1
-            r = math.sqrt(dx * dx + dy * dy)
-            alpha = max(0.0, 1.0 - r) ** (1.4 + seed * 0.3)
-            img.putpixel((x, y), (255, 255, 255, int(255 * alpha)))
-    return img
-
-
-def flake(seed):
-    """A flake of driven snow: a soft dot with a glint."""
-    size = 8
-    rng = random.Random(seed)
-    img = Image.new("RGBA", (size, size))
-    for y in range(size):
-        for x in range(size):
-            dx = (x + 0.5) / size * 2 - 1
-            dy = (y + 0.5) / size * 2 - 1
-            r = math.sqrt(dx * dx + dy * dy)
-            alpha = max(0.0, 1.0 - r * 1.15) ** 0.8 * (0.85 + 0.15 * rng.random())
-            img.putpixel((x, y), (255, 255, 255, int(255 * alpha)))
-    return img
-
-
 def particles(assets):
     folder = os.path.join(assets, "textures", "particle")
     os.makedirs(folder, exist_ok=True)
     kinds = {
         "cloud": [cloud(7100 + i) for i in range(6)],
         "debris": [debris(7200 + i) for i in range(6)],
-        "spark": [spark(i) for i in range(2)],
-        "flake": [flake(7300 + i) for i in range(2)],
+        "spark": [soft_spark(i) for i in range(2)],
+        "flake": [soft_flake(7300 + i) for i in range(2)],
+        "streak": [streak(i) for i in range(2)],
     }
     for kind, images in kinds.items():
         names = []

@@ -25,12 +25,16 @@ final class SnowFx {
 			float inside = (float) (Math.min(1.0, (d.radius - distance) / 40.0) * d.strength);
 			DisasterClient.fog(0.96F * inside, 0.84F, 0.87F, 0.92F, (float) visibility);
 			DisasterAudio.loop("blizzard" + d.id, DisasterSounds.BLIZZARD_WIND, false, inside, 0, 0, 0);
-			int flakes = Fx.round(90 * inside * Fx.density);
+			int flakes = Fx.round(150 * inside * Fx.density);
 			for (int i = 0; i < flakes; i++) {
 				double gust = windSpeed * Fx.range(10.0, 20.0);
-				Fx.flake(Fx.eye.x - d.dirX * 8.0 + Fx.range(-12.0, 12.0), Fx.eye.y + Fx.range(-3.0, 8.0), Fx.eye.z - d.dirZ * 8.0 + Fx.range(-12.0, 12.0))
-						.velocity(d.dirX * gust + Fx.range(-0.05, 0.05), -Fx.range(0.04, 0.15), d.dirZ * gust + Fx.range(-0.05, 0.05)).drag(1.0)
-						.size((float) Fx.range(0.06, 0.16)).color(0.96F, 0.97F, 1.0F).alpha(0.95F).life(15 + Fx.random.nextInt(15)).fade(0.1F, 0.2F).spawn();
+				// Most of them close about the viewer, where they are seen flying past.
+				double spread = Fx.random.nextInt(3) == 0 ? 12.0 : 5.0;
+				Fx.flake(Fx.eye.x - d.dirX * spread + Fx.range(-spread, spread), Fx.eye.y + Fx.range(-2.5, 4.0),
+						Fx.eye.z - d.dirZ * spread + Fx.range(-spread, spread))
+						.velocity(d.dirX * gust + Fx.range(-0.06, 0.06), -Fx.range(0.03, 0.12), d.dirZ * gust + Fx.range(-0.06, 0.06)).drag(1.0)
+						.size((float) Fx.range(0.05, 0.13)).color(0.97F, 0.98F, 1.0F).alpha(1.0F).life(12 + Fx.random.nextInt(14)).fade(0.08F, 0.2F)
+						.spawn();
 			}
 			int puffs = Fx.round(5 * inside * Fx.density);
 			for (int i = 0; i < puffs; i++) {
