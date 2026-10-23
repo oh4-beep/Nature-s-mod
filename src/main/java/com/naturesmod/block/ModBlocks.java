@@ -222,13 +222,13 @@ public final class ModBlocks {
 					.randomTicks()
 					.noCollision()
 					.sound(SoundType.SWEET_BERRY_BUSH)
-					.pushReaction(PushReaction.DESTROY));
+					.pushReaction(PushReaction.POPPED));
 	public static final Block COCONUT = register("coconut", CoconutBlock::new, BlockBehaviour.Properties.of()
 			.mapColor(MapColor.COLOR_BROWN)
 			.strength(0.5F)
 			.noOcclusion()
 			.sound(SoundType.WOOD)
-			.pushReaction(PushReaction.DESTROY));
+			.pushReaction(PushReaction.POPPED));
 	public static final Block SALT_BLOCK = register("salt_block", Block::new, stone(MapColor.SNOW, 1.2F, SoundType.CALCITE));
 	public static final Block SALT_CRYSTAL = register("salt_crystal", props -> new AmethystClusterBlock(5.0F, 9.0F, props), cluster(MapColor.SNOW, 0));
 	public static final Block AZURE_CRYSTAL = register("azure_crystal", Block::new, stone(MapColor.COLOR_LIGHT_BLUE, 1.5F, SoundType.AMETHYST)
@@ -279,7 +279,7 @@ public final class ModBlocks {
 				.instabreak()
 				.offsetType(BlockBehaviour.OffsetType.XZ)
 				.sound(SoundType.GRASS)
-				.pushReaction(PushReaction.DESTROY);
+				.pushReaction(PushReaction.POPPED);
 	}
 
 	private static BlockBehaviour.Properties cluster(MapColor color, int light) {
@@ -289,7 +289,7 @@ public final class ModBlocks {
 				.strength(1.5F)
 				.lightLevel(state -> light)
 				.sound(SoundType.AMETHYST_CLUSTER)
-				.pushReaction(PushReaction.DESTROY);
+				.pushReaction(PushReaction.POPPED);
 	}
 
 	private static BlockBehaviour.Properties brazier(int light) {

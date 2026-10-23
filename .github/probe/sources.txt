@@ -1,4 +1,0 @@
-ParticleTypes.java|POPLAR|CHERRY_LEAVES|FIREFLY|SNOWFLAKE|END_ROD|SPORE_BLOSSOM_AIR|MYCELIUM|GLOW =|CLOUD =|BUBBLE_COLUMN_UP|CAMPFIRE_COSY
-AmethystClusterBlock.java|FACING|public AmethystClusterBlock
-HangingMossBlock.java|TIP|BooleanProperty
-EnvironmentAttributes.java|FOG_END_DISTANCE|AMBIENT_PARTICLES|WATER_FOG_END
