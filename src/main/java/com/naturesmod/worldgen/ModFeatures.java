@@ -18,6 +18,7 @@ import com.naturesmod.worldgen.feature.NetherFeature;
 import com.naturesmod.worldgen.feature.RockFormationFeature;
 import com.naturesmod.worldgen.feature.SeaGardenFeature;
 import com.naturesmod.worldgen.feature.SinkholeFeature;
+import com.naturesmod.worldgen.feature.WildFeature;
 import com.naturesmod.worldgen.tree.GiantTreeFeature;
 
 import net.minecraft.core.Registry;
@@ -46,6 +47,7 @@ public final class ModFeatures {
 		register("hell_feature", HellFeature.CODEC);
 		register("sea_garden", SeaGardenFeature.CODEC);
 		register("end_feature", EndFeature.CODEC);
+		register("wild_feature", WildFeature.CODEC);
 	}
 
 	private static void register(String name, MapCodec<? extends Feature> codec) {

@@ -1,0 +1,340 @@
+{
+  "dimensions": {
+    "minecraft:overworld": {
+      "type": "minecraft:overworld",
+      "generator": {
+        "type": "minecraft:noise",
+        "biome_source": {
+          "type": "naturesmod:wild",
+          "base": {
+            "type": "minecraft:multi_noise",
+            "preset": "minecraft:overworld"
+          },
+          "variants": [
+            {
+              "biome": "naturesmod:crystal_caverns",
+              "replaces": [
+                "minecraft:badlands",
+                "minecraft:bamboo_jungle",
+                "minecraft:beach",
+                "minecraft:birch_forest",
+                "minecraft:cherry_grove",
+                "minecraft:cold_ocean",
+                "minecraft:dappled_forest",
+                "minecraft:dark_forest",
+                "minecraft:deep_cold_ocean",
+                "minecraft:deep_frozen_ocean",
+                "minecraft:deep_lukewarm_ocean",
+                "minecraft:deep_ocean",
+                "minecraft:desert",
+                "minecraft:eroded_badlands",
+                "minecraft:flower_forest",
+                "minecraft:forest",
+                "minecraft:frozen_ocean",
+                "minecraft:frozen_peaks",
+                "minecraft:frozen_river",
+                "minecraft:grove",
+                "minecraft:ice_spikes",
+                "minecraft:jagged_peaks",
+                "minecraft:jungle",
+                "minecraft:lukewarm_ocean",
+                "minecraft:mangrove_swamp",
+                "minecraft:meadow",
+                "minecraft:mushroom_fields",
+                "minecraft:ocean",
+                "minecraft:old_growth_birch_forest",
+                "minecraft:old_growth_pine_taiga",
+                "minecraft:old_growth_spruce_taiga",
+                "minecraft:pale_garden",
+                "minecraft:plains",
+                "minecraft:river",
+                "minecraft:savanna",
+                "minecraft:savanna_plateau",
+                "minecraft:snowy_beach",
+                "minecraft:snowy_plains",
+                "minecraft:snowy_slopes",
+                "minecraft:snowy_taiga",
+                "minecraft:sparse_jungle",
+                "minecraft:stony_peaks",
+                "minecraft:stony_shore",
+                "minecraft:sunflower_plains",
+                "minecraft:swamp",
+                "minecraft:taiga",
+                "minecraft:warm_ocean",
+                "minecraft:windswept_forest",
+                "minecraft:windswept_gravelly_hills",
+                "minecraft:windswept_hills",
+                "minecraft:windswept_savanna",
+                "minecraft:wooded_badlands"
+              ],
+              "salt": 101,
+              "scale": 110,
+              "coverage": 0.2,
+              "min_y": -64,
+              "max_y": -6,
+              "vertical_scale": 40
+            },
+            {
+              "biome": "naturesmod:fungal_grotto",
+              "replaces": [
+                "minecraft:plains",
+                "minecraft:sunflower_plains",
+                "minecraft:forest",
+                "minecraft:flower_forest",
+                "minecraft:birch_forest",
+                "minecraft:old_growth_birch_forest",
+                "minecraft:dark_forest",
+                "minecraft:dappled_forest",
+                "minecraft:pale_garden",
+                "minecraft:taiga",
+                "minecraft:old_growth_pine_taiga",
+                "minecraft:old_growth_spruce_taiga",
+                "minecraft:jungle",
+                "minecraft:sparse_jungle",
+                "minecraft:bamboo_jungle",
+                "minecraft:swamp",
+                "minecraft:mangrove_swamp",
+                "minecraft:meadow",
+                "minecraft:cherry_grove",
+                "minecraft:savanna",
+                "minecraft:windswept_forest",
+                "minecraft:mushroom_fields"
+              ],
+              "salt": 102,
+              "scale": 96,
+              "coverage": 0.16,
+              "min_y": -4,
+              "max_y": 44,
+              "vertical_scale": 36
+            },
+            {
+              "biome": "naturesmod:lavender_fields",
+              "replaces": [
+                "minecraft:plains",
+                "minecraft:sunflower_plains"
+              ],
+              "salt": 1,
+              "scale": 320,
+              "coverage": 0.32
+            },
+            {
+              "biome": "naturesmod:lavender_fields",
+              "replaces": [
+                "minecraft:meadow"
+              ],
+              "salt": 1,
+              "scale": 320,
+              "coverage": 0.28
+            },
+            {
+              "biome": "naturesmod:golden_prairie",
+              "replaces": [
+                "minecraft:plains",
+                "minecraft:sunflower_plains"
+              ],
+              "salt": 2,
+              "scale": 420,
+              "coverage": 0.3
+            },
+            {
+              "biome": "naturesmod:golden_prairie",
+              "replaces": [
+                "minecraft:savanna"
+              ],
+              "salt": 2,
+              "scale": 420,
+              "coverage": 0.22
+            },
+            {
+              "biome": "naturesmod:maple_woods",
+              "replaces": [
+                "minecraft:forest"
+              ],
+              "salt": 3,
+              "scale": 380,
+              "coverage": 0.28
+            },
+            {
+              "biome": "naturesmod:maple_woods",
+              "replaces": [
+                "minecraft:birch_forest"
+              ],
+              "salt": 3,
+              "scale": 380,
+              "coverage": 0.3
+            },
+            {
+              "biome": "naturesmod:maple_woods",
+              "replaces": [
+                "minecraft:flower_forest"
+              ],
+              "salt": 3,
+              "scale": 380,
+              "coverage": 0.25
+            },
+            {
+              "biome": "naturesmod:glowshroom_forest",
+              "replaces": [
+                "minecraft:dark_forest"
+              ],
+              "salt": 4,
+              "scale": 300,
+              "coverage": 0.45
+            },
+            {
+              "biome": "naturesmod:glowshroom_forest",
+              "replaces": [
+                "minecraft:forest"
+              ],
+              "salt": 4,
+              "scale": 300,
+              "coverage": 0.08
+            },
+            {
+              "biome": "naturesmod:tropical_shore",
+              "replaces": [
+                "minecraft:beach"
+              ],
+              "salt": 5,
+              "scale": 260,
+              "coverage": 0.6,
+              "min_temperature": -0.05
+            },
+            {
+              "biome": "naturesmod:salt_flats",
+              "replaces": [
+                "minecraft:desert"
+              ],
+              "salt": 6,
+              "scale": 420,
+              "coverage": 0.3
+            },
+            {
+              "biome": "naturesmod:volcanic_peaks",
+              "replaces": [
+                "minecraft:windswept_savanna"
+              ],
+              "salt": 7,
+              "scale": 520,
+              "coverage": 0.5
+            },
+            {
+              "biome": "naturesmod:volcanic_peaks",
+              "replaces": [
+                "minecraft:savanna_plateau"
+              ],
+              "salt": 7,
+              "scale": 520,
+              "coverage": 0.3
+            },
+            {
+              "biome": "naturesmod:volcanic_peaks",
+              "replaces": [
+                "minecraft:stony_peaks",
+                "minecraft:badlands"
+              ],
+              "salt": 7,
+              "scale": 520,
+              "coverage": 0.15
+            },
+            {
+              "biome": "naturesmod:bayou",
+              "replaces": [
+                "minecraft:swamp"
+              ],
+              "salt": 8,
+              "scale": 360,
+              "coverage": 0.5
+            },
+            {
+              "biome": "naturesmod:bayou",
+              "replaces": [
+                "minecraft:mangrove_swamp"
+              ],
+              "salt": 8,
+              "scale": 360,
+              "coverage": 0.25
+            },
+            {
+              "biome": "naturesmod:tundra",
+              "replaces": [
+                "minecraft:snowy_plains"
+              ],
+              "salt": 9,
+              "scale": 480,
+              "coverage": 0.45
+            },
+            {
+              "biome": "naturesmod:petrified_forest",
+              "replaces": [
+                "minecraft:wooded_badlands"
+              ],
+              "salt": 10,
+              "scale": 360,
+              "coverage": 0.35
+            },
+            {
+              "biome": "naturesmod:petrified_forest",
+              "replaces": [
+                "minecraft:eroded_badlands"
+              ],
+              "salt": 10,
+              "scale": 360,
+              "coverage": 0.2
+            },
+            {
+              "biome": "naturesmod:petrified_forest",
+              "replaces": [
+                "minecraft:savanna"
+              ],
+              "salt": 10,
+              "scale": 360,
+              "coverage": 0.12
+            },
+            {
+              "biome": "naturesmod:heather_moors",
+              "replaces": [
+                "minecraft:windswept_hills",
+                "minecraft:windswept_gravelly_hills"
+              ],
+              "salt": 11,
+              "scale": 420,
+              "coverage": 0.4
+            },
+            {
+              "biome": "naturesmod:heather_moors",
+              "replaces": [
+                "minecraft:meadow"
+              ],
+              "salt": 11,
+              "scale": 420,
+              "coverage": 0.22
+            }
+          ]
+        },
+        "settings": "minecraft:overworld"
+      }
+    },
+    "minecraft:the_end": {
+      "type": "minecraft:the_end",
+      "generator": {
+        "type": "minecraft:noise",
+        "biome_source": {
+          "type": "minecraft:the_end"
+        },
+        "settings": "minecraft:end"
+      }
+    },
+    "minecraft:the_nether": {
+      "type": "minecraft:the_nether",
+      "generator": {
+        "type": "minecraft:noise",
+        "biome_source": {
+          "type": "minecraft:multi_noise",
+          "preset": "minecraft:nether"
+        },
+        "settings": "minecraft:nether"
+      }
+    }
+  }
+}

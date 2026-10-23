@@ -21,6 +21,7 @@ import com.naturesmod.tree.TreeEvents;
 import com.naturesmod.worldgen.ModBiomeModifications;
 import com.naturesmod.worldgen.ModFeatures;
 import com.naturesmod.worldgen.ModStructures;
+import com.naturesmod.worldgen.wild.WildOverworld;
 
 public class NaturesMod implements ModInitializer {
 	public static final String MOD_ID = "naturesmod";
@@ -32,6 +33,7 @@ public class NaturesMod implements ModInitializer {
 		ModBlocks.register();
 		ModFeatures.register();
 		ModStructures.register();
+		WildOverworld.register();
 		ModBiomeModifications.register();
 		TreeEvents.register();
 		ModCreatures.register();
@@ -46,7 +48,7 @@ public class NaturesMod implements ModInitializer {
 		if (Boolean.getBoolean("naturesmod.smoketest")) {
 			SmokeTest.register();
 		}
-		LOGGER.info("Nature's Mod is reshaping the Overworld, filling the seas, stoking the Nether and remaking the End");
+		LOGGER.info("Nature's Mod is reshaping the Overworld, growing new wilds, filling the seas, stoking the Nether and remaking the End");
 	}
 
 	public static Identifier id(String path) {

@@ -6,12 +6,16 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.level.block.AmethystClusterBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.DoublePlantBlock;
+import net.minecraft.world.level.block.FlowerBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.PushReaction;
 
 import com.naturesmod.NaturesMod;
 import com.naturesmod.abyss.AbyssalEnchantingTableBlock;
@@ -22,6 +26,7 @@ import com.naturesmod.end.EndPlantBlock;
 import com.naturesmod.end.HangingVineBlock;
 import com.naturesmod.end.StarAltarBlock;
 import com.naturesmod.end.UpdraftVentBlock;
+import com.naturesmod.item.ModItems;
 import com.naturesmod.nether.BoneSpikesBlock;
 import com.naturesmod.nether.BrazierBlock;
 import com.naturesmod.nether.BrimstoneBlock;
@@ -200,6 +205,48 @@ public final class ModBlocks {
 			.noOcclusion()
 			.sound(SoundType.DEEPSLATE_BRICKS));
 
+	// --- the wild Overworld ---------------------------------------------------------------------
+	public static final Block LAVENDER = register("lavender", props -> new FlowerBlock(MobEffects.REGENERATION, 6.0F, props), flower(MapColor.COLOR_PURPLE));
+	public static final Block HEATHER = register("heather", props -> new FlowerBlock(MobEffects.NIGHT_VISION, 5.0F, props), flower(MapColor.COLOR_MAGENTA));
+	public static final Block CATTAIL = register("cattail", DoublePlantBlock::new, flower(MapColor.COLOR_BROWN).ignitedByLava());
+	public static final Block GLOWCAP = register("glowcap", props -> new WildPlantBlock(props, 8.0, true), flower(MapColor.COLOR_LIGHT_BLUE)
+			.lightLevel(state -> 9).emissiveRendering(state -> true));
+	public static final Block GLOWCAP_BLOCK = register("glowcap_block", Block::new, BlockBehaviour.Properties.of()
+			.mapColor(MapColor.COLOR_LIGHT_BLUE)
+			.strength(0.4F)
+			.lightLevel(state -> 13)
+			.sound(SoundType.SHROOMLIGHT));
+	public static final Block BLUEBERRY_BUSH = register("blueberry_bush", props -> new BerryBushBlock(props, () -> ModItems.BLUEBERRIES),
+			BlockBehaviour.Properties.of()
+					.mapColor(MapColor.PLANT)
+					.randomTicks()
+					.noCollision()
+					.sound(SoundType.SWEET_BERRY_BUSH)
+					.pushReaction(PushReaction.DESTROY));
+	public static final Block COCONUT = register("coconut", CoconutBlock::new, BlockBehaviour.Properties.of()
+			.mapColor(MapColor.COLOR_BROWN)
+			.strength(0.5F)
+			.noOcclusion()
+			.sound(SoundType.WOOD)
+			.pushReaction(PushReaction.DESTROY));
+	public static final Block SALT_BLOCK = register("salt_block", Block::new, stone(MapColor.SNOW, 1.2F, SoundType.CALCITE));
+	public static final Block SALT_CRYSTAL = register("salt_crystal", props -> new AmethystClusterBlock(5.0F, 9.0F, props), cluster(MapColor.SNOW, 0));
+	public static final Block AZURE_CRYSTAL = register("azure_crystal", Block::new, stone(MapColor.COLOR_LIGHT_BLUE, 1.5F, SoundType.AMETHYST)
+			.lightLevel(state -> 12));
+	public static final Block AZURE_CRYSTAL_CLUSTER = register("azure_crystal_cluster", props -> new AmethystClusterBlock(7.0F, 10.0F, props),
+			cluster(MapColor.COLOR_LIGHT_BLUE, 9));
+	public static final Block CITRINE_CRYSTAL = register("citrine_crystal", Block::new, stone(MapColor.COLOR_YELLOW, 1.5F, SoundType.AMETHYST)
+			.lightLevel(state -> 12));
+	public static final Block CITRINE_CRYSTAL_CLUSTER = register("citrine_crystal_cluster", props -> new AmethystClusterBlock(7.0F, 10.0F, props),
+			cluster(MapColor.COLOR_YELLOW, 9));
+	public static final Block PETRIFIED_LOG = register("petrified_log", RotatedPillarBlock::new, stone(MapColor.TERRACOTTA_BROWN, 2.0F, SoundType.STONE));
+	public static final Block STEAM_VENT = register("steam_vent", SteamVentBlock::new, stone(MapColor.COLOR_GRAY, 2.0F, SoundType.BASALT)
+			.lightLevel(state -> 3));
+
+	/** Every block of the wild Overworld that is its own item, in creative tab order (coconuts and blueberries are food). */
+	public static final Block[] WILD = {LAVENDER, HEATHER, CATTAIL, GLOWCAP, GLOWCAP_BLOCK, SALT_BLOCK, SALT_CRYSTAL, AZURE_CRYSTAL,
+			AZURE_CRYSTAL_CLUSTER, CITRINE_CRYSTAL, CITRINE_CRYSTAL_CLUSTER, PETRIFIED_LOG, STEAM_VENT};
+
 	/** Every block of the new End, in creative tab order. */
 	public static final Block[] END = {END_MOSS, VOIDSTONE, VOIDSTONE_BRICKS, POLISHED_VOIDSTONE, VOID_CRYSTAL, VOID_CRYSTAL_CLUSTER, STARMETAL_ORE,
 			STARMETAL_BLOCK, STARDUST, METEORITE, CHORUS_LOG, CHORUS_BULB, BOUNCE_STEM, BOUNCE_BLOOM, UPDRAFT_VENT, ENDER_GRASS, VOID_BLOOM, VOID_VINES};
@@ -223,6 +270,26 @@ public final class ModBlocks {
 				.lightLevel(state -> light)
 				.offsetType(BlockBehaviour.OffsetType.XZ)
 				.sound(SoundType.WET_GRASS);
+	}
+
+	private static BlockBehaviour.Properties flower(MapColor color) {
+		return BlockBehaviour.Properties.of()
+				.mapColor(color)
+				.noCollision()
+				.instabreak()
+				.offsetType(BlockBehaviour.OffsetType.XZ)
+				.sound(SoundType.GRASS)
+				.pushReaction(PushReaction.DESTROY);
+	}
+
+	private static BlockBehaviour.Properties cluster(MapColor color, int light) {
+		return BlockBehaviour.Properties.of()
+				.mapColor(color)
+				.noOcclusion()
+				.strength(1.5F)
+				.lightLevel(state -> light)
+				.sound(SoundType.AMETHYST_CLUSTER)
+				.pushReaction(PushReaction.DESTROY);
 	}
 
 	private static BlockBehaviour.Properties brazier(int light) {

@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "##",
+    "##"
+  ],
+  "key": {
+    "#": "naturesmod:glowcap"
+  },
+  "result": {
+    "count": 1,
+    "id": "naturesmod:glowcap_block"
+  }
+}

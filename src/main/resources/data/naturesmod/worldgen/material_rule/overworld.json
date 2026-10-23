@@ -13,6 +13,7 @@
         "type": "minecraft:sequence",
         "sequence": [
           "naturesmod:overworld/snow_line",
+          "naturesmod:overworld/wild_surface",
           "minecraft:overworld/surface"
         ]
       }

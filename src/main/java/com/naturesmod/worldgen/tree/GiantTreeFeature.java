@@ -9,6 +9,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 
+import com.naturesmod.block.ModBlocks;
 import com.naturesmod.worldgen.FeatureStats;
 import com.naturesmod.worldgen.WaterWorks;
 import com.naturesmod.worldgen.WorldGenUtil;
@@ -56,10 +57,13 @@ public record GiantTreeFeature(Style style, BlockState log, List<BlockState> lea
 		int ground = WorldGenUtil.groundY(level, origin.getX(), origin.getZ());
 		BlockPos base = new BlockPos(origin.getX(), ground, origin.getZ());
 		BlockState soil = level.getBlockState(base);
-		if (!soil.is(BlockTags.SUPPORTS_VEGETATION) && !(style == Style.BAOBAB && soil.is(BlockTags.SAND))) {
+		boolean sandy = style == Style.BAOBAB || style == Style.PALM;
+		if (!soil.is(BlockTags.SUPPORTS_VEGETATION) && !(sandy && soil.is(BlockTags.SAND))) {
 			return false;
 		}
-		if (!level.getFluidState(base.above()).isEmpty() || !WorldGenUtil.isStructureFree(level, base)) {
+		// A cypress may wade into the shallows; every other tree keeps its feet dry.
+		int maxWater = style == Style.CYPRESS ? 2 : 0;
+		if (waterDepth(level, base) > maxWater || !WorldGenUtil.isStructureFree(level, base)) {
 			return false;
 		}
 		if (nearWater && !waterNearby(level, window, base)) {
@@ -74,6 +78,7 @@ public record GiantTreeFeature(Style style, BlockState log, List<BlockState> lea
 		}
 
 		TreeBuilder builder = new TreeBuilder(level, window, random);
+		builder.wading(style == Style.CYPRESS);
 		switch (style) {
 			case ANCIENT -> broadleaf(builder, base, height, 1.2, 0.7, 5, 4, 1.0, false);
 			case DARK -> broadleaf(builder, base, height, 1.7, 0.6, 4, 3, 1.15, false);
@@ -82,6 +87,8 @@ public record GiantTreeFeature(Style style, BlockState log, List<BlockState> lea
 			case WILLOW -> willow(builder, base, height);
 			case BAOBAB -> baobab(builder, base, height);
 			case SNAG -> snag(builder, base, height);
+			case PALM -> palm(builder, base, height);
+			case CYPRESS -> cypress(builder, base, height);
 		}
 		if (builder.blocked() || builder.logCount() == 0) {
 			return false;
@@ -90,6 +97,16 @@ public record GiantTreeFeature(Style style, BlockState log, List<BlockState> lea
 		groundCover(level, window, random, base);
 		FeatureStats.placed("giant_tree_" + style.getSerializedName());
 		return true;
+	}
+
+	/** How deep the water stands over the ground at the foot of the tree. */
+	private static int waterDepth(WorldGenLevel level, BlockPos base) {
+		int depth = 0;
+		BlockPos.MutableBlockPos pos = base.mutable();
+		while (depth < 4 && !level.getFluidState(pos.move(Direction.UP)).isEmpty()) {
+			depth++;
+		}
+		return depth;
 	}
 
 	private static boolean waterNearby(WorldGenLevel level, WorldGenUtil.Window window, BlockPos base) {
@@ -369,6 +386,129 @@ public record GiantTreeFeature(Style style, BlockState log, List<BlockState> lea
 		}
 	}
 
+	/** Palm: a slender trunk curving up out of the sand, crowned with drooping fronds and hung with coconuts. */
+	private void palm(TreeBuilder b, BlockPos base, int height) {
+		RandomSource r = b.random();
+		double angle = r.nextDouble() * Math.PI * 2;
+		double lean = 0.18 + r.nextDouble() * 0.3;
+		double cx = base.getX() + 0.5;
+		double cz = base.getZ() + 0.5;
+		int y0 = base.getY() + 1;
+		BlockState upright = logAlong(Direction.Axis.Y);
+		int lastX = Mth.floor(cx);
+		int lastZ = Mth.floor(cz);
+		for (int i = 0; i < height; i++) {
+			double t = i / (double) height;
+			double off = lean * height * t * t;
+			int x = Mth.floor(cx + Math.cos(angle) * off);
+			int z = Mth.floor(cz + Math.sin(angle) * off);
+			if (x != lastX || z != lastZ) {
+				// Keep the trunk in one piece where the curve steps sideways.
+				b.log(x, y0 + i - 1, z, upright, LogKind.TRUNK);
+			}
+			b.log(x, y0 + i, z, upright, LogKind.TRUNK);
+			lastX = x;
+			lastZ = z;
+		}
+		int top = y0 + height - 1;
+		List<BlockState> crown = List.of(randomLeaves(r));
+		b.leaf(lastX, top + 1, lastZ, crown.getFirst());
+		for (Direction side : Direction.Plane.HORIZONTAL) {
+			b.leaf(lastX + side.getStepX(), top, lastZ + side.getStepZ(), crown.getFirst());
+		}
+		// Fronds: long arching leaves that rise a little, then droop towards their tips.
+		int fronds = 7 + r.nextInt(3);
+		double offset = r.nextDouble() * Math.PI * 2;
+		for (int k = 0; k < fronds; k++) {
+			double a = offset + Math.PI * 2 * k / fronds + (r.nextDouble() - 0.5) * 0.3;
+			double dx = Math.cos(a);
+			double dz = Math.sin(a);
+			int length = 4 + r.nextInt(3);
+			for (int s = 1; s <= length; s++) {
+				int x = Mth.floor(lastX + 0.5 + dx * s);
+				int z = Mth.floor(lastZ + 0.5 + dz * s);
+				int y = top + (int) Math.round(0.9 - 0.13 * s * s);
+				b.leaf(x, y, z, crown.getFirst());
+				if (s >= 2 && s < length) {
+					// A little width, alternating sides like the leaflets of a real frond.
+					int side = s % 2 == 0 ? 1 : -1;
+					b.leaf(Mth.floor(lastX + 0.5 + dx * s - dz * side * 0.9), y, Mth.floor(lastZ + 0.5 + dz * s + dx * side * 0.9), crown.getFirst());
+				}
+			}
+		}
+		// A few coconuts hanging under the crown.
+		int nuts = r.nextInt(4);
+		for (int k = 0; k < nuts; k++) {
+			Direction side = Direction.Plane.HORIZONTAL.getRandomDirection(r);
+			b.decoration(lastX + side.getStepX(), top - 1, lastZ + side.getStepZ(), ModBlocks.COCONUT.defaultBlockState());
+		}
+	}
+
+	/**
+	 * Bald cypress of the bayou: a flared, buttressed foot standing in the water with knees poking up
+	 * round it, a tall straight trunk, a flat-topped crown of layered boughs, and moss hanging from
+	 * every bough.
+	 */
+	private void cypress(TreeBuilder b, BlockPos base, int height) {
+		RandomSource r = b.random();
+		double cx = base.getX() + 0.5;
+		double cz = base.getZ() + 0.5;
+		int y0 = base.getY() + 1;
+		double radius = 0.6 + r.nextDouble() * 0.5;
+		BlockState upright = logAlong(Direction.Axis.Y);
+		for (int i = -1; i <= height; i++) {
+			double flare = i < 4 ? (4 - i) * 0.45 : 0;
+			b.trunkLayer(cx, y0 + i, cz, radius + flare, upright, i < 0 ? LogKind.ROOT : LogKind.TRUNK);
+		}
+		int knees = 3 + r.nextInt(5);
+		for (int k = 0; k < knees; k++) {
+			double a = r.nextDouble() * Math.PI * 2;
+			double d = 3.0 + r.nextDouble() * 2.5;
+			int x = Mth.floor(cx + Math.cos(a) * d);
+			int z = Mth.floor(cz + Math.sin(a) * d);
+			int rise = 1 + r.nextInt(2);
+			for (int i = -1; i < rise; i++) {
+				b.log(x, y0 + i, z, upright, LogKind.ROOT);
+			}
+		}
+		int crownStart = (int) (height * (0.55 + r.nextDouble() * 0.1));
+		for (int y = crownStart; y <= height; y += 2) {
+			double t = (y - crownStart) / (double) Math.max(1, height - crownStart);
+			int boughs = 3 + r.nextInt(2);
+			double offset = r.nextDouble() * Math.PI * 2;
+			for (int k = 0; k < boughs; k++) {
+				double a = offset + Math.PI * 2 * k / boughs + (r.nextDouble() - 0.5) * 0.5;
+				double length = 2.0 + (1 - t) * 2.5 + r.nextDouble() * 1.5;
+				Vec3 start = new Vec3(cx, y0 + y, cz);
+				Vec3 end = start.add(Math.cos(a) * length, 0.3 + r.nextDouble() * 0.6, Math.sin(a) * length);
+				b.limb(start, end, 0.0, 0.0, log, LogKind.BRANCH);
+				b.leafBlob(end.x, end.y + 0.4, end.z, 2.4 + r.nextDouble(), 0.9, 2.4 + r.nextDouble(), leaves, 0.75);
+			}
+		}
+		// The flat top that makes a cypress stand out over the swamp.
+		b.leafBlob(cx, y0 + height + 1, cz, 3.6, 1.1, 3.6, leaves, 0.8);
+		// Moss in long grey beards under the boughs.
+		BlockState moss = Blocks.PALE_HANGING_MOSS.defaultBlockState();
+		List<long[]> beards = new ArrayList<>();
+		for (Long2ObjectMap.Entry<BlockState> entry : b.leaves().long2ObjectEntrySet()) {
+			long key = entry.getLongKey();
+			int x = BlockPos.getX(key);
+			int y = BlockPos.getY(key);
+			int z = BlockPos.getZ(key);
+			if (b.isLeaf(x, y - 1, z) || b.isLog(x, y - 1, z) || r.nextInt(4) != 0) {
+				continue;
+			}
+			beards.add(new long[] {x, y, z});
+		}
+		for (long[] beard : beards) {
+			int length = 1 + r.nextInt(4);
+			for (int i = 1; i <= length; i++) {
+				BlockState strand = WorldGenUtil.withProperty(moss, "tip", i == length ? "true" : "false");
+				b.decoration((int) beard[0], (int) beard[1] - i, (int) beard[2], strand);
+			}
+		}
+	}
+
 	/** Soil and litter under the tree. */
 	private void groundCover(WorldGenLevel level, WorldGenUtil.Window window, RandomSource random, BlockPos base) {
 		int radius = switch (style) {
@@ -427,7 +567,9 @@ public record GiantTreeFeature(Style style, BlockState log, List<BlockState> lea
 		REDWOOD("redwood"),
 		WILLOW("willow"),
 		BAOBAB("baobab"),
-		SNAG("snag");
+		SNAG("snag"),
+		PALM("palm"),
+		CYPRESS("cypress");
 
 		public static final Codec<Style> CODEC = StringRepresentable.fromEnum(Style::values);
 		private final String name;

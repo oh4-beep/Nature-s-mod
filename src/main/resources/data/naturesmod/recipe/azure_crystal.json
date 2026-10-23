@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "##",
+    "##"
+  ],
+  "key": {
+    "#": "naturesmod:azure_crystal_cluster"
+  },
+  "result": {
+    "count": 1,
+    "id": "naturesmod:azure_crystal"
+  }
+}

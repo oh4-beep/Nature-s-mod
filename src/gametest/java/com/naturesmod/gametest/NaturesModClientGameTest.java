@@ -43,6 +43,7 @@ import com.naturesmod.worldgen.deep.DeepPiece;
 import com.naturesmod.worldgen.deep.DeepShowcase;
 import com.naturesmod.worldgen.deep.LandKind;
 import com.naturesmod.worldgen.deep.LandShowcase;
+import com.naturesmod.worldgen.wild.WildOverworld;
 
 /**
  * Plays through Nature's Mod's sea and Nether in a real client and screenshots what it sees:
@@ -101,6 +102,7 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 			scene("abyss", () -> abyss(context, world));
 			scene("nether", () -> nether(context, world));
 			scene("end", () -> end(context, world));
+			scene("wilds", () -> wilds(context, world));
 			scene("lands", () -> lands(context, world));
 			// Last: building and visiting all 55 treasures loads the server more than anything else.
 			scene("treasures", () -> treasures(context, world));
@@ -648,6 +650,67 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 			shoot(context, "nether_" + structure);
 		}
 		command(world, "effect clear @a minecraft:night_vision");
+	}
+
+	// --- the wild Overworld ------------------------------------------------------------------
+
+	/** Looks out over each of the wild Overworld's biomes from a little above its ground, and into its two kinds of cave. */
+	private void wilds(ClientGameTestContext context, TestSingleplayerContext world) {
+		command(world, "gamemode spectator @a");
+		for (String name : WildOverworld.BIOMES) {
+			boolean cave = name.equals("crystal_caverns") || name.equals("fungal_grotto");
+			ResourceKey<Biome> key = WildOverworld.biome(name);
+			double[] view = world.getServer().computeOnServer(server -> {
+				ServerLevel level = server.overworld();
+				int y = name.equals("crystal_caverns") ? -30 : name.equals("fungal_grotto") ? 20 : 90;
+				Pair<BlockPos, Holder<Biome>> found = level.findClosestBiome3d(holder -> holder.is(key), new BlockPos(0, y, 0), 9000, 32,
+						cave ? 8 : 64);
+				if (found == null) {
+					return null;
+				}
+				BlockPos at = found.getFirst();
+				if (!cave) {
+					int ground = floor(level, at.getX(), at.getZ());
+					return new double[] {at.getX() + 0.5, ground + 14, at.getZ() - 22.5, 28.0};
+				}
+				// The roomiest pocket of the cave near where the biome was found.
+				BlockPos best = null;
+				int roomiest = 0;
+				for (int dx = -24; dx <= 24; dx += 4) {
+					for (int dz = -24; dz <= 24; dz += 4) {
+						level.getChunk((at.getX() + dx) >> 4, (at.getZ() + dz) >> 4);
+						for (int dy = -16; dy <= 16; dy += 2) {
+							BlockPos spot = at.offset(dx, dy, dz);
+							if (!level.getBlockState(spot).isAir() || !level.getBiome(spot).is(key)) {
+								continue;
+							}
+							int room = 0;
+							for (int reach = 1; reach <= 8 && isOpen(level, spot, reach); reach++) {
+								room = reach;
+							}
+							if (room > roomiest) {
+								roomiest = room;
+								best = spot;
+							}
+						}
+					}
+				}
+				return best == null ? null : new double[] {best.getX() + 0.5, best.getY(), best.getZ() + 0.5, 12.0};
+			});
+			if (view == null) {
+				failures.add("wilds: no " + name + " to look at");
+				continue;
+			}
+			if (cave) {
+				command(world, "effect give @a minecraft:night_vision 30 0 true");
+			}
+			teleport(context, world, Level.OVERWORLD, view[0], view[1], view[2], 0.0F, (float) view[3]);
+			context.waitTicks(30);
+			shoot(context, "wild_" + name);
+			if (cave) {
+				command(world, "effect clear @a minecraft:night_vision");
+			}
+		}
 	}
 
 	// --- finding places ------------------------------------------------------------------

@@ -173,6 +173,8 @@ RIVER_SOURCE_BIOMES = [
     "taiga", "old_growth_pine_taiga", "old_growth_spruce_taiga", "snowy_taiga", "forest", "flower_forest",
     "birch_forest", "old_growth_birch_forest", "dark_forest", "dappled_forest", "jungle", "sparse_jungle",
     "bamboo_jungle", "plains", "snowy_plains", "savanna", "badlands", "wooded_badlands",
+    "naturesmod:heather_moors", "naturesmod:maple_woods", "naturesmod:glowshroom_forest", "naturesmod:lavender_fields",
+    "naturesmod:golden_prairie", "naturesmod:tundra", "naturesmod:volcanic_peaks", "naturesmod:petrified_forest",
 ]
 
 
@@ -217,7 +219,7 @@ def structures():
             "structures": [{"structure": f"{NS}:mountain_river", "weight": 1}],
         },
         f"{NS}/tags/worldgen/biome/has_structure/mountain_river.json": {
-            "values": [f"minecraft:{b}" for b in RIVER_SOURCE_BIOMES],
+            "values": [b if ":" in b else f"minecraft:{b}" for b in RIVER_SOURCE_BIOMES],
         },
     }
 

@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "naturesmod:lavender_fields",
+    "naturesmod:golden_prairie",
+    "naturesmod:salt_flats",
+    "naturesmod:tundra"
+  ]
+}

@@ -267,7 +267,7 @@ def material_rules(vanilla):
         if isinstance(entry, dict) and entry.get("then_run") == "minecraft:overworld/surface":
             entry["then_run"] = {
                 "type": "minecraft:sequence",
-                "sequence": [f"{NS}:overworld/snow_line", "minecraft:overworld/surface"],
+                "sequence": [f"{NS}:overworld/snow_line", f"{NS}:overworld/wild_surface", "minecraft:overworld/surface"],
             }
             break
     else:

@@ -37,6 +37,17 @@
     "minecraft:frozen_peaks",
     "minecraft:jagged_peaks",
     "minecraft:stony_peaks",
-    "minecraft:mushroom_fields"
+    "minecraft:mushroom_fields",
+    "naturesmod:lavender_fields",
+    "naturesmod:golden_prairie",
+    "naturesmod:maple_woods",
+    "naturesmod:glowshroom_forest",
+    "naturesmod:tropical_shore",
+    "naturesmod:salt_flats",
+    "naturesmod:volcanic_peaks",
+    "naturesmod:bayou",
+    "naturesmod:tundra",
+    "naturesmod:petrified_forest",
+    "naturesmod:heather_moors"
   ]
 }

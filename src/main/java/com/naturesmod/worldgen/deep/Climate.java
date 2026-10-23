@@ -1,7 +1,13 @@
 package com.naturesmod.worldgen.deep;
 
+import java.util.Locale;
+
+import com.naturesmod.NaturesMod;
+
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.BiomeTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 
@@ -9,8 +15,16 @@ import net.minecraft.world.level.biome.Biomes;
 public enum Climate {
 	PLAINS, FOREST, TAIGA, SNOWY, DESERT, JUNGLE, SAVANNA, SWAMP, MOUNTAIN, BADLANDS;
 
+	/** naturesmod:climate/... tags: the climate of a biome vanilla's tags don't tell, such as the wild Overworld's. */
+	private final TagKey<Biome> tag = TagKey.create(Registries.BIOME, NaturesMod.id("climate/" + name().toLowerCase(Locale.ROOT)));
+
 	/** The climate of a biome, read from its tags. */
 	public static Climate of(Holder<Biome> biome) {
+		for (Climate climate : values()) {
+			if (biome.is(climate.tag)) {
+				return climate;
+			}
+		}
 		if (biome.is(Biomes.DESERT)) {
 			return DESERT;
 		}

@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "naturesmod:lavender_fields",
+    "naturesmod:golden_prairie",
+    "naturesmod:salt_flats",
+    "naturesmod:bayou",
+    "naturesmod:tundra",
+    "naturesmod:crystal_caverns",
+    "naturesmod:fungal_grotto"
+  ]
+}

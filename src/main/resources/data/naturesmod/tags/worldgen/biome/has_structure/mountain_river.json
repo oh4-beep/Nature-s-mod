@@ -29,6 +29,14 @@
     "minecraft:snowy_plains",
     "minecraft:savanna",
     "minecraft:badlands",
-    "minecraft:wooded_badlands"
+    "minecraft:wooded_badlands",
+    "naturesmod:heather_moors",
+    "naturesmod:maple_woods",
+    "naturesmod:glowshroom_forest",
+    "naturesmod:lavender_fields",
+    "naturesmod:golden_prairie",
+    "naturesmod:tundra",
+    "naturesmod:volcanic_peaks",
+    "naturesmod:petrified_forest"
   ]
 }

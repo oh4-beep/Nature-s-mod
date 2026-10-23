@@ -21,6 +21,14 @@
     "naturesmod:starmetal_block",
     "naturesmod:meteorite",
     "naturesmod:updraft_vent",
-    "naturesmod:star_altar"
+    "naturesmod:star_altar",
+    "naturesmod:salt_block",
+    "naturesmod:salt_crystal",
+    "naturesmod:azure_crystal",
+    "naturesmod:azure_crystal_cluster",
+    "naturesmod:citrine_crystal",
+    "naturesmod:citrine_crystal_cluster",
+    "naturesmod:petrified_log",
+    "naturesmod:steam_vent"
   ]
 }

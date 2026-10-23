@@ -31,6 +31,7 @@ import land  # noqa: E402
 import nether  # noqa: E402
 import ocean  # noqa: E402
 import terrain  # noqa: E402
+import wild  # noqa: E402
 
 REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 
@@ -57,8 +58,25 @@ DIMENSION_BIOMES = {
 }
 
 
+def overworld_biomes(vanilla):
+    """Vanilla's Overworld biomes and the wild ones grown out of them: they all share one generator."""
+    return [f"minecraft:{b}" for b in wild.vanilla_overworld(vanilla)] + [f"naturesmod:{b}" for b in wild.BIOMES]
+
+
+def merge(files, new):
+    """Adds generated files, joining the values of tag files that two parts of the mod both write."""
+    for rel, data in new.items():
+        old = files.get(rel)
+        if old is not None and isinstance(old, dict) and "values" in old and "values" in data:
+            old["values"] = list(dict.fromkeys(old["values"] + data["values"]))
+        else:
+            files[rel] = data
+
+
 def check_feature_order(files, vanilla):
-    for dimension, biomes in DIMENSION_BIOMES.items():
+    dimensions = dict(DIMENSION_BIOMES)
+    dimensions["the Overworld"] = overworld_biomes(vanilla)
+    for dimension, biomes in dimensions.items():
         steps = {}
         for biome in biomes:
             namespace, name = biome.split(":")
@@ -104,6 +122,7 @@ def main():
     files.update(end.build(vanilla))
     files.update(land.build())
     files.update(ocean.build())
+    merge(files, wild.build(vanilla))
     buckets_dir = os.path.join(REPO, "src", "main", "resources", "assets", "naturesmod", "items")
     buckets = sorted(f"naturesmod:{name[:-5]}" for name in os.listdir(buckets_dir) if name.endswith("_bucket.json"))
     files.update(advancements.build(buckets))

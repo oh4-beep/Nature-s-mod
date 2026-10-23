@@ -22,17 +22,18 @@ import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 /** Decides which biomes get which Nature's Mod features. */
 public final class ModBiomeModifications {
 	private static final List<String> TEMPERATE_FORESTS = List.of("forest", "flower_forest", "birch_forest", "old_growth_birch_forest",
-			"dark_forest", "dappled_forest");
+			"dark_forest", "dappled_forest", "naturesmod:maple_woods", "naturesmod:glowshroom_forest");
 	private static final List<String> TAIGAS = List.of("taiga", "old_growth_pine_taiga", "old_growth_spruce_taiga");
 	private static final List<String> SNOWY = List.of("snowy_taiga", "snowy_plains", "ice_spikes", "snowy_slopes", "frozen_peaks",
-			"jagged_peaks", "grove");
+			"jagged_peaks", "grove", "naturesmod:tundra");
 	private static final List<String> HIGHLANDS = List.of("meadow", "stony_peaks", "cherry_grove", "windswept_hills", "windswept_forest",
-			"windswept_gravelly_hills", "windswept_savanna", "savanna_plateau");
+			"windswept_gravelly_hills", "windswept_savanna", "savanna_plateau", "naturesmod:heather_moors");
 	private static final List<String> JUNGLES = List.of("jungle", "sparse_jungle", "bamboo_jungle");
 	private static final List<String> SAVANNAS = List.of("savanna", "savanna_plateau", "windswept_savanna");
-	private static final List<String> PLAINS = List.of("plains", "sunflower_plains");
-	private static final List<String> BADLANDS = List.of("badlands", "wooded_badlands", "eroded_badlands");
-	private static final List<String> SWAMPS = List.of("swamp", "mangrove_swamp");
+	private static final List<String> PLAINS = List.of("plains", "sunflower_plains", "naturesmod:lavender_fields", "naturesmod:golden_prairie");
+	private static final List<String> BADLANDS = List.of("badlands", "wooded_badlands", "eroded_badlands", "naturesmod:petrified_forest");
+	private static final List<String> SWAMPS = List.of("swamp", "mangrove_swamp", "naturesmod:bayou");
+	private static final List<String> BEACHES = List.of("beach", "naturesmod:tropical_shore");
 	private static final List<String> WARM_SEAS = List.of("warm_ocean", "lukewarm_ocean", "deep_lukewarm_ocean");
 	private static final List<String> COLD_SEAS = List.of("cold_ocean", "deep_cold_ocean", "frozen_ocean", "deep_frozen_ocean");
 
@@ -49,7 +50,7 @@ public final class ModBiomeModifications {
 
 		// Terrain: dramatic cave mouths and sinkholes.
 		add("cave_mouth", Decoration.RAW_GENERATION, TEMPERATE_FORESTS, TAIGAS, SNOWY, HIGHLANDS, JUNGLES, SAVANNAS, PLAINS, BADLANDS,
-				List.of("desert", "pale_garden"));
+				List.of("desert", "pale_garden", "naturesmod:volcanic_peaks"));
 		add("cenote", Decoration.RAW_GENERATION, JUNGLES, SAVANNAS);
 		add("sinkhole", Decoration.RAW_GENERATION, PLAINS, TEMPERATE_FORESTS, TAIGAS);
 
@@ -66,8 +67,8 @@ public final class ModBiomeModifications {
 		add("desert_arch", Decoration.LOCAL_MODIFICATIONS, List.of("desert"));
 		add("mountain_arch", Decoration.LOCAL_MODIFICATIONS, List.of("meadow", "windswept_hills", "windswept_gravelly_hills", "stony_peaks",
 				"savanna_plateau"));
-		add("sea_arch", Decoration.LOCAL_MODIFICATIONS, List.of("beach", "stony_shore"));
-		add("sea_stack", Decoration.LOCAL_MODIFICATIONS, List.of("ocean", "lukewarm_ocean", "warm_ocean", "cold_ocean", "beach", "stony_shore"));
+		add("sea_arch", Decoration.LOCAL_MODIFICATIONS, BEACHES, List.of("stony_shore"));
+		add("sea_stack", Decoration.LOCAL_MODIFICATIONS, List.of("ocean", "lukewarm_ocean", "warm_ocean", "cold_ocean", "stony_shore"), BEACHES);
 
 		// Giant trees grow first so the ordinary forest fills in around them.
 		add("ancient_oak", Decoration.LOCAL_MODIFICATIONS, List.of("forest", "flower_forest"));
@@ -104,12 +105,27 @@ public final class ModBiomeModifications {
 		add("waterside_fireflies", Decoration.VEGETAL_DECORATION, TEMPERATE_FORESTS, TAIGAS, PLAINS, JUNGLES,
 				List.of("meadow", "cherry_grove"));
 
+		// The wild Overworld's wonders, in vanilla's lands as well as its own: fallen stars, hot springs, berries,
+		// cattails by the water, glowcaps under dark canopies and geodes of new crystal deep down everywhere.
+		add("wild/meteor_crater", Decoration.LOCAL_MODIFICATIONS, List.of("plains", "sunflower_plains", "savanna", "desert", "badlands",
+				"snowy_plains", "taiga", "meadow", "naturesmod:golden_prairie", "naturesmod:lavender_fields", "naturesmod:salt_flats",
+				"naturesmod:tundra", "naturesmod:heather_moors", "naturesmod:petrified_forest", "naturesmod:volcanic_peaks"));
+		add("wild/hot_spring", Decoration.LAKES, List.of("meadow", "windswept_hills", "windswept_gravelly_hills", "windswept_forest", "taiga",
+				"old_growth_pine_taiga", "old_growth_spruce_taiga", "cherry_grove", "stony_peaks", "naturesmod:heather_moors",
+				"naturesmod:volcanic_peaks", "naturesmod:tundra"));
+		add("wild/blueberries", Decoration.VEGETAL_DECORATION, TAIGAS, List.of("snowy_taiga", "grove", "windswept_forest", "naturesmod:heather_moors"));
+		add("wild/riverside_cattails", Decoration.VEGETAL_DECORATION, PLAINS, SWAMPS, List.of("river", "forest", "flower_forest", "birch_forest",
+				"naturesmod:maple_woods"));
+		add("wild/glowcaps_sparse", Decoration.VEGETAL_DECORATION, List.of("dark_forest", "pale_garden", "old_growth_spruce_taiga"));
+		BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), Decoration.LOCAL_MODIFICATIONS, placed("wild/rare_azure_geode"));
+		BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), Decoration.LOCAL_MODIFICATIONS, placed("wild/rare_citrine_geode"));
+
 		// The sea: reefs and sea beds full of life, shells on the beaches, and more kelp, seagrass and coral.
 		add("ocean/reef_garden", Decoration.VEGETAL_DECORATION, List.of("warm_ocean"));
 		add("ocean/reef_garden_sparse", Decoration.VEGETAL_DECORATION, List.of("lukewarm_ocean", "deep_lukewarm_ocean"));
 		add("ocean/temperate_garden", Decoration.VEGETAL_DECORATION, List.of("ocean", "deep_ocean"));
 		add("ocean/cold_garden", Decoration.VEGETAL_DECORATION, COLD_SEAS);
-		add("ocean/beach_shells", Decoration.VEGETAL_DECORATION, List.of("beach", "snowy_beach"));
+		add("ocean/beach_shells", Decoration.VEGETAL_DECORATION, BEACHES, List.of("snowy_beach"));
 		add("ocean/extra_coral", Decoration.VEGETAL_DECORATION, List.of("warm_ocean", "lukewarm_ocean"));
 		add("ocean/extra_kelp", Decoration.VEGETAL_DECORATION, List.of("ocean", "deep_ocean", "cold_ocean", "deep_cold_ocean",
 				"lukewarm_ocean", "deep_lukewarm_ocean"));
@@ -119,7 +135,11 @@ public final class ModBiomeModifications {
 
 	@SafeVarargs
 	private static void add(String placedFeature, Decoration step, List<String>... biomeGroups) {
-		BiomeModifications.addFeature(biomes(biomeGroups), step, ResourceKey.create(Registries.PLACED_FEATURE, NaturesMod.id(placedFeature)));
+		BiomeModifications.addFeature(biomes(biomeGroups), step, placed(placedFeature));
+	}
+
+	private static ResourceKey<PlacedFeature> placed(String name) {
+		return ResourceKey.create(Registries.PLACED_FEATURE, NaturesMod.id(name));
 	}
 
 	@SafeVarargs
@@ -130,7 +150,9 @@ public final class ModBiomeModifications {
 		}
 		List<ResourceKey<Biome>> keys = new ArrayList<>();
 		for (String name : names) {
-			keys.add(ResourceKey.create(Registries.BIOME, Identifier.withDefaultNamespace(name)));
+			keys.add(ResourceKey.create(Registries.BIOME, name.contains(":")
+					? Identifier.fromNamespaceAndPath(name.substring(0, name.indexOf(':')), name.substring(name.indexOf(':') + 1))
+					: Identifier.withDefaultNamespace(name)));
 		}
 		return BiomeSelectors.includeByKey(keys);
 	}

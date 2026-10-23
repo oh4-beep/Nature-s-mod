@@ -64,6 +64,8 @@ public final class ModItems {
 	public static Item RAW_STARMETAL;
 	public static Item STARMETAL_INGOT;
 	public static Item STAR_FRAGMENT;
+	public static Item COCONUT;
+	public static Item BLUEBERRIES;
 	public static final Map<AbyssWeapon.Kind, Item> WEAPONS = new EnumMap<>(AbyssWeapon.Kind.class);
 	public static final Map<EndWeapon.Kind, Item> END_WEAPONS = new EnumMap<>(EndWeapon.Kind.class);
 
@@ -99,6 +101,16 @@ public final class ModItems {
 			register(BuiltInRegistries.BLOCK.getKey(block).getPath(), properties -> new BlockItem(block, properties),
 					new Item.Properties().useBlockDescriptionPrefix());
 		}
+		// The wild Overworld: its plants, crystals and stones, and two new foods that are also their own seeds.
+		for (Block block : ModBlocks.WILD) {
+			register(BuiltInRegistries.BLOCK.getKey(block).getPath(), properties -> new BlockItem(block, properties),
+					new Item.Properties().useBlockDescriptionPrefix());
+		}
+		COCONUT = register("coconut", properties -> new BlockItem(ModBlocks.COCONUT, properties), new Item.Properties()
+				.food(new FoodProperties.Builder().nutrition(4).saturationModifier(0.5F).build()).useItemDescriptionPrefix());
+		BLUEBERRIES = register("blueberries", properties -> new BlockItem(ModBlocks.BLUEBERRY_BUSH, properties), new Item.Properties()
+				.food(new FoodProperties.Builder().nutrition(2).saturationModifier(0.3F).build()).useItemDescriptionPrefix());
+
 		RAW_STARMETAL = register("raw_starmetal", Item::new, new Item.Properties());
 		STARMETAL_INGOT = register("starmetal_ingot", Item::new, new Item.Properties().rarity(Rarity.UNCOMMON));
 

@@ -1,0 +1,22 @@
+{
+  "type": "naturesmod:giant_tree",
+  "style": "palm",
+  "log": {
+    "id": "minecraft:jungle_log",
+    "properties": {
+      "axis": "y"
+    }
+  },
+  "min_height": 6,
+  "max_height": 11,
+  "leaves": [
+    {
+      "id": "minecraft:jungle_leaves",
+      "properties": {
+        "distance": "7",
+        "persistent": "false",
+        "waterlogged": "false"
+      }
+    }
+  ]
+}

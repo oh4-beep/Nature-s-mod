@@ -3,6 +3,8 @@
   "values": [
     "naturesmod:charred_log",
     "naturesmod:chorus_log",
-    "naturesmod:bounce_stem"
+    "naturesmod:bounce_stem",
+    "naturesmod:glowcap_block",
+    "naturesmod:coconut"
   ]
 }

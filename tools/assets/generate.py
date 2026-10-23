@@ -20,6 +20,7 @@ import hell  # noqa: E402
 import mission  # noqa: E402
 import sea_plants  # noqa: E402
 import treasure  # noqa: E402
+import wild_blocks  # noqa: E402
 
 from PIL import Image
 
@@ -158,6 +159,7 @@ def main():
     end_blocks.write(ASSETS, os.path.join(REPO, "src", "main", "resources", "data"))
     treasure.write(ASSETS, os.path.join(REPO, "src", "main", "resources", "data"))
     end_items.write(ASSETS, os.path.join(REPO, "src", "main", "resources", "data"))
+    wild_blocks.write(ASSETS, os.path.join(REPO, "src", "main", "resources", "data"))
 
     lang_path = os.path.join(ASSETS, "lang", "en_us.json")
     with open(lang_path, encoding="utf-8") as fh:
@@ -170,6 +172,7 @@ def main():
     lang.update(end_blocks.lang())
     lang.update(treasure.lang())
     lang.update(end_items.lang())
+    lang.update(wild_blocks.lang())
     write_json(lang_path, dict(sorted(lang.items())))
     check_recipes(os.path.join(REPO, "src", "main", "resources", "data", "naturesmod", "recipe"))
     print(f"wrote rift assets and {len(LANG)} language entries")

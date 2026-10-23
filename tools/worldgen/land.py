@@ -26,6 +26,10 @@ LAND_BIOMES = [
     "windswept_forest", "windswept_savanna", "jungle", "sparse_jungle", "bamboo_jungle", "badlands", "eroded_badlands",
     "wooded_badlands", "meadow", "cherry_grove", "grove", "snowy_slopes", "frozen_peaks", "jagged_peaks", "stony_peaks",
     "mushroom_fields",
+    # The wild Overworld's.
+    "naturesmod:lavender_fields", "naturesmod:golden_prairie", "naturesmod:maple_woods", "naturesmod:glowshroom_forest",
+    "naturesmod:tropical_shore", "naturesmod:salt_flats", "naturesmod:volcanic_peaks", "naturesmod:bayou", "naturesmod:tundra",
+    "naturesmod:petrified_forest", "naturesmod:heather_moors",
 ]
 
 
@@ -204,7 +208,7 @@ def structures():
                       "exclusion_zone": {"other_set": f"{NS}:land_structures", "chunk_count": 3}},
         "structures": [{"structure": f"{NS}:{HARD}", "weight": 1}],
     }
-    files[f"{NS}/tags/worldgen/biome/has_structure/land_structure.json"] = {"values": [f"minecraft:{b}" for b in LAND_BIOMES]}
+    files[f"{NS}/tags/worldgen/biome/has_structure/land_structure.json"] = {"values": [b if ":" in b else f"minecraft:{b}" for b in LAND_BIOMES]}
     files[f"{NS}/tags/worldgen/structure/land_structures.json"] = {"values": [f"{NS}:{name}" for name in [*TIERS, HARD]]}
     for name, table in land_loot().items():
         files[f"{NS}/loot_table/chests/land/{name}.json"] = table

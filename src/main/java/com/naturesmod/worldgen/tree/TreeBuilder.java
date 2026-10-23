@@ -36,6 +36,8 @@ public final class TreeBuilder {
 	private final Long2ObjectMap<BlockState> leaves = new Long2ObjectOpenHashMap<>();
 	private final Long2ObjectMap<BlockState> decorations = new Long2ObjectOpenHashMap<>();
 	private boolean blocked;
+	/** Whether the wood may stand in water (a bayou cypress wading in the shallows). */
+	private boolean wading;
 
 	public TreeBuilder(WorldGenLevel level, WorldGenUtil.Window window, RandomSource random) {
 		this.level = level;
@@ -54,6 +56,11 @@ public final class TreeBuilder {
 	/** How far the tree may reach horizontally from (x, z) without leaving the writable window. */
 	public double maxReach(int x, int z) {
 		return Math.min(Math.min(x - window.minX(), window.maxX() - x), Math.min(z - window.minZ(), window.maxZ() - z));
+	}
+
+	/** Lets the trunk, roots and knees replace still water, for trees that grow in the shallows. */
+	public void wading(boolean wading) {
+		this.wading = wading;
 	}
 
 	/** True when a structural part of the tree (its trunk) ran into something solid. */
@@ -85,7 +92,7 @@ public final class TreeBuilder {
 			return;
 		}
 		BlockState existing = level.getBlockState(BlockPos.of(key));
-		boolean free = freeForTree(existing);
+		boolean free = freeForTree(existing) || wading && existing.is(Blocks.WATER);
 		boolean soil = existing.is(BlockTags.SUBSTRATE_OVERWORLD) || existing.is(BlockTags.SAND) || existing.is(Blocks.GRAVEL);
 		boolean ok = switch (kind) {
 			case TRUNK -> free || soil;
