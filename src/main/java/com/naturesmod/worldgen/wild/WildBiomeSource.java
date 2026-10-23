@@ -50,6 +50,8 @@ public final class WildBiomeSource extends BiomeSource {
 	private final Map<Holder<Biome>, int[]> candidates = new ConcurrentHashMap<>();
 	/** The noise fields of each world seed met so far. */
 	private final Map<Long, Fields> fields = new ConcurrentHashMap<>();
+	/** The last climate sampler met and its world's fields: a world asks with the same sampler over and over. */
+	private volatile Seen last;
 
 	public WildBiomeSource(BiomeSource base, List<Variant> variants) {
 		this.base = base;
@@ -109,8 +111,16 @@ public final class WildBiomeSource extends BiomeSource {
 	}
 
 	private BiomeResolver wild(BiomeResolver vanilla, Climate.Sampler sampler) {
-		Fields fields = this.fields.computeIfAbsent(WorldSeed.of(sampler), Fields::new);
+		Seen seen = last;
+		if (seen == null || seen.sampler() != sampler) {
+			seen = new Seen(sampler, this.fields.computeIfAbsent(WorldSeed.of(sampler), Fields::new));
+			last = seen;
+		}
+		Fields fields = seen.fields();
 		return (x, y, z) -> pick(vanilla.getNoiseBiome(x, y, z), x, y, z, sampler, fields);
+	}
+
+	private record Seen(Climate.Sampler sampler, Fields fields) {
 	}
 
 	private Holder<Biome> pick(Holder<Biome> biome, int x, int y, int z, Climate.Sampler sampler, Fields fields) {

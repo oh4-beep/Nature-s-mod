@@ -15,7 +15,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.BiomeResolver;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -136,7 +135,6 @@ final class WildTest {
 	 * point of a biome is on its edge, and what grows in a biome is best seen inside it.
 	 */
 	private BlockPos heart(BlockPos at, ResourceKey<Biome> key) {
-		BiomeResolver biomes = level.getChunkSource().getGenerator().getBiomeSource().createResolver(level.getChunkSource().randomState().sampler());
 		int qy = QuartPos.fromBlock(at.getY());
 		BlockPos best = at;
 		int most = -1;
@@ -145,7 +143,7 @@ final class WildTest {
 				int count = 0;
 				for (int sx = -24; sx < 24; sx += 8) {
 					for (int sz = -24; sz < 24; sz += 8) {
-						if (biomes.getNoiseBiome(QuartPos.fromBlock(at.getX() + dx + sx), qy, QuartPos.fromBlock(at.getZ() + dz + sz)).is(key)) {
+						if (level.getUncachedNoiseBiome(QuartPos.fromBlock(at.getX() + dx + sx), qy, QuartPos.fromBlock(at.getZ() + dz + sz)).is(key)) {
 							count++;
 						}
 					}
