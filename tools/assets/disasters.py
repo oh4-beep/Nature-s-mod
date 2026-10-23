@@ -171,11 +171,8 @@ def ash_layer(assets, data_root):
     _json(os.path.join(assets, "blockstates", "ash_layer.json"), {"variants": variants})
     _json(os.path.join(assets, "items", "ash_layer.json"), {"model": {"type": "minecraft:model", "model": "naturesmod:block/ash_layer_height2"}})
     merge_tag(os.path.join(data_root, "minecraft", "tags", "block", "mineable", "shovel.json"), ["naturesmod:ash_layer"])
-    # Dug up, it gives back as many layers as it was deep.
-    pools = [{"rolls": 1, "entries": [{"type": "minecraft:item", "name": "naturesmod:ash_layer",
-                                       "modifier": [{"type": "minecraft:set_count", "count": layers}]}],
-              "condition": {"type": "minecraft:block_state_property", "block": "naturesmod:ash_layer", "properties": {"layers": str(layers)}}}
-             for layers in range(1, 9)]
+    # Dug up, it gives back a layer of ash.
+    pools = [{"rolls": 1, "entries": [{"type": "minecraft:item", "name": "naturesmod:ash_layer"}], "condition": {"type": "minecraft:survives_explosion"}}]
     _json(os.path.join(data_root, "naturesmod", "loot_table", "blocks", "ash_layer.json"), {"type": "minecraft:block", "pools": pools})
 
 
