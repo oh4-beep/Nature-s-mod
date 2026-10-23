@@ -185,6 +185,8 @@ final class DisasterTest {
 		}
 		Tornado tornado = (Tornado) Disasters.start(DisasterType.TORNADO, level, Vec3.atBottomCenterOf(site.above()), 4.0F, false);
 		tornado.aim(Vec3.atBottomCenterOf(house));
+		// Already down and at full strength: it moves as it forms, and the house is near.
+		tornado.skip(240);
 		double[] lifted = {0.0};
 		int[] debris = {0};
 		for (int t = 10; t <= 480; t += 10) {
