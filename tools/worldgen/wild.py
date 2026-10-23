@@ -556,8 +556,9 @@ DRY = "minecraft:not_underwater"
 
 
 def wild_surface():
-    """The ground of the new biomes; any other biome falls through to vanilla's rules."""
-    return seq(
+    """The ground of the new biomes; any other biome falls through to vanilla's rules after one look at its name
+    (the rules run for every block near the surface of the world, so one look rather than one per new biome)."""
+    rules = [
         cond(biome_is("salt_flats"), seq(
             cond(FLOOR, seq(cond(DRY, seq(cond(noise("surface", -0.04, 0.04), block("calcite")), block(f"{NS}:salt_block"))), block("sand"))),
             cond(UNDER, block("sandstone")))),
@@ -578,7 +579,8 @@ def wild_surface():
         cond(biome_is("bayou"), cond(FLOOR, cond(noise("surface", 0.35), block("mud")))),
         cond(biome_is("glowshroom_forest"), cond(FLOOR, cond(DRY, seq(cond(noise("patch", 0.25), block("podzol")),
                                                                       cond(noise("surface", 0.5), block("moss_block")))))),
-    )
+    ]
+    return cond({"type": "minecraft:biome", "biome_is": [rule["if_true"]["biome_is"] for rule in rules]}, seq(*rules))
 
 
 def build(vanilla):
