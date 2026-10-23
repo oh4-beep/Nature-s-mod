@@ -3,7 +3,6 @@ threads (server, render, worldgen workers), counted where they run (self) and an
 stack (total). Usage: python3 hotspots.py <recording.jfr>..."""
 
 import collections
-import json
 import subprocess
 import sys
 
@@ -11,16 +10,34 @@ GAME_THREADS = ("Server thread", "Render thread", "Worker-Main", "Server-Worker"
 
 
 def samples(path):
-    """(thread, [(full type name, method)...] from the top of the stack) for every sample on a game thread."""
-    out = subprocess.run(["jfr", "print", "--json", "--events", "jdk.ExecutionSample", path], capture_output=True, text=True)
-    if out.returncode != 0:
-        print(f"[profile] {path}: {out.stderr.strip()[:200]}")
-        return
-    for event in json.loads(out.stdout)["recording"]["events"]:
-        thread = (event["values"].get("sampledThread") or {}).get("javaName") or ""
-        if thread.startswith(GAME_THREADS):
-            frames = (event["values"].get("stackTrace") or {}).get("frames") or []
-            yield thread, [(f["method"]["type"]["name"], f["method"]["name"]) for f in frames]
+    """(thread, [(full type name, method)...] from the top of the stack) for every sample on a game thread.
+
+    Reads `jfr print` as text, a line at a time: a long recording printed whole (as JSON, say) runs to
+    gigabytes and takes the runner down with it."""
+    proc = subprocess.Popen(["jfr", "print", "--stack-depth", "64", "--events", "jdk.ExecutionSample", path],
+                            stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
+    thread, frames, in_stack = "", [], False
+    for line in proc.stdout:
+        line = line.strip()
+        if line.startswith("jdk.ExecutionSample"):
+            thread, frames, in_stack = "", [], False
+        elif line.startswith("sampledThread = "):
+            # sampledThread = "Server thread" (javaThreadId = 33)
+            quoted = line.split('"')
+            thread = quoted[1] if len(quoted) > 2 else ""
+        elif line.startswith("stackTrace = ["):
+            in_stack = True
+        elif in_stack:
+            if line.startswith("]"):
+                in_stack = False
+            elif line and line != "...":
+                # net.minecraft.world.level.levelgen.NoiseChunk.fillSlice(boolean, int)  line: 123
+                typ, _, method = line.split("(")[0].rpartition(".")
+                frames.append((typ, method))
+        elif line == "}" and thread.startswith(GAME_THREADS):
+            yield thread, frames
+    if proc.wait() != 0:
+        print(f"[profile] {path}: jfr print failed with code {proc.returncode}")
 
 
 def short(frame):

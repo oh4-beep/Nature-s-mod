@@ -265,6 +265,15 @@
               "coverage": 0.45
             },
             {
+              "biome": "naturesmod:tundra",
+              "replaces": [
+                "minecraft:snowy_taiga"
+              ],
+              "salt": 9,
+              "scale": 480,
+              "coverage": 0.25
+            },
+            {
               "biome": "naturesmod:petrified_forest",
               "replaces": [
                 "minecraft:wooded_badlands"

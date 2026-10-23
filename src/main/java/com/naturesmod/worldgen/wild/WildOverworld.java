@@ -12,6 +12,9 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.RandomState;
 
 /**
  * The wild Overworld: thirteen new biomes grown out of vanilla's, by {@link WildBiomeSource}. The
@@ -36,27 +39,52 @@ public final class WildOverworld {
 	}
 
 	/**
-	 * The spot within a dozen chunks of {@code at} with the most of a biome around it, at the same height. The
-	 * closest point of a biome, which a search finds, lies on its edge; what grows in it is best seen inside.
-	 * For tests and tools: it looks the biomes up without generating anything.
+	 * The spot within a few hundred blocks of {@code at} with the most of a biome around it, at the same height,
+	 * and on the surface the most of it on dry land. The closest point of a biome, which a search finds, lies on
+	 * its edge or out in a lake; what grows in it is best seen inside. For tests and tools: it only works the
+	 * biomes and the lie of the land out, and generates nothing.
 	 */
-	public static BlockPos heart(ServerLevel level, BlockPos at, ResourceKey<Biome> key) {
+	public static BlockPos heart(ServerLevel level, BlockPos at, ResourceKey<Biome> key, boolean dry) {
+		int reach = 384;
+		int step = 24;
+		int n = 2 * reach / step + 1;
+		boolean[][] good = new boolean[n][n];
+		ChunkGenerator generator = level.getChunkSource().getGenerator();
+		RandomState random = level.getChunkSource().randomState();
+		int sea = generator.getSeaLevel();
 		int qy = QuartPos.fromBlock(at.getY());
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				int x = at.getX() - reach + i * step;
+				int z = at.getZ() - reach + j * step;
+				if (!level.getUncachedNoiseBiome(QuartPos.fromBlock(x), qy, QuartPos.fromBlock(z)).is(key)) {
+					continue;
+				}
+				if (dry) {
+					int floor = generator.getBaseHeight(x, z, Heightmap.Types.OCEAN_FLOOR_WG, level, random);
+					if (floor <= sea || floor != generator.getBaseHeight(x, z, Heightmap.Types.WORLD_SURFACE_WG, level, random)) {
+						continue;
+					}
+				}
+				good[i][j] = true;
+			}
+		}
+		// The middle of the five by five spots (a hundred blocks across) with the most good ones.
 		BlockPos best = at;
-		int most = -1;
-		for (int dx = -192; dx <= 192; dx += 32) {
-			for (int dz = -192; dz <= 192; dz += 32) {
+		int most = 0;
+		for (int i = 2; i < n - 2; i++) {
+			for (int j = 2; j < n - 2; j++) {
 				int count = 0;
-				for (int sx = -24; sx < 24; sx += 8) {
-					for (int sz = -24; sz < 24; sz += 8) {
-						if (level.getUncachedNoiseBiome(QuartPos.fromBlock(at.getX() + dx + sx), qy, QuartPos.fromBlock(at.getZ() + dz + sz)).is(key)) {
+				for (int di = -2; di <= 2; di++) {
+					for (int dj = -2; dj <= 2; dj++) {
+						if (good[i + di][j + dj]) {
 							count++;
 						}
 					}
 				}
 				if (count > most) {
 					most = count;
-					best = at.offset(dx, 0, dz);
+					best = new BlockPos(at.getX() - reach + i * step, at.getY(), at.getZ() - reach + j * step);
 				}
 			}
 		}

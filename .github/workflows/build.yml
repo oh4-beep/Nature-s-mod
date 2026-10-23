@@ -98,11 +98,6 @@ jobs:
         run: mkdir -p /tmp/jfr && chmod +x ./gradlew && xvfb-run -a -s "-screen 0 1280x720x24" ./gradlew runClientGameTest --stacktrace
         env:
           JAVA_TOOL_OPTIONS: -XX:StartFlightRecording=filename=/tmp/jfr/client-%p.jfr,settings=profile,dumponexit=true
-      - name: print cpu profile
-        if: always()
-        timeout-minutes: 5
-        continue-on-error: true
-        run: python3 .github/profile/hotspots.py /tmp/jfr/*.jfr || true
       - name: print screenshots
         if: always()
         # Shrunk to small JPEGs so the whole set fits in the log.
@@ -117,3 +112,9 @@ jobs:
             base64 -w 3000 "/tmp/$n" | sed 's/^/[map] /'
             echo "[map-end $n]"
           done
+      # After the screenshots: a long recording takes a while to read.
+      - name: print cpu profile
+        if: always()
+        timeout-minutes: 5
+        continue-on-error: true
+        run: python3 .github/profile/hotspots.py /tmp/jfr/*.jfr || true

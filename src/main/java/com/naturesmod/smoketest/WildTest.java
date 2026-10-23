@@ -88,7 +88,7 @@ final class WildTest {
 			test.fail("no %s within %d blocks of spawn", name, SEARCH_RADIUS);
 			return;
 		}
-		BlockPos at = WildOverworld.heart(level, found.getFirst(), key);
+		BlockPos at = WildOverworld.heart(level, found.getFirst(), key, !cave);
 		double seconds = (System.currentTimeMillis() - start) / 1000.0;
 		int cx = at.getX() >> 4;
 		int cz = at.getZ() >> 4;

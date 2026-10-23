@@ -670,7 +670,7 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 				}
 				BlockPos at = found.getFirst();
 				if (!cave) {
-					at = WildOverworld.heart(level, at, key);
+					at = WildOverworld.heart(level, at, key, true);
 					int ground = floor(level, at.getX(), at.getZ());
 					return new double[] {at.getX() + 0.5, ground + 14, at.getZ() - 22.5, 28.0};
 				}

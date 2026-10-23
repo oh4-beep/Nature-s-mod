@@ -44,7 +44,8 @@ VARIANTS = {
     "volcanic_peaks": {"hosts": {"windswept_savanna": 0.5, "savanna_plateau": 0.3, "stony_peaks": 0.15, "badlands": 0.15}, "salt": 7,
                        "scale": 520},
     "bayou": {"hosts": {"swamp": 0.5, "mangrove_swamp": 0.25}, "salt": 8, "scale": 360},
-    "tundra": {"hosts": {"snowy_plains": 0.45}, "salt": 9, "scale": 480},
+    # Open tundra on the snowy plains, and bare clearings in the snowy taiga.
+    "tundra": {"hosts": {"snowy_plains": 0.45, "snowy_taiga": 0.25}, "salt": 9, "scale": 480},
     "petrified_forest": {"hosts": {"wooded_badlands": 0.35, "eroded_badlands": 0.2, "savanna": 0.12}, "salt": 10, "scale": 360},
     "heather_moors": {"hosts": {"windswept_hills": 0.4, "windswept_gravelly_hills": 0.4, "meadow": 0.22}, "salt": 11, "scale": 420},
 }
