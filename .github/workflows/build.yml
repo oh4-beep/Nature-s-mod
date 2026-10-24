@@ -4,6 +4,24 @@ name: build
 on: [pull_request, push, workflow_dispatch]
 
 jobs:
+  # Temporary development aid: the Minecraft 26.2 sources and vanilla data the port to 26.2 has to follow.
+  probe:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v6
+      - name: setup jdk
+        uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'microsoft'
+      - name: decompile minecraft
+        run: chmod +x ./gradlew && ./gradlew genSources --quiet
+      - name: print sources
+        run: bash .github/probe/sources.sh .github/probe/server262.txt
+      - name: print vanilla data
+        run: bash .github/probe/data.sh
+
   build:
     runs-on: ubuntu-24.04
     steps:
