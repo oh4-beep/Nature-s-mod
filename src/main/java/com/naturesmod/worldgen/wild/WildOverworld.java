@@ -68,8 +68,9 @@ public final class WildOverworld {
 	}
 
 	/**
-	 * Looks at the biome on a 33 by 33 grid of places {@code step} blocks apart, centred on {@code at}, and finds
-	 * the middle of the five by five places with the most of the biome (on dry land, when {@code dry}).
+	 * Looks at the biome on a 33 by 33 grid of places {@code step} blocks apart, centred on {@code at}, finds the five
+	 * by five places with the most of the biome (on dry land, and there on the ground too, when {@code dry}) and, of
+	 * those in the biome, picks the one nearest their middle: the middle place itself may lie outside it.
 	 */
 	private static Spot thickest(ServerLevel level, BlockPos at, ResourceKey<Biome> key, boolean dry, int step) {
 		int n = 33;
@@ -88,14 +89,17 @@ public final class WildOverworld {
 				}
 				if (dry) {
 					int floor = generator.getBaseHeight(x, z, Heightmap.Types.OCEAN_FLOOR_WG, level, random);
-					if (floor <= sea || floor != generator.getBaseHeight(x, z, Heightmap.Types.WORLD_SURFACE_WG, level, random)) {
+					if (floor <= sea || floor != generator.getBaseHeight(x, z, Heightmap.Types.WORLD_SURFACE_WG, level, random)
+							|| !level.getUncachedNoiseBiome(QuartPos.fromBlock(x), QuartPos.fromBlock(floor - 1), QuartPos.fromBlock(z)).is(key)) {
 						continue;
 					}
 				}
 				good[i][j] = true;
 			}
 		}
-		Spot best = new Spot(at, 0);
+		int bestCount = 0;
+		int bestI = 0;
+		int bestJ = 0;
 		for (int i = 2; i < n - 2; i++) {
 			for (int j = 2; j < n - 2; j++) {
 				int count = 0;
@@ -106,11 +110,39 @@ public final class WildOverworld {
 						}
 					}
 				}
-				if (count > best.count()) {
-					best = new Spot(new BlockPos(at.getX() - reach + i * step, at.getY(), at.getZ() - reach + j * step), count);
+				if (count > bestCount) {
+					bestCount = count;
+					bestI = i;
+					bestJ = j;
 				}
 			}
 		}
-		return best;
+		if (bestCount == 0) {
+			return new Spot(at, 0);
+		}
+		double middleI = 0.0;
+		double middleJ = 0.0;
+		for (int i = bestI - 2; i <= bestI + 2; i++) {
+			for (int j = bestJ - 2; j <= bestJ + 2; j++) {
+				if (good[i][j]) {
+					middleI += (double) i / bestCount;
+					middleJ += (double) j / bestCount;
+				}
+			}
+		}
+		int pickI = bestI;
+		int pickJ = bestJ;
+		double nearest = Double.MAX_VALUE;
+		for (int i = bestI - 2; i <= bestI + 2; i++) {
+			for (int j = bestJ - 2; j <= bestJ + 2; j++) {
+				double distance = (i - middleI) * (i - middleI) + (j - middleJ) * (j - middleJ);
+				if (good[i][j] && distance < nearest) {
+					nearest = distance;
+					pickI = i;
+					pickJ = j;
+				}
+			}
+		}
+		return new Spot(new BlockPos(at.getX() - reach + pickI * step, at.getY(), at.getZ() - reach + pickJ * step), bestCount);
 	}
 }
