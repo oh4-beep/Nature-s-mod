@@ -9,6 +9,7 @@ import it.unimi.dsi.fastutil.longs.LongSet;
 import com.naturesmod.NaturesMod;
 import com.naturesmod.block.ModBlocks;
 import com.naturesmod.worldgen.FeatureStats;
+import com.naturesmod.worldgen.SelfPlacing;
 import com.naturesmod.worldgen.WaterWorks;
 import com.naturesmod.worldgen.WorldGenUtil;
 import com.naturesmod.worldgen.wild.WildOverworld;
@@ -32,7 +33,6 @@ import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.storage.loot.LootTable;
 
 /**
@@ -42,18 +42,13 @@ import net.minecraft.world.level.storage.loot.LootTable;
  * their iron hearts, giant glowcaps in the forests and the caves, spires and crusts of crystal in
  * the deep caverns, and dry-stone walls wandering over the moors.
  */
-public record WildFeature(Style style) implements Feature {
+public record WildFeature(Style style) implements SelfPlacing {
 	public static final MapCodec<WildFeature> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 			Style.CODEC.fieldOf("style").forGetter(WildFeature::style)
 	).apply(instance, WildFeature::new));
 
 	private static final ResourceKey<Biome> LAVENDER_FIELDS = WildOverworld.biome("lavender_fields");
 	private static final ResourceKey<LootTable> METEOR_LOOT = ResourceKey.create(Registries.LOOT_TABLE, NaturesMod.id("chests/land/meteor"));
-
-	@Override
-	public MapCodec<? extends Feature> codec() {
-		return CODEC;
-	}
 
 	@Override
 	public boolean place(WorldGenLevel level, ChunkGenerator generator, RandomSource random, BlockPos origin) {

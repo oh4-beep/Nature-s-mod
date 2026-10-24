@@ -11,6 +11,7 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 
 import com.naturesmod.block.ModBlocks;
 import com.naturesmod.worldgen.FeatureStats;
+import com.naturesmod.worldgen.SelfPlacing;
 import com.naturesmod.worldgen.WaterWorks;
 import com.naturesmod.worldgen.WorldGenUtil;
 import com.naturesmod.worldgen.feature.FallenLogFeature;
@@ -28,7 +29,6 @@ import net.minecraft.world.level.block.VineBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.phys.Vec3;
 
 /**
@@ -36,7 +36,7 @@ import net.minecraft.world.phys.Vec3;
  * twist, and the canopy is built from many leaf clouds.
  */
 public record GiantTreeFeature(Style style, BlockState log, List<BlockState> leaves, int minHeight, int maxHeight, boolean nearWater)
-		implements Feature {
+		implements SelfPlacing {
 	public static final MapCodec<GiantTreeFeature> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 			Style.CODEC.fieldOf("style").forGetter(GiantTreeFeature::style),
 			BlockState.CODEC.fieldOf("log").forGetter(GiantTreeFeature::log),
@@ -45,11 +45,6 @@ public record GiantTreeFeature(Style style, BlockState log, List<BlockState> lea
 			Codec.intRange(3, 96).optionalFieldOf("max_height", 24).forGetter(GiantTreeFeature::maxHeight),
 			Codec.BOOL.optionalFieldOf("near_water", false).forGetter(GiantTreeFeature::nearWater)
 	).apply(instance, GiantTreeFeature::new));
-
-	@Override
-	public MapCodec<? extends Feature> codec() {
-		return CODEC;
-	}
 
 	@Override
 	public boolean place(WorldGenLevel level, ChunkGenerator generator, RandomSource random, BlockPos origin) {

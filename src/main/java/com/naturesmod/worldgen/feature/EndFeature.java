@@ -6,6 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import com.naturesmod.block.ModBlocks;
 import com.naturesmod.worldgen.FeatureStats;
+import com.naturesmod.worldgen.SelfPlacing;
 import com.naturesmod.worldgen.WorldGenUtil;
 
 import net.minecraft.core.BlockPos;
@@ -21,7 +22,6 @@ import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.levelgen.feature.Feature;
 
 /**
  * The life and the landmarks of the new End: chorus trees hung with glowing bulbs, spikes of void
@@ -29,15 +29,10 @@ import net.minecraft.world.level.levelgen.feature.Feature;
  * pools, springy bounce blooms, updraft vents, void vines dangling from the undersides of the
  * lands, and little gardens of ender grass and glowing blooms.
  */
-public record EndFeature(Style style) implements Feature {
+public record EndFeature(Style style) implements SelfPlacing {
 	public static final MapCodec<EndFeature> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 			Style.CODEC.fieldOf("style").forGetter(EndFeature::style)
 	).apply(instance, EndFeature::new));
-
-	@Override
-	public MapCodec<? extends Feature> codec() {
-		return CODEC;
-	}
 
 	@Override
 	public boolean place(WorldGenLevel level, ChunkGenerator generator, RandomSource random, BlockPos origin) {

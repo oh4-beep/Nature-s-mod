@@ -3,6 +3,7 @@ package com.naturesmod.creature;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
@@ -211,7 +212,10 @@ public class VoidWyrm extends EndFlyer {
 			double z = target.getZ() + Math.sin(angle) * reach;
 			double y = Math.max(target.getY() + 6.0 + random.nextDouble() * 8.0, level.getMinY() + 24.0);
 			Vec3 from = this.position();
-			if (this.randomTeleport(x, y, z, false, state -> true)) {
+			// Takes to the air there, if there is room.
+			if (level.isLoaded(BlockPos.containing(x, y, z))
+					&& level.noCollision(this, this.getBoundingBox().move(x - this.getX(), y - this.getY(), z - this.getZ()))) {
+				this.teleportTo(x, y, z);
 				level.sendParticles(ParticleTypes.REVERSE_PORTAL, from.x, from.y + 1.0, from.z, 80, 1.5, 1.5, 1.5, 0.2);
 				level.sendParticles(ParticleTypes.PORTAL, x, y + 1.0, z, 80, 1.5, 1.5, 1.5, 0.5);
 				this.playSound(SoundEvents.ENDERMAN_TELEPORT, 4.0F, 0.5F);

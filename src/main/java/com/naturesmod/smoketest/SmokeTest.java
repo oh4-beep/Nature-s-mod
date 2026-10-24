@@ -36,6 +36,7 @@ import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
 import net.minecraft.world.level.levelgen.NoiseRouter;
@@ -257,10 +258,12 @@ public final class SmokeTest {
 					samples.add(new int[] {x, z, height});
 					out.writeShort(height);
 					if (router != null) {
-						out.writeFloat(randomState.sampleBlockValueUncached(router.continents(), x, 128, z));
-						out.writeFloat(randomState.sampleBlockValueUncached(router.erosion(), x, 128, z));
-						out.writeFloat(randomState.sampleBlockValueUncached(router.ridges(), x, 128, z));
-						out.writeFloat(randomState.sampleBlockValueUncached(router.depth(), x, 128, z));
+						DensityFunction.SinglePointContext point = new DensityFunction.SinglePointContext(x, 128, z);
+						NoiseRouter bound = randomState.router();
+						out.writeFloat((float) bound.continents().compute(point));
+						out.writeFloat((float) bound.erosion().compute(point));
+						out.writeFloat((float) bound.ridges().compute(point));
+						out.writeFloat((float) bound.depth().compute(point));
 					}
 				}
 			}

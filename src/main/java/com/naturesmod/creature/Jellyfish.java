@@ -104,7 +104,7 @@ public class Jellyfish extends WaterAnimal implements SeaCreature {
 	public void playerTouch(Player player) {
 		SpeciesData species = this.species();
 		if (species.attack() <= 0 || !(this.level() instanceof ServerLevel level) || player.isCreative() || player.isSpectator()
-				|| level.getDifficulty() == Difficulty.PEACEFUL || !this.doTeamsAllowDamage(player)) {
+				|| level.getDifficulty() == Difficulty.PEACEFUL || this.isAlliedTo(player)) {
 			return;
 		}
 		if (player.hurtServer(level, this.damageSources().mobAttack(this), (float) species.attack())) {

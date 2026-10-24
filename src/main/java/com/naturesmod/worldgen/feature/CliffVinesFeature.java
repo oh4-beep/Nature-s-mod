@@ -5,6 +5,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import com.naturesmod.worldgen.FeatureStats;
+import com.naturesmod.worldgen.SelfPlacing;
 import com.naturesmod.worldgen.WaterWorks;
 import com.naturesmod.worldgen.WorldGenUtil;
 
@@ -16,19 +17,13 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.VineBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.levelgen.feature.Feature;
 
 /** Drapes curtains of vines down every cliff face in the chunk, with moss along the cliff tops. */
-public record CliffVinesFeature(float density, int minDrop) implements Feature {
+public record CliffVinesFeature(float density, int minDrop) implements SelfPlacing {
 	public static final MapCodec<CliffVinesFeature> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 			Codec.floatRange(0, 1).optionalFieldOf("density", 0.35f).forGetter(CliffVinesFeature::density),
 			Codec.intRange(2, 64).optionalFieldOf("min_drop", 5).forGetter(CliffVinesFeature::minDrop)
 	).apply(instance, CliffVinesFeature::new));
-
-	@Override
-	public MapCodec<? extends Feature> codec() {
-		return CODEC;
-	}
 
 	@Override
 	public boolean place(WorldGenLevel level, ChunkGenerator generator, RandomSource random, BlockPos origin) {

@@ -159,7 +159,7 @@ public class EndWalker extends PathfinderMob implements SeaCreature {
 				double x = this.getX() + (this.random.nextDouble() - 0.5) * 16.0;
 				double y = this.getY() + this.random.nextInt(9) - 4;
 				double z = this.getZ() + (this.random.nextDouble() - 0.5) * 16.0;
-				if (this.randomTeleport(x, y, z, true, state -> false)) {
+				if (this.randomTeleport(x, y, z, true)) {
 					this.playSound(SoundEvents.ENDERMAN_TELEPORT, 1.0F, 0.8F);
 					break;
 				}

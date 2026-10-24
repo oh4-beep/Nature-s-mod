@@ -2,10 +2,14 @@ package com.naturesmod.worldgen;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
@@ -21,6 +25,9 @@ import net.minecraft.world.level.material.FluidState;
  * so every feature works inside a {@link Window} and never reads or writes outside of it.
  */
 public final class WorldGenUtil {
+	/** The saplings tag, which this version of the game keeps in its data but not among its block tags. */
+	public static final TagKey<Block> SAPLINGS = TagKey.create(Registries.BLOCK, Identifier.withDefaultNamespace("saplings"));
+
 	private WorldGenUtil() {
 	}
 
@@ -83,7 +90,7 @@ public final class WorldGenUtil {
 		}
 		return state.canBeReplaced()
 				|| state.is(BlockTags.FLOWERS)
-				|| state.is(BlockTags.SAPLINGS)
+				|| state.is(SAPLINGS)
 				|| state.is(Blocks.SWEET_BERRY_BUSH)
 				|| state.is(Blocks.BROWN_MUSHROOM)
 				|| state.is(Blocks.RED_MUSHROOM)
@@ -98,7 +105,7 @@ public final class WorldGenUtil {
 	/** Blocks belonging to trees or plants (skipped when looking for the ground). */
 	public static boolean isVegetation(BlockState state) {
 		return state.is(BlockTags.LOGS) || state.is(BlockTags.LEAVES) || state.is(Blocks.BEE_NEST)
-				|| state.is(Blocks.SHELF_MUSHROOM) || state.is(Blocks.MUSHROOM_STEM)
+				|| state.is(Blocks.MUSHROOM_STEM)
 				|| state.is(Blocks.BROWN_MUSHROOM_BLOCK) || state.is(Blocks.RED_MUSHROOM_BLOCK)
 				|| state.is(Blocks.BAMBOO) || state.is(Blocks.COCOA);
 	}

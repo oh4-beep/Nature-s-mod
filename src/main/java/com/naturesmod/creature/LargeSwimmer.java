@@ -243,7 +243,7 @@ public class LargeSwimmer extends WaterAnimal implements SeaCreature {
 
 	/** Venomous spines: a lionfish hurts whoever brushes against it. */
 	private void sting(ServerLevel level, Player player) {
-		if (player.isCreative() || player.isSpectator() || level.getDifficulty() == Difficulty.PEACEFUL || !this.doTeamsAllowDamage(player)) {
+		if (player.isCreative() || player.isSpectator() || level.getDifficulty() == Difficulty.PEACEFUL || this.isAlliedTo(player)) {
 			return;
 		}
 		float damage = (float) this.species().attack();

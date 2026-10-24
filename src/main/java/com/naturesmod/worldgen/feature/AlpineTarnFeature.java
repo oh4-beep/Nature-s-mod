@@ -7,6 +7,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.longs.LongSet;
 
 import com.naturesmod.worldgen.FeatureStats;
+import com.naturesmod.worldgen.SelfPlacing;
 import com.naturesmod.worldgen.WaterWorks;
 import com.naturesmod.worldgen.WorldGenUtil;
 
@@ -17,19 +18,13 @@ import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.levelgen.feature.Feature;
 
 /** A clear mountain lake cradled in a high hollow, ringed with gravel and boulders. */
-public record AlpineTarnFeature(int minY, int maxRadius) implements Feature {
+public record AlpineTarnFeature(int minY, int maxRadius) implements SelfPlacing {
 	public static final MapCodec<AlpineTarnFeature> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 			Codec.INT.optionalFieldOf("min_y", 110).forGetter(AlpineTarnFeature::minY),
 			Codec.intRange(3, 12).optionalFieldOf("max_radius", 9).forGetter(AlpineTarnFeature::maxRadius)
 	).apply(instance, AlpineTarnFeature::new));
-
-	@Override
-	public MapCodec<? extends Feature> codec() {
-		return CODEC;
-	}
 
 	@Override
 	public boolean place(WorldGenLevel level, ChunkGenerator generator, RandomSource random, BlockPos origin) {

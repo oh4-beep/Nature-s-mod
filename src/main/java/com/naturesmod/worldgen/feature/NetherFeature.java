@@ -7,6 +7,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.naturesmod.NaturesMod;
 import com.naturesmod.block.ModBlocks;
 import com.naturesmod.worldgen.FeatureStats;
+import com.naturesmod.worldgen.SelfPlacing;
 import com.naturesmod.worldgen.WorldGenUtil;
 
 import net.minecraft.core.BlockPos;
@@ -25,7 +26,6 @@ import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.storage.loot.LootTable;
 
@@ -34,17 +34,12 @@ import net.minecraft.world.level.storage.loot.LootTable;
  * geysers, jagged ember spikes, giant glowstone chandeliers, weeping obsidian spires, and iron
  * cages dangling on chains over the abyss.
  */
-public record NetherFeature(Style style) implements Feature {
+public record NetherFeature(Style style) implements SelfPlacing {
 	public static final MapCodec<NetherFeature> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 			Style.CODEC.fieldOf("style").forGetter(NetherFeature::style)
 	).apply(instance, NetherFeature::new));
 
 	private static final ResourceKey<LootTable> CAGE_LOOT = ResourceKey.create(Registries.LOOT_TABLE, NaturesMod.id("chests/nether_cage"));
-
-	@Override
-	public MapCodec<? extends Feature> codec() {
-		return CODEC;
-	}
 
 	@Override
 	public boolean place(WorldGenLevel level, ChunkGenerator generator, RandomSource random, BlockPos origin) {

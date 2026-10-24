@@ -2,6 +2,8 @@ package com.naturesmod.block;
 
 import java.util.function.Supplier;
 
+import com.mojang.serialization.MapCodec;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -41,6 +43,11 @@ public class BerryBushBlock extends VegetationBlock {
 		super(properties);
 		this.berries = berries;
 		this.registerDefaultState(this.stateDefinition.any().setValue(AGE, 0));
+	}
+
+	@Override
+	protected MapCodec<? extends VegetationBlock> codec() {
+		return MapCodec.unit(this);
 	}
 
 	@Override

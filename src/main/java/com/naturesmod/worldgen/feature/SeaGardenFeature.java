@@ -8,6 +8,7 @@ import com.naturesmod.block.GiantClamBlock;
 import com.naturesmod.block.ModBlocks;
 import com.naturesmod.block.SeaPlantBlock;
 import com.naturesmod.worldgen.FeatureStats;
+import com.naturesmod.worldgen.SelfPlacing;
 import com.naturesmod.worldgen.WorldGenUtil;
 
 import net.minecraft.core.BlockPos;
@@ -18,21 +19,15 @@ import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.levelgen.feature.Feature;
 
 /**
  * A patch of sea floor life: anemones, sea fans, starfish, urchins, giant clams and shells on the
  * reefs and sea beds, shells washed up on the beaches, and glowmoss and tube worms in the Abyss.
  */
-public record SeaGardenFeature(Style style) implements Feature {
+public record SeaGardenFeature(Style style) implements SelfPlacing {
 	public static final MapCodec<SeaGardenFeature> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 			Style.CODEC.fieldOf("style").forGetter(SeaGardenFeature::style)
 	).apply(instance, SeaGardenFeature::new));
-
-	@Override
-	public MapCodec<? extends Feature> codec() {
-		return CODEC;
-	}
 
 	@Override
 	public boolean place(WorldGenLevel level, ChunkGenerator generator, RandomSource random, BlockPos origin) {

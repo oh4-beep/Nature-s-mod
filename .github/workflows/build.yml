@@ -18,7 +18,11 @@ jobs:
       - name: decompile minecraft
         run: chmod +x ./gradlew && ./gradlew genSources --quiet
       - name: print sources
-        run: bash .github/probe/sources.sh .github/probe/server262.txt
+        run: |
+          bash .github/probe/sources.sh .github/probe/client.txt
+          bash .github/probe/sources.sh .github/probe/client262.txt
+      - name: print fabric api
+        run: bash .github/probe/fabric.sh
       - name: print vanilla data
         run: bash .github/probe/data.sh
 

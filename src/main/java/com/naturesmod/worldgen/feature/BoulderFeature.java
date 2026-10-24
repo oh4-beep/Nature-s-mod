@@ -7,6 +7,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import com.naturesmod.worldgen.FeatureStats;
+import com.naturesmod.worldgen.SelfPlacing;
 import com.naturesmod.worldgen.WaterWorks;
 import com.naturesmod.worldgen.WorldGenUtil;
 
@@ -17,21 +18,15 @@ import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.levelgen.feature.Feature;
 
 /** A weathered boulder made of a few fused, partly buried lumps of rock, often wearing a cap of moss. */
-public record BoulderFeature(List<BlockState> materials, float mossChance, float minRadius, float maxRadius) implements Feature {
+public record BoulderFeature(List<BlockState> materials, float mossChance, float minRadius, float maxRadius) implements SelfPlacing {
 	public static final MapCodec<BoulderFeature> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 			ExtraCodecs.nonEmptyList(BlockState.CODEC.listOf()).fieldOf("materials").forGetter(BoulderFeature::materials),
 			Codec.floatRange(0, 1).optionalFieldOf("moss_chance", 0.0f).forGetter(BoulderFeature::mossChance),
 			Codec.floatRange(1, 6).optionalFieldOf("min_radius", 1.5f).forGetter(BoulderFeature::minRadius),
 			Codec.floatRange(1, 6).optionalFieldOf("max_radius", 3.2f).forGetter(BoulderFeature::maxRadius)
 	).apply(instance, BoulderFeature::new));
-
-	@Override
-	public MapCodec<? extends Feature> codec() {
-		return CODEC;
-	}
 
 	@Override
 	public boolean place(WorldGenLevel level, ChunkGenerator generator, RandomSource random, BlockPos origin) {

@@ -20,7 +20,6 @@ import net.minecraft.core.QuartPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.BiomeResolver;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.levelgen.synth.SimplexNoise;
@@ -94,30 +93,18 @@ public final class WildBiomeSource extends BiomeSource {
 	}
 
 	@Override
-	public BiomeResolver createResolver(Climate.Sampler sampler) {
-		return wild(base.createResolver(sampler), sampler);
-	}
-
-	@Override
-	public BiomeResolver createResolverForChunk(Climate.Sampler sampler, int minQuartX, int minQuartY, int minQuartZ, int quartSizeX,
-			int quartSizeY, int quartSizeZ) {
-		// Vanilla samples the climate of the whole chunk in one go; the new biomes only look at the result.
-		return wild(base.createResolverForChunk(sampler, minQuartX, minQuartY, minQuartZ, quartSizeX, quartSizeY, quartSizeZ), sampler);
-	}
-
-	@Override
-	public void addDebugInfo(List<String> result, BlockPos feetPos, Climate.Sampler sampler) {
-		base.addDebugInfo(result, feetPos, sampler);
-	}
-
-	private BiomeResolver wild(BiomeResolver vanilla, Climate.Sampler sampler) {
+	public Holder<Biome> getNoiseBiome(int x, int y, int z, Climate.Sampler sampler) {
 		Seen seen = last;
 		if (seen == null || seen.sampler() != sampler) {
 			seen = new Seen(sampler, this.fields.computeIfAbsent(WorldSeed.of(sampler), Fields::new));
 			last = seen;
 		}
-		Fields fields = seen.fields();
-		return (x, y, z) -> pick(vanilla.getNoiseBiome(x, y, z), x, y, z, sampler, fields);
+		return pick(base.getNoiseBiome(x, y, z, sampler), x, y, z, sampler, seen.fields());
+	}
+
+	@Override
+	public void addDebugInfo(List<String> result, BlockPos feetPos, Climate.Sampler sampler) {
+		base.addDebugInfo(result, feetPos, sampler);
 	}
 
 	private record Seen(Climate.Sampler sampler, Fields fields) {
@@ -213,10 +200,10 @@ public final class WildBiomeSource extends BiomeSource {
 			double nz = QuartPos.toBlock(z) / variant.scale();
 			if (variant.caves()) {
 				double ny = QuartPos.toBlock(y) / variant.verticalScale();
-				return noise.get(nx, ny, nz) * 0.75 + noise.get(nx * 2.7 + 50.0, ny * 2.7, nz * 2.7 - 50.0) * 0.25;
+				return noise.getValue(nx, ny, nz) * 0.75 + noise.getValue(nx * 2.7 + 50.0, ny * 2.7, nz * 2.7 - 50.0) * 0.25;
 			}
 			// A second, finer octave frays the edges so the patches don't look like blobs.
-			return noise.get(nx, nz) * 0.75 + noise.get(nx * 2.7 + 50.0, nz * 2.7 - 50.0) * 0.25;
+			return noise.getValue(nx, nz) * 0.75 + noise.getValue(nx * 2.7 + 50.0, nz * 2.7 - 50.0) * 0.25;
 		}
 	}
 

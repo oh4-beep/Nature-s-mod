@@ -24,6 +24,7 @@ import com.naturesmod.worldgen.tree.GiantTreeFeature;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 
 /** Registers the Nature's Mod feature types; the features themselves are data-driven JSON. */
 public final class ModFeatures {
@@ -50,7 +51,12 @@ public final class ModFeatures {
 		register("wild_feature", WildFeature.CODEC);
 	}
 
-	private static void register(String name, MapCodec<? extends Feature> codec) {
-		Registry.register(BuiltInRegistries.FEATURE_TYPE, NaturesMod.id(name), codec);
+	private static <C extends SelfPlacing> void register(String name, MapCodec<C> codec) {
+		Registry.register(BuiltInRegistries.FEATURE, NaturesMod.id(name), new Feature<C>(codec.codec()) {
+			@Override
+			public boolean place(FeaturePlaceContext<C> context) {
+				return context.config().place(context.level(), context.chunkGenerator(), context.random(), context.origin());
+			}
+		});
 	}
 }

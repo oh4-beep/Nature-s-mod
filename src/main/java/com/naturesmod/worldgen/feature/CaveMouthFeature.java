@@ -11,6 +11,7 @@ import it.unimi.dsi.fastutil.longs.Long2DoubleMap;
 import it.unimi.dsi.fastutil.longs.Long2DoubleOpenHashMap;
 
 import com.naturesmod.worldgen.FeatureStats;
+import com.naturesmod.worldgen.SelfPlacing;
 import com.naturesmod.worldgen.WaterWorks;
 import com.naturesmod.worldgen.WorldGenUtil;
 
@@ -25,13 +26,12 @@ import net.minecraft.world.level.block.MultifaceBlock;
 import net.minecraft.world.level.block.VineBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.levelgen.feature.Feature;
 
 /**
  * A huge arched cave mouth opening into a hillside: mossy floor near the light, vines and glow
  * berries hanging from the arch, dripstone deeper inside and sometimes a spring flowing out.
  */
-public record CaveMouthFeature(int minLength, int maxLength) implements Feature {
+public record CaveMouthFeature(int minLength, int maxLength) implements SelfPlacing {
 	public static final MapCodec<CaveMouthFeature> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 			Codec.intRange(6, 40).optionalFieldOf("min_length", 12).forGetter(CaveMouthFeature::minLength),
 			Codec.intRange(6, 40).optionalFieldOf("max_length", 24).forGetter(CaveMouthFeature::maxLength)
@@ -39,11 +39,6 @@ public record CaveMouthFeature(int minLength, int maxLength) implements Feature 
 
 	private static final int[][] DIRECTIONS = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
 	private static final double STEP = 0.5;
-
-	@Override
-	public MapCodec<? extends Feature> codec() {
-		return CODEC;
-	}
 
 	private record Slice(double x, double z, double t, double floor, double halfWidth, double height, double perpX, double perpZ) {
 	}

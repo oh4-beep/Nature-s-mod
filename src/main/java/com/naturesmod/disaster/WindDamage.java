@@ -1,5 +1,7 @@
 package com.naturesmod.disaster;
 
+import com.naturesmod.worldgen.WorldGenUtil;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
@@ -33,7 +35,7 @@ final class WindDamage {
 			return 32.0;
 		}
 		Block block = state.getBlock();
-		if (state.canBeReplaced() || block instanceof VegetationBlock || state.is(BlockTags.FLOWERS) || state.is(BlockTags.SAPLINGS)) {
+		if (state.canBeReplaced() || block instanceof VegetationBlock || state.is(BlockTags.FLOWERS) || state.is(WorldGenUtil.SAPLINGS)) {
 			return 26.0;
 		}
 		String name = BuiltInRegistries.BLOCK.getKey(block).getPath();

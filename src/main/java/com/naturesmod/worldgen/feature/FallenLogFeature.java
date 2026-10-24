@@ -5,6 +5,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import com.naturesmod.worldgen.FeatureStats;
+import com.naturesmod.worldgen.SelfPlacing;
 import com.naturesmod.worldgen.WaterWorks;
 import com.naturesmod.worldgen.WorldGenUtil;
 
@@ -17,24 +18,18 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.levelgen.feature.Feature;
 
 /**
  * The long trunk of a tree that toppled years ago, lying next to its broken stump, slowly being
  * reclaimed by moss, mushrooms and leaf litter.
  */
-public record FallenLogFeature(BlockState log, int minLength, int maxLength, float thickChance) implements Feature {
+public record FallenLogFeature(BlockState log, int minLength, int maxLength, float thickChance) implements SelfPlacing {
 	public static final MapCodec<FallenLogFeature> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 			BlockState.CODEC.fieldOf("log").forGetter(FallenLogFeature::log),
 			Codec.intRange(3, 24).optionalFieldOf("min_length", 6).forGetter(FallenLogFeature::minLength),
 			Codec.intRange(3, 24).optionalFieldOf("max_length", 12).forGetter(FallenLogFeature::maxLength),
 			Codec.floatRange(0, 1).optionalFieldOf("thick_chance", 0.25f).forGetter(FallenLogFeature::thickChance)
 	).apply(instance, FallenLogFeature::new));
-
-	@Override
-	public MapCodec<? extends Feature> codec() {
-		return CODEC;
-	}
 
 	@Override
 	public boolean place(WorldGenLevel level, ChunkGenerator generator, RandomSource random, BlockPos origin) {
@@ -139,14 +134,6 @@ public record FallenLogFeature(BlockState log, int minLength, int maxLength, flo
 				WaterWorks.set(level, pos, Blocks.MOSS_CARPET.defaultBlockState());
 			} else if (roll == 4) {
 				WaterWorks.set(level, pos, (random.nextBoolean() ? Blocks.BROWN_MUSHROOM : Blocks.RED_MUSHROOM).defaultBlockState());
-			}
-		}
-		// Shelf fungi on the sides.
-		for (Direction face : new Direction[] {direction.getClockWise(), direction.getCounterClockWise()}) {
-			pos.set(x + face.getStepX(), y, z + face.getStepZ());
-			if (random.nextInt(7) == 0 && level.getBlockState(pos).isAir()) {
-				// "facing" points away from the log the fungus grows on.
-				WaterWorks.set(level, pos, WorldGenUtil.withProperty(Blocks.SHELF_MUSHROOM.defaultBlockState(), "facing", face.getSerializedName()));
 			}
 		}
 		pos.set(x, y, z);

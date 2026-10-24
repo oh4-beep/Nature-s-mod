@@ -6,6 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import com.naturesmod.NaturesMod;
 import com.naturesmod.worldgen.FeatureStats;
+import com.naturesmod.worldgen.SelfPlacing;
 import com.naturesmod.worldgen.WorldGenUtil;
 
 import net.minecraft.core.BlockPos;
@@ -34,14 +35,13 @@ import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.levelgen.feature.Feature;
 
 /**
  * Decorations of the Abyss's sea floor: black smokers venting into the dark, bubbling soul
  * vents, glowing reef trees, the skeletons of whales that sank to the bottom, and nodules of
  * dark rock scattered over the ooze.
  */
-public record AbyssFeature(Style style) implements Feature {
+public record AbyssFeature(Style style) implements SelfPlacing {
 	public static final MapCodec<AbyssFeature> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 			Style.CODEC.fieldOf("style").forGetter(AbyssFeature::style)
 	).apply(instance, AbyssFeature::new));
@@ -51,11 +51,6 @@ public record AbyssFeature(Style style) implements Feature {
 			Blocks.HORN_CORAL_BLOCK, Blocks.PRISMARINE};
 	private static final Block[] WALL_FANS = {Blocks.TUBE_CORAL_WALL_FAN, Blocks.BRAIN_CORAL_WALL_FAN, Blocks.BUBBLE_CORAL_WALL_FAN,
 			Blocks.HORN_CORAL_WALL_FAN, Blocks.FIRE_CORAL_WALL_FAN};
-
-	@Override
-	public MapCodec<? extends Feature> codec() {
-		return CODEC;
-	}
 
 	@Override
 	public boolean place(WorldGenLevel level, ChunkGenerator generator, RandomSource random, BlockPos origin) {

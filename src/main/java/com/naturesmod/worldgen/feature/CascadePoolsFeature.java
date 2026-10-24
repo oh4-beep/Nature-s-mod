@@ -7,6 +7,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.longs.LongSet;
 
 import com.naturesmod.worldgen.FeatureStats;
+import com.naturesmod.worldgen.SelfPlacing;
 import com.naturesmod.worldgen.WaterWorks;
 import com.naturesmod.worldgen.WorldGenUtil;
 
@@ -17,24 +18,18 @@ import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.levelgen.feature.Feature;
 
 /**
  * A staircase of natural pools stepping down a hillside, each spilling into the next one below:
  * a little mountain stream with its own terraces and cascades.
  */
-public record CascadePoolsFeature(int minPools, int maxPools) implements Feature {
+public record CascadePoolsFeature(int minPools, int maxPools) implements SelfPlacing {
 	public static final MapCodec<CascadePoolsFeature> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 			Codec.intRange(2, 12).optionalFieldOf("min_pools", 3).forGetter(CascadePoolsFeature::minPools),
 			Codec.intRange(2, 12).optionalFieldOf("max_pools", 6).forGetter(CascadePoolsFeature::maxPools)
 	).apply(instance, CascadePoolsFeature::new));
 
 	private static final int[][] DIRECTIONS = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
-
-	@Override
-	public MapCodec<? extends Feature> codec() {
-		return CODEC;
-	}
 
 	@Override
 	public boolean place(WorldGenLevel level, ChunkGenerator generator, RandomSource random, BlockPos origin) {

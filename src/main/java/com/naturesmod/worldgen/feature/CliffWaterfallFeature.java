@@ -5,6 +5,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import com.naturesmod.worldgen.FeatureStats;
+import com.naturesmod.worldgen.SelfPlacing;
 import com.naturesmod.worldgen.WaterWorks;
 import com.naturesmod.worldgen.WorldGenUtil;
 
@@ -16,22 +17,16 @@ import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.levelgen.feature.Feature;
 
 /**
  * A stream that runs to the edge of a cliff and pours over it as a waterfall into a plunge pool.
  * In freezing places the whole fall is frozen solid instead.
  */
-public record CliffWaterfallFeature(int minDrop, int maxChannel) implements Feature {
+public record CliffWaterfallFeature(int minDrop, int maxChannel) implements SelfPlacing {
 	public static final MapCodec<CliffWaterfallFeature> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 			Codec.intRange(3, 128).optionalFieldOf("min_drop", 7).forGetter(CliffWaterfallFeature::minDrop),
 			Codec.intRange(1, 10).optionalFieldOf("max_channel", 5).forGetter(CliffWaterfallFeature::maxChannel)
 	).apply(instance, CliffWaterfallFeature::new));
-
-	@Override
-	public MapCodec<? extends Feature> codec() {
-		return CODEC;
-	}
 
 	@Override
 	public boolean place(WorldGenLevel level, ChunkGenerator generator, RandomSource random, BlockPos origin) {

@@ -7,6 +7,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.naturesmod.NaturesMod;
 import com.naturesmod.block.ModBlocks;
 import com.naturesmod.worldgen.FeatureStats;
+import com.naturesmod.worldgen.SelfPlacing;
 import com.naturesmod.worldgen.WorldGenUtil;
 
 import net.minecraft.core.BlockPos;
@@ -31,7 +32,6 @@ import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.storage.loot.LootTable;
 
 /**
@@ -39,18 +39,13 @@ import net.minecraft.world.level.storage.loot.LootTable;
  * swelling out of the rock, the bones of fallen titans, smouldering brimstone, ember crystals and
  * little ruined shrines where braziers still burn.
  */
-public record HellFeature(Style style) implements Feature {
+public record HellFeature(Style style) implements SelfPlacing {
 	public static final MapCodec<HellFeature> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 			Style.CODEC.fieldOf("style").forGetter(HellFeature::style)
 	).apply(instance, HellFeature::new));
 
 	private static final ResourceKey<LootTable> SHRINE_LOOT = ResourceKey.create(Registries.LOOT_TABLE, NaturesMod.id("chests/hell_shrine"));
 	private static final int NONE = Integer.MIN_VALUE;
-
-	@Override
-	public MapCodec<? extends Feature> codec() {
-		return CODEC;
-	}
 
 	@Override
 	public boolean place(WorldGenLevel level, ChunkGenerator generator, RandomSource random, BlockPos origin) {

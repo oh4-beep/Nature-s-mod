@@ -7,6 +7,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import com.naturesmod.worldgen.FeatureStats;
+import com.naturesmod.worldgen.SelfPlacing;
 import com.naturesmod.worldgen.WaterWorks;
 import com.naturesmod.worldgen.WorldGenUtil;
 
@@ -20,24 +21,18 @@ import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.levelgen.feature.Feature;
 
 /**
  * Landmark rock formations: natural arches, sea stacks rising out of the surf and clusters of
  * hoodoo spires. With {@code banded} the rock is layered like the walls of a canyon.
  */
-public record RockFormationFeature(Style style, List<BlockState> materials, boolean banded, BlockState top) implements Feature {
+public record RockFormationFeature(Style style, List<BlockState> materials, boolean banded, BlockState top) implements SelfPlacing {
 	public static final MapCodec<RockFormationFeature> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 			Style.CODEC.fieldOf("style").forGetter(RockFormationFeature::style),
 			ExtraCodecs.nonEmptyList(BlockState.CODEC.listOf()).fieldOf("materials").forGetter(RockFormationFeature::materials),
 			Codec.BOOL.optionalFieldOf("banded", false).forGetter(RockFormationFeature::banded),
 			BlockState.CODEC.optionalFieldOf("top", Blocks.AIR.defaultBlockState()).forGetter(RockFormationFeature::top)
 	).apply(instance, RockFormationFeature::new));
-
-	@Override
-	public MapCodec<? extends Feature> codec() {
-		return CODEC;
-	}
 
 	@Override
 	public boolean place(WorldGenLevel level, ChunkGenerator generator, RandomSource random, BlockPos origin) {

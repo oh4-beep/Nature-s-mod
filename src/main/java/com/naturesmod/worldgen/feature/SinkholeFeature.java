@@ -8,6 +8,7 @@ import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
 
 import com.naturesmod.worldgen.FeatureStats;
+import com.naturesmod.worldgen.SelfPlacing;
 import com.naturesmod.worldgen.WaterWorks;
 import com.naturesmod.worldgen.WorldGenUtil;
 
@@ -20,23 +21,17 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.VineBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.levelgen.feature.Feature;
 
 /**
  * A deep collapsed sinkhole. With {@code water} it becomes a cenote: a narrow opening that widens
  * into a cavern with a turquoise pool at the bottom and vines trailing all the way down.
  */
-public record SinkholeFeature(boolean water, int minDepth, int maxDepth) implements Feature {
+public record SinkholeFeature(boolean water, int minDepth, int maxDepth) implements SelfPlacing {
 	public static final MapCodec<SinkholeFeature> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 			Codec.BOOL.optionalFieldOf("water", true).forGetter(SinkholeFeature::water),
 			Codec.intRange(6, 60).optionalFieldOf("min_depth", 14).forGetter(SinkholeFeature::minDepth),
 			Codec.intRange(6, 60).optionalFieldOf("max_depth", 30).forGetter(SinkholeFeature::maxDepth)
 	).apply(instance, SinkholeFeature::new));
-
-	@Override
-	public MapCodec<? extends Feature> codec() {
-		return CODEC;
-	}
 
 	@Override
 	public boolean place(WorldGenLevel level, ChunkGenerator generator, RandomSource random, BlockPos origin) {

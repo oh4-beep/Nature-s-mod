@@ -8,6 +8,7 @@ import com.naturesmod.NaturesMod;
 import com.naturesmod.block.GiantClamBlock;
 import com.naturesmod.block.ModBlocks;
 import com.naturesmod.worldgen.FeatureStats;
+import com.naturesmod.worldgen.SelfPlacing;
 import com.naturesmod.worldgen.WorldGenUtil;
 
 import net.minecraft.core.BlockPos;
@@ -30,7 +31,6 @@ import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.storage.loot.LootTable;
 
 /**
@@ -38,7 +38,7 @@ import net.minecraft.world.level.storage.loot.LootTable;
  * balls of coral, whale skeletons and lost cargo drifting glowing through the black water; and the
  * litter of a drowned people on the floor: broken columns, amphorae, anchors and lamp posts.
  */
-public record AbyssLifeFeature(Style style) implements Feature {
+public record AbyssLifeFeature(Style style) implements SelfPlacing {
 	public static final MapCodec<AbyssLifeFeature> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 			Style.CODEC.fieldOf("style").forGetter(AbyssLifeFeature::style)
 	).apply(instance, AbyssLifeFeature::new));
@@ -56,11 +56,6 @@ public record AbyssLifeFeature(Style style) implements Feature {
 			Blocks.DEAD_FIRE_CORAL_FAN, Blocks.DEAD_HORN_CORAL_FAN};
 	private static final Block[] LIGHTS = {Blocks.SEA_LANTERN, Blocks.PEARLESCENT_FROGLIGHT, Blocks.VERDANT_FROGLIGHT, Blocks.OCHRE_FROGLIGHT,
 			Blocks.SHROOMLIGHT};
-
-	@Override
-	public MapCodec<? extends Feature> codec() {
-		return CODEC;
-	}
 
 	@Override
 	public boolean place(WorldGenLevel level, ChunkGenerator generator, RandomSource random, BlockPos origin) {

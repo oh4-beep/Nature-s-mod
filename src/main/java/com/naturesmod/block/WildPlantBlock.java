@@ -1,5 +1,7 @@
 package com.naturesmod.block;
 
+import com.mojang.serialization.MapCodec;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -25,6 +27,11 @@ public class WildPlantBlock extends VegetationBlock {
 		super(properties);
 		this.shape = Block.column(10.0, 0.0, height);
 		this.glows = glows;
+	}
+
+	@Override
+	protected MapCodec<? extends VegetationBlock> codec() {
+		return MapCodec.unit(this);
 	}
 
 	@Override
