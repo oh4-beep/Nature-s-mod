@@ -29,6 +29,7 @@ What changes from 26.3 to 26.2:
 import argparse
 import copy
 import json
+import math
 import os
 import pathlib
 import sys
@@ -437,10 +438,21 @@ def dimension_type(data):
 # Noise parameters and density functions
 
 def noise(data):
+    """Both versions weigh the octaves alike, halving each one's share, but scale the sum differently: 26.2 by the span
+    of octaves in use, 26.3 by the base amplitude over the sum's spread. Scaling every amplitude by the ratio of the
+    two gives the same values."""
     if "firstOctave" in data:
         return data
-    amplitudes = data.get("amplitude_modifiers") or [1.0] * data.get("octave_count", 1)
-    return {"amplitudes": amplitudes, "firstOctave": data["base_octave"]}
+    if data.get("normalize", True) is not True:
+        raise ValueError("cannot convert a noise normalized as %r" % data["normalize"])
+    count = data.get("octave_count", 1)
+    modifiers = data.get("amplitude_modifiers") or [1.0] * count
+    weights = [2.0 ** (count - 1 - i) / (2.0 ** count - 1.0) * abs(m) for i, m in enumerate(modifiers)]
+    spread = 0.2702247831245211 * math.sqrt(2.0) * math.sqrt(sum(w * w for w in weights))
+    factor_263 = data.get("base_amplitude", 1.0) * sum(weights) / 3.0 / spread
+    used = [i for i, m in enumerate(modifiers) if m != 0.0]
+    factor_262 = (1.0 / 6.0) / (0.1 * (1.0 + 1.0 / (used[-1] - used[0] + 1)))
+    return {"amplitudes": [m * factor_263 / factor_262 for m in modifiers], "firstOctave": data["base_octave"]}
 
 
 ONE_ARGUMENT = {"minecraft:abs", "minecraft:square", "minecraft:cube", "minecraft:half_negative",
