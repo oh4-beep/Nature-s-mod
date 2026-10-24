@@ -145,3 +145,12 @@ jobs:
         timeout-minutes: 5
         continue-on-error: true
         run: python3 .github/profile/hotspots.py /tmp/jfr/*.jfr || true
+      # Last, where the tail of the log shows it: what went wrong in the game, if anything.
+      - name: print the game test's problems
+        if: always()
+        run: |
+          log=build/run/clientGameTest/logs/latest.log
+          [ -f "$log" ] || exit 0
+          grep -n -E "ERROR|FAIL|Exception|Caused by|at com\.naturesmod|at net\.minecraft" "$log" | grep -v "Detected unsafe terrain read" | tail -200 || true
+          echo "----- the end of the game's log"
+          tail -60 "$log"
