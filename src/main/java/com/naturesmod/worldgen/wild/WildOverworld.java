@@ -42,20 +42,25 @@ public final class WildOverworld {
 	 * Somewhere in the thick of a biome near {@code at}, at the same height, and on the surface where most of it
 	 * lies on dry land. The closest point of a biome, which a search finds, lies on its edge or out in a lake, and
 	 * what grows in it is best seen inside: this looks over the few hundred blocks around, and when little of the
-	 * biome is there, over a few thousand. For tests and tools: it only works the biomes and the lie of the land
-	 * out, and generates nothing.
+	 * biome is there, further and further out, up to a few thousand blocks. For tests and tools: it only works the
+	 * biomes and the lie of the land out, and generates nothing.
 	 */
 	public static BlockPos heart(ServerLevel level, BlockPos at, ResourceKey<Biome> key, boolean dry) {
-		Spot near = thickest(level, at, key, dry, 24);
-		if (near.count() >= 12) {
-			return near.at();
+		Spot best = thickest(level, at, key, dry, 24);
+		for (int step = 96; best.count() < 12 && step <= 384; step *= 2) {
+			Spot far = thickest(level, at, key, dry, step);
+			// Closes in on the most of it out there, each look a quarter as wide: it lies within reach of the next.
+			for (int fine = step / 4; far.count() > 0; fine = Math.max(24, fine / 4)) {
+				far = thickest(level, far.at(), key, dry, fine);
+				if (fine == 24) {
+					break;
+				}
+			}
+			if (far.count() > best.count()) {
+				best = far;
+			}
 		}
-		Spot far = thickest(level, at, key, dry, 96);
-		if (far.count() == 0) {
-			return near.at();
-		}
-		Spot there = thickest(level, far.at(), key, dry, 24);
-		return there.count() > near.count() ? there.at() : near.at();
+		return best.at();
 	}
 
 	/** A spot, and how many of the 25 places around it are good ones. */
