@@ -11,6 +11,8 @@ import com.naturesmod.worldgen.wild.WildBiomeSource;
 import com.naturesmod.worldgen.wild.WildOverworld;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.QuartPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
@@ -133,6 +135,18 @@ final class WildTest {
 		test.line("%s: found at %s, looked at %s, %d blocks from spawn, in %.1fs; %d%% of the area around it is %s: %s", name,
 				found.getFirst().toShortString(), at.toShortString(), (int) Math.sqrt(at.getX() * (double) at.getX() + at.getZ() * (double) at.getZ()),
 				seconds, 100 * inside / columns, name, counts);
+		if (inside == 0) {
+			// Where the search and the generated world disagree, what each of them makes of the spot.
+			int surface = level.getHeight(Heightmap.Types.WORLD_SURFACE, at.getX(), at.getZ());
+			test.line("    the source says %s at y %d and %s at the surface (y %d); the world holds %s at y %d and %s at the surface",
+					name(level.getUncachedNoiseBiome(QuartPos.fromBlock(at.getX()), QuartPos.fromBlock(at.getY()), QuartPos.fromBlock(at.getZ()))),
+					at.getY(), name(level.getUncachedNoiseBiome(QuartPos.fromBlock(at.getX()), QuartPos.fromBlock(surface - 1), QuartPos.fromBlock(at.getZ()))),
+					surface, name(level.getBiome(at)), at.getY(), name(level.getBiome(at.atY(surface - 1))));
+			if (level.getChunkSource().getGenerator().getBiomeSource() instanceof WildBiomeSource wild) {
+				test.line("    world seeds seen: %s, the level's sampler gives %d", wild.seedsSeen(),
+						WildBiomeSource.seedOf(level.getChunkSource().randomState().sampler()));
+			}
+		}
 		if (!ground.isEmpty()) {
 			// What the biome stands on, most of it first: its own ground, or water, ice or snow where it has little.
 			List<Map.Entry<String, Integer>> most = new ArrayList<>(ground.entrySet());
@@ -153,5 +167,9 @@ final class WildTest {
 			}
 		});
 		return out;
+	}
+
+	private static String name(Holder<Biome> biome) {
+		return biome.unwrapKey().map(key -> key.identifier().toString()).orElse("?");
 	}
 }

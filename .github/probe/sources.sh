@@ -4,7 +4,7 @@
 set -u
 cd "$(dirname "$0")/../.."
 
-JARS=$(find "$HOME/.gradle/caches" .gradle -name '*sources.jar' 2>/dev/null | grep -i minecraft | sort -u)
+JARS=$(find "$HOME/.gradle/caches" .gradle -name '*sources.jar' 2>/dev/null | grep -i minecraft | grep -F "${MC_VERSION:-}" | sort -u)
 echo "SOURCE JARS:"
 echo "$JARS"
 mkdir -p /tmp/src

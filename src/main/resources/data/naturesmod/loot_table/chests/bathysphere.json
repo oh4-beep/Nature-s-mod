@@ -184,7 +184,7 @@
           "functions": [
             {
               "decoration": "minecraft:red_x",
-              "destination": "#naturesmod:on_rift_maps",
+              "destination": "naturesmod:on_rift_maps",
               "skip_existing_chunks": false,
               "zoom": 2,
               "function": "minecraft:exploration_map"

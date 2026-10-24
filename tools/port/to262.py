@@ -192,6 +192,9 @@ def function(value):
         out = {k: v for k, v in value.items() if k != "type"}
         out["function"] = value["type"]
     conditions(out)
+    if out["function"] == "minecraft:exploration_map" and str(out.get("destination", "")).startswith("#"):
+        # 26.3 marks the structure tag with "#"; 26.2 names it bare.
+        out["destination"] = out["destination"][1:]
     for key in ("on_pass", "on_fail"):
         if key in out:
             out[key] = function(out[key])

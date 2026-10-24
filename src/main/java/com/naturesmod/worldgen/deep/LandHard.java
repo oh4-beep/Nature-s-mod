@@ -625,7 +625,13 @@ final class LandHard {
 			if (Math.abs(x) <= 16 && Math.abs(z) <= 15 || Math.abs(x) <= 2) {
 				continue;
 			}
-			b.set(x, 1, z, i % 4 == 0 ? facing(Blocks.CARVED_PUMPKIN, Direction.SOUTH) : s(Blocks.DEAD_BUSH));
+			if (i % 4 == 0) {
+				b.set(x, 1, z, facing(Blocks.CARVED_PUMPKIN, Direction.SOUTH));
+			} else {
+				// A dead bush needs dry ground under it, whatever the land the manor was built on.
+				b.set(x, 0, z, Blocks.COARSE_DIRT);
+				b.set(x, 1, z, Blocks.DEAD_BUSH);
+			}
 		}
 		// The house: three storeys of dark timber under a steep roof.
 		b.fill(-16, 0, -11, 16, 0, 11, cobble);

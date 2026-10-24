@@ -229,6 +229,16 @@ public final class WildBiomeSource extends BiomeSource {
 		}
 	}
 
+	/** The world seeds the source has worked out from the climate samplers it was asked with, for tests. */
+	public Set<Long> seedsSeen() {
+		return Set.copyOf(fields.keySet());
+	}
+
+	/** The world seed a climate sampler belongs to, for tests. */
+	public static long seedOf(Climate.Sampler sampler) {
+		return WorldSeed.of(sampler);
+	}
+
 	/** The new biomes a source can turn out, for tests and tools. */
 	public Set<Holder<Biome>> wildBiomes() {
 		Set<Holder<Biome>> out = new HashSet<>();

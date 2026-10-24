@@ -4,6 +4,28 @@ name: build
 on: [pull_request, push, workflow_dispatch]
 
 jobs:
+  # Temporary development aid: noise and world generation sources of 26.2 and 26.3, to match their behaviour.
+  probe:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v6
+      - name: setup jdk
+        uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'microsoft'
+      - name: sources of 26.2
+        run: |
+          chmod +x ./gradlew && ./gradlew genSources --quiet
+          MC_VERSION=26.2 bash .github/probe/sources.sh .github/probe/noise.txt
+      - name: sources of 26.3
+        run: |
+          sed -i 's/^minecraft_version=.*/minecraft_version=26.3/; s/^fabric_api_version=.*/fabric_api_version=0.163.0+26.3/; s/^loader_version=.*/loader_version=0.19.5/' gradle.properties
+          rm -rf /tmp/src
+          ./gradlew genSources --quiet
+          MC_VERSION=26.3 bash .github/probe/sources.sh .github/probe/noise.txt
+
   build:
     runs-on: ubuntu-24.04
     steps:

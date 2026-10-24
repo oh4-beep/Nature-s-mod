@@ -229,7 +229,7 @@
           "functions": [
             {
               "decoration": "minecraft:monument",
-              "destination": "#naturesmod:on_sanctum_maps",
+              "destination": "naturesmod:on_sanctum_maps",
               "skip_existing_chunks": false,
               "zoom": 2,
               "search_radius": 100,
