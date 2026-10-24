@@ -18,6 +18,14 @@ jobs:
           distribution: 'microsoft'
       - name: make gradle wrapper executable
         run: chmod +x ./gradlew
+      - name: list fabric versions for this minecraft
+        # Temporary: which Fabric API builds exist for the Minecraft version in gradle.properties.
+        continue-on-error: true
+        run: |
+          mc=$(grep '^minecraft_version=' gradle.properties | cut -d= -f2)
+          curl -s https://maven.fabricmc.net/net/fabricmc/fabric-api/fabric-api/maven-metadata.xml | grep -o "<version>[^<]*+$mc</version>" | tail -8
+          curl -s "https://meta.fabricmc.net/v2/versions/loader/$mc" | head -c 600; echo
+          curl -s https://maven.fabricmc.net/net/fabricmc/fabric-loom/net.fabricmc.fabric-loom.gradle.plugin/maven-metadata.xml | grep -o "<version>1\.1[0-9][^<]*</version>" | tail -6
       - name: build
         run: ./gradlew build
       - name: capture build artifacts

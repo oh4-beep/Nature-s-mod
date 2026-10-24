@@ -70,6 +70,8 @@ processResources {
 tasks.withType(JavaCompile).configureEach {
 	it.options.release = 25
 	it.options.encoding = "UTF-8"
+	// Every error at once, not the first hundred.
+	it.options.compilerArgs += ["-Xmaxerrs", "5000"]
 }
 
 java {
