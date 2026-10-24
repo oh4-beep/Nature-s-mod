@@ -14,8 +14,6 @@ import net.minecraft.client.renderer.fog.environment.AtmosphericFogEnvironment;
 import net.minecraft.client.renderer.fog.environment.FogEnvironment;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.material.FogType;
-import org.joml.Vector3f;
-import org.joml.Vector3fc;
 
 /**
  * The air of a disaster: thick with dust in a sandstorm, white in a blizzard, dark under an ash cloud,
@@ -24,8 +22,6 @@ import org.joml.Vector3fc;
  * the fog): in the worst of a whiteout or a haboob, a few blocks.
  */
 final class DisasterFog extends AtmosphericFogEnvironment {
-	private final Vector3f color = new Vector3f();
-
 	/** Puts it in the game's list of fog environments, just before the open air's own. */
 	@SuppressWarnings("unchecked")
 	static void install() {
@@ -52,15 +48,23 @@ final class DisasterFog extends AtmosphericFogEnvironment {
 	}
 
 	@Override
-	public Vector3fc getBaseColor(ClientLevel level, Camera camera, int renderDistance, float partialTicks) {
-		Vector3fc base = super.getBaseColor(level, camera, renderDistance, partialTicks);
+	public int getBaseColor(ClientLevel level, Camera camera, int renderDistance, float partialTicks) {
+		int base = super.getBaseColor(level, camera, renderDistance, partialTicks);
+		float red = (base >> 16 & 0xFF) / 255.0F;
+		float green = (base >> 8 & 0xFF) / 255.0F;
+		float blue = (base & 0xFF) / 255.0F;
 		float amount = DisasterClient.fogAmount();
 		// Disaster air is lit by the same sky: dim it as the day dims.
-		float light = Math.max(0.15F, Math.max(base.x(), Math.max(base.y(), base.z())) * 1.15F);
+		float light = Math.max(0.15F, Math.max(red, Math.max(green, blue)) * 1.15F);
 		light = Math.min(1.0F, light);
-		color.set(base.x() + (DisasterClient.fogRed() * light - base.x()) * amount, base.y() + (DisasterClient.fogGreen() * light - base.y()) * amount,
-				base.z() + (DisasterClient.fogBlue() * light - base.z()) * amount);
-		return color;
+		red += (DisasterClient.fogRed() * light - red) * amount;
+		green += (DisasterClient.fogGreen() * light - green) * amount;
+		blue += (DisasterClient.fogBlue() * light - blue) * amount;
+		return base & 0xFF000000 | channel(red) << 16 | channel(green) << 8 | channel(blue);
+	}
+
+	private static int channel(float value) {
+		return Math.round(Math.clamp(value, 0.0F, 1.0F) * 255.0F);
 	}
 
 	@Override

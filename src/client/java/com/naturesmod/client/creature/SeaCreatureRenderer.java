@@ -65,7 +65,7 @@ public class SeaCreatureRenderer extends MobRenderer<Mob, CreatureRenderState, S
 				&& !"ray".equals(plan)) {
 			// Out of the water a fish lies on its side.
 			poseStack.translate(0.0F, 0.12F * this.species.scale(), 0.0F);
-			poseStack.rotateDegrees(Axis.ZP, 90.0F);
+			poseStack.mulPose(Axis.ZP.rotationDegrees(90.0F));
 		}
 	}
 

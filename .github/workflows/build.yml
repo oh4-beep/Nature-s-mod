@@ -25,6 +25,11 @@ jobs:
         run: bash .github/probe/fabric.sh
       - name: print vanilla data
         run: bash .github/probe/data.sh
+      - name: export vanilla data and sources
+        run: |
+          bash .github/probe/export.sh net/minecraft/world/level/levelgen net/minecraft/world/level/storage/loot \
+            net/minecraft/world/level/dimension net/minecraft/world/level/biome net/minecraft/world/attribute \
+            net/minecraft/world/timeline net/minecraft/advancements/criterion net/minecraft/world/item/crafting
 
   build:
     runs-on: ubuntu-24.04
