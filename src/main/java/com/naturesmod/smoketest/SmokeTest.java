@@ -54,7 +54,7 @@ public final class SmokeTest {
 	private static final int REGION_CHUNKS = 8;
 	/** Besides the spawn area, the test visits the nearest example of each of these biomes. */
 	private static final String[] TARGET_BIOMES = {"jagged_peaks", "stony_peaks", "frozen_peaks", "snowy_slopes", "meadow", "cherry_grove",
-			"windswept_hills", "jungle", "badlands", "dappled_forest", "old_growth_spruce_taiga", "swamp", "stony_shore", "desert"};
+			"windswept_hills", "jungle", "badlands", "birch_forest", "old_growth_spruce_taiga", "swamp", "stony_shore", "desert"};
 	private static final String RAMP = ".,:;=+*#%@";
 	private static final int[] BANDS = {72, 100, 140, 180, 230, 280, 330, 380, 430};
 	/** The terrain survey samples heights every SURVEY_STEP blocks out to SURVEY_RADIUS from spawn. */

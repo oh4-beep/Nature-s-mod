@@ -3,15 +3,17 @@
     "there": {
       "trigger": "minecraft:location",
       "conditions": {
-        "player": {
-          "type": "minecraft:entity_properties",
-          "entity": "this",
-          "predicate": {
-            "minecraft:location": {
-              "biomes": "naturesmod:obsidian_spires"
-            }
+        "player": [
+          {
+            "entity": "this",
+            "predicate": {
+              "minecraft:location": {
+                "biomes": "naturesmod:obsidian_spires"
+              }
+            },
+            "condition": "minecraft:entity_properties"
           }
-        }
+        ]
       }
     }
   },

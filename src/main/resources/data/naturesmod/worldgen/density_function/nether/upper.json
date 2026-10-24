@@ -1,6 +1,6 @@
 {
   "type": "minecraft:add",
-  "left": {
+  "argument1": {
     "type": "minecraft:old_blended_noise",
     "smear_scale_multiplier": 8.0,
     "xz_factor": 170.0,
@@ -8,18 +8,18 @@
     "y_factor": 150.0,
     "y_scale": 0.18
   },
-  "right": {
+  "argument2": {
     "type": "minecraft:add",
-    "left": -0.22,
-    "right": {
+    "argument1": -0.22,
+    "argument2": {
       "type": "minecraft:mul",
-      "left": {
+      "argument1": {
         "type": "minecraft:noise",
         "noise": "naturesmod:nether/caverns",
         "xz_scale": 1.0,
         "y_scale": 0.0
       },
-      "right": 0.25
+      "argument2": 0.25
     }
   }
 }

@@ -4,33 +4,6 @@ name: build
 on: [pull_request, push, workflow_dispatch]
 
 jobs:
-  # Temporary development aid: the Minecraft 26.2 sources and vanilla data the port to 26.2 has to follow.
-  probe:
-    runs-on: ubuntu-24.04
-    steps:
-      - name: checkout repository
-        uses: actions/checkout@v6
-      - name: setup jdk
-        uses: actions/setup-java@v5
-        with:
-          java-version: '25'
-          distribution: 'microsoft'
-      - name: decompile minecraft
-        run: chmod +x ./gradlew && ./gradlew genSources --quiet
-      - name: print sources
-        run: |
-          bash .github/probe/sources.sh .github/probe/client.txt
-          bash .github/probe/sources.sh .github/probe/client262.txt
-      - name: print fabric api
-        run: bash .github/probe/fabric.sh
-      - name: print vanilla data
-        run: bash .github/probe/data.sh
-      - name: export vanilla data and sources
-        run: |
-          bash .github/probe/export.sh net/minecraft/world/level/levelgen net/minecraft/world/level/storage/loot \
-            net/minecraft/world/level/dimension net/minecraft/world/level/biome net/minecraft/world/attribute \
-            net/minecraft/world/timeline net/minecraft/advancements/criterion net/minecraft/world/item/crafting
-
   build:
     runs-on: ubuntu-24.04
     steps:
@@ -45,14 +18,6 @@ jobs:
           distribution: 'microsoft'
       - name: make gradle wrapper executable
         run: chmod +x ./gradlew
-      - name: list fabric versions for this minecraft
-        # Temporary: which Fabric API builds exist for the Minecraft version in gradle.properties.
-        continue-on-error: true
-        run: |
-          mc=$(grep '^minecraft_version=' gradle.properties | cut -d= -f2)
-          curl -s https://maven.fabricmc.net/net/fabricmc/fabric-api/fabric-api/maven-metadata.xml | grep -o "<version>[^<]*+$mc</version>" | tail -8
-          curl -s "https://meta.fabricmc.net/v2/versions/loader/$mc" | head -c 600; echo
-          curl -s https://maven.fabricmc.net/net/fabricmc/fabric-loom/net.fabricmc.fabric-loom.gradle.plugin/maven-metadata.xml | grep -o "<version>1\.1[0-9][^<]*</version>" | tail -6
       - name: build
         run: ./gradlew build
       - name: capture build artifacts

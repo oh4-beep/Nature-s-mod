@@ -9,9 +9,11 @@
           "name": "naturesmod:blue_starfish"
         }
       ],
-      "condition": {
-        "type": "minecraft:survives_explosion"
-      }
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
     }
   ]
 }

@@ -18,8 +18,7 @@
     },
     "minecraft:gameplay/bed_rule": {
       "can_set_spawn": "never",
-      "can_sleep": "never",
-      "destroy_on_use": false
+      "can_sleep": "never"
     },
     "minecraft:gameplay/respawn_anchor_works": false,
     "minecraft:gameplay/can_start_raid": false,

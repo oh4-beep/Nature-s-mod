@@ -12,53 +12,61 @@
           "type": "minecraft:item",
           "name": "minecraft:diamond",
           "weight": 8,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 1,
-              "max": 3
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 3
+              },
+              "function": "minecraft:set_count"
             }
-          }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:emerald",
           "weight": 8,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 2,
-              "max": 6
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 6
+              },
+              "function": "minecraft:set_count"
             }
-          }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:gold_ingot",
           "weight": 8,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 2,
-              "max": 6
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 6
+              },
+              "function": "minecraft:set_count"
             }
-          }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:iron_ingot",
           "weight": 8,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 3,
-              "max": 8
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 3,
+                "max": 8
+              },
+              "function": "minecraft:set_count"
             }
-          }
+          ]
         },
         {
           "type": "minecraft:item",
@@ -69,32 +77,34 @@
           "type": "minecraft:item",
           "name": "minecraft:experience_bottle",
           "weight": 6,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 2,
-              "max": 6
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 6
+              },
+              "function": "minecraft:set_count"
             }
-          }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:book",
           "weight": 6,
-          "modifier": [
+          "functions": [
             {
-              "type": "minecraft:set_count",
-              "count": 1
+              "count": 1,
+              "function": "minecraft:set_count"
             },
             {
-              "type": "minecraft:enchant_with_levels",
               "levels": {
                 "type": "minecraft:uniform",
                 "min": 25,
                 "max": 39
               },
-              "options": "#minecraft:on_random_loot"
+              "options": "#minecraft:on_random_loot",
+              "function": "minecraft:enchant_with_levels"
             }
           ]
         },
@@ -107,27 +117,31 @@
           "type": "minecraft:item",
           "name": "minecraft:gold_block",
           "weight": 6,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 1,
-              "max": 3
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 3
+              },
+              "function": "minecraft:set_count"
             }
-          }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:emerald_block",
           "weight": 4,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 1,
-              "max": 2
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 2
+              },
+              "function": "minecraft:set_count"
             }
-          }
+          ]
         },
         {
           "type": "minecraft:item",
@@ -138,27 +152,31 @@
           "type": "minecraft:item",
           "name": "minecraft:netherite_scrap",
           "weight": 4,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 1,
-              "max": 2
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 2
+              },
+              "function": "minecraft:set_count"
             }
-          }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:golden_apple",
           "weight": 6,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 1,
-              "max": 3
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 3
+              },
+              "function": "minecraft:set_count"
             }
-          }
+          ]
         },
         {
           "type": "minecraft:item",
@@ -194,14 +212,14 @@
           "type": "minecraft:item",
           "name": "minecraft:trident",
           "weight": 1,
-          "modifier": [
+          "functions": [
             {
-              "type": "minecraft:set_count",
-              "count": 1
+              "count": 1,
+              "function": "minecraft:set_count"
             },
             {
-              "type": "minecraft:enchant_randomly",
-              "options": "#minecraft:on_random_loot"
+              "options": "#minecraft:on_random_loot",
+              "function": "minecraft:enchant_randomly"
             }
           ]
         },

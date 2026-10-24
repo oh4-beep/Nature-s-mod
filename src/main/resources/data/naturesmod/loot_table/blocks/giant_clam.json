@@ -9,9 +9,11 @@
           "name": "naturesmod:giant_clam"
         }
       ],
-      "condition": {
-        "type": "minecraft:survives_explosion"
-      }
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
     },
     {
       "rolls": 1,
@@ -21,13 +23,15 @@
           "name": "naturesmod:pearl"
         }
       ],
-      "condition": {
-        "type": "minecraft:match_block",
-        "blocks": "naturesmod:giant_clam",
-        "state": {
-          "has_pearl": "true"
+      "conditions": [
+        {
+          "block": "naturesmod:giant_clam",
+          "properties": {
+            "has_pearl": "true"
+          },
+          "condition": "minecraft:block_state_property"
         }
-      }
+      ]
     }
   ]
 }

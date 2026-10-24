@@ -1,0 +1,24 @@
+{
+  "type": "naturesmod:giant_tree",
+  "config": {
+    "style": "baobab",
+    "log": {
+      "Name": "minecraft:acacia_log",
+      "Properties": {
+        "axis": "y"
+      }
+    },
+    "min_height": 10,
+    "max_height": 15,
+    "leaves": [
+      {
+        "Name": "minecraft:acacia_leaves",
+        "Properties": {
+          "distance": "7",
+          "persistent": "false",
+          "waterlogged": "false"
+        }
+      }
+    ]
+  }
+}

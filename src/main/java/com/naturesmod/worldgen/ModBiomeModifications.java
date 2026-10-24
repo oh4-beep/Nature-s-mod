@@ -22,7 +22,7 @@ import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 /** Decides which biomes get which Nature's Mod features. */
 public final class ModBiomeModifications {
 	private static final List<String> TEMPERATE_FORESTS = List.of("forest", "flower_forest", "birch_forest", "old_growth_birch_forest",
-			"dark_forest", "dappled_forest", "naturesmod:maple_woods", "naturesmod:glowshroom_forest");
+			"dark_forest", "naturesmod:maple_woods", "naturesmod:glowshroom_forest");
 	private static final List<String> TAIGAS = List.of("taiga", "old_growth_pine_taiga", "old_growth_spruce_taiga");
 	private static final List<String> SNOWY = List.of("snowy_taiga", "snowy_plains", "ice_spikes", "snowy_slopes", "frozen_peaks",
 			"jagged_peaks", "grove", "naturesmod:tundra");
@@ -74,8 +74,8 @@ public final class ModBiomeModifications {
 		add("ancient_oak", Decoration.LOCAL_MODIFICATIONS, List.of("forest", "flower_forest"));
 		add("ancient_oak_rare", Decoration.LOCAL_MODIFICATIONS, PLAINS, List.of("meadow", "windswept_forest"));
 		add("ancient_dark_oak", Decoration.LOCAL_MODIFICATIONS, List.of("dark_forest"));
-		add("autumn_giant", Decoration.LOCAL_MODIFICATIONS, List.of("dappled_forest"));
-		add("autumn_giant_rare", Decoration.LOCAL_MODIFICATIONS, List.of("forest", "flower_forest", "birch_forest"));
+		// This version has no autumn leaves of its own: the giants turn red only under the Maple Woods' autumn sky.
+		add("autumn_giant", Decoration.LOCAL_MODIFICATIONS, List.of("naturesmod:maple_woods"));
 		add("giant_birch", Decoration.LOCAL_MODIFICATIONS, List.of("birch_forest", "old_growth_birch_forest"));
 		add("redwood", Decoration.LOCAL_MODIFICATIONS, List.of("old_growth_spruce_taiga", "old_growth_pine_taiga"));
 		add("redwood_rare", Decoration.LOCAL_MODIFICATIONS, List.of("taiga", "snowy_taiga", "grove"));
@@ -93,11 +93,10 @@ public final class ModBiomeModifications {
 		add("fallen_spruce_log", Decoration.VEGETAL_DECORATION, TAIGAS, List.of("snowy_taiga", "grove", "windswept_forest"));
 		add("fallen_dark_oak_log", Decoration.VEGETAL_DECORATION, List.of("dark_forest", "pale_garden"));
 		add("fallen_jungle_log", Decoration.VEGETAL_DECORATION, JUNGLES);
-		add("fallen_poplar_log", Decoration.VEGETAL_DECORATION, List.of("dappled_forest"));
 
 		add("cliff_vines_lush", Decoration.VEGETAL_DECORATION, JUNGLES, SWAMPS, List.of("dark_forest"));
 		add("cliff_vines_sparse", Decoration.VEGETAL_DECORATION, List.of("forest", "flower_forest", "birch_forest", "old_growth_birch_forest",
-				"dappled_forest", "cherry_grove", "windswept_forest"));
+				"cherry_grove", "windswept_forest"));
 		add("forest_leaf_litter", Decoration.VEGETAL_DECORATION, List.of("forest", "flower_forest", "birch_forest",
 				"old_growth_birch_forest", "windswept_forest"));
 		add("forest_bush", Decoration.VEGETAL_DECORATION, TEMPERATE_FORESTS, TAIGAS, PLAINS);

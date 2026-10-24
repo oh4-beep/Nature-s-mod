@@ -1,8 +1,8 @@
 {
-  "type": "minecraft:cache",
-  "input": {
+  "type": "minecraft:flat_cache",
+  "argument": {
     "type": "minecraft:mul",
-    "left": {
+    "argument1": {
       "type": "minecraft:spline",
       "spline": {
         "coordinate": {
@@ -60,18 +60,18 @@
         ]
       }
     },
-    "right": {
+    "argument2": {
       "type": "minecraft:add",
-      "left": 1.0,
-      "right": {
+      "argument1": 1.0,
+      "argument2": {
         "type": "minecraft:mul",
-        "left": {
+        "argument1": {
           "type": "minecraft:noise",
           "noise": "naturesmod:abyss/rough",
           "xz_scale": 1.0,
           "y_scale": 0.0
         },
-        "right": 0.18
+        "argument2": 0.18
       }
     }
   }

@@ -1,0 +1,48 @@
+{
+  "type": "naturesmod:giant_tree",
+  "config": {
+    "style": "autumn",
+    "log": {
+      "Name": "minecraft:birch_log",
+      "Properties": {
+        "axis": "y"
+      }
+    },
+    "min_height": 14,
+    "max_height": 22,
+    "leaves": [
+      {
+        "Name": "minecraft:oak_leaves",
+        "Properties": {
+          "distance": "7",
+          "persistent": "false",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "Name": "minecraft:dark_oak_leaves",
+        "Properties": {
+          "distance": "7",
+          "persistent": "false",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "Name": "minecraft:acacia_leaves",
+        "Properties": {
+          "distance": "7",
+          "persistent": "false",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "Name": "minecraft:oak_leaves",
+        "Properties": {
+          "distance": "7",
+          "persistent": "false",
+          "waterlogged": "false"
+        }
+      }
+    ]
+  }
+}

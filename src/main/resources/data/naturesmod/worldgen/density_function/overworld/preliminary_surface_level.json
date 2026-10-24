@@ -1,87 +1,105 @@
 {
   "type": "minecraft:find_top_surface",
-  "cell_height": 8,
   "density": {
     "type": "minecraft:add",
-    "left": {
-      "type": "minecraft:lerp",
-      "alpha": {
-        "type": "minecraft:gradient",
-        "axis": "y",
-        "from_coordinate": -64,
-        "from_value": 0.0,
-        "to_coordinate": -40,
-        "to_value": 1.0
-      },
-      "first": 0.1171875,
-      "second": {
-        "type": "minecraft:lerp",
-        "alpha": {
-          "type": "minecraft:gradient",
-          "axis": "y",
-          "from_coordinate": 496,
-          "from_value": 1.0,
-          "to_coordinate": 512,
-          "to_value": 0.0
+    "argument1": {
+      "type": "minecraft:add",
+      "argument1": 0.1171875,
+      "argument2": {
+        "type": "minecraft:mul",
+        "argument1": {
+          "type": "minecraft:y_clamped_gradient",
+          "from_y": -64,
+          "to_y": -40,
+          "from_value": 0.0,
+          "to_value": 1.0
         },
-        "first": -0.078125,
-        "second": {
-          "type": "minecraft:clamp",
-          "input": {
+        "argument2": {
+          "type": "minecraft:add",
+          "argument1": {
             "type": "minecraft:add",
-            "left": {
+            "argument1": -0.078125,
+            "argument2": {
               "type": "minecraft:mul",
-              "left": {
-                "type": "minecraft:quarter_negative",
-                "input": {
-                  "type": "minecraft:mul",
-                  "left": {
-                    "type": "minecraft:add",
-                    "left": {
-                      "type": "minecraft:gradient",
-                      "axis": "y",
-                      "from_coordinate": -64,
-                      "from_value": 1.5,
-                      "to_coordinate": 576,
-                      "to_value": -3.5
-                    },
-                    "right": "naturesmod:overworld/offset"
-                  },
-                  "right": "naturesmod:overworld/factor"
-                }
+              "argument1": {
+                "type": "minecraft:y_clamped_gradient",
+                "from_y": 496,
+                "to_y": 512,
+                "from_value": 1.0,
+                "to_value": 0.0
               },
-              "right": 4.0
-            },
-            "right": -0.703125
+              "argument2": {
+                "type": "minecraft:add",
+                "argument1": {
+                  "type": "minecraft:clamp",
+                  "input": {
+                    "type": "minecraft:add",
+                    "argument1": {
+                      "type": "minecraft:mul",
+                      "argument1": {
+                        "type": "minecraft:quarter_negative",
+                        "argument": {
+                          "type": "minecraft:mul",
+                          "argument1": {
+                            "type": "minecraft:add",
+                            "argument1": {
+                              "type": "minecraft:y_clamped_gradient",
+                              "from_y": -64,
+                              "to_y": 576,
+                              "from_value": 1.5,
+                              "to_value": -3.5
+                            },
+                            "argument2": "naturesmod:overworld/offset"
+                          },
+                          "argument2": "naturesmod:overworld/factor"
+                        }
+                      },
+                      "argument2": 4.0
+                    },
+                    "argument2": -0.703125
+                  },
+                  "min": -64.0,
+                  "max": 64.0
+                },
+                "argument2": 0.078125
+              }
+            }
           },
-          "max": 64.0,
-          "min": -64.0
+          "argument2": -0.1171875
         }
       }
     },
-    "right": -0.390625
+    "argument2": -0.390625
   },
-  "lower_bound": -64,
   "upper_bound": {
     "type": "minecraft:clamp",
     "input": {
       "type": "minecraft:add",
-      "left": {
+      "argument1": {
         "type": "minecraft:mul",
-        "left": {
-          "type": "minecraft:sub",
-          "left": {
-            "type": "minecraft:div",
-            "left": 0.2734375,
-            "right": "naturesmod:overworld/factor"
+        "argument1": {
+          "type": "minecraft:add",
+          "argument1": {
+            "type": "minecraft:mul",
+            "argument1": {
+              "type": "minecraft:invert",
+              "argument": "naturesmod:overworld/factor"
+            },
+            "argument2": 0.2734375
           },
-          "right": "naturesmod:overworld/offset"
+          "argument2": {
+            "type": "minecraft:mul",
+            "argument1": "naturesmod:overworld/offset",
+            "argument2": -1.0
+          }
         },
-        "right": -128.0
+        "argument2": -128.0
       },
-      "right": 128.0
+      "argument2": 128.0
     },
-    "max": 576.0,
-    "min": -40.0
-  }
+    "min": -40.0,
+    "max": 576.0
+  },
+  "lower_bound": -64,
+  "cell_height": 8
 }

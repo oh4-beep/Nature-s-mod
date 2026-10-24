@@ -1,51 +1,51 @@
 {
-  "type": "minecraft:cache",
-  "input": {
+  "type": "minecraft:flat_cache",
+  "argument": {
     "type": "minecraft:mul",
-    "left": {
+    "argument1": {
       "type": "minecraft:mul",
-      "left": {
+      "argument1": {
         "type": "minecraft:square",
-        "input": {
+        "argument": {
           "type": "minecraft:clamp",
           "input": {
             "type": "minecraft:mul",
-            "left": {
+            "argument1": {
               "type": "minecraft:add",
-              "left": {
+              "argument1": {
                 "type": "minecraft:noise",
                 "noise": "naturesmod:end/spire",
                 "xz_scale": 1.0,
                 "y_scale": 0.0
               },
-              "right": -0.5
+              "argument2": -0.5
             },
-            "right": 2.6
+            "argument2": 2.6
           },
           "min": 0.0,
           "max": 1.0
         }
       },
-      "right": {
+      "argument2": {
         "type": "minecraft:clamp",
         "input": {
           "type": "minecraft:mul",
-          "left": {
+          "argument1": {
             "type": "minecraft:add",
-            "left": {
+            "argument1": {
               "type": "minecraft:noise",
               "noise": "naturesmod:end/spire_region",
               "xz_scale": 1.0,
               "y_scale": 0.0
             },
-            "right": -0.1
+            "argument2": -0.1
           },
-          "right": 3.0
+          "argument2": 3.0
         },
         "min": 0.0,
         "max": 1.0
       }
     },
-    "right": "naturesmod:end/land"
+    "argument2": "naturesmod:end/land"
   }
 }

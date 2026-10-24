@@ -1,17 +1,17 @@
 {
-  "type": "minecraft:cache",
-  "input": {
+  "type": "minecraft:flat_cache",
+  "argument": {
     "type": "minecraft:clamp",
     "input": {
       "type": "minecraft:add",
-      "left": {
+      "argument1": {
         "type": "minecraft:mul",
-        "left": {
-          "type": "minecraft:slice",
+        "argument1": {
+          "type": "naturesmod:slice",
           "axis": "y",
           "coordinate": 0,
           "input": {
-            "type": "minecraft:distance_to_point",
+            "type": "naturesmod:distance_to_point",
             "metric": "euclidean",
             "point": [
               0,
@@ -20,9 +20,9 @@
             ]
           }
         },
-        "right": 0.007142857142857143
+        "argument2": 0.007142857142857143
       },
-      "right": -7.142857142857143
+      "argument2": -7.142857142857143
     },
     "min": 0.0,
     "max": 1.0

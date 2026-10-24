@@ -1,0 +1,7 @@
+{
+  "type": "naturesmod:cliff_vines",
+  "config": {
+    "density": 0.12,
+    "min_drop": 6
+  }
+}

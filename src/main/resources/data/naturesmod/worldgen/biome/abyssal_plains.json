@@ -25,34 +25,24 @@
         "tick_delay": 3000
       }
     },
-    "minecraft:gameplay/natural_mob_spawns": {
-      "argument": {
-        "spawn_costs": {},
-        "spawns_by_category": {}
-      },
-      "modifier": "overlay"
-    },
     "minecraft:visual/water_fog_color": "#0c1d2e",
     "minecraft:visual/water_fog_end_distance": 104.0,
     "minecraft:visual/fog_color": "#02060c",
     "minecraft:visual/sky_color": "#000000",
-    "minecraft:visual/ambient_particles": {
-      "argument": [
-        {
-          "particle": {
-            "type": "minecraft:white_ash"
-          },
-          "probability": 0.025
+    "minecraft:visual/ambient_particles": [
+      {
+        "particle": {
+          "type": "minecraft:white_ash"
         },
-        {
-          "particle": {
-            "type": "minecraft:underwater"
-          },
-          "probability": 0.02
-        }
-      ],
-      "modifier": "append"
-    }
+        "probability": 0.025
+      },
+      {
+        "particle": {
+          "type": "minecraft:underwater"
+        },
+        "probability": 0.02
+      }
+    ]
   },
   "carvers": [],
   "downfall": 0.5,
@@ -94,5 +84,16 @@
     []
   ],
   "has_precipitation": false,
-  "temperature": 0.5
+  "temperature": 0.5,
+  "spawners": {
+    "ambient": [],
+    "axolotls": [],
+    "creature": [],
+    "misc": [],
+    "monster": [],
+    "underground_water_creature": [],
+    "water_ambient": [],
+    "water_creature": []
+  },
+  "spawn_costs": {}
 }

@@ -1,8 +1,8 @@
 {
-  "type": "minecraft:cache",
-  "input": {
+  "type": "minecraft:flat_cache",
+  "argument": {
     "type": "minecraft:mul",
-    "left": {
+    "argument1": {
       "type": "minecraft:spline",
       "spline": {
         "coordinate": {
@@ -40,6 +40,6 @@
         ]
       }
     },
-    "right": "naturesmod:abyss/plain_factor"
+    "argument2": "naturesmod:abyss/plain_factor"
   }
 }

@@ -9,9 +9,11 @@
           "name": "naturesmod:bounce_stem"
         }
       ],
-      "condition": {
-        "type": "minecraft:survives_explosion"
-      }
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
     }
   ]
 }

@@ -1,0 +1,22 @@
+{
+  "type": "naturesmod:boulder",
+  "config": {
+    "materials": [
+      {
+        "Name": "minecraft:stone"
+      },
+      {
+        "Name": "minecraft:andesite"
+      },
+      {
+        "Name": "minecraft:stone"
+      },
+      {
+        "Name": "minecraft:cobblestone"
+      }
+    ],
+    "moss_chance": 0.12,
+    "min_radius": 1.5,
+    "max_radius": 3.6
+  }
+}

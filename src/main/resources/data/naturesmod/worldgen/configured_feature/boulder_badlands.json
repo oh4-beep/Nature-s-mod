@@ -1,0 +1,22 @@
+{
+  "type": "naturesmod:boulder",
+  "config": {
+    "materials": [
+      {
+        "Name": "minecraft:red_sandstone"
+      },
+      {
+        "Name": "minecraft:terracotta"
+      },
+      {
+        "Name": "minecraft:orange_terracotta"
+      },
+      {
+        "Name": "minecraft:red_sandstone"
+      }
+    ],
+    "moss_chance": 0.0,
+    "min_radius": 2.0,
+    "max_radius": 4.0
+  }
+}

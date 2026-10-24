@@ -12,53 +12,61 @@
           "type": "minecraft:item",
           "name": "minecraft:gold_block",
           "weight": 8,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 1,
-              "max": 3
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 3
+              },
+              "function": "minecraft:set_count"
             }
-          }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:diamond_block",
           "weight": 4,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 1,
-              "max": 2
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 2
+              },
+              "function": "minecraft:set_count"
             }
-          }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:emerald_block",
           "weight": 6,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 1,
-              "max": 3
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 3
+              },
+              "function": "minecraft:set_count"
             }
-          }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:netherite_ingot",
           "weight": 4,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 1,
-              "max": 2
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 2
+              },
+              "function": "minecraft:set_count"
             }
-          }
+          ]
         },
         {
           "type": "minecraft:item",
@@ -69,97 +77,109 @@
           "type": "minecraft:item",
           "name": "minecraft:diamond",
           "weight": 12,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 2,
-              "max": 5
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 5
+              },
+              "function": "minecraft:set_count"
             }
-          }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:gold_ingot",
           "weight": 8,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 4,
-              "max": 10
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 4,
+                "max": 10
+              },
+              "function": "minecraft:set_count"
             }
-          }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:emerald",
           "weight": 8,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 3,
-              "max": 8
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 3,
+                "max": 8
+              },
+              "function": "minecraft:set_count"
             }
-          }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "naturesmod:starmetal_ingot",
           "weight": 10,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 1,
-              "max": 4
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 4
+              },
+              "function": "minecraft:set_count"
             }
-          }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:ender_pearl",
           "weight": 8,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 2,
-              "max": 5
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 5
+              },
+              "function": "minecraft:set_count"
             }
-          }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:experience_bottle",
           "weight": 6,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 3,
-              "max": 8
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 3,
+                "max": 8
+              },
+              "function": "minecraft:set_count"
             }
-          }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:book",
           "weight": 8,
-          "modifier": [
+          "functions": [
             {
-              "type": "minecraft:set_count",
-              "count": 1
+              "count": 1,
+              "function": "minecraft:set_count"
             },
             {
-              "type": "minecraft:enchant_with_levels",
               "levels": {
                 "type": "minecraft:uniform",
                 "min": 25,
                 "max": 39
               },
-              "options": "#minecraft:on_random_loot"
+              "options": "#minecraft:on_random_loot",
+              "function": "minecraft:enchant_with_levels"
             }
           ]
         },
@@ -172,40 +192,46 @@
           "type": "minecraft:item",
           "name": "minecraft:shulker_shell",
           "weight": 5,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 1,
-              "max": 2
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 2
+              },
+              "function": "minecraft:set_count"
             }
-          }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:dragon_breath",
           "weight": 3,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 1,
-              "max": 2
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 2
+              },
+              "function": "minecraft:set_count"
             }
-          }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:netherite_scrap",
           "weight": 3,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 1,
-              "max": 2
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 2
+              },
+              "function": "minecraft:set_count"
             }
-          }
+          ]
         }
       ]
     },
@@ -216,14 +242,16 @@
           "type": "minecraft:item",
           "name": "naturesmod:star_fragment",
           "weight": 1,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 2,
-              "max": 4
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 4
+              },
+              "function": "minecraft:set_count"
             }
-          }
+          ]
         }
       ]
     },

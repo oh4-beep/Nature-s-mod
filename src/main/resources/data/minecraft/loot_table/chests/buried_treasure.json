@@ -8,102 +8,114 @@
           "name": "minecraft:heart_of_the_sea"
         }
       ],
-      "rolls": 1
+      "rolls": 1.0
     },
     {
       "entries": [
         {
           "type": "minecraft:item",
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "max": 4,
-              "min": 1
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 4.0,
+                "min": 1.0
+              },
+              "function": "minecraft:set_count"
             }
-          },
+          ],
           "name": "minecraft:iron_ingot",
           "weight": 20
         },
         {
           "type": "minecraft:item",
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "max": 4,
-              "min": 1
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 4.0,
+                "min": 1.0
+              },
+              "function": "minecraft:set_count"
             }
-          },
+          ],
           "name": "minecraft:gold_ingot",
           "weight": 10
         },
         {
           "type": "minecraft:item",
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "max": 2,
-              "min": 1
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 2.0,
+                "min": 1.0
+              },
+              "function": "minecraft:set_count"
             }
-          },
+          ],
           "name": "minecraft:tnt",
           "weight": 5
         }
       ],
       "rolls": {
         "type": "minecraft:uniform",
-        "max": 8,
-        "min": 5
+        "max": 8.0,
+        "min": 5.0
       }
     },
     {
       "entries": [
         {
           "type": "minecraft:item",
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "max": 8,
-              "min": 4
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 8.0,
+                "min": 4.0
+              },
+              "function": "minecraft:set_count"
             }
-          },
+          ],
           "name": "minecraft:emerald",
           "weight": 5
         },
         {
           "type": "minecraft:item",
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "max": 2,
-              "min": 1
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 2.0,
+                "min": 1.0
+              },
+              "function": "minecraft:set_count"
             }
-          },
+          ],
           "name": "minecraft:diamond",
           "weight": 5
         },
         {
           "type": "minecraft:item",
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "max": 5,
-              "min": 1
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 5.0,
+                "min": 1.0
+              },
+              "function": "minecraft:set_count"
             }
-          },
+          ],
           "name": "minecraft:prismarine_crystals",
           "weight": 5
         }
       ],
       "rolls": {
         "type": "minecraft:uniform",
-        "max": 3,
-        "min": 1
+        "max": 3.0,
+        "min": 1.0
       }
     },
     {
@@ -123,38 +135,42 @@
       ],
       "rolls": {
         "type": "minecraft:uniform",
-        "max": 1,
-        "min": 0
+        "max": 1.0,
+        "min": 0.0
       }
     },
     {
       "entries": [
         {
           "type": "minecraft:item",
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "max": 4,
-              "min": 2
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 4.0,
+                "min": 2.0
+              },
+              "function": "minecraft:set_count"
             }
-          },
+          ],
           "name": "minecraft:cooked_cod"
         },
         {
           "type": "minecraft:item",
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "max": 4,
-              "min": 2
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 4.0,
+                "min": 2.0
+              },
+              "function": "minecraft:set_count"
             }
-          },
+          ],
           "name": "minecraft:cooked_salmon"
         }
       ],
-      "rolls": 2
+      "rolls": 2.0
     },
     {
       "entries": [
@@ -163,14 +179,16 @@
           "name": "minecraft:potion"
         }
       ],
-      "modifier": {
-        "type": "minecraft:set_potion",
-        "id": "minecraft:water_breathing"
-      },
+      "functions": [
+        {
+          "function": "minecraft:set_potion",
+          "id": "minecraft:water_breathing"
+        }
+      ],
       "rolls": {
         "type": "minecraft:uniform",
-        "max": 2,
-        "min": 0
+        "max": 2.0,
+        "min": 0.0
       }
     },
     {
@@ -181,42 +199,50 @@
         },
         {
           "type": "minecraft:item",
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": 1
-          },
+          "functions": [
+            {
+              "count": 1.0,
+              "function": "minecraft:set_count"
+            }
+          ],
           "name": "minecraft:copper_nautilus_armor",
           "weight": 20
         },
         {
           "type": "minecraft:item",
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": 1
-          },
+          "functions": [
+            {
+              "count": 1.0,
+              "function": "minecraft:set_count"
+            }
+          ],
           "name": "minecraft:iron_nautilus_armor",
           "weight": 10
         },
         {
           "type": "minecraft:item",
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": 1
-          },
+          "functions": [
+            {
+              "count": 1.0,
+              "function": "minecraft:set_count"
+            }
+          ],
           "name": "minecraft:golden_nautilus_armor",
           "weight": 5
         },
         {
           "type": "minecraft:item",
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": 1
-          },
+          "functions": [
+            {
+              "count": 1.0,
+              "function": "minecraft:set_count"
+            }
+          ],
           "name": "minecraft:diamond_nautilus_armor",
           "weight": 2
         }
       ],
-      "rolls": 1
+      "rolls": 1.0
     },
     {
       "rolls": 1,
@@ -229,20 +255,20 @@
           "type": "minecraft:item",
           "name": "minecraft:map",
           "weight": 1,
-          "modifier": [
+          "functions": [
             {
-              "type": "minecraft:exploration_map",
               "decoration": "minecraft:red_x",
               "destination": "#naturesmod:on_rift_maps",
               "skip_existing_chunks": false,
-              "zoom": 2
+              "zoom": 2,
+              "function": "minecraft:exploration_map"
             },
             {
-              "type": "minecraft:set_name",
               "name": {
                 "translate": "filled_map.naturesmod.abyssal_rift"
               },
-              "target": "item_name"
+              "target": "item_name",
+              "function": "minecraft:set_name"
             }
           ]
         }

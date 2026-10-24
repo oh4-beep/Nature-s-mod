@@ -1,72 +1,68 @@
 {
   "type": "minecraft:interpolated",
-  "cell_size_xz": 4,
-  "cell_size_y": 8,
-  "input": {
+  "argument": {
     "type": "minecraft:add",
-    "left": {
+    "argument1": {
       "type": "minecraft:max",
-      "left": {
+      "argument1": {
         "type": "minecraft:add",
-        "left": {
+        "argument1": {
           "type": "minecraft:add",
-          "left": {
+          "argument1": {
             "type": "minecraft:mul",
-            "left": {
+            "argument1": {
               "type": "minecraft:add",
-              "left": "naturesmod:abyss/floor",
-              "right": {
-                "type": "minecraft:negate",
-                "input": "minecraft:y"
+              "argument1": "naturesmod:abyss/floor",
+              "argument2": {
+                "type": "minecraft:mul",
+                "argument1": "minecraft:y",
+                "argument2": -1.0
               }
             },
-            "right": 0.041666666666666664
+            "argument2": 0.041666666666666664
           },
-          "right": {
+          "argument2": {
             "type": "minecraft:mul",
-            "left": {
+            "argument1": {
               "type": "minecraft:noise",
               "noise": "naturesmod:abyss/carve",
               "xz_scale": 1.0,
               "y_scale": 1.4
             },
-            "right": {
+            "argument2": {
               "type": "minecraft:add",
-              "left": 0.25,
-              "right": {
+              "argument1": 0.25,
+              "argument2": {
                 "type": "minecraft:mul",
-                "left": {
+                "argument1": {
                   "type": "minecraft:clamp",
                   "input": {
                     "type": "minecraft:mul",
-                    "left": {
+                    "argument1": {
                       "type": "minecraft:add",
-                      "left": "naturesmod:abyss/seamount",
-                      "right": "naturesmod:abyss/spire"
+                      "argument1": "naturesmod:abyss/seamount",
+                      "argument2": "naturesmod:abyss/spire"
                     },
-                    "right": 0.006666666666666667
+                    "argument2": 0.006666666666666667
                   },
                   "min": 0.0,
                   "max": 1.0
                 },
-                "right": 0.55
+                "argument2": 0.55
               }
             }
           }
         },
-        "right": {
-          "type": "minecraft:gradient",
-          "axis": "y",
-          "from_coordinate": 0,
+        "argument2": {
+          "type": "minecraft:y_clamped_gradient",
+          "from_y": 0,
+          "to_y": 12,
           "from_value": 2.0,
-          "to_coordinate": 12,
           "to_value": 0.0
         }
       },
-      "right": "naturesmod:abyss/islands"
+      "argument2": "naturesmod:abyss/islands"
     },
-    "right": {
-      "type": "minecraft:beardifier"
-    }
+    "argument2": 0.0
   }
 }

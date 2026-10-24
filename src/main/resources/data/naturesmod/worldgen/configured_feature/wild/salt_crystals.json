@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:simple_block",
+  "config": {
+    "to_place": {
+      "type": "minecraft:simple_state_provider",
+      "state": {
+        "Name": "naturesmod:salt_crystal",
+        "Properties": {
+          "facing": "up",
+          "waterlogged": "false"
+        }
+      }
+    }
+  }
+}

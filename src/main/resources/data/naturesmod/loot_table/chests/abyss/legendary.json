@@ -12,79 +12,91 @@
           "type": "minecraft:item",
           "name": "minecraft:diamond",
           "weight": 12,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 4,
-              "max": 9
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 4,
+                "max": 9
+              },
+              "function": "minecraft:set_count"
             }
-          }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:netherite_ingot",
           "weight": 6,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 1,
-              "max": 3
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 3
+              },
+              "function": "minecraft:set_count"
             }
-          }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:netherite_scrap",
           "weight": 8,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 2,
-              "max": 4
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 4
+              },
+              "function": "minecraft:set_count"
             }
-          }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:diamond_block",
           "weight": 4,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 1,
-              "max": 2
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 2
+              },
+              "function": "minecraft:set_count"
             }
-          }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:emerald_block",
           "weight": 4,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 1,
-              "max": 3
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 3
+              },
+              "function": "minecraft:set_count"
             }
-          }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:gold_block",
           "weight": 6,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 2,
-              "max": 4
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 4
+              },
+              "function": "minecraft:set_count"
             }
-          }
+          ]
         },
         {
           "type": "minecraft:item",
@@ -95,14 +107,16 @@
           "type": "minecraft:item",
           "name": "minecraft:golden_apple",
           "weight": 6,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 2,
-              "max": 4
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 4
+              },
+              "function": "minecraft:set_count"
             }
-          }
+          ]
         },
         {
           "type": "minecraft:item",
@@ -113,14 +127,16 @@
           "type": "minecraft:item",
           "name": "minecraft:experience_bottle",
           "weight": 6,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 8,
-              "max": 16
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 8,
+                "max": 16
+              },
+              "function": "minecraft:set_count"
             }
-          }
+          ]
         },
         {
           "type": "minecraft:item",
@@ -131,14 +147,16 @@
           "type": "minecraft:item",
           "name": "naturesmod:abyssal_plate",
           "weight": 6,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 2,
-              "max": 4
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 4
+              },
+              "function": "minecraft:set_count"
             }
-          }
+          ]
         },
         {
           "type": "minecraft:item",
@@ -234,71 +252,85 @@
           "type": "minecraft:item",
           "name": "minecraft:netherite_sword",
           "weight": 1,
-          "modifier": {
-            "type": "minecraft:enchant_with_levels",
-            "levels": 39,
-            "options": "#minecraft:on_random_loot"
-          }
+          "functions": [
+            {
+              "levels": 39,
+              "options": "#minecraft:on_random_loot",
+              "function": "minecraft:enchant_with_levels"
+            }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:netherite_pickaxe",
           "weight": 1,
-          "modifier": {
-            "type": "minecraft:enchant_with_levels",
-            "levels": 39,
-            "options": "#minecraft:on_random_loot"
-          }
+          "functions": [
+            {
+              "levels": 39,
+              "options": "#minecraft:on_random_loot",
+              "function": "minecraft:enchant_with_levels"
+            }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:netherite_helmet",
           "weight": 1,
-          "modifier": {
-            "type": "minecraft:enchant_with_levels",
-            "levels": 39,
-            "options": "#minecraft:on_random_loot"
-          }
+          "functions": [
+            {
+              "levels": 39,
+              "options": "#minecraft:on_random_loot",
+              "function": "minecraft:enchant_with_levels"
+            }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:netherite_chestplate",
           "weight": 1,
-          "modifier": {
-            "type": "minecraft:enchant_with_levels",
-            "levels": 39,
-            "options": "#minecraft:on_random_loot"
-          }
+          "functions": [
+            {
+              "levels": 39,
+              "options": "#minecraft:on_random_loot",
+              "function": "minecraft:enchant_with_levels"
+            }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:netherite_leggings",
           "weight": 1,
-          "modifier": {
-            "type": "minecraft:enchant_with_levels",
-            "levels": 39,
-            "options": "#minecraft:on_random_loot"
-          }
+          "functions": [
+            {
+              "levels": 39,
+              "options": "#minecraft:on_random_loot",
+              "function": "minecraft:enchant_with_levels"
+            }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:netherite_boots",
           "weight": 1,
-          "modifier": {
-            "type": "minecraft:enchant_with_levels",
-            "levels": 39,
-            "options": "#minecraft:on_random_loot"
-          }
+          "functions": [
+            {
+              "levels": 39,
+              "options": "#minecraft:on_random_loot",
+              "function": "minecraft:enchant_with_levels"
+            }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:mace",
           "weight": 1,
-          "modifier": {
-            "type": "minecraft:enchant_with_levels",
-            "levels": 39,
-            "options": "#minecraft:on_random_loot"
-          }
+          "functions": [
+            {
+              "levels": 39,
+              "options": "#minecraft:on_random_loot",
+              "function": "minecraft:enchant_with_levels"
+            }
+          ]
         }
       ]
     }

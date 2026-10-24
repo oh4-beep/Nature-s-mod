@@ -1,0 +1,39 @@
+{
+  "type": "naturesmod:rock_formation",
+  "config": {
+    "style": "arch",
+    "materials": [
+      {
+        "Name": "minecraft:terracotta"
+      },
+      {
+        "Name": "minecraft:orange_terracotta"
+      },
+      {
+        "Name": "minecraft:red_terracotta"
+      },
+      {
+        "Name": "minecraft:yellow_terracotta"
+      },
+      {
+        "Name": "minecraft:white_terracotta"
+      },
+      {
+        "Name": "minecraft:orange_terracotta"
+      },
+      {
+        "Name": "minecraft:brown_terracotta"
+      },
+      {
+        "Name": "minecraft:terracotta"
+      },
+      {
+        "Name": "minecraft:light_gray_terracotta"
+      },
+      {
+        "Name": "minecraft:red_terracotta"
+      }
+    ],
+    "banded": true
+  }
+}

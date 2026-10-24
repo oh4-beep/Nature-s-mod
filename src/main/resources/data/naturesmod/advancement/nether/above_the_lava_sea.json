@@ -3,20 +3,22 @@
     "high": {
       "trigger": "minecraft:location",
       "conditions": {
-        "player": {
-          "type": "minecraft:entity_properties",
-          "entity": "this",
-          "predicate": {
-            "minecraft:location": {
-              "dimension": "minecraft:the_nether",
-              "position": {
-                "y": {
-                  "min": 150.0
+        "player": [
+          {
+            "entity": "this",
+            "predicate": {
+              "minecraft:location": {
+                "dimension": "minecraft:the_nether",
+                "position": {
+                  "y": {
+                    "min": 150.0
+                  }
                 }
               }
-            }
+            },
+            "condition": "minecraft:entity_properties"
           }
-        }
+        ]
       }
     }
   },

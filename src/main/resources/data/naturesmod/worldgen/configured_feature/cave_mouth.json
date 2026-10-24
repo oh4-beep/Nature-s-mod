@@ -1,0 +1,7 @@
+{
+  "type": "naturesmod:cave_mouth",
+  "config": {
+    "min_length": 12,
+    "max_length": 26
+  }
+}

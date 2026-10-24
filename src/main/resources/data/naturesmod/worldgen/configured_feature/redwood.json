@@ -1,0 +1,24 @@
+{
+  "type": "naturesmod:giant_tree",
+  "config": {
+    "style": "redwood",
+    "log": {
+      "Name": "minecraft:spruce_log",
+      "Properties": {
+        "axis": "y"
+      }
+    },
+    "min_height": 34,
+    "max_height": 52,
+    "leaves": [
+      {
+        "Name": "minecraft:spruce_leaves",
+        "Properties": {
+          "distance": "7",
+          "persistent": "false",
+          "waterlogged": "false"
+        }
+      }
+    ]
+  }
+}

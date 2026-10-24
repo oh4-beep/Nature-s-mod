@@ -1,233 +1,257 @@
 {
   "type": "minecraft:add",
-  "left": {
+  "argument1": {
     "type": "minecraft:interpolated",
-    "cell_size_xz": 4,
-    "cell_size_y": 4,
-    "input": {
+    "argument": {
       "type": "minecraft:min",
-      "left": {
+      "argument1": {
         "type": "minecraft:min",
-        "left": {
+        "argument1": {
           "type": "minecraft:max",
-          "left": {
+          "argument1": {
             "type": "minecraft:mul",
-            "left": {
+            "argument1": {
               "type": "minecraft:blend_density",
-              "input": {
-                "type": "minecraft:lerp",
-                "alpha": {
-                  "type": "minecraft:gradient",
-                  "axis": "y",
-                  "from_coordinate": 4,
-                  "from_value": 0.0,
-                  "to_coordinate": 32,
-                  "to_value": 1.0
-                },
-                "first": -0.234375,
-                "second": {
-                  "type": "minecraft:lerp",
-                  "alpha": {
-                    "type": "minecraft:gradient",
-                    "axis": "y",
-                    "from_coordinate": 56,
-                    "from_value": 1.0,
-                    "to_coordinate": 312,
-                    "to_value": 0.0
+              "argument": {
+                "type": "minecraft:add",
+                "argument1": -0.234375,
+                "argument2": {
+                  "type": "minecraft:mul",
+                  "argument1": {
+                    "type": "minecraft:y_clamped_gradient",
+                    "from_y": 4,
+                    "to_y": 32,
+                    "from_value": 0.0,
+                    "to_value": 1.0
                   },
-                  "first": -23.4375,
-                  "second": {
+                  "argument2": {
                     "type": "minecraft:add",
-                    "left": {
-                      "type": "minecraft:slice",
-                      "axis": "y",
-                      "coordinate": 0,
-                      "input": {
+                    "argument1": {
+                      "type": "minecraft:add",
+                      "argument1": -23.4375,
+                      "argument2": {
                         "type": "minecraft:mul",
-                        "left": {
+                        "argument1": {
+                          "type": "minecraft:y_clamped_gradient",
+                          "from_y": 56,
+                          "to_y": 312,
+                          "from_value": 1.0,
+                          "to_value": 0.0
+                        },
+                        "argument2": {
                           "type": "minecraft:add",
-                          "left": {
-                            "type": "minecraft:clamp",
-                            "input": {
-                              "type": "minecraft:sub",
-                              "left": 100.0,
-                              "right": {
-                                "type": "minecraft:distance_to_point",
-                                "metric": "euclidean",
-                                "point": [
-                                  0,
-                                  0,
-                                  0
-                                ]
+                          "argument1": {
+                            "type": "minecraft:add",
+                            "argument1": {
+                              "type": "naturesmod:slice",
+                              "axis": "y",
+                              "coordinate": 0,
+                              "input": {
+                                "type": "minecraft:mul",
+                                "argument1": {
+                                  "type": "minecraft:add",
+                                  "argument1": {
+                                    "type": "minecraft:clamp",
+                                    "input": {
+                                      "type": "minecraft:add",
+                                      "argument1": 100.0,
+                                      "argument2": {
+                                        "type": "minecraft:mul",
+                                        "argument1": {
+                                          "type": "naturesmod:distance_to_point",
+                                          "metric": "euclidean",
+                                          "point": [
+                                            0,
+                                            0,
+                                            0
+                                          ]
+                                        },
+                                        "argument2": -1.0
+                                      }
+                                    },
+                                    "min": -100.0,
+                                    "max": 80.0
+                                  },
+                                  "argument2": -8.0
+                                },
+                                "argument2": 0.0078125
                               }
                             },
-                            "min": -100.0,
-                            "max": 80.0
+                            "argument2": "minecraft:end/base_3d_noise"
                           },
-                          "right": -8.0
-                        },
-                        "right": 0.0078125
+                          "argument2": 23.4375
+                        }
                       }
                     },
-                    "right": "minecraft:end/base_3d_noise"
+                    "argument2": 0.234375
                   }
                 }
               }
             },
-            "right": 0.64
+            "argument2": 0.64
           },
-          "right": {
-            "type": "minecraft:lerp",
-            "alpha": "naturesmod:end/outer",
-            "first": -1.0,
-            "second": {
-              "type": "minecraft:max",
-              "left": {
+          "argument2": {
+            "type": "minecraft:add",
+            "argument1": -1.0,
+            "argument2": {
+              "type": "minecraft:mul",
+              "argument1": "naturesmod:end/outer",
+              "argument2": {
                 "type": "minecraft:add",
-                "left": {
-                  "type": "minecraft:mul",
-                  "left": {
-                    "type": "minecraft:min",
-                    "left": {
-                      "type": "minecraft:add",
-                      "left": "naturesmod:end/surface",
-                      "right": {
-                        "type": "minecraft:negate",
-                        "input": "minecraft:y"
-                      }
-                    },
-                    "right": {
-                      "type": "minecraft:add",
-                      "left": "minecraft:y",
-                      "right": {
-                        "type": "minecraft:negate",
-                        "input": "naturesmod:end/bottom"
-                      }
-                    }
-                  },
-                  "right": 0.16666666666666666
-                },
-                "right": {
-                  "type": "minecraft:mul",
-                  "left": {
-                    "type": "minecraft:noise",
-                    "noise": "naturesmod:end/carve",
-                    "xz_scale": 1.0,
-                    "y_scale": 1.4
-                  },
-                  "right": 0.45
-                }
-              },
-              "right": {
-                "type": "minecraft:add",
-                "left": {
-                  "type": "minecraft:mul",
-                  "left": {
-                    "type": "minecraft:min",
-                    "left": {
-                      "type": "minecraft:add",
-                      "left": {
-                        "type": "minecraft:add",
-                        "left": {
+                "argument1": {
+                  "type": "minecraft:max",
+                  "argument1": {
+                    "type": "minecraft:add",
+                    "argument1": {
+                      "type": "minecraft:mul",
+                      "argument1": {
+                        "type": "minecraft:min",
+                        "argument1": {
                           "type": "minecraft:add",
-                          "left": 172.0,
-                          "right": {
+                          "argument1": "naturesmod:end/surface",
+                          "argument2": {
                             "type": "minecraft:mul",
-                            "left": {
-                              "type": "minecraft:noise",
-                              "noise": "naturesmod:end/sky_height",
-                              "xz_scale": 1.0,
-                              "y_scale": 0.0
-                            },
-                            "right": 26.0
+                            "argument1": "minecraft:y",
+                            "argument2": -1.0
                           }
                         },
-                        "right": {
-                          "type": "minecraft:mul",
-                          "left": "naturesmod:end/isle",
-                          "right": 5.0
-                        }
-                      },
-                      "right": {
-                        "type": "minecraft:negate",
-                        "input": "minecraft:y"
-                      }
-                    },
-                    "right": {
-                      "type": "minecraft:add",
-                      "left": "minecraft:y",
-                      "right": {
-                        "type": "minecraft:negate",
-                        "input": {
+                        "argument2": {
                           "type": "minecraft:add",
-                          "left": {
-                            "type": "minecraft:add",
-                            "left": 172.0,
-                            "right": {
-                              "type": "minecraft:mul",
-                              "left": {
-                                "type": "minecraft:noise",
-                                "noise": "naturesmod:end/sky_height",
-                                "xz_scale": 1.0,
-                                "y_scale": 0.0
-                              },
-                              "right": 26.0
-                            }
-                          },
-                          "right": {
-                            "type": "minecraft:add",
-                            "left": {
-                              "type": "minecraft:mul",
-                              "left": "naturesmod:end/isle",
-                              "right": -24.0
-                            },
-                            "right": 3.0
+                          "argument1": "minecraft:y",
+                          "argument2": {
+                            "type": "minecraft:mul",
+                            "argument1": "naturesmod:end/bottom",
+                            "argument2": -1.0
                           }
                         }
-                      }
+                      },
+                      "argument2": 0.16666666666666666
+                    },
+                    "argument2": {
+                      "type": "minecraft:mul",
+                      "argument1": {
+                        "type": "minecraft:noise",
+                        "noise": "naturesmod:end/carve",
+                        "xz_scale": 1.0,
+                        "y_scale": 1.4
+                      },
+                      "argument2": 0.45
                     }
                   },
-                  "right": 0.25
+                  "argument2": {
+                    "type": "minecraft:add",
+                    "argument1": {
+                      "type": "minecraft:mul",
+                      "argument1": {
+                        "type": "minecraft:min",
+                        "argument1": {
+                          "type": "minecraft:add",
+                          "argument1": {
+                            "type": "minecraft:add",
+                            "argument1": {
+                              "type": "minecraft:add",
+                              "argument1": 172.0,
+                              "argument2": {
+                                "type": "minecraft:mul",
+                                "argument1": {
+                                  "type": "minecraft:noise",
+                                  "noise": "naturesmod:end/sky_height",
+                                  "xz_scale": 1.0,
+                                  "y_scale": 0.0
+                                },
+                                "argument2": 26.0
+                              }
+                            },
+                            "argument2": {
+                              "type": "minecraft:mul",
+                              "argument1": "naturesmod:end/isle",
+                              "argument2": 5.0
+                            }
+                          },
+                          "argument2": {
+                            "type": "minecraft:mul",
+                            "argument1": "minecraft:y",
+                            "argument2": -1.0
+                          }
+                        },
+                        "argument2": {
+                          "type": "minecraft:add",
+                          "argument1": "minecraft:y",
+                          "argument2": {
+                            "type": "minecraft:mul",
+                            "argument1": {
+                              "type": "minecraft:add",
+                              "argument1": {
+                                "type": "minecraft:add",
+                                "argument1": 172.0,
+                                "argument2": {
+                                  "type": "minecraft:mul",
+                                  "argument1": {
+                                    "type": "minecraft:noise",
+                                    "noise": "naturesmod:end/sky_height",
+                                    "xz_scale": 1.0,
+                                    "y_scale": 0.0
+                                  },
+                                  "argument2": 26.0
+                                }
+                              },
+                              "argument2": {
+                                "type": "minecraft:add",
+                                "argument1": {
+                                  "type": "minecraft:mul",
+                                  "argument1": "naturesmod:end/isle",
+                                  "argument2": -24.0
+                                },
+                                "argument2": 3.0
+                              }
+                            },
+                            "argument2": -1.0
+                          }
+                        }
+                      },
+                      "argument2": 0.25
+                    },
+                    "argument2": {
+                      "type": "minecraft:mul",
+                      "argument1": {
+                        "type": "minecraft:noise",
+                        "noise": "naturesmod:end/carve",
+                        "xz_scale": 1.0,
+                        "y_scale": 1.4
+                      },
+                      "argument2": 0.3
+                    }
+                  }
                 },
-                "right": {
-                  "type": "minecraft:mul",
-                  "left": {
-                    "type": "minecraft:noise",
-                    "noise": "naturesmod:end/carve",
-                    "xz_scale": 1.0,
-                    "y_scale": 1.4
-                  },
-                  "right": 0.3
-                }
+                "argument2": 1.0
               }
             }
           }
         },
-        "right": {
+        "argument2": {
           "type": "minecraft:mul",
-          "left": {
+          "argument1": {
             "type": "minecraft:add",
-            "left": "minecraft:y",
-            "right": -6.0
+            "argument1": "minecraft:y",
+            "argument2": -6.0
           },
-          "right": 0.25
+          "argument2": 0.25
         }
       },
-      "right": {
+      "argument2": {
         "type": "minecraft:mul",
-        "left": {
+        "argument1": {
           "type": "minecraft:add",
-          "left": {
-            "type": "minecraft:negate",
-            "input": "minecraft:y"
+          "argument1": {
+            "type": "minecraft:mul",
+            "argument1": "minecraft:y",
+            "argument2": -1.0
           },
-          "right": 248.0
+          "argument2": 248.0
         },
-        "right": 0.25
+        "argument2": 0.25
       }
     }
   },
-  "right": {
-    "type": "minecraft:beardifier"
-  }
+  "argument2": 0.0
 }

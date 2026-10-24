@@ -20,48 +20,14 @@
         "sound": "minecraft:music.nether.warped_forest"
       }
     },
-    "minecraft:gameplay/natural_mob_spawns": {
-      "argument": {
-        "spawn_costs": {
-          "minecraft:enderman": {
-            "charge": 1.0,
-            "energy_budget": 0.12
-          }
+    "minecraft:visual/ambient_particles": [
+      {
+        "particle": {
+          "type": "minecraft:warped_spore"
         },
-        "spawns_by_category": {
-          "creature": [
-            {
-              "type": "minecraft:strider",
-              "count": {
-                "type": "minecraft:uniform",
-                "max_inclusive": 2,
-                "min_inclusive": 1
-              },
-              "weight": 60
-            }
-          ],
-          "monster": [
-            {
-              "type": "minecraft:enderman",
-              "count": 4,
-              "weight": 1
-            }
-          ]
-        }
-      },
-      "modifier": "overlay"
-    },
-    "minecraft:visual/ambient_particles": {
-      "argument": [
-        {
-          "particle": {
-            "type": "minecraft:warped_spore"
-          },
-          "probability": 0.01428
-        }
-      ],
-      "modifier": "append"
-    },
+        "probability": 0.01428
+      }
+    ],
     "minecraft:visual/fog_color": "#1a051a"
   },
   "carvers": "minecraft:nether_cave",
@@ -106,5 +72,35 @@
     ]
   ],
   "has_precipitation": false,
-  "temperature": 2.0
+  "temperature": 2.0,
+  "spawners": {
+    "ambient": [],
+    "axolotls": [],
+    "creature": [
+      {
+        "type": "minecraft:strider",
+        "maxCount": 2,
+        "minCount": 1,
+        "weight": 60
+      }
+    ],
+    "misc": [],
+    "monster": [
+      {
+        "type": "minecraft:enderman",
+        "maxCount": 4,
+        "minCount": 4,
+        "weight": 1
+      }
+    ],
+    "underground_water_creature": [],
+    "water_ambient": [],
+    "water_creature": []
+  },
+  "spawn_costs": {
+    "minecraft:enderman": {
+      "charge": 1.0,
+      "energy_budget": 0.12
+    }
+  }
 }

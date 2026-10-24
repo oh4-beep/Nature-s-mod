@@ -12,27 +12,29 @@
           "type": "minecraft:item",
           "name": "minecraft:arrow",
           "weight": 10,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 8,
-              "max": 20
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 8,
+                "max": 20
+              },
+              "function": "minecraft:set_count"
             }
-          }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:crossbow",
           "weight": 4,
-          "modifier": [
+          "functions": [
             {
-              "type": "minecraft:set_count",
-              "count": 1
+              "count": 1,
+              "function": "minecraft:set_count"
             },
             {
-              "type": "minecraft:enchant_randomly",
-              "options": "#minecraft:on_random_loot"
+              "options": "#minecraft:on_random_loot",
+              "function": "minecraft:enchant_randomly"
             }
           ]
         },
@@ -40,14 +42,14 @@
           "type": "minecraft:item",
           "name": "minecraft:bow",
           "weight": 4,
-          "modifier": [
+          "functions": [
             {
-              "type": "minecraft:set_count",
-              "count": 1
+              "count": 1,
+              "function": "minecraft:set_count"
             },
             {
-              "type": "minecraft:enchant_randomly",
-              "options": "#minecraft:on_random_loot"
+              "options": "#minecraft:on_random_loot",
+              "function": "minecraft:enchant_randomly"
             }
           ]
         },
@@ -55,14 +57,14 @@
           "type": "minecraft:item",
           "name": "minecraft:chainmail_helmet",
           "weight": 2,
-          "modifier": [
+          "functions": [
             {
-              "type": "minecraft:set_count",
-              "count": 1
+              "count": 1,
+              "function": "minecraft:set_count"
             },
             {
-              "type": "minecraft:enchant_randomly",
-              "options": "#minecraft:on_random_loot"
+              "options": "#minecraft:on_random_loot",
+              "function": "minecraft:enchant_randomly"
             }
           ]
         },
@@ -70,14 +72,14 @@
           "type": "minecraft:item",
           "name": "minecraft:chainmail_chestplate",
           "weight": 2,
-          "modifier": [
+          "functions": [
             {
-              "type": "minecraft:set_count",
-              "count": 1
+              "count": 1,
+              "function": "minecraft:set_count"
             },
             {
-              "type": "minecraft:enchant_randomly",
-              "options": "#minecraft:on_random_loot"
+              "options": "#minecraft:on_random_loot",
+              "function": "minecraft:enchant_randomly"
             }
           ]
         },
@@ -85,14 +87,14 @@
           "type": "minecraft:item",
           "name": "minecraft:chainmail_leggings",
           "weight": 2,
-          "modifier": [
+          "functions": [
             {
-              "type": "minecraft:set_count",
-              "count": 1
+              "count": 1,
+              "function": "minecraft:set_count"
             },
             {
-              "type": "minecraft:enchant_randomly",
-              "options": "#minecraft:on_random_loot"
+              "options": "#minecraft:on_random_loot",
+              "function": "minecraft:enchant_randomly"
             }
           ]
         },
@@ -100,14 +102,14 @@
           "type": "minecraft:item",
           "name": "minecraft:chainmail_boots",
           "weight": 2,
-          "modifier": [
+          "functions": [
             {
-              "type": "minecraft:set_count",
-              "count": 1
+              "count": 1,
+              "function": "minecraft:set_count"
             },
             {
-              "type": "minecraft:enchant_randomly",
-              "options": "#minecraft:on_random_loot"
+              "options": "#minecraft:on_random_loot",
+              "function": "minecraft:enchant_randomly"
             }
           ]
         },
@@ -115,27 +117,31 @@
           "type": "minecraft:item",
           "name": "minecraft:bread",
           "weight": 8,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 2,
-              "max": 5
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 5
+              },
+              "function": "minecraft:set_count"
             }
-          }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:cooked_beef",
           "weight": 6,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 2,
-              "max": 5
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 5
+              },
+              "function": "minecraft:set_count"
             }
-          }
+          ]
         },
         {
           "type": "minecraft:item",
@@ -161,14 +167,16 @@
           "type": "minecraft:item",
           "name": "minecraft:iron_ingot",
           "weight": 5,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 2,
-              "max": 5
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 5
+              },
+              "function": "minecraft:set_count"
             }
-          }
+          ]
         }
       ]
     }

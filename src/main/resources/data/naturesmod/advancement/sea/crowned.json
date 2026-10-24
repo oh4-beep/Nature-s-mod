@@ -3,17 +3,19 @@
     "wearing": {
       "trigger": "minecraft:location",
       "conditions": {
-        "player": {
-          "type": "minecraft:entity_properties",
-          "entity": "this",
-          "predicate": {
-            "minecraft:equipment": {
-              "head": {
-                "items": "naturesmod:crown_of_the_deep"
+        "player": [
+          {
+            "entity": "this",
+            "predicate": {
+              "minecraft:equipment": {
+                "head": {
+                  "items": "naturesmod:crown_of_the_deep"
+                }
               }
-            }
+            },
+            "condition": "minecraft:entity_properties"
           }
-        }
+        ]
       }
     }
   },

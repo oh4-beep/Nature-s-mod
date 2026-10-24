@@ -3,20 +3,22 @@
     "bottom": {
       "trigger": "minecraft:location",
       "conditions": {
-        "player": {
-          "type": "minecraft:entity_properties",
-          "entity": "this",
-          "predicate": {
-            "minecraft:location": {
-              "dimension": "naturesmod:abyss",
-              "position": {
-                "y": {
-                  "max": 160.0
+        "player": [
+          {
+            "entity": "this",
+            "predicate": {
+              "minecraft:location": {
+                "dimension": "naturesmod:abyss",
+                "position": {
+                  "y": {
+                    "max": 160.0
+                  }
                 }
               }
-            }
+            },
+            "condition": "minecraft:entity_properties"
           }
-        }
+        ]
       }
     }
   },

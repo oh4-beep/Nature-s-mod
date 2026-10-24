@@ -1,0 +1,27 @@
+{
+  "type": "naturesmod:rock_formation",
+  "config": {
+    "style": "arch",
+    "materials": [
+      {
+        "Name": "minecraft:stone"
+      },
+      {
+        "Name": "minecraft:andesite"
+      },
+      {
+        "Name": "minecraft:stone"
+      },
+      {
+        "Name": "minecraft:granite"
+      },
+      {
+        "Name": "minecraft:stone"
+      }
+    ],
+    "banded": false,
+    "top": {
+      "Name": "minecraft:grass_block"
+    }
+  }
+}

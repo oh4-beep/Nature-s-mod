@@ -26,66 +26,76 @@
           "type": "minecraft:item",
           "name": "naturesmod:abyssal_scale",
           "weight": 20,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 2,
-              "max": 6
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 6
+              },
+              "function": "minecraft:set_count"
             }
-          }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:diamond",
           "weight": 10,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 1,
-              "max": 3
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 3
+              },
+              "function": "minecraft:set_count"
             }
-          }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:gold_ingot",
           "weight": 15,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 2,
-              "max": 7
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 7
+              },
+              "function": "minecraft:set_count"
             }
-          }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:emerald",
           "weight": 10,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 2,
-              "max": 6
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 6
+              },
+              "function": "minecraft:set_count"
             }
-          }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:prismarine_crystals",
           "weight": 10,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 3,
-              "max": 9
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 3,
+                "max": 9
+              },
+              "function": "minecraft:set_count"
             }
-          }
+          ]
         },
         {
           "type": "minecraft:item",
@@ -96,13 +106,12 @@
           "type": "minecraft:item",
           "name": "minecraft:book",
           "weight": 8,
-          "modifier": [
+          "functions": [
             {
-              "type": "minecraft:set_count",
-              "count": 1
+              "count": 1,
+              "function": "minecraft:set_count"
             },
             {
-              "type": "minecraft:enchant_randomly",
               "options": [
                 "minecraft:depth_strider",
                 "minecraft:respiration",
@@ -112,7 +121,8 @@
                 "minecraft:impaling",
                 "minecraft:luck_of_the_sea",
                 "minecraft:lure"
-              ]
+              ],
+              "function": "minecraft:enchant_randomly"
             }
           ]
         },
@@ -120,14 +130,14 @@
           "type": "minecraft:item",
           "name": "minecraft:book",
           "weight": 6,
-          "modifier": [
+          "functions": [
             {
-              "type": "minecraft:set_count",
-              "count": 1
+              "count": 1,
+              "function": "minecraft:set_count"
             },
             {
-              "type": "minecraft:enchant_randomly",
-              "options": "#minecraft:on_random_loot"
+              "options": "#minecraft:on_random_loot",
+              "function": "minecraft:enchant_randomly"
             }
           ]
         },
@@ -135,23 +145,27 @@
           "type": "minecraft:item",
           "name": "minecraft:nautilus_shell",
           "weight": 6,
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 1,
-              "max": 3
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 3
+              },
+              "function": "minecraft:set_count"
             }
-          }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:potion",
           "weight": 6,
-          "modifier": {
-            "type": "minecraft:set_potion",
-            "id": "minecraft:long_water_breathing"
-          }
+          "functions": [
+            {
+              "id": "minecraft:long_water_breathing",
+              "function": "minecraft:set_potion"
+            }
+          ]
         }
       ]
     },
@@ -171,15 +185,17 @@
           "type": "minecraft:item",
           "name": "minecraft:trident",
           "weight": 1,
-          "modifier": {
-            "type": "minecraft:enchant_with_levels",
-            "levels": {
-              "type": "minecraft:uniform",
-              "min": 25,
-              "max": 39
-            },
-            "options": "#minecraft:on_random_loot"
-          }
+          "functions": [
+            {
+              "levels": {
+                "type": "minecraft:uniform",
+                "min": 25,
+                "max": 39
+              },
+              "options": "#minecraft:on_random_loot",
+              "function": "minecraft:enchant_with_levels"
+            }
+          ]
         },
         {
           "type": "minecraft:item",
@@ -210,21 +226,21 @@
           "type": "minecraft:item",
           "name": "minecraft:map",
           "weight": 1,
-          "modifier": [
+          "functions": [
             {
-              "type": "minecraft:exploration_map",
               "decoration": "minecraft:monument",
               "destination": "#naturesmod:on_sanctum_maps",
               "skip_existing_chunks": false,
               "zoom": 2,
-              "search_radius": 100
+              "search_radius": 100,
+              "function": "minecraft:exploration_map"
             },
             {
-              "type": "minecraft:set_name",
               "name": {
                 "translate": "filled_map.naturesmod.drowned_sanctum"
               },
-              "target": "item_name"
+              "target": "item_name",
+              "function": "minecraft:set_name"
             }
           ]
         }

@@ -5,27 +5,31 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "max": 4,
-              "min": 1
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 4.0,
+                "min": 1.0
+              },
+              "function": "minecraft:set_count"
             }
-          },
+          ],
           "name": "minecraft:coal",
           "weight": 10
         },
         {
           "type": "minecraft:item",
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "max": 3,
-              "min": 1
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 3.0,
+                "min": 1.0
+              },
+              "function": "minecraft:set_count"
             }
-          },
+          ],
           "name": "minecraft:gold_nugget",
           "weight": 10
         },
@@ -40,22 +44,24 @@
         },
         {
           "type": "minecraft:item",
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "max": 3,
-              "min": 2
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 3.0,
+                "min": 2.0
+              },
+              "function": "minecraft:set_count"
             }
-          },
+          ],
           "name": "minecraft:wheat",
           "weight": 10
         }
       ],
       "rolls": {
         "type": "minecraft:uniform",
-        "max": 8,
-        "min": 2
+        "max": 8.0,
+        "min": 2.0
       }
     },
     {
@@ -66,10 +72,12 @@
         },
         {
           "type": "minecraft:item",
-          "modifier": {
-            "type": "minecraft:enchant_randomly",
-            "options": "#minecraft:on_random_loot"
-          },
+          "functions": [
+            {
+              "function": "minecraft:enchant_randomly",
+              "options": "#minecraft:on_random_loot"
+            }
+          ],
           "name": "minecraft:book",
           "weight": 5
         },
@@ -83,40 +91,37 @@
         },
         {
           "type": "minecraft:item",
-          "modifier": {
-            "type": "minecraft:enchant_randomly",
-            "options": "#minecraft:on_random_loot"
-          },
+          "functions": [
+            {
+              "function": "minecraft:enchant_randomly",
+              "options": "#minecraft:on_random_loot"
+            }
+          ],
           "name": "minecraft:fishing_rod",
           "weight": 5
         },
         {
           "type": "minecraft:item",
-          "modifier": [
+          "functions": [
             {
-              "type": "minecraft:exploration_map",
               "decoration": "minecraft:red_x",
-              "destination": "#minecraft:on_treasure_maps",
+              "function": "minecraft:exploration_map",
               "skip_existing_chunks": false,
               "zoom": 1
             },
             {
-              "type": "minecraft:filtered",
-              "item_filter": {
-                "predicates": {
-                  "minecraft:map_id": {}
-                }
+              "function": "minecraft:set_name",
+              "name": {
+                "translate": "filled_map.buried_treasure"
               },
-              "on_fail": {
-                "type": "minecraft:discard"
-              }
+              "target": "item_name"
             }
           ],
-          "name": "minecraft:buried_treasure_map",
+          "name": "minecraft:map",
           "weight": 10
         }
       ],
-      "rolls": 1
+      "rolls": 1.0
     },
     {
       "entries": [
@@ -126,42 +131,50 @@
         },
         {
           "type": "minecraft:item",
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": 1
-          },
+          "functions": [
+            {
+              "count": 1.0,
+              "function": "minecraft:set_count"
+            }
+          ],
           "name": "minecraft:copper_nautilus_armor",
           "weight": 20
         },
         {
           "type": "minecraft:item",
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": 1
-          },
+          "functions": [
+            {
+              "count": 1.0,
+              "function": "minecraft:set_count"
+            }
+          ],
           "name": "minecraft:iron_nautilus_armor",
           "weight": 10
         },
         {
           "type": "minecraft:item",
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": 1
-          },
+          "functions": [
+            {
+              "count": 1.0,
+              "function": "minecraft:set_count"
+            }
+          ],
           "name": "minecraft:golden_nautilus_armor",
           "weight": 5
         },
         {
           "type": "minecraft:item",
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": 1
-          },
+          "functions": [
+            {
+              "count": 1.0,
+              "function": "minecraft:set_count"
+            }
+          ],
           "name": "minecraft:diamond_nautilus_armor",
           "weight": 2
         }
       ],
-      "rolls": 1
+      "rolls": 1.0
     },
     {
       "rolls": 1,
@@ -174,20 +187,20 @@
           "type": "minecraft:item",
           "name": "minecraft:map",
           "weight": 1,
-          "modifier": [
+          "functions": [
             {
-              "type": "minecraft:exploration_map",
               "decoration": "minecraft:red_x",
               "destination": "#naturesmod:on_rift_maps",
               "skip_existing_chunks": false,
-              "zoom": 2
+              "zoom": 2,
+              "function": "minecraft:exploration_map"
             },
             {
-              "type": "minecraft:set_name",
               "name": {
                 "translate": "filled_map.naturesmod.abyssal_rift"
               },
-              "target": "item_name"
+              "target": "item_name",
+              "function": "minecraft:set_name"
             }
           ]
         }

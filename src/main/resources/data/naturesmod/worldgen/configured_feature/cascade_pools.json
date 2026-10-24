@@ -1,0 +1,7 @@
+{
+  "type": "naturesmod:cascade_pools",
+  "config": {
+    "min_pools": 3,
+    "max_pools": 6
+  }
+}

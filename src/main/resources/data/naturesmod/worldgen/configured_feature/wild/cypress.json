@@ -1,0 +1,24 @@
+{
+  "type": "naturesmod:giant_tree",
+  "config": {
+    "style": "cypress",
+    "log": {
+      "Name": "minecraft:spruce_log",
+      "Properties": {
+        "axis": "y"
+      }
+    },
+    "min_height": 12,
+    "max_height": 20,
+    "leaves": [
+      {
+        "Name": "minecraft:oak_leaves",
+        "Properties": {
+          "distance": "7",
+          "persistent": "false",
+          "waterlogged": "false"
+        }
+      }
+    ]
+  }
+}

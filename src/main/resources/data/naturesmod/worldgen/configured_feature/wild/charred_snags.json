@@ -1,0 +1,14 @@
+{
+  "type": "naturesmod:giant_tree",
+  "config": {
+    "style": "snag",
+    "log": {
+      "Name": "naturesmod:charred_log",
+      "Properties": {
+        "axis": "y"
+      }
+    },
+    "min_height": 5,
+    "max_height": 10
+  }
+}

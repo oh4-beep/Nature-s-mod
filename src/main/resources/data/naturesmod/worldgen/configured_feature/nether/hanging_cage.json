@@ -1,0 +1,6 @@
+{
+  "type": "naturesmod:nether_feature",
+  "config": {
+    "style": "hanging_cage"
+  }
+}

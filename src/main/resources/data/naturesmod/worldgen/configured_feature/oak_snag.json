@@ -1,0 +1,14 @@
+{
+  "type": "naturesmod:giant_tree",
+  "config": {
+    "style": "snag",
+    "log": {
+      "Name": "minecraft:oak_log",
+      "Properties": {
+        "axis": "y"
+      }
+    },
+    "min_height": 6,
+    "max_height": 12
+  }
+}

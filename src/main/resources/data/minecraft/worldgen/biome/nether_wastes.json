@@ -20,88 +20,21 @@
         "sound": "minecraft:music.nether.nether_wastes"
       }
     },
-    "minecraft:gameplay/natural_mob_spawns": {
-      "argument": {
-        "spawn_costs": {},
-        "spawns_by_category": {
-          "creature": [
-            {
-              "type": "minecraft:strider",
-              "count": {
-                "type": "minecraft:uniform",
-                "max_inclusive": 2,
-                "min_inclusive": 1
-              },
-              "weight": 60
-            }
-          ],
-          "monster": [
-            {
-              "type": "minecraft:ghast",
-              "count": 4,
-              "weight": 50
-            },
-            {
-              "type": "minecraft:zombified_piglin",
-              "count": 4,
-              "weight": 100
-            },
-            {
-              "type": "minecraft:magma_cube",
-              "count": 4,
-              "weight": 15
-            },
-            {
-              "type": "minecraft:enderman",
-              "count": 4,
-              "weight": 1
-            },
-            {
-              "type": "minecraft:piglin",
-              "count": 4,
-              "weight": 15
-            },
-            {
-              "type": "minecraft:blaze",
-              "count": {
-                "type": "minecraft:uniform",
-                "min_inclusive": 1,
-                "max_inclusive": 2
-              },
-              "weight": 10
-            },
-            {
-              "type": "minecraft:wither_skeleton",
-              "count": {
-                "type": "minecraft:uniform",
-                "min_inclusive": 1,
-                "max_inclusive": 2
-              },
-              "weight": 6
-            }
-          ]
-        }
-      },
-      "modifier": "overlay"
-    },
     "minecraft:visual/fog_color": "#3b0904",
-    "minecraft:visual/ambient_particles": {
-      "argument": [
-        {
-          "particle": {
-            "type": "minecraft:lava"
-          },
-          "probability": 0.0025
+    "minecraft:visual/ambient_particles": [
+      {
+        "particle": {
+          "type": "minecraft:lava"
         },
-        {
-          "particle": {
-            "type": "minecraft:ash"
-          },
-          "probability": 0.004
-        }
-      ],
-      "modifier": "append"
-    }
+        "probability": 0.0025
+      },
+      {
+        "particle": {
+          "type": "minecraft:ash"
+        },
+        "probability": 0.004
+      }
+    ]
   },
   "carvers": "minecraft:nether_cave",
   "downfall": 0.0,
@@ -149,5 +82,66 @@
     ]
   ],
   "has_precipitation": false,
-  "temperature": 2.0
+  "temperature": 2.0,
+  "spawners": {
+    "ambient": [],
+    "axolotls": [],
+    "creature": [
+      {
+        "type": "minecraft:strider",
+        "maxCount": 2,
+        "minCount": 1,
+        "weight": 60
+      }
+    ],
+    "misc": [],
+    "monster": [
+      {
+        "type": "minecraft:ghast",
+        "maxCount": 4,
+        "minCount": 4,
+        "weight": 50
+      },
+      {
+        "type": "minecraft:zombified_piglin",
+        "maxCount": 4,
+        "minCount": 4,
+        "weight": 100
+      },
+      {
+        "type": "minecraft:magma_cube",
+        "maxCount": 4,
+        "minCount": 4,
+        "weight": 15
+      },
+      {
+        "type": "minecraft:enderman",
+        "maxCount": 4,
+        "minCount": 4,
+        "weight": 1
+      },
+      {
+        "type": "minecraft:piglin",
+        "maxCount": 4,
+        "minCount": 4,
+        "weight": 15
+      },
+      {
+        "type": "minecraft:blaze",
+        "maxCount": 2,
+        "minCount": 1,
+        "weight": 10
+      },
+      {
+        "type": "minecraft:wither_skeleton",
+        "maxCount": 2,
+        "minCount": 1,
+        "weight": 6
+      }
+    ],
+    "underground_water_creature": [],
+    "water_ambient": [],
+    "water_creature": []
+  },
+  "spawn_costs": {}
 }

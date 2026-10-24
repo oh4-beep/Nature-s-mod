@@ -7,23 +7,23 @@
         {
           "type": "minecraft:item",
           "name": "naturesmod:void_crystal_cluster",
-          "modifier": [
+          "functions": [
             {
-              "type": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
                 "min": 1,
                 "max": 3
-              }
+              },
+              "function": "minecraft:set_count"
             },
             {
-              "type": "minecraft:enchanted_count_increase",
               "count": {
                 "type": "minecraft:uniform",
                 "min": 0.0,
                 "max": 1.0
               },
-              "enchantment": "minecraft:looting"
+              "enchantment": "minecraft:looting",
+              "function": "minecraft:enchanted_count_increase"
             }
           ]
         }
@@ -35,42 +35,46 @@
         {
           "type": "minecraft:item",
           "name": "naturesmod:raw_starmetal",
-          "modifier": [
+          "functions": [
             {
-              "type": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
                 "min": 1,
                 "max": 2
-              }
+              },
+              "function": "minecraft:set_count"
             },
             {
-              "type": "minecraft:enchanted_count_increase",
               "count": {
                 "type": "minecraft:uniform",
                 "min": 0.0,
                 "max": 1.0
               },
-              "enchantment": "minecraft:looting"
+              "enchantment": "minecraft:looting",
+              "function": "minecraft:enchanted_count_increase"
             }
           ]
         }
       ],
-      "condition": {
-        "type": "minecraft:random_chance",
-        "chance": 0.4
-      }
+      "conditions": [
+        {
+          "chance": 0.4,
+          "condition": "minecraft:random_chance"
+        }
+      ]
     },
     {
       "rolls": 1,
-      "condition": {
-        "type": "minecraft:random_chance",
-        "chance": 0.05
-      },
       "entries": [
         {
           "type": "minecraft:item",
           "name": "minecraft:bone_meal"
+        }
+      ],
+      "conditions": [
+        {
+          "chance": 0.05,
+          "condition": "minecraft:random_chance"
         }
       ]
     }

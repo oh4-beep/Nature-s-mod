@@ -3,26 +3,28 @@
     "wearing": {
       "trigger": "minecraft:location",
       "conditions": {
-        "player": {
-          "type": "minecraft:entity_properties",
-          "entity": "this",
-          "predicate": {
-            "minecraft:equipment": {
-              "head": {
-                "items": "naturesmod:tidewalker_helmet"
-              },
-              "chest": {
-                "items": "naturesmod:tidewalker_chestplate"
-              },
-              "legs": {
-                "items": "naturesmod:tidewalker_leggings"
-              },
-              "feet": {
-                "items": "naturesmod:tidewalker_boots"
+        "player": [
+          {
+            "entity": "this",
+            "predicate": {
+              "minecraft:equipment": {
+                "head": {
+                  "items": "naturesmod:tidewalker_helmet"
+                },
+                "chest": {
+                  "items": "naturesmod:tidewalker_chestplate"
+                },
+                "legs": {
+                  "items": "naturesmod:tidewalker_leggings"
+                },
+                "feet": {
+                  "items": "naturesmod:tidewalker_boots"
+                }
               }
-            }
+            },
+            "condition": "minecraft:entity_properties"
           }
-        }
+        ]
       }
     }
   },

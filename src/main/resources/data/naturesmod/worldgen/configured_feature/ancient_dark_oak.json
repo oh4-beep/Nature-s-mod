@@ -1,0 +1,24 @@
+{
+  "type": "naturesmod:giant_tree",
+  "config": {
+    "style": "dark",
+    "log": {
+      "Name": "minecraft:dark_oak_log",
+      "Properties": {
+        "axis": "y"
+      }
+    },
+    "min_height": 14,
+    "max_height": 20,
+    "leaves": [
+      {
+        "Name": "minecraft:dark_oak_leaves",
+        "Properties": {
+          "distance": "7",
+          "persistent": "false",
+          "waterlogged": "false"
+        }
+      }
+    ]
+  }
+}

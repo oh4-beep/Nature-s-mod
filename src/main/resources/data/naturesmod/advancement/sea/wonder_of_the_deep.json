@@ -3,15 +3,17 @@
     "wonder": {
       "trigger": "minecraft:location",
       "conditions": {
-        "player": {
-          "type": "minecraft:entity_properties",
-          "entity": "this",
-          "predicate": {
-            "minecraft:location": {
-              "structures": "naturesmod:deep_wonder"
-            }
+        "player": [
+          {
+            "entity": "this",
+            "predicate": {
+              "minecraft:location": {
+                "structures": "naturesmod:deep_wonder"
+              }
+            },
+            "condition": "minecraft:entity_properties"
           }
-        }
+        ]
       }
     }
   },

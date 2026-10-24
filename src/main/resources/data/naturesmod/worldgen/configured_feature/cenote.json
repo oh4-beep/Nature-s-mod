@@ -1,0 +1,8 @@
+{
+  "type": "naturesmod:sinkhole",
+  "config": {
+    "water": true,
+    "min_depth": 16,
+    "max_depth": 32
+  }
+}

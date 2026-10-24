@@ -3,26 +3,28 @@
     "wearing": {
       "trigger": "minecraft:location",
       "conditions": {
-        "player": {
-          "type": "minecraft:entity_properties",
-          "entity": "this",
-          "predicate": {
-            "minecraft:equipment": {
-              "head": {
-                "items": "naturesmod:abyssal_helmet"
-              },
-              "chest": {
-                "items": "naturesmod:abyssal_chestplate"
-              },
-              "legs": {
-                "items": "naturesmod:abyssal_leggings"
-              },
-              "feet": {
-                "items": "naturesmod:abyssal_boots"
+        "player": [
+          {
+            "entity": "this",
+            "predicate": {
+              "minecraft:equipment": {
+                "head": {
+                  "items": "naturesmod:abyssal_helmet"
+                },
+                "chest": {
+                  "items": "naturesmod:abyssal_chestplate"
+                },
+                "legs": {
+                  "items": "naturesmod:abyssal_leggings"
+                },
+                "feet": {
+                  "items": "naturesmod:abyssal_boots"
+                }
               }
-            }
+            },
+            "condition": "minecraft:entity_properties"
           }
-        }
+        ]
       }
     }
   },

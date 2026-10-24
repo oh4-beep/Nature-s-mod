@@ -3,145 +3,169 @@
     "tidewyrm": {
       "trigger": "minecraft:player_killed_entity",
       "conditions": {
-        "entity": {
-          "type": "minecraft:entity_properties",
-          "entity": "this",
-          "predicate": {
-            "minecraft:entity_type": "naturesmod:tidewyrm"
+        "entity": [
+          {
+            "entity": "this",
+            "predicate": {
+              "minecraft:entity_type": "naturesmod:tidewyrm"
+            },
+            "condition": "minecraft:entity_properties"
           }
-        }
+        ]
       }
     },
     "razorjaw": {
       "trigger": "minecraft:player_killed_entity",
       "conditions": {
-        "entity": {
-          "type": "minecraft:entity_properties",
-          "entity": "this",
-          "predicate": {
-            "minecraft:entity_type": "naturesmod:razorjaw"
+        "entity": [
+          {
+            "entity": "this",
+            "predicate": {
+              "minecraft:entity_type": "naturesmod:razorjaw"
+            },
+            "condition": "minecraft:entity_properties"
           }
-        }
+        ]
       }
     },
     "gloomlantern": {
       "trigger": "minecraft:player_killed_entity",
       "conditions": {
-        "entity": {
-          "type": "minecraft:entity_properties",
-          "entity": "this",
-          "predicate": {
-            "minecraft:entity_type": "naturesmod:gloomlantern"
+        "entity": [
+          {
+            "entity": "this",
+            "predicate": {
+              "minecraft:entity_type": "naturesmod:gloomlantern"
+            },
+            "condition": "minecraft:entity_properties"
           }
-        }
+        ]
       }
     },
     "stormcoil": {
       "trigger": "minecraft:player_killed_entity",
       "conditions": {
-        "entity": {
-          "type": "minecraft:entity_properties",
-          "entity": "this",
-          "predicate": {
-            "minecraft:entity_type": "naturesmod:stormcoil"
+        "entity": [
+          {
+            "entity": "this",
+            "predicate": {
+              "minecraft:entity_type": "naturesmod:stormcoil"
+            },
+            "condition": "minecraft:entity_properties"
           }
-        }
+        ]
       }
     },
     "kraken": {
       "trigger": "minecraft:player_killed_entity",
       "conditions": {
-        "entity": {
-          "type": "minecraft:entity_properties",
-          "entity": "this",
-          "predicate": {
-            "minecraft:entity_type": "naturesmod:kraken"
+        "entity": [
+          {
+            "entity": "this",
+            "predicate": {
+              "minecraft:entity_type": "naturesmod:kraken"
+            },
+            "condition": "minecraft:entity_properties"
           }
-        }
+        ]
       }
     },
     "siren_queen": {
       "trigger": "minecraft:player_killed_entity",
       "conditions": {
-        "entity": {
-          "type": "minecraft:entity_properties",
-          "entity": "this",
-          "predicate": {
-            "minecraft:entity_type": "naturesmod:siren_queen"
+        "entity": [
+          {
+            "entity": "this",
+            "predicate": {
+              "minecraft:entity_type": "naturesmod:siren_queen"
+            },
+            "condition": "minecraft:entity_properties"
           }
-        }
+        ]
       }
     },
     "bonewarden": {
       "trigger": "minecraft:player_killed_entity",
       "conditions": {
-        "entity": {
-          "type": "minecraft:entity_properties",
-          "entity": "this",
-          "predicate": {
-            "minecraft:entity_type": "naturesmod:bonewarden"
+        "entity": [
+          {
+            "entity": "this",
+            "predicate": {
+              "minecraft:entity_type": "naturesmod:bonewarden"
+            },
+            "condition": "minecraft:entity_properties"
           }
-        }
+        ]
       }
     },
     "abyssal_manta": {
       "trigger": "minecraft:player_killed_entity",
       "conditions": {
-        "entity": {
-          "type": "minecraft:entity_properties",
-          "entity": "this",
-          "predicate": {
-            "minecraft:entity_type": "naturesmod:abyssal_manta"
+        "entity": [
+          {
+            "entity": "this",
+            "predicate": {
+              "minecraft:entity_type": "naturesmod:abyssal_manta"
+            },
+            "condition": "minecraft:entity_properties"
           }
-        }
+        ]
       }
     },
     "hollow_king": {
       "trigger": "minecraft:player_killed_entity",
       "conditions": {
-        "entity": {
-          "type": "minecraft:entity_properties",
-          "entity": "this",
-          "predicate": {
-            "minecraft:entity_type": "naturesmod:hollow_king"
+        "entity": [
+          {
+            "entity": "this",
+            "predicate": {
+              "minecraft:entity_type": "naturesmod:hollow_king"
+            },
+            "condition": "minecraft:entity_properties"
           }
-        }
+        ]
       }
     },
     "dunkleosteus": {
       "trigger": "minecraft:player_killed_entity",
       "conditions": {
-        "entity": {
-          "type": "minecraft:entity_properties",
-          "entity": "this",
-          "predicate": {
-            "minecraft:entity_type": "naturesmod:dunkleosteus"
+        "entity": [
+          {
+            "entity": "this",
+            "predicate": {
+              "minecraft:entity_type": "naturesmod:dunkleosteus"
+            },
+            "condition": "minecraft:entity_properties"
           }
-        }
+        ]
       }
     },
     "twin_terror": {
       "trigger": "minecraft:player_killed_entity",
       "conditions": {
-        "entity": {
-          "type": "minecraft:entity_properties",
-          "entity": "this",
-          "predicate": {
-            "minecraft:entity_type": "naturesmod:twin_terror"
+        "entity": [
+          {
+            "entity": "this",
+            "predicate": {
+              "minecraft:entity_type": "naturesmod:twin_terror"
+            },
+            "condition": "minecraft:entity_properties"
           }
-        }
+        ]
       }
     },
     "megalodon": {
       "trigger": "minecraft:player_killed_entity",
       "conditions": {
-        "entity": {
-          "type": "minecraft:entity_properties",
-          "entity": "this",
-          "predicate": {
-            "minecraft:entity_type": "naturesmod:megalodon"
+        "entity": [
+          {
+            "entity": "this",
+            "predicate": {
+              "minecraft:entity_type": "naturesmod:megalodon"
+            },
+            "condition": "minecraft:entity_properties"
           }
-        }
+        ]
       }
     }
   },

@@ -20,6 +20,7 @@ import com.naturesmod.nether.NetherOverhaul;
 import com.naturesmod.smoketest.SmokeTest;
 import com.naturesmod.tree.TreeEvents;
 import com.naturesmod.worldgen.ModBiomeModifications;
+import com.naturesmod.worldgen.ModDensityFunctions;
 import com.naturesmod.worldgen.ModFeatures;
 import com.naturesmod.worldgen.ModStructures;
 import com.naturesmod.worldgen.wild.WildOverworld;
@@ -33,6 +34,7 @@ public class NaturesMod implements ModInitializer {
 		NaturesConfig.load();
 		ModBlocks.register();
 		ModFeatures.register();
+		ModDensityFunctions.register();
 		ModStructures.register();
 		WildOverworld.register();
 		ModBiomeModifications.register();

@@ -1,49 +1,49 @@
 {
-  "type": "minecraft:cache",
-  "input": {
+  "type": "minecraft:flat_cache",
+  "argument": {
     "type": "minecraft:add",
-    "left": "naturesmod:overworld/erosion",
-    "right": {
+    "argument1": "naturesmod:overworld/erosion",
+    "argument2": {
       "type": "minecraft:mul",
-      "left": {
+      "argument1": {
         "type": "minecraft:mul",
-        "left": {
+        "argument1": {
           "type": "minecraft:min",
-          "left": "naturesmod:overworld/erosion",
-          "right": 0.0
+          "argument1": "naturesmod:overworld/erosion",
+          "argument2": 0.0
         },
-        "right": {
+        "argument2": {
           "type": "minecraft:clamp",
           "input": {
             "type": "minecraft:mul",
-            "left": {
+            "argument1": {
               "type": "minecraft:add",
-              "left": "naturesmod:overworld/continents",
-              "right": 0.0
+              "argument1": "naturesmod:overworld/continents",
+              "argument2": 0.0
             },
-            "right": 3.333333
+            "argument2": 3.333333
           },
           "min": 0.0,
           "max": 1.0
         }
       },
-      "right": {
+      "argument2": {
         "type": "minecraft:mul",
-        "left": {
+        "argument1": {
           "type": "minecraft:clamp",
           "input": {
             "type": "minecraft:mul",
-            "left": {
+            "argument1": {
               "type": "minecraft:add",
-              "left": "naturesmod:overworld/ridges_folded",
-              "right": 0.6
+              "argument1": "naturesmod:overworld/ridges_folded",
+              "argument2": 0.6
             },
-            "right": 2.0
+            "argument2": 2.0
           },
           "min": 0.0,
           "max": 1.0
         },
-        "right": 0.4
+        "argument2": 0.4
       }
     }
   }

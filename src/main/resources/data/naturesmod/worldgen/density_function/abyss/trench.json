@@ -1,13 +1,13 @@
 {
-  "type": "minecraft:cache",
-  "input": {
+  "type": "minecraft:flat_cache",
+  "argument": {
     "type": "minecraft:mul",
-    "left": {
+    "argument1": {
       "type": "minecraft:spline",
       "spline": {
         "coordinate": {
           "type": "minecraft:abs",
-          "input": {
+          "argument": {
             "type": "minecraft:noise",
             "noise": "naturesmod:abyss/trench",
             "xz_scale": 1.0,
@@ -43,6 +43,6 @@
         ]
       }
     },
-    "right": "naturesmod:abyss/plain_factor"
+    "argument2": "naturesmod:abyss/plain_factor"
   }
 }

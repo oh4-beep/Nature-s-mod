@@ -1,81 +1,120 @@
 {
   "type": "minecraft:add",
-  "left": {
+  "argument1": {
     "type": "minecraft:squeeze",
-    "input": {
+    "argument": {
       "type": "minecraft:interpolated",
-      "cell_size_xz": 4,
-      "cell_size_y": 8,
-      "input": {
+      "argument": {
         "type": "minecraft:mul",
-        "left": {
+        "argument1": {
           "type": "minecraft:blend_density",
-          "input": {
-            "type": "minecraft:lerp",
-            "alpha": {
-              "type": "minecraft:clamp",
-              "input": {
-                "type": "minecraft:gradient",
-                "axis": "y",
-                "from_coordinate": -8,
-                "from_value": 0.0,
-                "to_coordinate": 24,
-                "to_value": 1.0
-              },
-              "min": 0.0,
-              "max": 1.0
-            },
-            "first": 2.5,
-            "second": {
-              "type": "minecraft:lerp",
-              "alpha": {
+          "argument": {
+            "type": "minecraft:add",
+            "argument1": 2.5,
+            "argument2": {
+              "type": "minecraft:mul",
+              "argument1": {
                 "type": "minecraft:clamp",
                 "input": {
-                  "type": "minecraft:gradient",
-                  "axis": "y",
-                  "from_coordinate": 226,
-                  "from_value": 1.0,
-                  "to_coordinate": 252,
-                  "to_value": 0.0
+                  "type": "minecraft:y_clamped_gradient",
+                  "from_y": -8,
+                  "to_y": 24,
+                  "from_value": 0.0,
+                  "to_value": 1.0
                 },
                 "min": 0.0,
                 "max": 1.0
               },
-              "first": 0.9375,
-              "second": {
-                "type": "minecraft:max",
-                "left": {
-                  "type": "minecraft:max",
-                  "left": {
-                    "type": "minecraft:lerp",
-                    "alpha": {
+              "argument2": {
+                "type": "minecraft:add",
+                "argument1": {
+                  "type": "minecraft:add",
+                  "argument1": 0.9375,
+                  "argument2": {
+                    "type": "minecraft:mul",
+                    "argument1": {
                       "type": "minecraft:clamp",
                       "input": {
-                        "type": "minecraft:gradient",
-                        "axis": "y",
-                        "from_coordinate": 96,
-                        "from_value": 0.0,
-                        "to_coordinate": 150,
-                        "to_value": 1.0
+                        "type": "minecraft:y_clamped_gradient",
+                        "from_y": 226,
+                        "to_y": 252,
+                        "from_value": 1.0,
+                        "to_value": 0.0
                       },
                       "min": 0.0,
                       "max": 1.0
                     },
-                    "first": "naturesmod:nether/lower",
-                    "second": "naturesmod:nether/upper"
-                  },
-                  "right": "naturesmod:nether/islands"
+                    "argument2": {
+                      "type": "minecraft:add",
+                      "argument1": {
+                        "type": "minecraft:max",
+                        "argument1": {
+                          "type": "minecraft:max",
+                          "argument1": {
+                            "type": "minecraft:add",
+                            "argument1": {
+                              "type": "minecraft:mul",
+                              "argument1": "naturesmod:nether/lower",
+                              "argument2": {
+                                "type": "minecraft:add",
+                                "argument1": 1.0,
+                                "argument2": {
+                                  "type": "minecraft:mul",
+                                  "argument1": {
+                                    "type": "minecraft:cache_once",
+                                    "argument": {
+                                      "type": "minecraft:clamp",
+                                      "input": {
+                                        "type": "minecraft:y_clamped_gradient",
+                                        "from_y": 96,
+                                        "to_y": 150,
+                                        "from_value": 0.0,
+                                        "to_value": 1.0
+                                      },
+                                      "min": 0.0,
+                                      "max": 1.0
+                                    }
+                                  },
+                                  "argument2": -1.0
+                                }
+                              }
+                            },
+                            "argument2": {
+                              "type": "minecraft:mul",
+                              "argument1": "naturesmod:nether/upper",
+                              "argument2": {
+                                "type": "minecraft:cache_once",
+                                "argument": {
+                                  "type": "minecraft:clamp",
+                                  "input": {
+                                    "type": "minecraft:y_clamped_gradient",
+                                    "from_y": 96,
+                                    "to_y": 150,
+                                    "from_value": 0.0,
+                                    "to_value": 1.0
+                                  },
+                                  "min": 0.0,
+                                  "max": 1.0
+                                }
+                              }
+                            }
+                          },
+                          "argument2": "naturesmod:nether/islands"
+                        },
+                        "argument2": "naturesmod:nether/pillars"
+                      },
+                      "argument2": -0.9375
+                    }
+                  }
                 },
-                "right": "naturesmod:nether/pillars"
+                "argument2": -2.5
               }
             }
           }
         },
-        "right": 0.64
+        "argument2": 0.64
       }
     }
   },
-  "right": {
-    "type": "minecraft:beardifier"
-  }
+  "argument2": 0.0
 }

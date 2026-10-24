@@ -3,15 +3,17 @@
     "there": {
       "trigger": "minecraft:location",
       "conditions": {
-        "player": {
-          "type": "minecraft:entity_properties",
-          "entity": "this",
-          "predicate": {
-            "minecraft:location": {
-              "structures": "naturesmod:ritual_circle"
-            }
+        "player": [
+          {
+            "entity": "this",
+            "predicate": {
+              "minecraft:location": {
+                "structures": "naturesmod:ritual_circle"
+              }
+            },
+            "condition": "minecraft:entity_properties"
           }
-        }
+        ]
       }
     }
   },

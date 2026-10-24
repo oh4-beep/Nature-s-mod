@@ -7,17 +7,17 @@
         {
           "type": "minecraft:item",
           "name": "naturesmod:raw_starmetal",
-          "modifier": [
+          "functions": [
             {
-              "type": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
                 "min": 1,
                 "max": 2
-              }
+              },
+              "function": "minecraft:set_count"
             },
             {
-              "type": "minecraft:explosion_decay"
+              "function": "minecraft:explosion_decay"
             }
           ]
         }

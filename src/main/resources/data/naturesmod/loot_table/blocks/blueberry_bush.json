@@ -3,59 +3,63 @@
   "pools": [
     {
       "rolls": 1,
-      "condition": {
-        "type": "minecraft:match_block",
-        "blocks": "naturesmod:blueberry_bush",
-        "state": {
-          "age": "3"
-        }
-      },
       "entries": [
         {
           "type": "minecraft:item",
           "name": "naturesmod:blueberries"
         }
       ],
-      "modifier": [
+      "conditions": [
         {
-          "type": "minecraft:set_count",
+          "block": "naturesmod:blueberry_bush",
+          "properties": {
+            "age": "3"
+          },
+          "condition": "minecraft:block_state_property"
+        }
+      ],
+      "functions": [
+        {
           "count": {
             "type": "minecraft:uniform",
             "min": 2,
             "max": 3
-          }
+          },
+          "function": "minecraft:set_count"
         },
         {
-          "type": "minecraft:explosion_decay"
+          "function": "minecraft:explosion_decay"
         }
       ]
     },
     {
       "rolls": 1,
-      "condition": {
-        "type": "minecraft:match_block",
-        "blocks": "naturesmod:blueberry_bush",
-        "state": {
-          "age": "2"
-        }
-      },
       "entries": [
         {
           "type": "minecraft:item",
           "name": "naturesmod:blueberries"
         }
       ],
-      "modifier": [
+      "conditions": [
         {
-          "type": "minecraft:set_count",
+          "block": "naturesmod:blueberry_bush",
+          "properties": {
+            "age": "2"
+          },
+          "condition": "minecraft:block_state_property"
+        }
+      ],
+      "functions": [
+        {
           "count": {
             "type": "minecraft:uniform",
             "min": 1,
             "max": 2
-          }
+          },
+          "function": "minecraft:set_count"
         },
         {
-          "type": "minecraft:explosion_decay"
+          "function": "minecraft:explosion_decay"
         }
       ]
     }

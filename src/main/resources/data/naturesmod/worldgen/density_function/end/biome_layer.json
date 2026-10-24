@@ -1,18 +1,20 @@
 {
-  "type": "minecraft:lerp",
-  "alpha": {
-    "type": "minecraft:clamp",
-    "input": {
-      "type": "minecraft:gradient",
-      "axis": "y",
-      "from_coordinate": 132,
-      "from_value": 0.0,
-      "to_coordinate": 142,
-      "to_value": 1.0
+  "type": "minecraft:add",
+  "argument1": 0.5,
+  "argument2": {
+    "type": "minecraft:mul",
+    "argument1": {
+      "type": "minecraft:clamp",
+      "input": {
+        "type": "minecraft:y_clamped_gradient",
+        "from_y": 132,
+        "to_y": 142,
+        "from_value": 0.0,
+        "to_value": 1.0
+      },
+      "min": 0.0,
+      "max": 1.0
     },
-    "min": 0.0,
-    "max": 1.0
-  },
-  "first": 0.5,
-  "second": -0.5
+    "argument2": -1.0
+  }
 }

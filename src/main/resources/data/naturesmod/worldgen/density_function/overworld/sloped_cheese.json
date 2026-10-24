@@ -1,24 +1,24 @@
 {
-  "type": "minecraft:cache",
-  "input": {
+  "type": "minecraft:cache_once",
+  "argument": {
     "type": "minecraft:add",
-    "left": {
+    "argument1": {
       "type": "minecraft:mul",
-      "left": {
+      "argument1": {
         "type": "minecraft:quarter_negative",
-        "input": {
+        "argument": {
           "type": "minecraft:mul",
-          "left": {
+          "argument1": {
             "type": "minecraft:add",
-            "left": "naturesmod:overworld/depth",
-            "right": {
-              "type": "minecraft:cache",
-              "input": {
+            "argument1": "naturesmod:overworld/depth",
+            "argument2": {
+              "type": "minecraft:flat_cache",
+              "argument": {
                 "type": "minecraft:mul",
-                "left": "naturesmod:overworld/jaggedness",
-                "right": {
+                "argument1": "naturesmod:overworld/jaggedness",
+                "argument2": {
                   "type": "minecraft:half_negative",
-                  "input": {
+                  "argument": {
                     "type": "minecraft:noise",
                     "noise": "minecraft:jagged",
                     "xz_scale": 1500.0,
@@ -28,11 +28,11 @@
               }
             }
           },
-          "right": "naturesmod:overworld/factor"
+          "argument2": "naturesmod:overworld/factor"
         }
       },
-      "right": 4.0
+      "argument2": 4.0
     },
-    "right": "minecraft:overworld/base_3d_noise"
+    "argument2": "minecraft:overworld/base_3d_noise"
   }
 }

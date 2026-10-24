@@ -1,49 +1,49 @@
 {
-  "type": "minecraft:cache",
-  "input": {
+  "type": "minecraft:flat_cache",
+  "argument": {
     "type": "minecraft:add",
-    "left": {
+    "argument1": {
       "type": "minecraft:add",
-      "left": {
+      "argument1": {
         "type": "minecraft:add",
-        "left": 70.0,
-        "right": {
+        "argument1": 70.0,
+        "argument2": {
           "type": "minecraft:mul",
-          "left": {
+          "argument1": {
             "type": "minecraft:noise",
             "noise": "naturesmod:end/relief",
             "xz_scale": 1.0,
             "y_scale": 0.0
           },
-          "right": 14.0
+          "argument2": 14.0
         }
       },
-      "right": {
+      "argument2": {
         "type": "minecraft:mul",
-        "left": {
+        "argument1": {
           "type": "minecraft:noise",
           "noise": "naturesmod:end/hills",
           "xz_scale": 1.0,
           "y_scale": 0.0
         },
-        "right": 9.0
+        "argument2": 9.0
       }
     },
-    "right": {
+    "argument2": {
       "type": "minecraft:add",
-      "left": {
+      "argument1": {
         "type": "minecraft:mul",
-        "left": {
+        "argument1": {
           "type": "minecraft:add",
-          "left": "naturesmod:end/land",
-          "right": -1.0
+          "argument1": "naturesmod:end/land",
+          "argument2": -1.0
         },
-        "right": 16.0
+        "argument2": 16.0
       },
-      "right": {
+      "argument2": {
         "type": "minecraft:mul",
-        "left": "naturesmod:end/spire",
-        "right": 85.0
+        "argument1": "naturesmod:end/spire",
+        "argument2": 85.0
       }
     }
   }

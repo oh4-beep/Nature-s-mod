@@ -1,0 +1,14 @@
+{
+  "type": "naturesmod:fallen_log",
+  "config": {
+    "log": {
+      "Name": "minecraft:birch_log",
+      "Properties": {
+        "axis": "y"
+      }
+    },
+    "min_length": 5,
+    "max_length": 10,
+    "thick_chance": 0.0
+  }
+}

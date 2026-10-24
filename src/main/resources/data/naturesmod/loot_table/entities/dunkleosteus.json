@@ -7,23 +7,23 @@
         {
           "type": "minecraft:item",
           "name": "naturesmod:abyssal_heart",
-          "modifier": [
+          "functions": [
             {
-              "type": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
                 "min": 1,
                 "max": 2
-              }
+              },
+              "function": "minecraft:set_count"
             },
             {
-              "type": "minecraft:enchanted_count_increase",
               "count": {
                 "type": "minecraft:uniform",
                 "min": 0.0,
                 "max": 1.0
               },
-              "enchantment": "minecraft:looting"
+              "enchantment": "minecraft:looting",
+              "function": "minecraft:enchanted_count_increase"
             }
           ]
         }
@@ -35,23 +35,23 @@
         {
           "type": "minecraft:item",
           "name": "naturesmod:abyssal_scale",
-          "modifier": [
+          "functions": [
             {
-              "type": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
                 "min": 1,
                 "max": 3
-              }
+              },
+              "function": "minecraft:set_count"
             },
             {
-              "type": "minecraft:enchanted_count_increase",
               "count": {
                 "type": "minecraft:uniform",
                 "min": 0.0,
                 "max": 1.0
               },
-              "enchantment": "minecraft:looting"
+              "enchantment": "minecraft:looting",
+              "function": "minecraft:enchanted_count_increase"
             }
           ]
         }
@@ -63,23 +63,23 @@
         {
           "type": "minecraft:item",
           "name": "minecraft:diamond",
-          "modifier": [
+          "functions": [
             {
-              "type": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
                 "min": 1,
                 "max": 5
-              }
+              },
+              "function": "minecraft:set_count"
             },
             {
-              "type": "minecraft:enchanted_count_increase",
               "count": {
                 "type": "minecraft:uniform",
                 "min": 0.0,
                 "max": 1.0
               },
-              "enchantment": "minecraft:looting"
+              "enchantment": "minecraft:looting",
+              "function": "minecraft:enchanted_count_increase"
             }
           ]
         }
@@ -91,23 +91,23 @@
         {
           "type": "minecraft:item",
           "name": "minecraft:netherite_scrap",
-          "modifier": [
+          "functions": [
             {
-              "type": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
                 "min": 1,
                 "max": 2
-              }
+              },
+              "function": "minecraft:set_count"
             },
             {
-              "type": "minecraft:enchanted_count_increase",
               "count": {
                 "type": "minecraft:uniform",
                 "min": 0.0,
                 "max": 1.0
               },
-              "enchantment": "minecraft:looting"
+              "enchantment": "minecraft:looting",
+              "function": "minecraft:enchanted_count_increase"
             }
           ]
         }
@@ -115,27 +115,31 @@
     },
     {
       "rolls": 1,
-      "condition": {
-        "type": "minecraft:random_chance",
-        "chance": 0.25
-      },
       "entries": [
         {
           "type": "minecraft:item",
           "name": "naturesmod:pressure_maul"
         }
+      ],
+      "conditions": [
+        {
+          "chance": 0.25,
+          "condition": "minecraft:random_chance"
+        }
       ]
     },
     {
       "rolls": 1,
-      "condition": {
-        "type": "minecraft:random_chance",
-        "chance": 0.05
-      },
       "entries": [
         {
           "type": "minecraft:item",
           "name": "minecraft:bone_meal"
+        }
+      ],
+      "conditions": [
+        {
+          "chance": 0.05,
+          "condition": "minecraft:random_chance"
         }
       ]
     }

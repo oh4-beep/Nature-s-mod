@@ -2,16 +2,16 @@
   "type": "minecraft:clamp",
   "input": {
     "type": "minecraft:mul",
-    "left": {
+    "argument1": {
       "type": "minecraft:add",
-      "left": "minecraft:y",
-      "right": {
+      "argument1": "minecraft:y",
+      "argument2": {
         "type": "minecraft:mul",
-        "left": "naturesmod:abyss/floor",
-        "right": -1.0
+        "argument1": "naturesmod:abyss/floor",
+        "argument2": -1.0
       }
     },
-    "right": 0.0078125
+    "argument2": 0.0078125
   },
   "min": -2.0,
   "max": 2.0

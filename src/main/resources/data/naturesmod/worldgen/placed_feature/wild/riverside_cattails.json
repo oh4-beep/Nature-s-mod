@@ -20,23 +20,17 @@
       "count": 16
     },
     {
-      "type": "minecraft:offset",
-      "x": {
+      "type": "minecraft:random_offset",
+      "xz_spread": {
         "type": "minecraft:trapezoid",
         "max": 4,
         "min": -4,
         "plateau": 0
       },
-      "y": {
+      "y_spread": {
         "type": "minecraft:trapezoid",
         "max": 0,
         "min": 0,
-        "plateau": 0
-      },
-      "z": {
-        "type": "minecraft:trapezoid",
-        "max": 4,
-        "min": -4,
         "plateau": 0
       }
     },
@@ -52,8 +46,8 @@
           {
             "type": "minecraft:would_survive",
             "state": {
-              "id": "naturesmod:cattail",
-              "properties": {
+              "Name": "naturesmod:cattail",
+              "Properties": {
                 "half": "lower"
               }
             }

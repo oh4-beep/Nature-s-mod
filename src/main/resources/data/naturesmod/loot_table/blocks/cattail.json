@@ -3,20 +3,24 @@
   "pools": [
     {
       "rolls": 1,
-      "condition": {
-        "type": "minecraft:survives_explosion"
-      },
       "entries": [
         {
           "type": "minecraft:item",
           "name": "naturesmod:cattail",
-          "condition": {
-            "type": "minecraft:match_block",
-            "blocks": "naturesmod:cattail",
-            "state": {
-              "half": "lower"
+          "conditions": [
+            {
+              "block": "naturesmod:cattail",
+              "properties": {
+                "half": "lower"
+              },
+              "condition": "minecraft:block_state_property"
             }
-          }
+          ]
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
         }
       ]
     }
