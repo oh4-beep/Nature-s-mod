@@ -4,6 +4,22 @@ name: build
 on: [pull_request, push, workflow_dispatch]
 
 jobs:
+  # Temporary development aid: how 26.2 sends a pushed player's motion to its game.
+  probe:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v6
+      - name: setup jdk
+        uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'microsoft'
+      - name: sources
+        run: |
+          chmod +x ./gradlew && ./gradlew genSources --quiet
+          bash .github/probe/sources.sh .github/probe/motion.txt
+
   build:
     runs-on: ubuntu-24.04
     steps:

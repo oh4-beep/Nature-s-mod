@@ -1,0 +1,9 @@
+Entity.java|hurtMarked|public void push\(|needsSync|addDeltaMovement|public void setDeltaMovement|void markHurt
+ServerEntity.java|hurtMarked|SetEntityMotion|needsSync|public void sendChanges|trackDelta|ServerPlayer
+ClientboundSetEntityMotionPacket.java
+ServerPlayer.java|hurtMarked|SetEntityMotion|needsSync|public void tick\(\)|doTick
+ServerGamePacketListenerImpl.java|hurtMarked|SetEntityMotion|moved too quickly|moved wrongly|aboveGroundTickCount|isPlayerCollidingWithAnythingNew|clientIsFloating
+ClientPacketListener.java|handleSetEntityMotion|SetEntityMotion
+LivingEntity.java|hurtMarked|markHurt|public void knockback
+ServerExplosion.java|hurtMarked|ServerPlayer|knockback|getDeltaMovement
+LocalPlayer.java|lerpMotion|setDeltaMovement|hurtMarked
