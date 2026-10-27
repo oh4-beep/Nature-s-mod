@@ -751,14 +751,16 @@ final class DisasterTest {
 		level.setBlock(new BlockPos(leaves.getX(), top(leaves.getX(), leaves.getZ()) + 1, leaves.getZ()),
 				Blocks.OAK_LEAVES.defaultBlockState().setValue(net.minecraft.world.level.block.LeavesBlock.PERSISTENT, true), Block.UPDATE_CLIENTS);
 		AcidRain rain = (AcidRain) Disasters.start(DisasterType.ACID_RAIN, level, Vec3.atBottomCenterOf(site.above()), 5.0F, false);
-		boolean ateFlower = rain.eatAway(flower) && rain.eatAway(flower);
+		boolean ateFlower = rain.eatAway(flower);
+		// Then the grass under it, unless the poppy left a dead bush standing there (one time in four), which stands.
+		rain.eatAway(flower);
 		boolean ateLeaves = rain.eatAway(leaves);
 		after(200, () -> {
 			BlockState ground = level.getBlockState(new BlockPos(flower.getX(), top(flower.getX(), flower.getZ()), flower.getZ()));
 			test.line("acid rain (level 5) at %s: the poppy %s, the ground under it now %s, the leaves %s; radius %.0f", site.toShortString(),
 					ateFlower ? "eaten" : "unharmed", BuiltInRegistries.BLOCK.getKey(ground.getBlock()).getPath(), ateLeaves ? "withered" : "unharmed", rain.radius());
 			if (!ateFlower || !ateLeaves) {
-				test.fail("acid rain didn't eat away the poppy and grass (%s) or the leaves (%s)", ateFlower, ateLeaves);
+				test.fail("acid rain didn't eat away the poppy (%s) or the leaves (%s)", ateFlower, ateLeaves);
 			}
 			rain.end();
 			clearSkies();
