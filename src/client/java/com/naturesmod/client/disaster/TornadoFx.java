@@ -96,7 +96,9 @@ final class TornadoFx {
 			double formation, double peak, boolean rope, boolean down, double violent) {
 		double lowered = Math.min(1.0, formation * 1.25);
 		double bottom = cloudBase - depth * lowered;
-		double tone = 0.58 - 0.26 * violent;
+		// Darker than the sky behind it, or it can't be told from the cloud: the violent ones near black, the weak ones a
+		// paler grey rope.
+		double tone = 0.42 - 0.2 * violent;
 		// Billows small against the funnel, many of them, on its surface: they draw its outline, a crisp cone (or wedge)
 		// spinning fast, where big ones would only make a column of smoke.
 		double billow = 0.3 + 0.08 * violent;
@@ -108,7 +110,7 @@ final class TornadoFx {
 			double surface = Vortex.funnel(up, core, rating, rope);
 			double r = surface * Fx.range(0.86, 1.0);
 			double angular = -Math.max(0.04, Math.min(0.5, (peak * 1.4 + 0.25) / Math.max(r, 1.0)));
-			float shade = (float) (tone + 0.16 * up + Fx.range(-0.04, 0.04));
+			float shade = (float) (tone - 0.05 * up + Fx.range(-0.03, 0.03));
 			DisasterParticle p = Fx.cloud(d.x, h, d.z);
 			if (down && up < dusty) {
 				float dust = shade * 0.8F;
@@ -117,7 +119,7 @@ final class TornadoFx {
 				p.gray(shade);
 			}
 			p.vortex(axis, Fx.random.nextDouble() * Math.PI * 2.0, r, angular, Fx.range(0.08, 0.2), 0.0)
-					.size((float) (Math.max(1.2, surface * billow) * Fx.range(0.8, 1.15))).alpha(0.92F).life(22 + Fx.random.nextInt(20))
+					.size((float) (Math.max(1.2, surface * billow) * Fx.range(0.8, 1.15))).alpha(1.0F).life(26 + Fx.random.nextInt(22))
 					.fade(0.18F, 0.4F).spin((float) Fx.range(-0.1, 0.1)).spawn();
 		}
 	}
@@ -134,7 +136,7 @@ final class TornadoFx {
 			if (water) {
 				p.color(0.84F, 0.87F, 0.9F);
 			} else {
-				float brown = (float) (Fx.range(0.3, 0.44) - 0.06 * violent);
+				float brown = (float) (Fx.range(0.24, 0.36) - 0.06 * violent);
 				p.color(brown, brown * 0.86F, brown * 0.7F);
 			}
 			p.vortex(axis, Fx.random.nextDouble() * Math.PI * 2.0, r, angular, Fx.range(0.04, 0.16), Fx.range(0.0, 0.06))
