@@ -45,8 +45,12 @@ import com.naturesmod.disaster.Disaster;
 import com.naturesmod.disaster.DisasterType;
 import com.naturesmod.disaster.Disasters;
 import com.naturesmod.disaster.Eruption;
+import com.naturesmod.disaster.Hurricane;
+import com.naturesmod.disaster.LightningStorm;
 import com.naturesmod.disaster.MeteorShower;
+import com.naturesmod.disaster.Sinkhole;
 import com.naturesmod.disaster.Tornado;
+import com.naturesmod.disaster.Tsunami;
 import com.naturesmod.worldgen.deep.DeepKind;
 import com.naturesmod.worldgen.deep.DeepPiece;
 import com.naturesmod.worldgen.deep.DeepShowcase;
@@ -732,8 +736,10 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 	/** Lets each kind of natural disaster loose somewhere out of the way and photographs it as it happens. */
 	private void disasters(ClientGameTestContext context, TestSingleplayerContext world) {
 		command(world, "gamemode spectator @a");
-		List<Runnable> scenes = List.of(() -> tornado(context, world), () -> earthquake(context, world), () -> meteors(context, world),
-				() -> eruption(context, world), () -> wildfire(context, world), () -> sandstorm(context, world), () -> blizzard(context, world));
+		List<Runnable> scenes = List.of(() -> tornado(context, world), () -> carried(context, world), () -> earthquake(context, world),
+				() -> meteors(context, world), () -> eruption(context, world), () -> wildfire(context, world), () -> sandstorm(context, world),
+				() -> blizzard(context, world), () -> hurricane(context, world), () -> tsunami(context, world), () -> sinkhole(context, world),
+				() -> avalanche(context, world), () -> lightningStorm(context, world), () -> acidRain(context, world));
 		for (Runnable scene : scenes) {
 			command(world, "time set noon");
 			command(world, "weather clear");
@@ -744,6 +750,8 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 				t.printStackTrace(System.out);
 			}
 			world.getServer().runOnServer(server -> Disasters.stop(server.overworld(), disaster -> true));
+			command(world, "gamemode spectator @a");
+			command(world, "effect clear @a");
 			context.waitTicks(5);
 		}
 		world.getServer().runOnServer(server -> {
@@ -946,11 +954,98 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 		shoot(context, "disaster_sandstorm_inside");
 	}
 
+	/** In green, temperate country: a blizzard brings its own cold, and its whiteout. */
 	private void blizzard(ClientGameTestContext context, TestSingleplayerContext world) {
+		Vec3 at = dryLand(world, new BlockPos(-2400, 0, -6000));
+		if (at == null) {
+			failures.add("disasters: no land for the blizzard");
+			return;
+		}
+		teleport(context, world, Level.OVERWORLD, at.x, at.y + 3.0, at.z, 30.0F, 8.0F);
+		world.getServer().runOnServer(server -> Disasters.start(DisasterType.BLIZZARD, server.overworld(), at, 5.0F, false).skip(200));
+		context.waitTicks(100);
+		shoot(context, "disaster_blizzard");
+	}
+
+	/** A survival player beside an EF4 tornado's core is caught up, whirled round and carried high. */
+	private void carried(ClientGameTestContext context, TestSingleplayerContext world) {
+		Vec3 at = dryLand(world, new BlockPos(-6400, 0, 5200));
+		if (at == null) {
+			failures.add("disasters: no land to be carried off by a tornado");
+			return;
+		}
+		double core = world.getServer().computeOnServer(server -> {
+			Tornado tornado = (Tornado) Disasters.start(DisasterType.TORNADO, server.overworld(), at, 4.0F, false);
+			tornado.skip(300);
+			// Crawling on west, slowly enough to stay by the player for the few seconds it takes.
+			tornado.aim(at.add(-400.0, 0.0, 0.0));
+			return tornado.core();
+		});
+		context.waitTicks(20);
+		Vec3 where = where(world, DisasterType.TORNADO);
+		if (where == null) {
+			failures.add("disasters: the tornado to be carried off by is gone");
+			return;
+		}
+		// On the ground just inside its reach, ahead of it, looking at the funnel.
+		double px = where.x - Math.max(4.0, core * 0.9);
+		double pz = where.z;
+		int ground = world.getServer().computeOnServer(server -> floor(server.overworld(), (int) Math.floor(px), (int) Math.floor(pz)));
+		command(world, "gamemode survival @a");
+		command(world, "effect give @a minecraft:resistance 60 4 true");
+		teleport(context, world, Level.OVERWORLD, px, ground, pz, -90.0F, -20.0F);
+		double startY = world.getServer().computeOnServer(server -> world.getConnection().getServerPlayer().getY());
+		double highest = startY;
+		boolean caught = false;
+		for (int i = 0; i < 24; i++) {
+			context.waitTicks(5);
+			double[] state = world.getServer().computeOnServer(server -> {
+				ServerPlayer player = world.getConnection().getServerPlayer();
+				boolean held = Disasters.active(server.overworld()).stream().anyMatch(d -> d instanceof Tornado tornado && tornado.carrying(player));
+				return new double[] {player.getY(), held ? 1.0 : 0.0};
+			});
+			highest = Math.max(highest, state[0]);
+			caught |= state[1] > 0.5;
+			if (i == 8) {
+				shoot(context, "disaster_tornado_carried");
+			}
+		}
+		System.out.printf("[gametest] carried by the EF4 tornado: caught %s, up to %.1f blocks above where the player stood%n", caught, highest - startY);
+		if (!caught || highest - startY < 10.0) {
+			failures.add(String.format(java.util.Locale.ROOT, "disasters: an EF4 tornado didn't carry the player (caught %s, %.1f blocks up)", caught,
+					highest - startY));
+		}
+	}
+
+	/** In the calm eye of a category 5, the eyewall's cloud standing all round; then out in the eyewall itself. */
+	private void hurricane(ClientGameTestContext context, TestSingleplayerContext world) {
+		Vec3 at = dryLand(world, new BlockPos(6400, 0, 2400));
+		if (at == null) {
+			failures.add("disasters: no land for the hurricane");
+			return;
+		}
+		double eyewall = world.getServer().computeOnServer(server -> {
+			Hurricane hurricane = (Hurricane) Disasters.start(DisasterType.HURRICANE, server.overworld(), at, 5.0F, false);
+			hurricane.skip(400);
+			return hurricane.eyewall();
+		});
+		teleport(context, world, Level.OVERWORLD, at.x, at.y + 6.0, at.z, 0.0F, -6.0F);
+		context.waitTicks(60);
+		shoot(context, "disaster_hurricane_eye");
+		Vec3 centre = where(world, DisasterType.HURRICANE);
+		if (centre != null) {
+			int ground = world.getServer().computeOnServer(server -> floor(server.overworld(), (int) Math.floor(centre.x + eyewall), (int) Math.floor(centre.z)));
+			teleport(context, world, Level.OVERWORLD, centre.x + eyewall, ground + 4.0, centre.z, 0.0F, 0.0F);
+			context.waitTicks(40);
+			shoot(context, "disaster_hurricane_eyewall");
+		}
+	}
+
+	/** On a beach, looking out to sea as the wave comes in. */
+	private void tsunami(ClientGameTestContext context, TestSingleplayerContext world) {
 		Vec3 at = world.getServer().computeOnServer(server -> {
 			ServerLevel level = server.overworld();
-			Pair<BlockPos, Holder<Biome>> found = level.findClosestBiome3d(holder -> holder.is(Biomes.SNOWY_PLAINS) || holder.is(Biomes.SNOWY_TAIGA),
-					new BlockPos(0, 80, 0), 6400, 64, 64);
+			Pair<BlockPos, Holder<Biome>> found = level.findClosestBiome3d(holder -> holder.is(BiomeTags.IS_BEACH), new BlockPos(0, 64, 0), 6400, 64, 64);
 			if (found == null) {
 				return null;
 			}
@@ -958,14 +1053,97 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 			return new Vec3(spot.getX() + 0.5, floor(level, spot.getX(), spot.getZ()), spot.getZ() + 0.5);
 		});
 		if (at == null) {
-			failures.add("disasters: no snowy land for the blizzard");
+			failures.add("disasters: no beach for the tsunami");
 			return;
 		}
-		// Just over the trees, looking out across the land.
-		teleport(context, world, Level.OVERWORLD, at.x, at.y + 3.0, at.z, 30.0F, 8.0F);
-		world.getServer().runOnServer(server -> Disasters.start(DisasterType.BLIZZARD, server.overworld(), at, 5.0F, false).skip(200));
+		Vec3 in = world.getServer().computeOnServer(server -> {
+			Tsunami wave = (Tsunami) Disasters.start(DisasterType.TSUNAMI, server.overworld(), at, 5.0F, false);
+			while (!wave.isDone() && wave.front() < wave.along(at.x, at.z) - 90.0 && wave.age() < 6000) {
+				wave.skip(20);
+			}
+			return wave.direction();
+		});
+		// Looking out the way it comes from: back along its way in.
+		float yaw = (float) Math.toDegrees(Math.atan2(in.x, -in.z));
+		teleport(context, world, Level.OVERWORLD, at.x, at.y + 4.0, at.z, yaw, -8.0F);
+		context.waitTicks(40);
+		shoot(context, "disaster_tsunami");
+	}
+
+	/** From the brink of a level-4 sinkhole once it has opened. */
+	private void sinkhole(ClientGameTestContext context, TestSingleplayerContext world) {
+		Vec3 at = dryLand(world, new BlockPos(2400, 0, 6400));
+		if (at == null) {
+			failures.add("disasters: no land for the sinkhole");
+			return;
+		}
+		double radius = world.getServer().computeOnServer(server -> {
+			Sinkhole hole = (Sinkhole) Disasters.start(DisasterType.SINKHOLE, server.overworld(), at, 4.0F, false);
+			hole.skip(hole.warningTicks() - 10 - hole.age());
+			return hole.openingRadius();
+		});
+		view(context, world, at, 30.0, radius + 14.0, 12.0, -6.0);
+		context.waitTicks(140);
+		shoot(context, "disaster_sinkhole");
+	}
+
+	/** Beside the path of an avalanche coming down a snowy slope. */
+	private void avalanche(ClientGameTestContext context, TestSingleplayerContext world) {
+		Vec3 at = world.getServer().computeOnServer(server -> {
+			ServerLevel level = server.overworld();
+			Pair<BlockPos, Holder<Biome>> found = level.findClosestBiome3d(holder -> holder.is(Biomes.SNOWY_SLOPES) || holder.is(Biomes.GROVE),
+					new BlockPos(0, 120, 0), 6400, 64, 64);
+			if (found == null) {
+				return null;
+			}
+			BlockPos spot = found.getFirst();
+			return new Vec3(spot.getX() + 0.5, floor(level, spot.getX(), spot.getZ()), spot.getZ() + 0.5);
+		});
+		if (at == null) {
+			failures.add("disasters: no snowy slopes for the avalanche");
+			return;
+		}
+		world.getServer().runOnServer(server -> Disasters.start(DisasterType.AVALANCHE, server.overworld(), at, 5.0F, false));
+		context.waitTicks(10);
+		Vec3 release = where(world, DisasterType.AVALANCHE);
+		if (release == null) {
+			failures.add("disasters: the avalanche never let go");
+			return;
+		}
+		// From the side, a little below where it let go, looking up at it coming down.
+		view(context, world, release.add((at.x - release.x) * 0.5, 0.0, (at.z - release.z) * 0.5), 90.0, 50.0, 14.0, 6.0);
 		context.waitTicks(60);
-		shoot(context, "disaster_blizzard");
+		shoot(context, "disaster_avalanche");
+	}
+
+	/** Under a level-5 lightning storm, ball lightning drifting by. */
+	private void lightningStorm(ClientGameTestContext context, TestSingleplayerContext world) {
+		Vec3 at = dryLand(world, new BlockPos(-6400, 0, -2400));
+		if (at == null) {
+			failures.add("disasters: no land for the lightning storm");
+			return;
+		}
+		world.getServer().runOnServer(server -> {
+			LightningStorm storm = (LightningStorm) Disasters.start(DisasterType.LIGHTNING_STORM, server.overworld(), at, 5.0F, false);
+			storm.skip(300);
+			storm.formOrb(at.add(6.0, 2.0, 0.0));
+		});
+		teleport(context, world, Level.OVERWORLD, at.x - 6.0, at.y + 2.0, at.z, -90.0F, 5.0F);
+		context.waitTicks(40);
+		shoot(context, "disaster_lightning_storm");
+	}
+
+	/** In the thick of a level-5 acid rain. */
+	private void acidRain(ClientGameTestContext context, TestSingleplayerContext world) {
+		Vec3 at = dryLand(world, new BlockPos(0, 0, -6400));
+		if (at == null) {
+			failures.add("disasters: no land for the acid rain");
+			return;
+		}
+		world.getServer().runOnServer(server -> Disasters.start(DisasterType.ACID_RAIN, server.overworld(), at, 5.0F, false).skip(200));
+		teleport(context, world, Level.OVERWORLD, at.x, at.y + 3.0, at.z, 45.0F, 0.0F);
+		context.waitTicks(80);
+		shoot(context, "disaster_acid_rain");
 	}
 
 	// --- finding places ------------------------------------------------------------------

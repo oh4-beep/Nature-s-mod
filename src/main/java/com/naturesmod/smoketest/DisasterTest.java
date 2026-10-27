@@ -5,21 +5,30 @@ import java.util.List;
 
 import com.mojang.datafixers.util.Pair;
 import com.naturesmod.block.ModBlocks;
+import com.naturesmod.disaster.AcidRain;
+import com.naturesmod.disaster.Avalanche;
 import com.naturesmod.disaster.Blizzard;
 import com.naturesmod.disaster.Disaster;
 import com.naturesmod.disaster.DisasterType;
 import com.naturesmod.disaster.Disasters;
+import com.naturesmod.disaster.Earthquake;
 import com.naturesmod.disaster.Eruption;
+import com.naturesmod.disaster.Hurricane;
+import com.naturesmod.disaster.LightningStorm;
 import com.naturesmod.disaster.MeteorShower;
+import com.naturesmod.disaster.Sinkhole;
 import com.naturesmod.disaster.Tornado;
+import com.naturesmod.disaster.Tsunami;
 import com.naturesmod.disaster.Wildfire;
 import com.naturesmod.tree.ServerScheduler;
 import com.naturesmod.worldgen.deep.LandShowcase;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntitySpawnReason;
@@ -40,7 +49,10 @@ import net.minecraft.world.phys.Vec3;
  * tears a wooden house apart, lifts the cattle and throws debris about; an earthquake cracks stone
  * bricks, brings down sand left hanging over a hole and opens a fissure along its fault; a meteorite
  * blows out a crater with iron in its floor; a volcano blows, runs lava, lays ash and sends pyroclastic
- * flows down; a wildfire burns through a forest; a sandstorm's wall rolls on; a blizzard piles up snow.
+ * flows down, and rumbles through its unrest first without bringing the game down; a wildfire burns through a
+ * forest; a sandstorm's wall rolls on; a blizzard piles up snow even where it is warm; a hurricane's winds
+ * peak in its eyewall; a tsunami floods the beach and drains away; a sinkhole swallows the ground; an
+ * avalanche runs down and comes to rest; a lightning storm's ball lightning zaps; acid rain eats the land.
  */
 final class DisasterTest {
 	private final SmokeTest test;
@@ -57,7 +69,8 @@ final class DisasterTest {
 		test.line("");
 		test.line("=== Natural disasters ===");
 		clearSkies();
-		List<Step> steps = List.of(this::tornado, this::quake, this::meteor, this::eruption, this::wildfire, this::sandstorm, this::blizzard);
+		List<Step> steps = List.of(this::tornado, this::quake, this::meteor, this::eruption, this::unrest, this::wildfire, this::sandstorm,
+				this::blizzard, this::hurricane, this::tsunami, this::sinkhole, this::avalanche, this::lightning, this::acidRain);
 		chain(steps, 0, () -> {
 			Disasters.stop(level, d -> true);
 			for (String failure : Disasters.failures()) {
@@ -205,8 +218,15 @@ final class DisasterTest {
 			if (planksAfter > planksBefore * 0.8) {
 				test.fail("an EF4 tornado left the wooden house in its path standing (%d of %d planks)", planksAfter, planksBefore);
 			}
+			test.line("    the tornado carried things up to %.1f blocks above its foot", tornado.highestCarry());
 			if (lifted[0] < 2.0) {
 				test.fail("the EF4 tornado lifted none of the cattle off the ground");
+			}
+			if (tornado.highestCarry() < 12.0) {
+				test.fail("the EF4 tornado carried nothing high (%.1f blocks)", tornado.highestCarry());
+			}
+			if (tornado.debrisAloft() > 12 + 7 * 4) {
+				test.fail("the tornado has more debris in the air than its cap (%d)", tornado.debrisAloft());
 			}
 			if (debris[0] == 0) {
 				test.fail("the tornado threw no debris about");
@@ -301,6 +321,19 @@ final class DisasterTest {
 					}
 					if (sunk < 5) {
 						test.fail("an M7.5 earthquake opened no fissure along its fault (%d columns)", sunk);
+					}
+					Earthquake earthquake = (Earthquake) quake;
+					test.line("    its fissure %d blocks deep, %d blocks broken, %d pits, %d cracks, %d columns sunk, %d still to dig",
+							earthquake.fissureDepth(), earthquake.blocksBroken(), earthquake.pitsOpened(), earthquake.cracksOpened(),
+							earthquake.columnsSunk(), earthquake.digging());
+					if (earthquake.fissureDepth() < 12) {
+						test.fail("an M7.5 earthquake's fissure is shallow (%d blocks)", earthquake.fissureDepth());
+					}
+					if (earthquake.blocksBroken() < 500) {
+						test.fail("an M7.5 earthquake broke little ground (%d blocks)", earthquake.blocksBroken());
+					}
+					if (earthquake.fallingBlocks() > 48) {
+						test.fail("the earthquake has more falling blocks than its cap (%d)", earthquake.fallingBlocks());
 					}
 					quake.end();
 				}, next);
@@ -459,27 +492,25 @@ final class DisasterTest {
 		}, next);
 	}
 
+	/** In warm, green country: a blizzard brings its own cold. */
 	private void blizzard(Runnable next) {
-		Pair<BlockPos, Holder<Biome>> cold = level.findClosestBiome3d(holder -> holder.is(Biomes.SNOWY_PLAINS) || holder.is(Biomes.SNOWY_TAIGA),
-				new BlockPos(0, 80, 0), 6400, 64, 64);
-		if (cold == null) {
-			test.line("no snowy land near spawn to test the blizzard in");
+		BlockPos site = site(new BlockPos(0, 0, 1800), 3);
+		if (site == null) {
+			test.fail("no land for the blizzard test");
 			next.run();
 			return;
 		}
-		BlockPos at = cold.getFirst();
-		prepare(at, 3);
 		List<BlockPos> columns = new ArrayList<>();
 		List<Integer> depths = new ArrayList<>();
 		for (int dx = -40; dx <= 40; dx += 4) {
 			for (int dz = -40; dz <= 40; dz += 4) {
-				BlockPos column = at.offset(dx, 0, dz);
+				BlockPos column = site.offset(dx, 0, dz);
 				columns.add(column);
 				depths.add(Blizzard.snowDepth(level, column));
 			}
 		}
-		BlockPos ground = new BlockPos(at.getX(), top(at.getX(), at.getZ()) + 1, at.getZ());
-		Disaster storm = Disasters.start(DisasterType.BLIZZARD, level, Vec3.atBottomCenterOf(ground), 5.0F, false);
+		Holder<Biome> biome = level.getBiome(site);
+		Blizzard storm = (Blizzard) Disasters.start(DisasterType.BLIZZARD, level, Vec3.atBottomCenterOf(site.above()), 5.0F, false);
 		after(500, () -> {
 			int deeper = 0;
 			for (int i = 0; i < columns.size(); i++) {
@@ -487,12 +518,238 @@ final class DisasterTest {
 					deeper++;
 				}
 			}
-			test.line("blizzard at %s: the snow deeper on %d of %d columns after 25 seconds", ground.toShortString(), deeper, columns.size());
-			if (deeper < 3) {
-				test.fail("the blizzard hardly added any snow (%d columns)", deeper);
+			test.line("blizzard at %s (in %s): the snow deeper on %d of %d columns after 25 seconds, %d layers laid, %d water frozen, visibility %.0f",
+					site.toShortString(), biome.unwrapKey().map(key -> key.identifier().getPath()).orElse("?"), deeper, columns.size(), storm.snowLaid(),
+					storm.iceFormed(), storm.visibility());
+			if (storm.snowLaid() == 0 || deeper < 3) {
+				test.fail("the blizzard hardly added any snow (%d columns, %d layers)", deeper, storm.snowLaid());
 			}
 			storm.end();
 			clearSkies();
 		}, next);
 	}
+
+	// --- the volcano's unrest ----------------------------------------------------------------
+
+	/** A volcano rumbling before it blows, as it does on its own: the tremors it sets off must not bring the game down. */
+	private void unrest(Runnable next) {
+		BlockPos site = site(new BlockPos(-1800, 0, -600), 2);
+		if (site == null) {
+			test.fail("no land for the volcanic unrest test");
+			next.run();
+			return;
+		}
+		int failures = Disasters.failures().size();
+		Eruption eruption = (Eruption) Disasters.start(DisasterType.ERUPTION, level, Vec3.atBottomCenterOf(site.above()), 4.0F, false);
+		int[] tremors = {0};
+		for (int t = 20; t <= 480; t += 20) {
+			ServerScheduler.schedule(t, () -> tremors[0] = Math.max(tremors[0],
+					(int) Disasters.active(level).stream().filter(d -> d.type == DisasterType.EARTHQUAKE).count()));
+		}
+		after(500, () -> {
+			test.line("volcanic unrest at %s: %d tremors under way at most, the eruption %s after 500 ticks", eruption.vent().toShortString(), tremors[0],
+					eruption.isDone() ? "over" : "still building");
+			if (eruption.isDone()) {
+				test.fail("the volcano's unrest ended the eruption before it blew");
+			}
+			if (tremors[0] == 0) {
+				test.fail("the volcano's unrest set off no tremors");
+			}
+			if (Disasters.failures().size() > failures) {
+				test.fail("the volcano's unrest failed: %s", Disasters.failures().subList(failures, Disasters.failures().size()));
+			}
+			Disasters.stop(level, d -> d == eruption || d.type == DisasterType.EARTHQUAKE);
+		}, next);
+	}
+
+	// --- the new storms ----------------------------------------------------------------------
+
+	private void hurricane(Runnable next) {
+		BlockPos site = site(new BlockPos(1800, 0, -1200), 2);
+		Vec3 at = site == null ? new Vec3(1800, 80, -1200) : Vec3.atBottomCenterOf(site.above());
+		Hurricane storm = (Hurricane) Disasters.start(DisasterType.HURRICANE, level, at, 4.0F, false);
+		storm.skip(400);
+		after(100, () -> {
+			Vec3 centre = storm.position();
+			double calm = storm.windAt(centre).length();
+			double wall = storm.windAt(centre.add(storm.eyewall(), 0.0, 0.0)).length();
+			test.line("hurricane (category %d): eye %.0f blocks, eyewall at %.0f, peak wind %.0f m/s, %.0f m/s in the eye and %.0f in the eyewall",
+					storm.category(), storm.eye(), storm.eyewall(), storm.peakWind(), calm, wall);
+			if (storm.isDone()) {
+				test.fail("the hurricane ended early");
+			} else if (wall <= calm || wall < 20.0) {
+				test.fail("the hurricane's eyewall winds (%.0f m/s) are no stronger than its eye (%.0f m/s)", wall, calm);
+			}
+			storm.end();
+			clearSkies();
+		}, next);
+	}
+
+	private void tsunami(Runnable next) {
+		Pair<BlockPos, Holder<Biome>> beach = level.findClosestBiome3d(holder -> holder.is(BiomeTags.IS_BEACH), new BlockPos(0, 64, 0), 6400, 64, 64);
+		if (beach == null) {
+			test.line("no beach near spawn to test the tsunami on");
+			next.run();
+			return;
+		}
+		BlockPos shore = beach.getFirst();
+		prepare(shore, 4);
+		Vec3 at = new Vec3(shore.getX() + 0.5, top(shore.getX(), shore.getZ()) + 1, shore.getZ() + 0.5);
+		Tsunami wave = (Tsunami) Disasters.start(DisasterType.TSUNAMI, level, at, 4.0F, false);
+		wave.watch(at);
+		// On until the front is a little way out from the beach.
+		int ticks = 0;
+		while (!wave.isDone() && wave.front() < wave.along(at.x, at.z) - 40.0 && ticks < 4000) {
+			wave.skip(20);
+			ticks += 20;
+		}
+		after(160, () -> {
+			test.line("tsunami (level 4%s) at %s: %.1f blocks high at its front, %d water placed, %d removed, %d standing, %d blocks broken, "
+					+ "%d swept up", wave.inland() ? ", a flood wave inland" : "", BlockPos.containing(at).toShortString(), wave.height(), wave.waterPlaced(),
+					wave.waterRemoved(), wave.waterStanding(), wave.blocksBroken(), wave.sweptUp());
+			if (wave.waterPlaced() == 0) {
+				test.fail("the tsunami never flooded the land it was watched over");
+			}
+			if (wave.waterStanding() > 900) {
+				test.fail("the tsunami left more water standing than its cap (%d)", wave.waterStanding());
+			}
+			wave.end();
+		}, () -> after(10, () -> {
+			if (wave.waterStanding() > 0) {
+				test.fail("the tsunami left %d blocks of water behind after it ended", wave.waterStanding());
+			}
+		}, next));
+	}
+
+	private void sinkhole(Runnable next) {
+		BlockPos site = site(new BlockPos(600, 0, -1800), 2);
+		if (site == null) {
+			test.fail("no dry land for the sinkhole test");
+			next.run();
+			return;
+		}
+		Sinkhole hole = (Sinkhole) Disasters.start(DisasterType.SINKHOLE, level, Vec3.atBottomCenterOf(site.above()), 3.0F, false);
+		if (hole.overWater()) {
+			test.line("the sinkhole test site at %s was water; skipped", site.toShortString());
+			hole.end();
+			next.run();
+			return;
+		}
+		hole.skip(hole.warningTicks() - 30 - hole.age());
+		int[] mostFalling = {0};
+		for (int t = 10; t <= 600; t += 10) {
+			ServerScheduler.schedule(t, () -> mostFalling[0] = Math.max(mostFalling[0], hole.fallingBlocks()));
+		}
+		after(600, () -> {
+			BlockPos centre = hole.centre();
+			int bottom = top(centre.getX(), centre.getZ());
+			test.line("sinkhole (level 3) at %s: %s, %d cracks, %d columns dug, %d blocks, rim %d, floor %d, ground in the middle now %d, "
+					+ "%d falling at most", centre.toShortString(), hole.phase() == Sinkhole.SETTLED ? "settled" : "phase " + hole.phase(), hole.cracksOpened(),
+					hole.columnsDug(), hole.blocksDug(), hole.rimHeight(), hole.floorHeight(), bottom, mostFalling[0]);
+			if (hole.columnsDug() < 40 || hole.blocksDug() < 500) {
+				test.fail("the sinkhole hardly opened (%d columns, %d blocks)", hole.columnsDug(), hole.blocksDug());
+			}
+			if (bottom > hole.rimHeight() - 5) {
+				test.fail("the sinkhole left no pit in its middle (ground %d, rim %d)", bottom, hole.rimHeight());
+			}
+			if (mostFalling[0] > 40) {
+				test.fail("the sinkhole had more falling blocks than its cap (%d)", mostFalling[0]);
+			}
+			hole.end();
+		}, next);
+	}
+
+	private void avalanche(Runnable next) {
+		Pair<BlockPos, Holder<Biome>> slope = level.findClosestBiome3d(holder -> holder.is(Biomes.SNOWY_SLOPES) || holder.is(Biomes.GROVE)
+				|| holder.is(Biomes.FROZEN_PEAKS), new BlockPos(0, 120, 0), 6400, 64, 64);
+		BlockPos from = slope != null ? slope.getFirst() : new BlockPos(-600, 0, 1800);
+		prepare(from, 4);
+		Vec3 at = new Vec3(from.getX() + 0.5, top(from.getX(), from.getZ()) + 1, from.getZ() + 0.5);
+		Avalanche slide = (Avalanche) Disasters.start(DisasterType.AVALANCHE, level, at, 4.0F, false);
+		double[] fastest = {0.0};
+		for (int t = 10; t <= 500; t += 10) {
+			ServerScheduler.schedule(t, () -> fastest[0] = Math.max(fastest[0], slide.speed()));
+		}
+		after(500, () -> {
+			test.line("avalanche (level 4, %s) let go at %s: ran %.0f of %.0f blocks, %.0f wide, at up to %.2f blocks a tick, %d blocks laid, %d trees felled, "
+					+ "%s", slide.landslide() ? "a landslide" : "snow", slide.release().toShortString(), slide.travelled(), slide.runLength(), slide.width(),
+					fastest[0], slide.blocksLaid(), slide.treesFelled(), slide.phase() == Avalanche.SETTLING || slide.isDone() ? "come to rest" : "still running");
+			if (slide.travelled() < 20.0) {
+				test.fail("the avalanche hardly ran (%.0f blocks)", slide.travelled());
+			}
+			if (slide.blocksLaid() == 0) {
+				test.fail("the avalanche laid no debris");
+			}
+			if (fastest[0] > slide.maxSpeed() + 1.0E-6) {
+				test.fail("the avalanche ran faster than it may (%.2f > %.2f)", fastest[0], slide.maxSpeed());
+			}
+			slide.end();
+		}, next);
+	}
+
+	private void lightning(Runnable next) {
+		BlockPos site = site(new BlockPos(-1200, 0, -1800), 2);
+		if (site == null) {
+			test.fail("no land for the lightning storm test");
+			next.run();
+			return;
+		}
+		LightningStorm storm = (LightningStorm) Disasters.start(DisasterType.LIGHTNING_STORM, level, Vec3.atBottomCenterOf(site.above()), 5.0F, false);
+		storm.skip(300);
+		Mob cow = EntityTypes.COW.create(level, EntitySpawnReason.COMMAND);
+		if (cow != null) {
+			cow.snapTo(site.getX() + 0.5, site.getY() + 1, site.getZ() + 0.5, 0.0F, 0.0F);
+			cow.setPersistenceRequired();
+			level.addFreshEntity(cow);
+			storm.formOrb(new Vec3(site.getX() + 0.5, site.getY() + 1.8, site.getZ() + 0.5));
+		}
+		storm.chargeAt(Vec3.atBottomCenterOf(site.offset(12, 1, 12)), 10);
+		after(80, () -> {
+			test.line("lightning storm (level 5) at %s: %d strikes, %d on a charged spot, %d orbs formed, %d zaps", site.toShortString(), storm.strikes(),
+					storm.chargedStrikes(), storm.orbsFormed(), storm.zaps());
+			if (storm.chargedStrikes() == 0) {
+				test.fail("the lightning storm never struck the spot it charged");
+			}
+			if (cow != null && storm.zaps() == 0) {
+				test.fail("the ball lightning zapped nothing");
+			}
+			storm.end();
+			if (cow != null) {
+				cow.discard();
+			}
+			clearSkies();
+		}, next);
+	}
+
+	private void acidRain(Runnable next) {
+		BlockPos site = site(new BlockPos(1800, 0, 600), 2);
+		if (site == null) {
+			test.fail("no land for the acid rain test");
+			next.run();
+			return;
+		}
+		// A poppy on grass, and a leaf block on grass beside it.
+		BlockPos flower = site.offset(3, 0, 0);
+		BlockPos leaves = site.offset(-3, 0, 0);
+		level.setBlock(new BlockPos(flower.getX(), top(flower.getX(), flower.getZ()), flower.getZ()), Blocks.GRASS_BLOCK.defaultBlockState(),
+				Block.UPDATE_CLIENTS);
+		level.setBlock(new BlockPos(flower.getX(), top(flower.getX(), flower.getZ()) + 1, flower.getZ()), Blocks.POPPY.defaultBlockState(),
+				Block.UPDATE_CLIENTS);
+		level.setBlock(new BlockPos(leaves.getX(), top(leaves.getX(), leaves.getZ()) + 1, leaves.getZ()),
+				Blocks.OAK_LEAVES.defaultBlockState().setValue(net.minecraft.world.level.block.LeavesBlock.PERSISTENT, true), Block.UPDATE_CLIENTS);
+		AcidRain rain = (AcidRain) Disasters.start(DisasterType.ACID_RAIN, level, Vec3.atBottomCenterOf(site.above()), 5.0F, false);
+		boolean ateFlower = rain.eatAway(flower) && rain.eatAway(flower);
+		boolean ateLeaves = rain.eatAway(leaves);
+		after(200, () -> {
+			BlockState ground = level.getBlockState(new BlockPos(flower.getX(), top(flower.getX(), flower.getZ()), flower.getZ()));
+			test.line("acid rain (level 5) at %s: the poppy %s, the ground under it now %s, the leaves %s; radius %.0f", site.toShortString(),
+					ateFlower ? "eaten" : "unharmed", BuiltInRegistries.BLOCK.getKey(ground.getBlock()).getPath(), ateLeaves ? "withered" : "unharmed", rain.radius());
+			if (!ateFlower || !ateLeaves) {
+				test.fail("acid rain didn't eat away the poppy and grass (%s) or the leaves (%s)", ateFlower, ateLeaves);
+			}
+			rain.end();
+			clearSkies();
+		}, next);
+	}
+
 }
