@@ -46,6 +46,22 @@ public final class Disasters {
 		DisasterSounds.register();
 		DisasterParticles.register();
 		ServerTickEvents.END_LEVEL_TICK.register(Disasters::tick);
+		// Before the worlds are saved, every disaster under way ends and cleans up after itself (a tsunami's water still
+		// flowing, an eruption's molten lava), so nothing half done is saved into the world.
+		ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
+			PENDING.clear();
+			for (List<Disaster> list : ACTIVE.values()) {
+				for (Disaster disaster : List.copyOf(list)) {
+					disaster.end();
+					try {
+						disaster.finish();
+					} catch (RuntimeException e) {
+						NaturesMod.LOGGER.error("The {} could not finish as the server stopped", disaster.type.id, e);
+					}
+				}
+				list.clear();
+			}
+		});
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			ACTIVE.clear();
 			TOLD.clear();

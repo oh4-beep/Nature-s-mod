@@ -171,6 +171,17 @@ def looped(x, fade_seconds):
     return out
 
 
+def limited(x, ceiling=2.1):
+    """x with its loudest peaks held softly under `ceiling` times its loudness (rms), the rest left as it is:
+    a loop full of crashes and bangs levelled by its loudness would otherwise clip on them (and Vorbis
+    overshoots a little on sharp peaks, so they want some room)."""
+    x = x / (np.sqrt(np.mean(x ** 2)) + 1e-9)
+    knee = 0.8 * ceiling
+    over = np.abs(x) > knee
+    x[over] = np.sign(x[over]) * (knee + (ceiling - knee) * np.tanh((np.abs(x[over]) - knee) / (ceiling - knee)))
+    return x
+
+
 def finish(x, level, loop=False):
     """Levels a sound: loops by loudness, one-shots by their peak, softly limited either way."""
     x = x - np.mean(x)
@@ -463,6 +474,171 @@ def hail(seed=180):
     return finish(looped(x, 1.0), 0.24, loop=True)
 
 
+def hurricane_wind(seed=240):
+    """A hurricane: a deep roar of wind that never lets up, gusts swelling out of it and moaning round
+    every corner, the rain driven through it lashing harder with each gust, and loose things banging."""
+    seconds = 11.5
+    gust = wander(seconds, 0.3, seed + 1, 0.45, 1.0)
+    howls = [wander(seconds, 0.16, seed + 10 + k, low, high) for k, (low, high) in enumerate(((170, 360), (300, 620), (520, 950)))]
+
+    def shape(t, f):
+        g = gust(t)
+        roar = tilt(f, 120, -1.0 + 0.4 * (g - 0.7)) * highpass(f, 24, 3) * lowpass(f, 7000) * (1.0 + 0.8 * peak(f, 65, 0.6))
+        howl = sum(0.11 * peak(f, h(t) * (0.85 + 0.3 * g), 0.03) for h in howls) * g ** 3
+        rain = 0.05 * highpass(f, 900, 2) * lowpass(f, 9000, 2) * (0.4 + 0.8 * g)
+        return (0.55 + 0.45 * g) * roar + howl + rain
+
+    x = spectral_noise(seconds, shape, seed)
+    x /= np.sqrt(np.mean(x ** 2))
+    # Things banging in the wind: a shutter, a sheet of roofing, branches, most of all in the gusts.
+    for k, at in enumerate(poisson(seconds, lambda s: 2.2 * gust(s) ** 2, seed + 2)):
+        r = rng(seed + 100 + k)
+        bang = burst(0.2, 120, r.uniform(900, 2600), r.uniform(0.015, 0.05), seed + 200 + k, attack=0.0005)
+        place(x, at * SR, bang / (np.max(np.abs(bang)) + 1e-9), r.uniform(0.1, 0.35))
+    return finish(limited(looped(x, 1.5)), 0.3, loop=True)
+
+
+def tsunami_roar(seed=260):
+    """A tsunami coming ashore: a wall of water breaking over and over with a thunder like surf a hundred
+    times over, the rush and hiss of the white water churning over everything, and under it a deep roll."""
+    seconds = 11.5
+    surge = wander(seconds, 0.45, seed + 1, 0.55, 1.0)
+    roll = wander(seconds, 0.9, seed + 2, 0.6, 1.0)
+
+    def shape(t, f):
+        s = surge(t)
+        rumble = 1.5 * roll(t) * peak(f, 45, 0.5) * highpass(f, 20, 3)
+        rush = tilt(f, 250, -0.75) * highpass(f, 60, 2) * lowpass(f, 9000, 2) * (1.0 + 0.6 * peak(f, 900, 0.8))
+        foam = 0.08 * peak(f, 4500, 0.6)
+        return s * (rumble + rush + foam)
+
+    x = spectral_noise(seconds, shape, seed, n_fft=8192, hop=2048)
+    x /= np.sqrt(np.mean(x ** 2))
+    # The breakers: each a heavy, soft-edged thud with the white water hissing away after it.
+    crashes = np.zeros_like(x)
+    for k, at in enumerate(poisson(seconds, 0.8, seed + 3)):
+        r = rng(seed + 100 + k)
+        crash = band_decay(1.6, [(25, 90, 1.0, 0.7), (90, 400, 0.8, 0.45), (400, 2000, 0.6, 0.3), (2000, 9000, 0.35, 0.22)], seed + 200 + k)
+        crash *= np.minimum(times(1.6) / r.uniform(0.03, 0.08), 1.0)
+        place(crashes, at * SR, crash / (np.max(np.abs(crash)) + 1e-9), r.uniform(0.5, 1.0))
+    x += 0.8 * crashes / (np.sqrt(np.mean(crashes ** 2)) + 1e-9)
+    # Churning water: air dragged under and bubbling back up, each bubble a little rising chirp.
+    for k, at in enumerate(poisson(seconds, lambda s: 45 * surge(s), seed + 4)):
+        r = rng(seed + 1000 + k)
+        length = r.uniform(0.02, 0.06)
+        s = times(length)
+        bubble = np.sin(2 * np.pi * np.cumsum(r.uniform(300, 1300) * (1 + 0.5 * s / length)) / SR) * np.exp(-s / (length / 3))
+        place(x, at * SR, bubble * np.minimum(s / 0.001, 1.0), r.uniform(0.05, 0.2))
+    return finish(limited(looped(x, 1.5)), 0.29, loop=True)
+
+
+def avalanche_roar(seed=280):
+    """An avalanche: a low roar rolling on like thunder that does not stop, the ground drumming under it,
+    over it the hiss of snow and ice racing past, and the thump of great blocks tumbling in it."""
+    seconds = 11.5
+    roll = wander(seconds, 0.7, seed + 1, 0.55, 1.0)
+    surge = wander(seconds, 0.25, seed + 2, 0.7, 1.0)
+
+    def shape(t, f):
+        s = surge(t)
+        rumble = (1.4 * peak(f, 50, 0.5) + 0.5 * peak(f, 160, 0.6)) * highpass(f, 20, 3)
+        roar = 0.6 * tilt(f, 110, -0.9) * highpass(f, 40, 2) * lowpass(f, 4000)
+        hiss = 0.07 * peak(f, 5000, 0.55)
+        return roll(t) * s * rumble + s * roar + (0.5 + 0.5 * s) * hiss
+
+    x = spectral_noise(seconds, shape, seed, n_fft=8192, hop=2048)
+    x /= np.sqrt(np.mean(x ** 2))
+    for k, at in enumerate(poisson(seconds, lambda s: 3.0 * roll(s), seed + 3)):
+        r = rng(seed + 100 + k)
+        thump = burst(0.4, 40, r.uniform(300, 900), r.uniform(0.06, 0.15), seed + 200 + k, attack=0.004)
+        place(x, at * SR, thump / (np.max(np.abs(thump)) + 1e-9), r.uniform(0.2, 0.5))
+    # Ice and crust breaking up as it goes.
+    for k, at in enumerate(poisson(seconds, 1.6, seed + 4)):
+        r = rng(seed + 400 + k)
+        crunch = burst(0.1, 800, 6000, r.uniform(0.008, 0.02), seed + 500 + k, attack=0.0004)
+        place(x, at * SR, crunch / (np.max(np.abs(crunch)) + 1e-9), r.uniform(0.08, 0.22))
+    return finish(limited(looped(x, 1.5)), 0.31, loop=True)
+
+
+def sinkhole_collapse(seed):
+    """The ground giving way: the rock cracking faster and faster, then the crumbling rush of it breaking
+    up, the deep thud of it all landing far below, and earth and stones pouring in after it, the hole
+    booming hollow."""
+    seconds = 4.6
+    t = times(seconds)
+    fall = rng(seed).uniform(1.1, 1.6)
+    x = np.zeros(t.size)
+    # The groan of the rock under strain, swelling until it goes, then rumbling away.
+    groan = filtered(rng(seed + 1).standard_normal(t.size), lambda f: peak(f, 90, 0.5) * highpass(f, 25, 3))
+    groan /= np.max(np.abs(groan)) + 1e-9
+    x += 0.35 * groan * np.minimum(t / 0.05, 1.0) * np.where(t < fall, 0.3 + 0.7 * (t / fall) ** 2, np.exp(-(t - fall) / 1.4))
+    # Cracks: the rock splitting, the first one sharp, then faster and faster.
+    for k, at in enumerate([0.01] + poisson(fall, lambda s: 6 + 30 * (s / fall) ** 2, seed + 2)):
+        r = rng(seed + 100 + k)
+        crack = burst(0.25, r.uniform(150, 400), r.uniform(2500, 7000), r.uniform(0.01, 0.04), seed + 200 + k, attack=0.0004)
+        place(x, at * SR, crack / (np.max(np.abs(crack)) + 1e-9), (0.8 if k == 0 else r.uniform(0.3, 0.8)) * (0.6 + 0.4 * at / fall))
+    # The thud of it landing: the ground jumping, and the boom dying away high notes first.
+    s = times(seconds - fall)
+    sweep = np.sin(2 * np.pi * np.cumsum(65 - 37 * np.minimum(s / 0.4, 1.0)) / SR) * np.exp(-s / 0.5) * np.minimum(s / 0.005, 1)
+    tail = band_decay(seconds - fall, [(20, 80, 1.0, 1.2), (80, 250, 0.7, 0.7), (250, 1000, 0.35, 0.35), (1000, 4000, 0.15, 0.12)],
+                      seed + 3)
+    tail /= np.max(np.abs(tail)) + 1e-9
+    crunch = burst(seconds - fall, 120, 2500, 0.12, seed + 4, attack=0.002)
+    crunch /= np.max(np.abs(crunch)) + 1e-9
+    place(x, fall * SR, sweep + 0.8 * tail + 0.6 * crunch)
+    # Crumbling: clods and grit by the hundred as it breaks up, then the odd big stone after it.
+    for k, at in enumerate(poisson(seconds, lambda q: 140 * np.exp(-(q - fall) / 0.9) if q > fall - 0.15 else 0.0, seed + 5)):
+        r = rng(seed + 1000 + k)
+        clod = burst(0.08, r.uniform(200, 600), r.uniform(1500, 5000), r.uniform(0.005, 0.02), seed + 2000 + k)
+        place(x, at * SR, clod / (np.max(np.abs(clod)) + 1e-9), r.uniform(0.1, 0.35))
+    for k, at in enumerate(poisson(seconds, lambda q: 6 * np.exp(-(q - fall) / 1.2) if q > fall else 0.0, seed + 6)):
+        r = rng(seed + 4000 + k)
+        stone = burst(0.3, 50, r.uniform(600, 1200), r.uniform(0.04, 0.08), seed + 5000 + k, attack=0.002)
+        place(x, at * SR, stone / (np.max(np.abs(stone)) + 1e-9), r.uniform(0.25, 0.5))
+    # Earth pouring in over the edge.
+    pour = filtered(rng(seed + 7).standard_normal(t.size), lambda f: highpass(f, 400, 2) * lowpass(f, 4000, 2))
+    pour /= np.sqrt(np.mean(pour ** 2)) + 1e-9
+    x += 0.12 * pour * np.where(t < fall, 0.0, np.minimum((t - fall) / 0.3, 1.0) * np.exp(-(t - fall) / 2.0))
+    x = reverb(x, 1.0, seed + 8, wet=0.3, damping=3000, echoes=((0.18, 0.2),))
+    return finish(x, 0.9)
+
+
+def acid_rain_hiss(seed=300):
+    """Acid rain: a steady downpour, and everywhere it lands the fizz and sizzle of something being eaten
+    away, crackling like fat in a pan."""
+    seconds = 10.0
+    surge = wander(seconds, 0.35, seed + 1, 0.7, 1.0)
+    flutter = wander(seconds, 6.0, seed + 2, 0.5, 1.0)
+
+    def rain(t, f):
+        return surge(t) * highpass(f, 350, 2) * lowpass(f, 7000, 2) * (1.0 + 0.5 * peak(f, 1800, 0.7))
+
+    x = spectral_noise(seconds, rain, seed)
+    x /= np.sqrt(np.mean(x ** 2))
+    # Drops: a patter on leaves and stone.
+    r = rng(seed + 3)
+    drops = np.zeros_like(x)
+    patter = [burst(0.03, 800, 6000, r.uniform(0.002, 0.006), seed + 10 + k, attack=0.0002) for k in range(8)]
+    for at in poisson(seconds, lambda s: 220 * surge(s), seed + 4):
+        drop = patter[r.integers(len(patter))]
+        place(drops, at * SR, drop / (np.max(np.abs(drop)) + 1e-9), r.uniform(0.1, 0.6) * r.choice([-1, 1]))
+    x += 0.4 * drops / (np.sqrt(np.mean(drops ** 2)) + 1e-9)
+    # The sizzle: a dense crackle of tiny pops, now thicker, now thinner, over a fizzing hiss.
+    pops = np.zeros_like(x)
+    clicks = [burst(0.006, 2000, 10000, r.uniform(0.0003, 0.0012), seed + 30 + k, attack=0.00005) for k in range(8)]
+    for at in poisson(seconds, lambda s: 1400 * flutter(s) * surge(s), seed + 5):
+        click = clicks[r.integers(len(clicks))]
+        place(pops, at * SR, click / (np.max(np.abs(click)) + 1e-9), min(r.pareto(3.0), 3.0) * r.choice([-1, 1]))
+    x += 0.6 * pops / (np.sqrt(np.mean(pops ** 2)) + 1e-9)
+
+    def fizz(t, f):
+        return flutter(t) * peak(f, 6000, 0.35)
+
+    hiss = spectral_noise(seconds, fizz, seed + 6)
+    x += 0.3 * hiss / (np.sqrt(np.mean(hiss ** 2)) + 1e-9)
+    return finish(limited(looped(x, 1.0)), 0.22, loop=True)
+
+
 # --- the sound events ------------------------------------------------------------------------
 
 # event: (files [(name, synthesizer)], subtitle, streamed, attenuation distance or None for sounds heard all around)
@@ -484,6 +660,12 @@ EVENTS = {
     "disaster.meteor.boom": ([(f"sonic_boom{k + 1}", lambda k=k: sonic_boom(230 + 10 * k)) for k in range(2)], "Sonic boom", False, 2400),
     "disaster.fire.roar": ([("fire_roar", fire_roar)], "Wildfire roars", True, 140),
     "disaster.hail": ([("hail", hail)], "Hail clatters", True, None),
+    "disaster.hurricane.wind": ([("hurricane_wind", hurricane_wind)], "Hurricane howls", True, None),
+    "disaster.tsunami.roar": ([("tsunami_roar", tsunami_roar)], "Tsunami roars", True, None),
+    "disaster.avalanche.roar": ([("avalanche_roar", avalanche_roar)], "Avalanche roars", True, 600),
+    "disaster.sinkhole.collapse": ([(f"sinkhole_collapse{k + 1}", lambda k=k: sinkhole_collapse(320 + 10 * k)) for k in range(3)],
+                                   "Ground collapses", False, 240),
+    "disaster.acid_rain.hiss": ([("acid_rain_hiss", acid_rain_hiss)], "Acid rain sizzles", True, None),
 }
 
 

@@ -157,5 +157,59 @@
       }
     ],
     "subtitle": "subtitles.naturesmod.disaster.hail"
+  },
+  "disaster.hurricane.wind": {
+    "sounds": [
+      {
+        "name": "naturesmod:disaster/hurricane_wind",
+        "stream": true
+      }
+    ],
+    "subtitle": "subtitles.naturesmod.disaster.hurricane.wind"
+  },
+  "disaster.tsunami.roar": {
+    "sounds": [
+      {
+        "name": "naturesmod:disaster/tsunami_roar",
+        "stream": true
+      }
+    ],
+    "subtitle": "subtitles.naturesmod.disaster.tsunami.roar"
+  },
+  "disaster.avalanche.roar": {
+    "sounds": [
+      {
+        "name": "naturesmod:disaster/avalanche_roar",
+        "stream": true,
+        "attenuation_distance": 600
+      }
+    ],
+    "subtitle": "subtitles.naturesmod.disaster.avalanche.roar"
+  },
+  "disaster.sinkhole.collapse": {
+    "sounds": [
+      {
+        "name": "naturesmod:disaster/sinkhole_collapse1",
+        "attenuation_distance": 240
+      },
+      {
+        "name": "naturesmod:disaster/sinkhole_collapse2",
+        "attenuation_distance": 240
+      },
+      {
+        "name": "naturesmod:disaster/sinkhole_collapse3",
+        "attenuation_distance": 240
+      }
+    ],
+    "subtitle": "subtitles.naturesmod.disaster.sinkhole.collapse"
+  },
+  "disaster.acid_rain.hiss": {
+    "sounds": [
+      {
+        "name": "naturesmod:disaster/acid_rain_hiss",
+        "stream": true
+      }
+    ],
+    "subtitle": "subtitles.naturesmod.disaster.acid_rain.hiss"
   }
 }

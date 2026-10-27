@@ -41,16 +41,18 @@ public final class Vortex {
 	/**
 	 * The radius of the visible condensation funnel at a fraction `f` of the way up from the ground to the
 	 * cloud (0 to 1): a cone, narrow at the ground and flaring into the cloud above, the weak ones slender,
-	 * the violent ones broad wedges; dying, a thin rope.
+	 * the violent ones broad wedges, nearly as wide at the ground as aloft; dying, a thin rope.
 	 */
 	public static double funnel(double f, double core, double rating, boolean rope) {
 		f = clamp(f, 0.0, 1.0);
+		rating = clamp(rating, 0.0, 5.0);
 		if (rope) {
 			return core * (0.18 + 0.3 * f * f);
 		}
-		double foot = 0.3 + 0.09 * rating;
-		double top = 1.0 + 0.12 * rating;
-		return core * (foot + (top - foot) * Math.pow(f, 2.2));
+		double foot = 0.3 + 0.1 * rating;
+		double top = 1.0 + 0.16 * rating;
+		double flare = 2.4 - 0.16 * rating;
+		return core * (foot + (top - foot) * Math.pow(f, flare));
 	}
 
 	static double clamp(double v, double lo, double hi) {

@@ -21,17 +21,26 @@ public final class Seismic {
 
 	/** At the epicentre. */
 	static double peak(double m) {
-		return 0.12 * Math.pow(1.85, m - 5.0);
+		return 0.14 * Math.pow(1.85, m - 5.0);
 	}
 
 	/** How quickly it falls off. */
 	static double reach(double m) {
-		return 35.0 * Math.pow(1.6, m - 5.0);
+		return 38.0 * Math.pow(1.6, m - 5.0);
 	}
 
 	/** How far out the ground is felt to shake at all (0.01 g). */
 	public static double feltRadius(double m) {
-		return reach(m) * (Math.pow(peak(m) / 0.01, 1.0 / 1.6) - 1.0);
+		return radiusOf(m, 0.01);
+	}
+
+	/** How far out the strongest shaking of a quake of magnitude `m` still reaches `g` (0 where it doesn't even at the epicentre). */
+	public static double radiusOf(double m, double g) {
+		double peak = peak(m);
+		if (g <= 0.0 || peak <= g) {
+			return 0.0;
+		}
+		return reach(m) * (Math.pow(peak / g, 1.0 / 1.6) - 1.0);
 	}
 
 	/** How long the strong shaking lasts near the epicentre, in ticks. */

@@ -13,12 +13,19 @@ import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * What a wind can tear away: the gust (metres a second) each block gives way to, after the damage
- * indicators of the Enhanced Fujita scale. Leaves and plants go first, then glass, then the light
- * parts of a building (doors, fences, wool), then its wooden walls and roof, and only the worst
- * tornadoes bring down masonry. The ground itself is only scoured.
+ * indicators of the Enhanced Fujita scale. Leaves and plants go first, then glass and the flimsy
+ * fittings of a building (doors, fences, wool), then its wooden walls and roof and the trees (EF3),
+ * then rubble stone and the like (EF4), and only the worst tornadoes bring down dressed masonry:
+ * bricks, stone bricks, polished and cut stone, concrete (EF5). The ground itself is only scoured.
  */
 final class WindDamage {
 	static final double NEVER = Double.MAX_VALUE;
+	/** Dressed stone and the like, by name: what only an EF5 brings down. */
+	private static final String[] MASONRY = {"brick", "tiles", "polished", "smooth_", "chiseled", "cut_", "quartz", "prismarine", "purpur",
+			"concrete"};
+	/** The light fittings of a building, by name: what goes soon after the glass (if it isn't iron or stone). */
+	private static final String[] FLIMSY = {"fence", "door", "sign", "ladder", "carpet", "banner", "bed", "torch", "lantern", "wool",
+			"scaffolding", "button", "pressure_plate", "lever", "rail", "pot"};
 
 	private WindDamage() {
 	}
@@ -42,8 +49,23 @@ final class WindDamage {
 		if (name.contains("glass") || state.is(Blocks.ICE)) {
 			return 36.0;
 		}
+		if (named(name, MASONRY) && !name.contains("powder")) {
+			return 86.0 + 3.0 * Math.sqrt(hardness);
+		}
+		if (hardness <= 3.0F && named(name, FLIMSY)) {
+			return 42.0;
+		}
 		double resistance = Math.min(block.getExplosionResistance(), 20.0);
 		return 30.0 + 14.0 * Math.sqrt(hardness) + 2.5 * resistance;
+	}
+
+	private static boolean named(String name, String[] parts) {
+		for (String part : parts) {
+			if (name.contains(part)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/** The land itself, which a tornado scours but doesn't carry off whole. */

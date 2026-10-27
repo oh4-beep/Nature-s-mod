@@ -55,7 +55,8 @@ final class DisasterCommand {
 			double distance = switch (type) {
 				case TORNADO -> 64.0;
 				case WILDFIRE -> 14.0;
-				case SINKHOLE -> 12.0;
+				// Far enough ahead to watch it open from its brink, not fall in.
+				case SINKHOLE -> 8.0 + 3.5 * type.clamp(strength);
 				case HURRICANE -> 300.0;
 				default -> 0.0;
 			};
