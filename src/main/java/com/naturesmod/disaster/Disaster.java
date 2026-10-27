@@ -226,6 +226,17 @@ public abstract class Disaster {
 		}
 	}
 
+	/**
+	 * Carries a player along at `velocity` toward where it should be: its game steers it `gain` of the way there each
+	 * tick from where it really is (the server hears where it went only a moment later); never past `max` a tick.
+	 */
+	protected static void carryPlayer(ServerPlayer player, Vec3 velocity, Vec3 goal, double gain, double max) {
+		Vec3 now = player.getDeltaMovement();
+		player.push(velocity.x - now.x, velocity.y - now.y, velocity.z - now.z);
+		tell(player, new DisasterNet.Push(DisasterNet.Push.CARRY, (float) velocity.x, (float) velocity.y, (float) velocity.z, (float) gain, 0.0F,
+				(float) max, (float) goal.x, (float) goal.y, (float) goal.z));
+	}
+
 	private static void tell(ServerPlayer player, DisasterNet.Push push) {
 		if (!DisasterNet.push(player, push)) {
 			// A game that can't hear of it the mod's way hears of it as a knockback.

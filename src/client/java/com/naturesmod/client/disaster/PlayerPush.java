@@ -30,6 +30,11 @@ final class PlayerPush {
 				vy += push.y();
 				vz += push.z();
 			}
+			case DisasterNet.Push.CARRY -> {
+				vx = push.x() + (push.goalX() - player.getX()) * push.rate();
+				vy = push.y() + (push.goalY() - player.getY()) * push.rate();
+				vz = push.z() + (push.goalZ() - player.getZ()) * push.rate();
+			}
 			case DisasterNet.Push.TOWARD -> {
 				vx += (push.x() - vx) * push.rate();
 				vz += (push.z() - vz) * push.rate();
@@ -49,7 +54,7 @@ final class PlayerPush {
 			vz *= k;
 		}
 		player.setDeltaMovement(vx, vy, vz);
-		if (push.mode() == DisasterNet.Push.SET && vy > 0.0) {
+		if ((push.mode() == DisasterNet.Push.SET || push.mode() == DisasterNet.Push.CARRY) && vy > 0.0) {
 			// Off the ground with it: else a player standing still would only slide along it.
 			player.setOnGround(false);
 		}

@@ -1004,13 +1004,16 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 			context.waitTicks(5);
 			double[] state = world.getServer().computeOnServer(server -> {
 				ServerPlayer player = world.getConnection().getServerPlayer();
-				boolean held = Disasters.active(server.overworld()).stream().anyMatch(d -> d instanceof Tornado tornado && tornado.carrying(player));
-				return new double[] {player.getY(), held ? 1.0 : 0.0};
+				double[] carry = Disasters.active(server.overworld()).stream().filter(d -> d instanceof Tornado).map(d -> ((Tornado) d).carryState(player))
+						.filter(java.util.Objects::nonNull).findFirst().orElse(null);
+				return carry == null ? new double[] {player.getY(), 0.0, 0.0, 0.0, 0.0, 0.0}
+						: new double[] {player.getY(), 1.0, carry[0], carry[1], carry[2], carry[3]};
 			});
 			double[] seen = context.computeOnClient(client -> new double[] {client.player.getY(), client.player.getDeltaMovement().y,
 					client.player.onGround() ? 1.0 : 0.0, DisasterNet.pushesReceived});
-			System.out.printf(java.util.Locale.ROOT, "[gametest] carried, tick %d: held %s, server y %.2f, client y %.2f moving up %.2f, on the ground %s, %d pushes%n",
-					i * 5, state[1] > 0.5, state[0], seen[0], seen[1], seen[2] > 0.5, (int) seen[3]);
+			System.out.printf(java.util.Locale.ROOT, "[gametest] carried, tick %d: held %s (%.1f of %.1f up, %d of %d ticks), server y %.2f, "
+					+ "client y %.2f moving up %.2f, on the ground %s, %d pushes%n", i * 5, state[1] > 0.5, state[2], state[3], (int) state[4], (int) state[5],
+					state[0], seen[0], seen[1], seen[2] > 0.5, (int) seen[3]);
 			highest = Math.max(highest, state[0]);
 			caught |= state[1] > 0.5;
 			if (i == 8) {

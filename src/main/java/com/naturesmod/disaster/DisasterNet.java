@@ -131,21 +131,29 @@ public final class DisasterNet {
 
 	/**
 	 * A push on the player it is sent to. A player's own game moves the player, so this is how a disaster moves one:
-	 * set to a velocity (carried off), given a kick (a blast), or pulled toward the speed of the air at a rate (the
-	 * wind), which the player's game works out from how fast the player is really going. At most `max` blocks a tick
-	 * after it (none when 0).
+	 * set to a velocity, given a kick (a blast), pulled toward the speed of the air at a rate (the wind), which the
+	 * player's game works out from how fast the player is really going, or carried along toward a place (a tornado),
+	 * which it works out from where the player really is. At most `max` blocks a tick after it (none when 0).
 	 */
-	public record Push(int mode, float x, float y, float z, float rate, float lift, float max) implements CustomPacketPayload {
+	public record Push(int mode, float x, float y, float z, float rate, float lift, float max, float goalX, float goalY, float goalZ)
+			implements CustomPacketPayload {
 		public static final int SET = 0;
 		public static final int ADD = 1;
 		/** Toward (x, y, z): `rate` of the way across, and up (off the ground only) `lift` of the way when the air rises faster. */
 		public static final int TOWARD = 2;
+		/** At (x, y, z), and `rate` of the way from where the player is to the goal on top. */
+		public static final int CARRY = 3;
 
 		public static final CustomPacketPayload.Type<Push> TYPE = new CustomPacketPayload.Type<>(NaturesMod.id("disaster_push"));
 		public static final StreamCodec<FriendlyByteBuf, Push> CODEC = CustomPacketPayload.codec(Push::write, Push::new);
 
+		public Push(int mode, float x, float y, float z, float rate, float lift, float max) {
+			this(mode, x, y, z, rate, lift, max, 0.0F, 0.0F, 0.0F);
+		}
+
 		private Push(FriendlyByteBuf buf) {
-			this(buf.readByte(), buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat());
+			this(buf.readByte(), buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat(),
+					buf.readFloat(), buf.readFloat(), buf.readFloat());
 		}
 
 		private void write(FriendlyByteBuf buf) {
@@ -156,6 +164,9 @@ public final class DisasterNet {
 			buf.writeFloat(rate);
 			buf.writeFloat(lift);
 			buf.writeFloat(max);
+			buf.writeFloat(goalX);
+			buf.writeFloat(goalY);
+			buf.writeFloat(goalZ);
 		}
 
 		@Override

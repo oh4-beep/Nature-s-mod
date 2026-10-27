@@ -1,8 +1,4 @@
-ClientPacketListener.java@625-665
-LocalPlayer.java|public void tick\(\)|public void aiStep\(\)|hasClientLoaded|isImmobile|sendPosition\(\)|setDeltaMovement\(Vec3.ZERO\)
-LocalPlayer.java@700-735
-Entity.java|public void lerpMotion|isLocalInstanceAuthoritative\(\)|canSimulateMovement\(\)|isClientAuthoritative
-LivingEntity.java|isImmobile\(\)|canSimulateMovement|isControlledByLocalInstance|public void aiStep\(\)
-Player.java|isImmobile\(\)|hasClientLoaded|canSimulateMovement|isLocalInstanceAuthoritative
-ChunkMap.java|sendChanges\(\)
-ServerGamePacketListenerImpl.java@1040-1170
+Player.java|Impulse|impulse
+ServerPlayer.java|Impulse|impulse
+LivingEntity.java|PostImpulse|ImpulseGrace
+ServerGamePacketListenerImpl.java|isInPostImpulseGraceTime|resetPosition\(\)|private boolean noBlocksAround|isEntityCollidingWithAnythingNew

@@ -148,3 +148,5 @@ jobs:
           grep -n -E "ERROR|FAIL|Exception|Caused by|at com\.naturesmod|at net\.minecraft" "$log" | grep -v "Detected unsafe terrain read" | tail -200 || true
           echo "----- the end of the game's log"
           tail -60 "$log"
+          echo "----- what the scenes said"
+          grep -E "\[gametest\]|moved wrongly|moved too quickly|floating too long" "$log" | tail -150 || true

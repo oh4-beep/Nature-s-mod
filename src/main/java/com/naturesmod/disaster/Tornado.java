@@ -203,6 +203,12 @@ public final class Tornado extends Disaster {
 		return carried.containsKey(entity.getUUID());
 	}
 
+	/** How it carries this: how high it is now (above the foot) and is to go, for how long it has and is to (ticks); null if it isn't. */
+	public double[] carryState(Entity entity) {
+		Carry c = carried.get(entity.getUUID());
+		return c == null ? null : new double[] {c.height, c.lift, c.ticks, c.hold};
+	}
+
 	/** How many things it is carrying round now. */
 	public int carriedCount() {
 		return carried.size();
@@ -478,13 +484,15 @@ public final class Tornado extends Disaster {
 				it.remove();
 				continue;
 			}
-			// Where it should go, and a pull back to where it should be: gentler on a player, whose own game moves it a
-			// moment after it is told to (and the server hears where it went a moment after that): a stronger pull would
-			// swing a player on a laggy connection ever wider about where it should be.
-			double gain = entity instanceof Player ? 0.2 : 0.5;
-			Vec3 velocity = new Vec3(trackX + Math.sin(c.angle) * around + ex * gain,
-					(rising ? climb : 0.0) + sway * BOB_RATE * Math.cos(toss) + ey * gain, trackZ - Math.cos(c.angle) * around + ez * gain);
-			setVelocity(entity, limit(velocity, 2.8));
+			// Where it should go, and a pull back to where it should be. A player's own game does the pulling, from where
+			// the player really is: the server only hears where it went a moment after it went there.
+			Vec3 along = new Vec3(trackX + Math.sin(c.angle) * around, (rising ? climb : 0.0) + sway * BOB_RATE * Math.cos(toss),
+					trackZ - Math.cos(c.angle) * around);
+			if (entity instanceof ServerPlayer player) {
+				carryPlayer(player, along, new Vec3(goalX, goalY, goalZ), 0.35, 2.8);
+			} else {
+				setVelocity(entity, limit(along.add(ex * 0.5, ey * 0.5, ez * 0.5), 2.8));
+			}
 			// The fall is from where it is let go: the tossing on the way up doesn't count toward it.
 			entity.resetFallDistance();
 			highest = Math.max(highest, entity.getY() - y);
