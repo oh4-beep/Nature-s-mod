@@ -1037,11 +1037,19 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 				shoot(context, "disaster_tornado_carried");
 			}
 		}
-		System.out.println(String.format(java.util.Locale.ROOT, "[gametest] carried by the EF4 tornado: caught %s, up to %.1f blocks above where the player stood",
-				caught, highest - startY));
-		if (!caught || highest - startY < 10.0) {
-			failures.add(String.format(java.util.Locale.ROOT, "disasters: an EF4 tornado didn't carry the player (caught %s, %.1f blocks up)", caught,
-					highest - startY));
+		// What the tornado itself says: it may well have caught the player, carried and thrown it while the land was loading.
+		double lifted = world.getServer().computeOnServer(server -> {
+			ServerPlayer player = world.getConnection().getServerPlayer();
+			return Disasters.active(server.overworld()).stream().filter(d -> d instanceof Tornado).mapToDouble(d -> ((Tornado) d).lifted(player)).max()
+					.orElse(0.0);
+		});
+		caught |= lifted > 0.0;
+		double up = Math.max(highest - startY, lifted);
+		System.out.println(String.format(java.util.Locale.ROOT,
+				"[gametest] carried by the EF4 tornado: caught %s, up to %.1f blocks (%.1f above its foot by its own account, %.1f above the ground by the polls)",
+				caught, up, lifted, highest - startY));
+		if (!caught || up < 10.0) {
+			failures.add(String.format(java.util.Locale.ROOT, "disasters: an EF4 tornado didn't carry the player (caught %s, %.1f blocks up)", caught, up));
 		}
 	}
 

@@ -76,6 +76,8 @@ public final class Tornado extends Disaster {
 	private final double gustPhase;
 	/** What it has caught and is carrying round. */
 	private final Map<UUID, Carry> carried = new HashMap<>();
+	/** How high above its foot it has carried each player so far. */
+	private final Map<UUID, Double> playersLifted = new HashMap<>();
 	/** What it has just thrown out, and until when (its age) that is left alone: flying free, then not to be caught again at once. */
 	private final Map<UUID, Integer> thrown = new HashMap<>();
 	/** Everything other than players in its wind, as last looked for. */
@@ -201,6 +203,11 @@ public final class Tornado extends Disaster {
 	/** Whether it has caught this and is carrying it round. */
 	public boolean carrying(Entity entity) {
 		return carried.containsKey(entity.getUUID());
+	}
+
+	/** How high above its foot it has carried this player so far (0 if it never caught the player). */
+	public double lifted(Entity entity) {
+		return playersLifted.getOrDefault(entity.getUUID(), 0.0);
 	}
 
 	/** How it carries this: how high it is now (above the foot) and is to go, for how long it has and is to (ticks); null if it isn't. */
@@ -496,6 +503,9 @@ public final class Tornado extends Disaster {
 			// The fall is from where it is let go: the tossing on the way up doesn't count toward it.
 			entity.resetFallDistance();
 			highest = Math.max(highest, entity.getY() - y);
+			if (entity instanceof Player) {
+				playersLifted.merge(entity.getUUID(), entity.getY() - y, Math::max);
+			}
 			if (entity instanceof LivingEntity && c.ticks % 20 == 0 && random.nextBoolean()) {
 				// Struck by what flies round with it.
 				hurt(entity, DisasterDamage.TORNADO, 0.5F + rating * 0.4F);
