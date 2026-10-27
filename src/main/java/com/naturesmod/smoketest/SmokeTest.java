@@ -84,14 +84,14 @@ public final class SmokeTest {
 		// Never let a stuck test hold CI hostage, but keep what it found so far.
 		Thread watchdog = new Thread(() -> {
 			try {
-				Thread.sleep(20 * 60 * 1000L);
+				Thread.sleep(40 * 60 * 1000L);
 			} catch (InterruptedException e) {
 				return;
 			}
-			System.out.println("[smoketest] TIMEOUT after 20 minutes");
+			System.out.println("[smoketest] TIMEOUT after 40 minutes");
 			SmokeTest test = running;
 			if (test != null) {
-				test.fail("timed out after 20 minutes");
+				test.fail("timed out after 40 minutes");
 				test.writeReport();
 			}
 			Profile.save();

@@ -1,9 +1,8 @@
-Entity.java|hurtMarked|public void push\(|needsSync|addDeltaMovement|public void setDeltaMovement|void markHurt
-ServerEntity.java|hurtMarked|SetEntityMotion|needsSync|public void sendChanges|trackDelta|ServerPlayer
-ClientboundSetEntityMotionPacket.java
-ServerPlayer.java|hurtMarked|SetEntityMotion|needsSync|public void tick\(\)|doTick
-ServerGamePacketListenerImpl.java|hurtMarked|SetEntityMotion|moved too quickly|moved wrongly|aboveGroundTickCount|isPlayerCollidingWithAnythingNew|clientIsFloating
-ClientPacketListener.java|handleSetEntityMotion|SetEntityMotion
-LivingEntity.java|hurtMarked|markHurt|public void knockback
-ServerExplosion.java|hurtMarked|ServerPlayer|knockback|getDeltaMovement
-LocalPlayer.java|lerpMotion|setDeltaMovement|hurtMarked
+ClientPacketListener.java@625-665
+LocalPlayer.java|public void tick\(\)|public void aiStep\(\)|hasClientLoaded|isImmobile|sendPosition\(\)|setDeltaMovement\(Vec3.ZERO\)
+LocalPlayer.java@700-735
+Entity.java|public void lerpMotion|isLocalInstanceAuthoritative\(\)|canSimulateMovement\(\)|isClientAuthoritative
+LivingEntity.java|isImmobile\(\)|canSimulateMovement|isControlledByLocalInstance|public void aiStep\(\)
+Player.java|isImmobile\(\)|hasClientLoaded|canSimulateMovement|isLocalInstanceAuthoritative
+ChunkMap.java|sendChanges\(\)
+ServerGamePacketListenerImpl.java@1040-1170

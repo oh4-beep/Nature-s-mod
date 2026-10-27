@@ -967,6 +967,7 @@ public final class Eruption extends Disaster {
 		BlockPos best = null;
 		double bestScore = Double.MAX_VALUE;
 		int here = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, flow.head.getX(), flow.head.getZ());
+		double out = Math.hypot(flow.head.getX() + 0.5 - x, flow.head.getZ() + 0.5 - z);
 		for (int dx = -1; dx <= 1; dx++) {
 			for (int dz = -1; dz <= 1; dz++) {
 				if (dx == 0 && dz == 0 || dx == -flow.dx && dz == -flow.dz) {
@@ -974,7 +975,9 @@ public final class Eruption extends Disaster {
 				}
 				int bx = flow.head.getX() + dx;
 				int bz = flow.head.getZ() + dz;
-				if (!loaded(bx, bz)) {
+				// Down the flank, never back over the rim: the crater is the lowest ground about, and a flow that
+				// turned into it would only run on over the lake there and pour nothing.
+				if (!loaded(bx, bz) || Math.hypot(bx + 0.5 - x, bz + 0.5 - z) < Math.max(crater + 1.0, out - 0.5)) {
 					continue;
 				}
 				int h = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, bx, bz);
