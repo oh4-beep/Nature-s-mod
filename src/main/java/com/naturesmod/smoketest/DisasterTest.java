@@ -434,8 +434,9 @@ final class DisasterTest {
 					}
 				}
 			}
-			test.line("eruption (VEI 5) at %s: %d blocks of lava poured, %d sampled columns under ash, %d with lava, basalt, blackstone or magma, "
-					+ "%d pyroclastic flows", vent.toShortString(), eruption.lavaPlaced(), ash, lava, eruption.flowsLaunched());
+			test.line("eruption (VEI 5) at %s: %d blocks of lava poured in %d flows and the crater, %d sampled columns under ash, %d with lava, basalt, "
+					+ "blackstone or magma, %d pyroclastic flows", vent.toShortString(), eruption.lavaPlaced(), eruption.lavaFlowsStarted(), ash, lava,
+					eruption.flowsLaunched());
 			if (eruption.lavaPlaced() == 0) {
 				test.fail("the volcano put out no lava");
 			}

@@ -944,10 +944,11 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 			return;
 		}
 		Vec3 wind = world.getServer().computeOnServer(server -> Disasters.start(DisasterType.SANDSTORM, server.overworld(), at, 4.0F, false).direction());
-		// From the middle of the storm, looking upwind at the wall of dust coming on.
+		// From the middle of the storm, looking upwind at the wall of dust coming on, tilted up enough to take in its top and
+		// the haze over it as well as its foot on the horizon.
 		double upwind = Math.toDegrees(Math.atan2(wind.x, -wind.z));
 		int ground = world.getServer().computeOnServer(server -> floor(server.overworld(), (int) Math.floor(at.x), (int) Math.floor(at.z)));
-		teleport(context, world, Level.OVERWORLD, at.x, ground + 3.0, at.z, (float) upwind, -12.0F);
+		teleport(context, world, Level.OVERWORLD, at.x, ground + 3.0, at.z, (float) upwind, -16.0F);
 		context.waitTicks(60);
 		shoot(context, "disaster_sandstorm");
 		// Inside it.
@@ -997,10 +998,20 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 		command(world, "gamemode survival @a");
 		command(world, "effect give @a minecraft:resistance 60 4 true");
 		teleport(context, world, Level.OVERWORLD, px, ground, pz, -90.0F, -20.0F);
-		double startY = world.getServer().computeOnServer(server -> world.getConnection().getServerPlayer().getY());
+		// The tornado moved on while the land loaded round the player: sent straight at the player now, and on past.
+		double startY = world.getServer().computeOnServer(server -> {
+			ServerPlayer player = world.getConnection().getServerPlayer();
+			Disasters.active(server.overworld()).stream().filter(d -> d instanceof Tornado).findFirst().ifPresent(d -> {
+				Vec3 from = d.position();
+				Vec3 to = player.position();
+				Vec3 way = new Vec3(to.x - from.x, 0.0, to.z - from.z);
+				((Tornado) d).aim(way.lengthSqr() < 1.0 ? to.add(-400.0, 0.0, 0.0) : to.add(way.normalize().scale(400.0)));
+			});
+			return player.getY();
+		});
 		double highest = startY;
 		boolean caught = false;
-		for (int i = 0; i < 24; i++) {
+		for (int i = 0; i < 32; i++) {
 			context.waitTicks(5);
 			double[] state = world.getServer().computeOnServer(server -> {
 				ServerPlayer player = world.getConnection().getServerPlayer();
@@ -1011,16 +1022,18 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 			});
 			double[] seen = context.computeOnClient(client -> new double[] {client.player.getY(), client.player.getDeltaMovement().y,
 					client.player.onGround() ? 1.0 : 0.0, DisasterNet.pushesReceived});
-			System.out.printf(java.util.Locale.ROOT, "[gametest] carried, tick %d: held %s (%.1f of %.1f up, %d of %d ticks), server y %.2f, "
-					+ "client y %.2f moving up %.2f, on the ground %s, %d pushes%n", i * 5, state[1] > 0.5, state[2], state[3], (int) state[4], (int) state[5],
-					state[0], seen[0], seen[1], seen[2] > 0.5, (int) seen[3]);
+			// (println: the game's log takes only whole lines printed that way.)
+			System.out.println(String.format(java.util.Locale.ROOT, "[gametest] carried, tick %d: held %s (%.1f of %.1f up, %d of %d ticks), "
+					+ "server y %.2f, client y %.2f moving up %.2f, on the ground %s, %d pushes", i * 5, state[1] > 0.5, state[2], state[3], (int) state[4],
+					(int) state[5], state[0], seen[0], seen[1], seen[2] > 0.5, (int) seen[3]));
 			highest = Math.max(highest, state[0]);
 			caught |= state[1] > 0.5;
 			if (i == 8) {
 				shoot(context, "disaster_tornado_carried");
 			}
 		}
-		System.out.printf("[gametest] carried by the EF4 tornado: caught %s, up to %.1f blocks above where the player stood%n", caught, highest - startY);
+		System.out.println(String.format(java.util.Locale.ROOT, "[gametest] carried by the EF4 tornado: caught %s, up to %.1f blocks above where the player stood",
+				caught, highest - startY));
 		if (!caught || highest - startY < 10.0) {
 			failures.add(String.format(java.util.Locale.ROOT, "disasters: an EF4 tornado didn't carry the player (caught %s, %.1f blocks up)", caught,
 					highest - startY));

@@ -123,6 +123,9 @@ public final class Eruption extends Disaster {
 	private int blocksLeft;
 	private int lavaPlaced;
 	private int flowLava;
+	/** How far from the vent the crater as dug ends: where the lava wells over its lip. */
+	private double lip;
+	private int lavaFlowsStarted;
 	private int flowsLaunched;
 	private int pulses;
 	private int bombsThrown;
@@ -191,6 +194,8 @@ public final class Eruption extends Disaster {
 		int wait;
 		int dx;
 		int dz;
+		/** Steps in a row it has poured nothing: run out over water, or onto lava already poured. */
+		int idle;
 
 		LavaFlow(BlockPos head, int length, int dx, int dz) {
 			this.head = head;
@@ -226,6 +231,7 @@ public final class Eruption extends Disaster {
 		ashReach = 60.0 + 50.0 * vei;
 		blastReach = 40.0 + 16.0 * vei;
 		crater = 4 + 2 * vei;
+		lip = crater + 1.0;
 		lavaCap = 150 + 70 * vei;
 		fireCap = 20 + 6 * vei;
 		treeCap = 8 + 2 * vei;
@@ -463,8 +469,13 @@ public final class Eruption extends Disaster {
 			lowest = Math.min(lowest, terrain(bx, bz));
 		}
 		int depth = (int) Math.round(crater * 0.7);
-		int bottom = vent.getY() - depth;
 		int lakeY = lowest == Integer.MIN_VALUE ? Integer.MIN_VALUE : Math.min(vent.getY() - (int) Math.round(crater * 0.3), lowest - 1);
+		if (lakeY != Integer.MIN_VALUE && lakeY - 2 < vent.getY() - depth) {
+			// A steep peak, its sides falling away fast: the bowl is sunk deeper (within reason), so that the lake still lies
+			// in it below the lowest of the rim, where it can't pour out.
+			depth = Math.min((int) Math.round(crater * 1.6), vent.getY() - (lakeY - 2));
+		}
+		int bottom = vent.getY() - depth;
 		boolean lake = !submarine && lakeY > bottom + 1 && lakeY > level.getMinY() + 2 && lakeY < level.getMaxY() - 2;
 		List<CraterColumn> plan = new ArrayList<>();
 		for (int dx = -crater; dx <= crater; dx++) {
@@ -498,6 +509,8 @@ public final class Eruption extends Disaster {
 			}
 		}
 		plan.sort(Comparator.comparingDouble(CraterColumn::distance));
+		// On a steep peak the bowl is cut only near the vent, and the lava wells over just past where it ends.
+		lip = (plan.isEmpty() ? crater : plan.get(plan.size() - 1).distance()) + 1.5;
 		craterWork.clear();
 		craterWork.addAll(plan);
 		craterNext = 0;
@@ -851,12 +864,15 @@ public final class Eruption extends Disaster {
 		double bestAngle = 0.0;
 		for (int k = 0; k < 6; k++) {
 			double angle = random.nextDouble() * Math.PI * 2.0;
-			int bx = (int) Math.floor(x + Math.cos(angle) * (crater + 1));
-			int bz = (int) Math.floor(z + Math.sin(angle) * (crater + 1));
+			int bx = (int) Math.floor(x + Math.cos(angle) * lip);
+			int bz = (int) Math.floor(z + Math.sin(angle) * lip);
 			if (!loaded(bx, bz)) {
 				continue;
 			}
 			int h = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, bx, bz);
+			if (wet(bx, h, bz)) {
+				continue;
+			}
 			if (best == null || h < best.getY()) {
 				best = new BlockPos(bx, h, bz);
 				bestAngle = angle;
@@ -864,6 +880,7 @@ public final class Eruption extends Disaster {
 		}
 		if (best != null) {
 			lavaFlows.add(new LavaFlow(best, 80 + vei * 30, (int) Math.round(Math.cos(bestAngle)), (int) Math.round(Math.sin(bestAngle))));
+			lavaFlowsStarted++;
 		}
 	}
 
@@ -883,6 +900,7 @@ public final class Eruption extends Disaster {
 			if (blocksLeft <= 0) {
 				continue;
 			}
+			int before = lavaPlaced;
 			if (!pour(flow.head)) {
 				it.remove();
 				continue;
@@ -890,6 +908,12 @@ public final class Eruption extends Disaster {
 			if (random.nextInt(3) == 0) {
 				// The flow spreads a little to the side as it goes.
 				pour(flow.head.offset(flow.dz, 0, -flow.dx));
+			}
+			// One that has run out over water, or onto lava already poured, makes way for a new one from the crater.
+			flow.idle = lavaPlaced > before ? 0 : flow.idle + 1;
+			if (flow.idle >= 4) {
+				it.remove();
+				continue;
 			}
 			BlockPos next = downhill(flow);
 			if (next == null) {
@@ -952,7 +976,9 @@ public final class Eruption extends Disaster {
 			return true;
 		}
 		BlockState there = level.getBlockState(top);
-		if (there.isAir() || there.canBeReplaced() && there.getFluidState().isEmpty()) {
+		// Over the flowers and the grass, and the leaves lying on the ground (the heightmap looks past them), as over air.
+		if (there.isAir() || there.getFluidState().isEmpty() && !there.hasBlockEntity()
+				&& (there.canBeReplaced() || there.is(BlockTags.LEAVES) || there.getBlock() instanceof VegetationBlock)) {
 			level.setBlock(top, Blocks.LAVA.defaultBlockState(), Block.UPDATE_ALL);
 			blocksLeft--;
 			lavaPlaced++;
@@ -977,11 +1003,12 @@ public final class Eruption extends Disaster {
 				int bz = flow.head.getZ() + dz;
 				// Down the flank, never back over the rim: the crater is the lowest ground about, and a flow that
 				// turned into it would only run on over the lake there and pour nothing.
-				if (!loaded(bx, bz) || Math.hypot(bx + 0.5 - x, bz + 0.5 - z) < Math.max(crater + 1.0, out - 0.5)) {
+				if (!loaded(bx, bz) || Math.hypot(bx + 0.5 - x, bz + 0.5 - z) < Math.max(lip, out - 0.5)) {
 					continue;
 				}
 				int h = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, bx, bz);
-				double score = h - (dx == flow.dx && dz == flow.dz ? 0.6 : 0.0) + random.nextDouble() * 0.5;
+				// Water counts as ground to the heightmap, the lowest about: it is the last way to go, not the first.
+				double score = h - (dx == flow.dx && dz == flow.dz ? 0.6 : 0.0) + random.nextDouble() * 0.5 + (wet(bx, h, bz) ? 8.0 : 0.0);
 				if (h <= here + 1 && score < bestScore) {
 					bestScore = score;
 					best = new BlockPos(bx, h, bz);
@@ -989,6 +1016,11 @@ public final class Eruption extends Disaster {
 			}
 		}
 		return best;
+	}
+
+	/** Whether a column's top (`h` its heightmap height) is water or lava standing there. */
+	private boolean wet(int bx, int h, int bz) {
+		return !level.getFluidState(new BlockPos(bx, h - 1, bz)).isEmpty();
 	}
 
 	// --- pyroclastic flows -------------------------------------------------------------------
@@ -1196,6 +1228,11 @@ public final class Eruption extends Disaster {
 	/** Lava blocks poured: into the crater's lake and by the flows down the flanks. */
 	public int lavaPlaced() {
 		return lavaPlaced;
+	}
+
+	/** How many flows of lava have welled over the crater's lip so far. */
+	public int lavaFlowsStarted() {
+		return lavaFlowsStarted;
 	}
 
 	public int craterRadius() {
