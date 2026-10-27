@@ -722,7 +722,9 @@ final class DisasterTest {
 	}
 
 	private void acidRain(Runnable next) {
-		BlockPos site = site(new BlockPos(1800, 0, 600), 2);
+		BlockPos found = site(new BlockPos(1800, 0, 600), 2);
+		// Not every place has dry, level land near it: the sandstorm's, which has.
+		BlockPos site = found != null ? found : site(new BlockPos(1200, 0, 1200), 2);
 		if (site == null) {
 			test.fail("no land for the acid rain test");
 			next.run();

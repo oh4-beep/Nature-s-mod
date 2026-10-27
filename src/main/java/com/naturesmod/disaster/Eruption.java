@@ -363,8 +363,11 @@ public final class Eruption extends Disaster {
 			blown = true;
 			blast();
 		}
-		// The crater comes first: it is torn open in the first ticks after the blast.
+		// The crater comes first: it is torn open in the first ticks after the blast. Then the lava, which pours only a
+		// block or two a tick but would otherwise find the budget spent every tick by the ash, the blast's devastation
+		// and the pyroclastic flows, and never run at all.
 		digCrater();
+		tickLava();
 		if (phase == 1) {
 			erupt();
 		} else if (phase == 2) {
@@ -373,7 +376,6 @@ public final class Eruption extends Disaster {
 		devastate();
 		tickBombs();
 		tickFlows();
-		tickLava();
 	}
 
 	@Override
