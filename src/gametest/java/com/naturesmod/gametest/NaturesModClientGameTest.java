@@ -1086,7 +1086,8 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 		}
 		Vec3 in = world.getServer().computeOnServer(server -> {
 			Tsunami wave = (Tsunami) Disasters.start(DisasterType.TSUNAMI, server.overworld(), at, 5.0F, false);
-			while (!wave.isDone() && wave.front() < wave.along(at.x, at.z) - 120.0 && wave.age() < 6000) {
+			// Still well out: the land takes a while to load round the camera, and the wave runs on meanwhile.
+			while (!wave.isDone() && wave.front() < wave.along(at.x, at.z) - 400.0 && wave.age() < 6000) {
 				wave.skip(20);
 			}
 			return wave.direction();
@@ -1097,17 +1098,17 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 		command(world, "gamemode creative @a");
 		teleport(context, world, Level.OVERWORLD, at.x, at.y + 4.0, at.z, yaw, -8.0F);
 		// Until it is close: about forty blocks out.
-		for (int i = 0; i < 30; i++) {
+		for (int i = 0; i < 100; i++) {
 			double gap = world.getServer().computeOnServer(server -> Disasters.active(server.overworld()).stream()
 					.filter(d -> d instanceof Tsunami).map(d -> (Tsunami) d).findFirst().map(wave -> wave.along(at.x, at.z) - wave.front()).orElse(0.0));
 			if (gap < 45.0) {
 				break;
 			}
-			context.waitTicks(10);
+			context.waitTicks(5);
 		}
 		describeTsunami(world, at);
 		shoot(context, "disaster_tsunami");
-		context.waitTicks(60);
+		context.waitTicks(30);
 		describeTsunami(world, at);
 		shoot(context, "disaster_tsunami_ashore");
 	}

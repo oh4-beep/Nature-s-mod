@@ -1,4 +1,0 @@
-Player.java|Impulse|impulse
-ServerPlayer.java|Impulse|impulse
-LivingEntity.java|PostImpulse|ImpulseGrace
-ServerGamePacketListenerImpl.java|isInPostImpulseGraceTime|resetPosition\(\)|private boolean noBlocksAround|isEntityCollidingWithAnythingNew
