@@ -1001,8 +1001,10 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 		command(world, "gamemode survival @a");
 		command(world, "effect give @a minecraft:resistance 60 4 true");
 		teleport(context, world, Level.OVERWORLD, px, ground, pz, -90.0F, -20.0F);
-		// The tornado moved on while the land loaded round the player: sent straight at the player now, and on past.
-		double startY = world.getServer().computeOnServer(server -> {
+		// The tornado moved on while the land loaded round the player (or caught the player meanwhile): sent straight at the
+		// player now, and on past. How high the player is carried is measured from the ground the player was put on.
+		double startY = ground;
+		world.getServer().computeOnServer(server -> {
 			ServerPlayer player = world.getConnection().getServerPlayer();
 			Disasters.active(server.overworld()).stream().filter(d -> d instanceof Tornado).findFirst().ifPresent(d -> {
 				Vec3 from = d.position();
