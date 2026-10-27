@@ -933,7 +933,9 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 			if (found == null) {
 				return null;
 			}
-			BlockPos spot = found.getFirst();
+			// Dry land in the desert, not the sea beside it.
+			BlockPos dry = LandShowcase.drySite(level, found.getFirst(), 30);
+			BlockPos spot = dry != null ? dry : found.getFirst();
 			return new Vec3(spot.getX() + 0.5, floor(level, spot.getX(), spot.getZ()), spot.getZ() + 0.5);
 		});
 		if (at == null) {
@@ -1058,7 +1060,7 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 		}
 		Vec3 in = world.getServer().computeOnServer(server -> {
 			Tsunami wave = (Tsunami) Disasters.start(DisasterType.TSUNAMI, server.overworld(), at, 5.0F, false);
-			while (!wave.isDone() && wave.front() < wave.along(at.x, at.z) - 90.0 && wave.age() < 6000) {
+			while (!wave.isDone() && wave.front() < wave.along(at.x, at.z) - 120.0 && wave.age() < 6000) {
 				wave.skip(20);
 			}
 			return wave.direction();
@@ -1066,8 +1068,18 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 		// Looking out the way it comes from: back along its way in.
 		float yaw = (float) Math.toDegrees(Math.atan2(in.x, -in.z));
 		teleport(context, world, Level.OVERWORLD, at.x, at.y + 4.0, at.z, yaw, -8.0F);
-		context.waitTicks(40);
+		// Until it is close: about forty blocks out.
+		for (int i = 0; i < 30; i++) {
+			double gap = world.getServer().computeOnServer(server -> Disasters.active(server.overworld()).stream()
+					.filter(d -> d instanceof Tsunami).map(d -> (Tsunami) d).findFirst().map(wave -> wave.along(at.x, at.z) - wave.front()).orElse(0.0));
+			if (gap < 45.0) {
+				break;
+			}
+			context.waitTicks(10);
+		}
 		shoot(context, "disaster_tsunami");
+		context.waitTicks(60);
+		shoot(context, "disaster_tsunami_ashore");
 	}
 
 	/** From the brink of a level-4 sinkhole once it has opened. */
