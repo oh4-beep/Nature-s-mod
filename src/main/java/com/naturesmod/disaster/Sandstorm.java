@@ -141,7 +141,7 @@ public final class Sandstorm extends Disaster {
 			}
 			double in = inside(player.getX(), player.getZ());
 			if (in > 0.0 && !sheltered(player)) {
-				player.push(wind.x * push * in, 0.0, wind.z * push * in);
+				shove(player, wind.x * push * in, 0.0, wind.z * push * in);
 			}
 		}
 		if (age % 4 == 0) {
@@ -152,7 +152,7 @@ public final class Sandstorm extends Disaster {
 				for (Entity entity : level.getEntitiesOfClass(Entity.class, player.getBoundingBox().inflate(48.0), e -> !(e instanceof Player))) {
 					double in = inside(entity.getX(), entity.getZ());
 					double strength = entity instanceof ItemEntity ? 0.08 : 0.03;
-					entity.push(wind.x * strength * in, entity instanceof ItemEntity ? 0.02 * in : 0.0, wind.z * strength * in);
+					shove(entity, wind.x * strength * in, entity instanceof ItemEntity ? 0.02 * in : 0.0, wind.z * strength * in);
 				}
 			}
 		}
@@ -166,7 +166,7 @@ public final class Sandstorm extends Disaster {
 			double dz = entity.getZ() - devil.z;
 			Vec3 air = Vortex.air(dx, dz, Math.max(0.0, entity.getY() - y), 1.8, 0.35, devil.height);
 			double response = entity instanceof ItemEntity ? 0.3 : 0.06;
-			entity.push(air.x * response, air.y * response, air.z * response);
+			shove(entity, air.x * response, air.y * response, air.z * response);
 		}
 	}
 }

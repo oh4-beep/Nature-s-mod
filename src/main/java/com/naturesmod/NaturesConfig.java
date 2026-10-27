@@ -54,7 +54,10 @@ public final class NaturesConfig {
 	public int bossRespawnMinutes = 20;
 
 	// Natural disasters
-	/** Tornadoes, earthquakes, meteor showers, eruptions, wildfires, sandstorms and blizzards happen on their own. */
+	/**
+	 * Tornadoes, earthquakes, meteor showers, eruptions, wildfires, sandstorms, blizzards, hurricanes, tsunamis, sinkholes,
+	 * avalanches, lightning storms and acid rain happen on their own.
+	 */
 	public boolean naturalDisasters = true;
 	/** How often natural disasters happen (1 = normal, 2 = twice as often, 0.5 = half as often). */
 	public double disasterFrequency = 1.0;
@@ -69,12 +72,20 @@ public final class NaturesConfig {
 	public boolean wildfires = true;
 	public boolean sandstorms = true;
 	public boolean blizzards = true;
+	public boolean hurricanes = true;
+	public boolean tsunamis = true;
+	public boolean sinkholes = true;
+	public boolean avalanches = true;
+	public boolean lightningStorms = true;
+	public boolean acidRain = true;
 
 	// Client effects
 	/** The view shakes in earthquakes and under great blasts. */
 	public boolean cameraShake = true;
 	/** Multiplier for the number of particles natural disasters show (1 = full, 0.5 = half). */
 	public float disasterParticles = 1.0f;
+	/** Disasters draw fewer particles on their own while the game runs slowly, so they stay playable on slow computers. */
+	public boolean adaptiveDisasterEffects = true;
 	/** Mist, spray and roar at the foot of waterfalls. */
 	public boolean waterfallMist = true;
 	/** Multiplier for the amount of waterfall mist particles. */

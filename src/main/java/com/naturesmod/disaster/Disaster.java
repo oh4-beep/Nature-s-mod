@@ -192,10 +192,21 @@ public abstract class Disaster {
 		return TreeEvents.snapTrunk(level, log, direction, heightAboveBase, 320, 24, 48);
 	}
 
-	/** Makes an entity move at `velocity`, by pushing it as much as it takes (which also tells the client). */
+	/** Makes an entity move at `velocity`, by pushing it as much as it takes (see {@link #shove}). */
 	protected static void setVelocity(Entity entity, Vec3 velocity) {
 		Vec3 now = entity.getDeltaMovement();
-		entity.push(velocity.x - now.x, velocity.y - now.y, velocity.z - now.z);
+		shove(entity, velocity.x - now.x, velocity.y - now.y, velocity.z - now.z);
+	}
+
+	/**
+	 * Pushes an entity. A player's own game moves the player, and only hears of a push from the server when the
+	 * push is marked to be sent, as a knockback is: without that the wind would blow everything but the players.
+	 */
+	protected static void shove(Entity entity, double dx, double dy, double dz) {
+		entity.push(dx, dy, dz);
+		if (entity instanceof ServerPlayer) {
+			entity.hurtMarked = true;
+		}
 	}
 
 	protected boolean loaded(int bx, int bz) {

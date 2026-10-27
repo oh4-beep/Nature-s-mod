@@ -105,6 +105,12 @@ public final class DisasterClient {
 						case WILDFIRE -> FireFx.tick(disaster);
 						case SANDSTORM -> DustFx.tick(disaster);
 						case BLIZZARD -> SnowFx.tick(disaster);
+						case HURRICANE -> HurricaneFx.tick(disaster);
+						case TSUNAMI -> TsunamiFx.tick(disaster);
+						case SINKHOLE -> SinkholeFx.tick(disaster);
+						case AVALANCHE -> AvalancheFx.tick(disaster);
+						case LIGHTNING_STORM -> LightningFx.tick(disaster);
+						case ACID_RAIN -> AcidRainFx.tick(disaster);
 					}
 				} catch (RuntimeException e) {
 					NaturesMod.LOGGER.error("Drawing the {} failed", disaster.type.id, e);

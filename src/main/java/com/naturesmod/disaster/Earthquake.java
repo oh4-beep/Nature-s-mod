@@ -351,7 +351,7 @@ public final class Earthquake extends Disaster {
 			return;
 		}
 		double push = Math.min(0.35, a * 0.18);
-		entity.push((random.nextDouble() - 0.5) * push, a > 0.4 ? random.nextDouble() * push * 0.3 : 0.0, (random.nextDouble() - 0.5) * push);
+		shove(entity, (random.nextDouble() - 0.5) * push, a > 0.4 ? random.nextDouble() * push * 0.3 : 0.0, (random.nextDouble() - 0.5) * push);
 		if (a > 0.5 && random.nextDouble() < 0.08) {
 			// Thrown off your feet.
 			entity.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 30, 3, true, false, true));

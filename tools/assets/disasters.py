@@ -21,6 +21,12 @@ DISASTERS = {
     "wildfire": "Wildfire",
     "sandstorm": "Sandstorm",
     "blizzard": "Blizzard",
+    "hurricane": "Hurricane",
+    "tsunami": "Tsunami",
+    "sinkhole": "Sinkhole",
+    "avalanche": "Avalanche",
+    "lightning_storm": "Lightning storm",
+    "acid_rain": "Acid rain",
 }
 
 DAMAGE = {
@@ -29,6 +35,13 @@ DAMAGE = {
     "meteor": ("%1$s was struck by a meteorite", "%1$s was struck by a meteorite while fighting %2$s"),
     "pyroclastic": ("%1$s was engulfed by a pyroclastic flow", "%1$s was engulfed by a pyroclastic flow while fleeing %2$s"),
     "hail": ("%1$s was battered to death by hail", "%1$s was battered to death by hail while fighting %2$s"),
+    "hurricane": ("%1$s was blown away by a hurricane", "%1$s was blown away by a hurricane while fighting %2$s"),
+    "tsunami": ("%1$s was swept away by a tsunami", "%1$s was swept away by a tsunami while fighting %2$s"),
+    "sinkhole": ("%1$s was swallowed by a sinkhole", "%1$s was swallowed by a sinkhole while fighting %2$s"),
+    "avalanche": ("%1$s was buried by an avalanche", "%1$s was buried by an avalanche while fleeing %2$s"),
+    "acid_rain": ("%1$s was eaten away by acid rain", "%1$s was eaten away by acid rain while fighting %2$s"),
+    "sandstorm": ("%1$s was sandblasted to death in a sandstorm", "%1$s was sandblasted to death in a sandstorm while fighting %2$s"),
+    "blizzard": ("%1$s froze to death in a blizzard", "%1$s froze to death in a blizzard while fighting %2$s"),
 }
 
 

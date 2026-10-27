@@ -16,8 +16,9 @@ import net.minecraft.world.phys.Vec3;
 
 /**
  * /disaster &lt;kind&gt; [strength] [where]: calls up a disaster (a tornado forms out ahead of you and comes
- * your way, a fire breaks out in front of you, anything else strikes where you stand or where you say);
- * /disaster list; /disaster stop.
+ * your way, a hurricane out at sea heads for you, a fire breaks out or the ground opens in front of you, a
+ * tsunami rolls in from the nearest open sea, an avalanche lets go on the nearest snowy slope above you,
+ * anything else strikes where you stand or where you say); /disaster list; /disaster stop.
  */
 final class DisasterCommand {
 	private DisasterCommand() {
@@ -54,6 +55,8 @@ final class DisasterCommand {
 			double distance = switch (type) {
 				case TORNADO -> 64.0;
 				case WILDFIRE -> 14.0;
+				case SINKHOLE -> 12.0;
+				case HURRICANE -> 300.0;
 				default -> 0.0;
 			};
 			at = from.add(ahead.scale(distance));
@@ -61,6 +64,9 @@ final class DisasterCommand {
 		Disaster disaster = Disasters.start(type, level, at, strength, false);
 		if (disaster instanceof Tornado tornado && where == null) {
 			tornado.aim(from);
+		}
+		if (disaster instanceof Hurricane hurricane && where == null) {
+			hurricane.aim(from);
 		}
 		Vec3 pos = disaster.position();
 		double dx = pos.x - from.x;

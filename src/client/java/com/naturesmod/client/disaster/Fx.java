@@ -9,8 +9,15 @@ import net.minecraft.world.phys.Vec3;
 
 /** What every disaster's effects need from one client tick to the next: the view, a random source and a particle budget. */
 final class Fx {
-	/** No more disaster particles than this in one tick, all disasters together. */
+	/** No more disaster particles than this in one tick, all disasters together (before a slow game thins them, see {@link #quality}). */
 	private static final int MAX_PER_TICK = 260;
+	/**
+	 * How much of the full show the game's speed allows: 1 at a smooth frame rate, falling to a fifth on a computer
+	 * that struggles, so that a disaster never makes the game unplayable.
+	 */
+	static float quality = 1.0F;
+	/** No more particles than this this tick, all disasters together, nor anything spawned past twice this. */
+	static int cap = MAX_PER_TICK;
 
 	static Minecraft mc;
 	static ClientLevel level;
@@ -33,6 +40,17 @@ final class Fx {
 		// The game's own particle setting too: all, decreased or minimal.
 		int setting = minecraft.options.particles().get().ordinal();
 		density *= setting == 0 ? 1.0F : setting == 1 ? 0.5F : 0.2F;
+		if (NaturesConfig.get().adaptiveDisasterEffects) {
+			// Under 50 frames a second the particles thin out, to a fifth at 15. Thinning fast and filling back in slowly,
+			// so that the thinning doesn't itself set the frame rate swinging.
+			int fps = minecraft.getFps();
+			float want = fps >= 50 ? 1.0F : fps <= 15 ? 0.2F : 0.2F + 0.8F * (fps - 15) / 35.0F;
+			quality += (want - quality) * (want < quality ? 0.08F : 0.01F);
+		} else {
+			quality = 1.0F;
+		}
+		density *= quality;
+		cap = Math.max(16, Math.round(MAX_PER_TICK * quality));
 		spawned = 0;
 		viewLimit = Math.max(40.0, minecraft.options.getEffectiveRenderDistance() * 16.0 * 0.6);
 	}
@@ -45,11 +63,11 @@ final class Fx {
 
 	/** How many particles a disaster may spend this tick: `base` close by, fewer the further off (none past `far`). */
 	static int budget(int base, double distance, double far) {
-		if (distance > far || spawned >= MAX_PER_TICK) {
+		if (distance > far || spawned >= cap) {
 			return 0;
 		}
 		double near = 1.0 - distance / far;
-		return Math.min(MAX_PER_TICK - spawned, round(base * density * (0.25 + 0.75 * near)));
+		return Math.min(cap - spawned, round(base * density * (0.25 + 0.75 * near)));
 	}
 
 	/** An expected count as a whole number: 2.3 is 2 seven times in ten and 3 the rest. */

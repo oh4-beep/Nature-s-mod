@@ -142,7 +142,7 @@ public final class MeteorShower extends Disaster {
 				continue;
 			}
 			Vec3 away = player.position().subtract(at).normalize().scale(Math.min(0.8, 0.25 * reach / Math.max(d, 10.0)));
-			player.push(away.x, Math.abs(away.y) * 0.3, away.z);
+			shove(player, away.x, Math.abs(away.y) * 0.3, away.z);
 			if (griefing()) {
 				shatterGlass(player.blockPosition(), (int) Math.min(20, 8 + size * 4));
 			}
@@ -273,7 +273,7 @@ public final class MeteorShower extends Disaster {
 			}
 			double power = (1.0 - d / reach) * 2.2;
 			Vec3 push = away.normalize().scale(power);
-			entity.push(push.x, Math.max(0.3, push.y) * 0.6, push.z);
+			shove(entity, push.x, Math.max(0.3, push.y) * 0.6, push.z);
 			if (entity instanceof LivingEntity && d < radius * 3.0) {
 				hurt(entity, DisasterDamage.METEOR, (float) (radius * 3.0 * (1.0 - d / (radius * 3.0))));
 			}

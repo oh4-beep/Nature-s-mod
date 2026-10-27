@@ -5,16 +5,28 @@ import java.util.Locale;
 /** The kinds of natural disaster, each with the scale its strength is measured on. */
 public enum DisasterType {
 	/** Strength on the Enhanced Fujita scale, EF0 to EF5. */
-	TORNADO("tornado", 0.0F, 5.0F, 3.0F),
+	TORNADO("tornado", 0.0F, 5.0F, 4.0F),
 	/** Strength as a moment magnitude. */
-	EARTHQUAKE("earthquake", 3.0F, 9.5F, 6.5F),
+	EARTHQUAKE("earthquake", 3.0F, 9.5F, 7.5F),
 	/** Strength from 1 (a few fireballs) to 5 (a storm of them). */
-	METEOR_SHOWER("meteor_shower", 1.0F, 5.0F, 3.0F),
+	METEOR_SHOWER("meteor_shower", 1.0F, 5.0F, 4.0F),
 	/** Strength on the volcanic explosivity index. */
-	ERUPTION("eruption", 2.0F, 7.0F, 4.0F),
-	WILDFIRE("wildfire", 1.0F, 5.0F, 3.0F),
-	SANDSTORM("sandstorm", 1.0F, 5.0F, 3.0F),
-	BLIZZARD("blizzard", 1.0F, 5.0F, 3.0F);
+	ERUPTION("eruption", 2.0F, 7.0F, 5.0F),
+	WILDFIRE("wildfire", 1.0F, 5.0F, 4.0F),
+	SANDSTORM("sandstorm", 1.0F, 5.0F, 4.0F),
+	BLIZZARD("blizzard", 1.0F, 5.0F, 4.0F),
+	/** Strength on the Saffir-Simpson scale, category 1 to 5. */
+	HURRICANE("hurricane", 1.0F, 5.0F, 4.0F),
+	/** Strength from 1 (a surge over the beach) to 5 (a wall of water twenty blocks high). */
+	TSUNAMI("tsunami", 1.0F, 5.0F, 4.0F),
+	/** Strength from 1 (a pit swallowing a tree) to 5 (a chasm swallowing a village). */
+	SINKHOLE("sinkhole", 1.0F, 5.0F, 3.0F),
+	/** Strength from 1 (a slough of loose snow) to 5 (a whole mountainside letting go). */
+	AVALANCHE("avalanche", 1.0F, 5.0F, 4.0F),
+	/** Strength from 1 (a storm with some lightning) to 5 (a barrage of strikes every few seconds). */
+	LIGHTNING_STORM("lightning_storm", 1.0F, 5.0F, 4.0F),
+	/** Strength from 1 (it stings) to 5 (it eats through leaves and skin alike). */
+	ACID_RAIN("acid_rain", 1.0F, 5.0F, 3.0F);
 
 	public final String id;
 	public final float min;
@@ -39,6 +51,7 @@ public enum DisasterType {
 			case TORNADO -> "EF" + Math.round(strength);
 			case EARTHQUAKE -> String.format(Locale.ROOT, "M%.1f", strength);
 			case ERUPTION -> "VEI " + Math.round(strength);
+			case HURRICANE -> "Category " + Math.round(strength);
 			default -> "level " + Math.round(strength);
 		};
 	}

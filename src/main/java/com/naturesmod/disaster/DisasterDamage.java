@@ -13,6 +13,13 @@ public final class DisasterDamage {
 	public static final ResourceKey<DamageType> METEOR = key("meteor");
 	public static final ResourceKey<DamageType> PYROCLASTIC = key("pyroclastic");
 	public static final ResourceKey<DamageType> HAIL = key("hail");
+	public static final ResourceKey<DamageType> HURRICANE = key("hurricane");
+	public static final ResourceKey<DamageType> TSUNAMI = key("tsunami");
+	public static final ResourceKey<DamageType> SINKHOLE = key("sinkhole");
+	public static final ResourceKey<DamageType> AVALANCHE = key("avalanche");
+	public static final ResourceKey<DamageType> ACID_RAIN = key("acid_rain");
+	public static final ResourceKey<DamageType> SANDSTORM = key("sandstorm");
+	public static final ResourceKey<DamageType> BLIZZARD = key("blizzard");
 
 	private DisasterDamage() {
 	}

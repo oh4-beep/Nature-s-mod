@@ -102,13 +102,13 @@ public final class Blizzard extends Disaster {
 			boolean shelter = sheltered(player);
 			if (!shelter) {
 				double push = windSpeed * 0.15 * strength;
-				player.push(wind.x * push, 0.0, wind.z * push);
+				shove(player, wind.x * push, 0.0, wind.z * push);
 			}
 			if (age % 5 == 0) {
 				freeze(player, shelter);
 				for (Entity entity : level.getEntitiesOfClass(Entity.class, player.getBoundingBox().inflate(32.0), e -> e != player)) {
 					if (entity instanceof ItemEntity item) {
-						item.push(wind.x * 0.05, 0.0, wind.z * 0.05);
+						shove(item, wind.x * 0.05, 0.0, wind.z * 0.05);
 					} else if (entity instanceof LivingEntity living && !(entity instanceof Player)) {
 						freeze(living, sheltered(living));
 					}

@@ -254,7 +254,7 @@ public final class Eruption extends Disaster {
 			Vec3 away = entity.position().subtract(x, y - 4, z);
 			double d = Math.max(1.0, away.length());
 			Vec3 push = away.normalize().scale(Math.max(0.0, 1.0 - d / reach) * 2.5);
-			entity.push(push.x, Math.max(0.4, push.y), push.z);
+			shove(entity, push.x, Math.max(0.4, push.y), push.z);
 		}
 		if (griefing()) {
 			openCrater();

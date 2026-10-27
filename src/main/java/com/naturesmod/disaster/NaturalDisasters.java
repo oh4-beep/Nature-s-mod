@@ -1,6 +1,9 @@
 package com.naturesmod.disaster;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 
 import com.naturesmod.NaturesConfig;
@@ -21,30 +24,38 @@ import net.minecraft.world.phys.Vec3;
 
 /**
  * Disasters that happen of their own accord, near the players, where and when they would: tornadoes
- * out of thunderstorms over open, warm land; earthquakes anywhere, mostly small, more often in the
- * mountains (their magnitudes after the Gutenberg-Richter law); meteor showers at night; eruptions
- * near the volcanic peaks; wildfires in dry, hot country when it hasn't rained; sandstorms in the
- * deserts; blizzards when it snows hard in the cold lands.
+ * out of storms over open, warm land; earthquakes anywhere, more often in the mountains (their
+ * magnitudes after the Gutenberg-Richter law); meteor showers at night; eruptions near the volcanic
+ * peaks; wildfires in dry, hot country when it hasn't rained; sandstorms in the deserts; blizzards in
+ * the cold lands; hurricanes and tsunamis on the coasts; sinkholes under the plains and swamps;
+ * avalanches on snowy slopes; lightning storms and acid rain out of a darkening sky. Each kind waits a
+ * while after it has struck, and all of them a little after any one has.
  */
 final class NaturalDisasters {
 	/** How often each kind is looked at: every ten seconds. */
 	private static final int PERIOD = 200;
 	/** Natural disasters going on at once in a level at most. */
-	private static final int MAX_AT_ONCE = 2;
+	private static final int MAX_AT_ONCE = 3;
+	/** Ticks of quiet from a kind after it has struck (on top of how long it lasted): ten minutes. */
+	private static final long KIND_QUIET = 12000L;
+	/** Ticks of quiet from every kind after any one has struck: two minutes. */
+	private static final long ALL_QUIET = 2400L;
 	/** The game time before which no new natural disaster of a kind may start. */
 	private static final Map<DisasterType, Long> QUIET_UNTIL = new EnumMap<>(DisasterType.class);
+	private static long allQuietUntil;
 
 	private NaturalDisasters() {
 	}
 
 	static void reset() {
 		QUIET_UNTIL.clear();
+		allQuietUntil = 0L;
 	}
 
 	static void tick(ServerLevel level) {
 		NaturesConfig config = NaturesConfig.get();
 		if (!config.naturalDisasters || config.disasterFrequency <= 0 || level.dimension() != Level.OVERWORLD || level.getGameTime() % PERIOD != 0
-				|| level.players().isEmpty()) {
+				|| level.players().isEmpty() || level.getGameTime() < allQuietUntil) {
 			return;
 		}
 		long natural = Disasters.active(level).stream().filter(d -> d.natural).count();
@@ -56,7 +67,10 @@ final class NaturalDisasters {
 		if (player.isSpectator()) {
 			return;
 		}
-		for (DisasterType type : DisasterType.values()) {
+		// Looked at in a different order each time, so that no kind crowds out the ones after it.
+		List<DisasterType> kinds = new ArrayList<>(List.of(DisasterType.values()));
+		Collections.shuffle(kinds, new java.util.Random(random.nextLong()));
+		for (DisasterType type : kinds) {
 			if (!enabled(type, config) || level.getGameTime() < QUIET_UNTIL.getOrDefault(type, 0L)) {
 				continue;
 			}
@@ -66,8 +80,8 @@ final class NaturalDisasters {
 			}
 			Disaster disaster = begin(type, level, player, random);
 			if (disaster != null) {
-				// Half an hour of quiet from this kind afterwards.
-				QUIET_UNTIL.put(type, level.getGameTime() + disaster.duration() + 36000L);
+				QUIET_UNTIL.put(type, level.getGameTime() + disaster.duration() + KIND_QUIET);
+				allQuietUntil = level.getGameTime() + ALL_QUIET;
 				return;
 			}
 		}
@@ -82,6 +96,12 @@ final class NaturalDisasters {
 			case WILDFIRE -> config.wildfires;
 			case SANDSTORM -> config.sandstorms;
 			case BLIZZARD -> config.blizzards;
+			case HURRICANE -> config.hurricanes;
+			case TSUNAMI -> config.tsunamis;
+			case SINKHOLE -> config.sinkholes;
+			case AVALANCHE -> config.avalanches;
+			case LIGHTNING_STORM -> config.lightningStorms;
+			case ACID_RAIN -> config.acidRain;
 		};
 	}
 
@@ -90,15 +110,26 @@ final class NaturalDisasters {
 		BlockPos at = player.blockPosition();
 		Holder<Biome> biome = level.getBiome(at);
 		boolean raining = level.isRaining();
+		boolean thunder = level.isThundering();
+		boolean cold = biome.value().coldEnoughToSnow(at, level.getSeaLevel());
 		return switch (type) {
-			case TORNADO -> level.isThundering() && tornadoCountry(biome) ? 420 : 0;
+			// A tornado brings its own supercell: in a thunderstorm they come often, in plain rain now and then, under a
+			// clear sky seldom.
+			case TORNADO -> !tornadoCountry(biome) ? 0 : thunder ? 150 : raining ? 600 : 2400;
 			case EARTHQUAKE -> biome.is(BiomeTags.IS_MOUNTAIN) || biome.is(BiomeTags.IS_BADLANDS) || biome.is(WildOverworld.biome("volcanic_peaks"))
-					? 4500 : 9000;
-			case METEOR_SHOWER -> level.isDarkOutside() ? 9000 : 0;
-			case ERUPTION -> nearVolcano(level, at) != null ? 5400 : 0;
-			case WILDFIRE -> !raining && level.isBrightOutside() && dryCountry(biome) ? 3600 : 0;
-			case SANDSTORM -> !raining && desert(biome) ? 2400 : 0;
-			case BLIZZARD -> raining && biome.value().coldEnoughToSnow(at, level.getSeaLevel()) ? 900 : 0;
+					? 1200 : 2400;
+			case METEOR_SHOWER -> level.isDarkOutside() ? 1500 : 0;
+			case ERUPTION -> nearVolcano(level, at) != null ? 900 : 0;
+			case WILDFIRE -> !raining && level.isBrightOutside() && dryCountry(biome) ? 900 : 0;
+			case SANDSTORM -> !raining && desert(biome) ? 600 : 0;
+			case BLIZZARD -> !cold ? 0 : raining ? 300 : 1800;
+			case HURRICANE -> coast(biome) ? raining ? 900 : 2400 : 0;
+			case TSUNAMI -> coast(biome) ? 2400 : 0;
+			case SINKHOLE -> biome.is(BiomeTags.IS_MOUNTAIN) || biome.is(BiomeTags.IS_OCEAN) || biome.is(BiomeTags.IS_RIVER) ? 0
+					: biome.is(Biomes.SWAMP) || biome.is(Biomes.MANGROVE_SWAMP) || biome.is(WildOverworld.biome("bayou")) ? 1200 : 2400;
+			case AVALANCHE -> snowySlopes(biome) ? raining ? 400 : 900 : 0;
+			case LIGHTNING_STORM -> thunder ? 300 : raining ? 1200 : 3600;
+			case ACID_RAIN -> raining ? 1500 : 4800;
 		};
 	}
 
@@ -111,36 +142,53 @@ final class NaturalDisasters {
 				double distance = 160 + random.nextDouble() * 160;
 				Vec3 at = here.add(Math.cos(angle) * distance, 0, Math.sin(angle) * distance);
 				Tornado tornado = (Tornado) Disasters.start(type, level, at, tornadoRating(random), true);
-				tornado.aim(here.add(random.nextGaussian() * 80, 0, random.nextGaussian() * 80));
+				tornado.aim(here.add(random.nextGaussian() * 60, 0, random.nextGaussian() * 60));
 				yield tornado;
 			}
 			case EARTHQUAKE -> {
-				double distance = 40 + random.nextDouble() * 500;
+				double distance = 40 + random.nextDouble() * 400;
 				yield Disasters.start(type, level, here.add(Math.cos(angle) * distance, 0, Math.sin(angle) * distance), magnitude(random), true);
 			}
-			case METEOR_SHOWER -> Disasters.start(type, level, here, 1 + random.nextInt(5), true);
+			case METEOR_SHOWER -> Disasters.start(type, level, here, 2 + random.nextInt(4), true);
 			case ERUPTION -> {
 				BlockPos vent = nearVolcano(level, player.blockPosition());
 				yield vent == null ? null : Disasters.start(type, level, Vec3.atBottomCenterOf(vent),
-						2 + 5 * random.nextFloat() * random.nextFloat(), true);
+						3 + 4 * random.nextFloat() * random.nextFloat(), true);
 			}
 			case WILDFIRE -> {
 				double distance = 40 + random.nextDouble() * 110;
-				yield Disasters.start(type, level, here.add(Math.cos(angle) * distance, 0, Math.sin(angle) * distance), 1 + random.nextInt(5), true);
+				yield Disasters.start(type, level, here.add(Math.cos(angle) * distance, 0, Math.sin(angle) * distance), 2 + random.nextInt(4), true);
 			}
-			case SANDSTORM, BLIZZARD -> Disasters.start(type, level, here, 1 + random.nextInt(5), true);
+			case SANDSTORM, BLIZZARD, LIGHTNING_STORM -> Disasters.start(type, level, here, 3 + random.nextInt(3), true);
+			case HURRICANE -> {
+				// Out at sea, its track bringing its eye over the coast near the player.
+				double distance = 380 + random.nextDouble() * 160;
+				Hurricane hurricane = (Hurricane) Disasters.start(type, level,
+						here.add(Math.cos(angle) * distance, 0, Math.sin(angle) * distance), 2 + random.nextInt(4), true);
+				hurricane.aim(here.add(random.nextGaussian() * 60, 0, random.nextGaussian() * 60));
+				yield hurricane;
+			}
+			// The wave finds its own way in from the open sea toward the player's stretch of coast.
+			case TSUNAMI -> Disasters.start(type, level, here, 2 + random.nextInt(4), true);
+			case SINKHOLE -> {
+				double distance = 8 + random.nextDouble() * 50;
+				yield Disasters.start(type, level, here.add(Math.cos(angle) * distance, 0, Math.sin(angle) * distance), 2 + random.nextInt(4), true);
+			}
+			// The avalanche finds its own slope above the player.
+			case AVALANCHE -> Disasters.start(type, level, here, 2 + random.nextInt(4), true);
+			case ACID_RAIN -> Disasters.start(type, level, here, 1 + random.nextInt(5), true);
 		};
 	}
 
-	/** EF ratings as they come in nature: most tornadoes are weak, very few violent. */
+	/** EF ratings, weighted toward the violent ones that make a tornado worth fearing. */
 	private static float tornadoRating(RandomSource random) {
 		double u = random.nextDouble();
-		return u < 0.38 ? 0 : u < 0.68 ? 1 : u < 0.86 ? 2 : u < 0.955 ? 3 : u < 0.992 ? 4 : 5;
+		return u < 0.1 ? 2 : u < 0.4 ? 3 : u < 0.8 ? 4 : 5;
 	}
 
-	/** Gutenberg-Richter: every step of magnitude ten times rarer (a little less, so the big ones aren't unheard of). */
+	/** Gutenberg-Richter: every step of magnitude some five times rarer, from magnitude 6 up. */
 	private static float magnitude(RandomSource random) {
-		double m = 4.0 - Math.log10(1.0 - random.nextDouble()) / 0.75;
+		double m = 6.0 - Math.log10(1.0 - random.nextDouble()) / 0.7;
 		return (float) Math.min(9.3, m);
 	}
 
@@ -157,6 +205,16 @@ final class NaturalDisasters {
 
 	private static boolean desert(Holder<Biome> biome) {
 		return biome.is(Biomes.DESERT) || biome.is(BiomeTags.IS_BADLANDS) || biome.is(WildOverworld.biome("salt_flats"));
+	}
+
+	private static boolean coast(Holder<Biome> biome) {
+		return biome.is(BiomeTags.IS_BEACH) || biome.is(BiomeTags.IS_OCEAN) || biome.is(WildOverworld.biome("tropical_shore"))
+				|| biome.is(Biomes.MANGROVE_SWAMP);
+	}
+
+	private static boolean snowySlopes(Holder<Biome> biome) {
+		return biome.is(Biomes.SNOWY_SLOPES) || biome.is(Biomes.FROZEN_PEAKS) || biome.is(Biomes.JAGGED_PEAKS) || biome.is(Biomes.GROVE)
+				|| biome.is(Biomes.SNOWY_TAIGA) || biome.is(WildOverworld.biome("tundra"));
 	}
 
 	/** The summit of the volcanic peaks within a few hundred blocks, if there are any. */

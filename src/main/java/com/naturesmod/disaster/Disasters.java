@@ -31,6 +31,12 @@ public final class Disasters {
 	private static final List<String> FAILURES = new ArrayList<>();
 	/** Levels whose players were last told of some disaster: they need telling once more when the last one ends. */
 	private static final Map<ResourceKey<Level>, Boolean> TOLD = new HashMap<>();
+	/**
+	 * Disasters started while the disasters of a level are being run (a volcano's tremors, a hurricane's tornadoes):
+	 * they join once the round is over, as the list can't change under the loop going through it.
+	 */
+	private static final List<Disaster> PENDING = new ArrayList<>();
+	private static boolean ticking;
 
 	private Disasters() {
 	}
@@ -43,6 +49,7 @@ public final class Disasters {
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			ACTIVE.clear();
 			TOLD.clear();
+			PENDING.clear();
 			NaturalDisasters.reset();
 		});
 		CommandRegistrationCallback.EVENT.register((dispatcher, context, selection) -> DisasterCommand.register(dispatcher));
@@ -58,12 +65,23 @@ public final class Disasters {
 			case WILDFIRE -> new Wildfire(level, at, intensity, natural);
 			case SANDSTORM -> new Sandstorm(level, at, intensity, natural);
 			case BLIZZARD -> new Blizzard(level, at, intensity, natural);
+			case HURRICANE -> new Hurricane(level, at, intensity, natural);
+			case TSUNAMI -> new Tsunami(level, at, intensity, natural);
+			case SINKHOLE -> new Sinkhole(level, at, intensity, natural);
+			case AVALANCHE -> new Avalanche(level, at, intensity, natural);
+			case LIGHTNING_STORM -> new LightningStorm(level, at, intensity, natural);
+			case ACID_RAIN -> new AcidRain(level, at, intensity, natural);
 		};
 		return add(disaster);
 	}
 
+	/** Sets a disaster going. Safe to call from inside another disaster's tick: it then joins at the end of the round. */
 	static <T extends Disaster> T add(T disaster) {
-		ACTIVE.computeIfAbsent(disaster.level.dimension(), key -> new ArrayList<>()).add(disaster);
+		if (ticking) {
+			PENDING.add(disaster);
+		} else {
+			ACTIVE.computeIfAbsent(disaster.level.dimension(), key -> new ArrayList<>()).add(disaster);
+		}
 		try {
 			disaster.begin();
 		} catch (RuntimeException e) {
@@ -103,31 +121,47 @@ public final class Disasters {
 	private static void tick(ServerLevel level) {
 		List<Disaster> list = ACTIVE.get(level.dimension());
 		if (list != null && !list.isEmpty()) {
-			for (Iterator<Disaster> it = list.iterator(); it.hasNext(); ) {
-				Disaster disaster = it.next();
-				if (!disaster.isDone()) {
-					try {
-						disaster.tickDisaster();
-					} catch (RuntimeException e) {
-						NaturesMod.LOGGER.error("The {} at {} failed and was ended", disaster.type.id, disaster.position(), e);
-						FAILURES.add(disaster.type.id + ": " + e);
-						disaster.end();
-					}
-				}
-				if (disaster.isDone()) {
-					try {
-						disaster.finish();
-					} catch (RuntimeException e) {
-						NaturesMod.LOGGER.error("The {} could not finish", disaster.type.id, e);
-						FAILURES.add(disaster.type.id + " (finishing): " + e);
-					}
-					it.remove();
-				}
+			ticking = true;
+			try {
+				run(list);
+			} finally {
+				ticking = false;
 			}
+		}
+		if (!PENDING.isEmpty()) {
+			for (Disaster disaster : List.copyOf(PENDING)) {
+				ACTIVE.computeIfAbsent(disaster.level.dimension(), key -> new ArrayList<>()).add(disaster);
+			}
+			PENDING.clear();
+			list = ACTIVE.get(level.dimension());
 		}
 		NaturalDisasters.tick(level);
 		if (level.getGameTime() % 2 == 0) {
 			sync(level, list);
+		}
+	}
+
+	private static void run(List<Disaster> list) {
+		for (Iterator<Disaster> it = list.iterator(); it.hasNext(); ) {
+			Disaster disaster = it.next();
+			if (!disaster.isDone()) {
+				try {
+					disaster.tickDisaster();
+				} catch (RuntimeException e) {
+					NaturesMod.LOGGER.error("The {} at {} failed and was ended", disaster.type.id, disaster.position(), e);
+					FAILURES.add(disaster.type.id + ": " + e);
+					disaster.end();
+				}
+			}
+			if (disaster.isDone()) {
+				try {
+					disaster.finish();
+				} catch (RuntimeException e) {
+					NaturesMod.LOGGER.error("The {} could not finish", disaster.type.id, e);
+					FAILURES.add(disaster.type.id + " (finishing): " + e);
+				}
+				it.remove();
+			}
 		}
 	}
 

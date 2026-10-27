@@ -228,6 +228,10 @@ public final class DisasterParticle extends SingleQuadParticle {
 	}
 
 	void spawn() {
+		if (Fx.spawned >= Fx.cap * 2) {
+			// Over budget: whatever wanted it shows a little less this tick.
+			return;
+		}
 		Fx.spawned++;
 		place();
 		this.xo = this.x;
