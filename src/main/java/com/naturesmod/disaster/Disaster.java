@@ -218,6 +218,7 @@ public abstract class Disaster {
 	 * ground, in an updraft) `lift` of the way up, from however fast it is really going; never past `max` a tick.
 	 */
 	protected static void blow(ServerPlayer player, Vec3 air, double rate, double lift, double max) {
+		player.applyPostImpulseGraceTime(20);
 		if (!DisasterNet.push(player, new DisasterNet.Push(DisasterNet.Push.TOWARD, (float) air.x, (float) air.y, (float) air.z, (float) rate,
 				(float) lift, (float) max))) {
 			Vec3 now = player.getDeltaMovement();
@@ -238,6 +239,8 @@ public abstract class Disaster {
 	}
 
 	private static void tell(ServerPlayer player, DisasterNet.Push push) {
+		// As after a knockback: the server lets the player be where its game put it, for a while, and doesn't snap it back.
+		player.applyPostImpulseGraceTime(20);
 		if (!DisasterNet.push(player, push)) {
 			// A game that can't hear of it the mod's way hears of it as a knockback.
 			player.hurtMarked = true;
