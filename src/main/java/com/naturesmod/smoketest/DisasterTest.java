@@ -151,6 +151,16 @@ final class DisasterTest {
 		return site;
 	}
 
+	private BlockPos firstSite(int chunks, BlockPos... from) {
+		for (BlockPos each : from) {
+			BlockPos site = site(each, chunks);
+			if (site != null) {
+				return site;
+			}
+		}
+		return null;
+	}
+
 	/** The top solid block of a column, under any plants. */
 	private int top(int x, int z) {
 		return level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z) - 1;
@@ -476,7 +486,7 @@ final class DisasterTest {
 	// --- the storms --------------------------------------------------------------------------
 
 	private void sandstorm(Runnable next) {
-		BlockPos site = site(new BlockPos(1200, 0, 1200), 2);
+		BlockPos site = firstSite(2, new BlockPos(1200, 0, 1200), new BlockPos(-1800, 0, 1200), new BlockPos(2400, 0, -600));
 		Vec3 at = site == null ? new Vec3(1200, 80, 1200) : Vec3.atBottomCenterOf(site.above());
 		Disaster storm = Disasters.start(DisasterType.SANDSTORM, level, at, 4.0F, false);
 		float front = storm.extra()[0];
@@ -722,9 +732,9 @@ final class DisasterTest {
 	}
 
 	private void acidRain(Runnable next) {
-		BlockPos found = site(new BlockPos(1800, 0, 600), 2);
-		// Not every place has dry, level land near it: the sandstorm's, which has.
-		BlockPos site = found != null ? found : site(new BlockPos(1200, 0, 1200), 2);
+		// Not every place has dry, level land near it (the sea is wide east of spawn): the first of a few that has.
+		BlockPos site = firstSite(2, new BlockPos(1800, 0, 600), new BlockPos(-600, 0, 1200), new BlockPos(-1800, 0, 1200),
+				new BlockPos(2400, 0, -600), new BlockPos(-600, 0, -1200), new BlockPos(600, 0, -1200));
 		if (site == null) {
 			test.fail("no land for the acid rain test");
 			next.run();
