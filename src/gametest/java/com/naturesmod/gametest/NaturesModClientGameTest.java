@@ -42,6 +42,7 @@ import com.naturesmod.abyss.Abyss;
 import com.naturesmod.creature.ModCreatures;
 import com.naturesmod.creature.SeaCreature;
 import com.naturesmod.disaster.Disaster;
+import com.naturesmod.disaster.DisasterNet;
 import com.naturesmod.disaster.DisasterType;
 import com.naturesmod.disaster.Disasters;
 import com.naturesmod.disaster.Eruption;
@@ -1006,6 +1007,10 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 				boolean held = Disasters.active(server.overworld()).stream().anyMatch(d -> d instanceof Tornado tornado && tornado.carrying(player));
 				return new double[] {player.getY(), held ? 1.0 : 0.0};
 			});
+			double[] seen = context.computeOnClient(client -> new double[] {client.player.getY(), client.player.getDeltaMovement().y,
+					client.player.onGround() ? 1.0 : 0.0, DisasterNet.pushesReceived});
+			System.out.printf(java.util.Locale.ROOT, "[gametest] carried, tick %d: held %s, server y %.2f, client y %.2f moving up %.2f, on the ground %s, %d pushes%n",
+					i * 5, state[1] > 0.5, state[0], seen[0], seen[1], seen[2] > 0.5, (int) seen[3]);
 			highest = Math.max(highest, state[0]);
 			caught |= state[1] > 0.5;
 			if (i == 8) {

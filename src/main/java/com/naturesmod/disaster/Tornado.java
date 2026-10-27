@@ -74,8 +74,6 @@ public final class Tornado extends Disaster {
 	private final double peakWind;
 	private final double speed;
 	private final double gustPhase;
-	/** Where each player near it was last tick: how fast one is going is how far it went since. */
-	private final Map<UUID, Vec3> lastSeen = new HashMap<>();
 	/** What it has caught and is carrying round. */
 	private final Map<UUID, Carry> carried = new HashMap<>();
 	/** What it has just thrown out, and until when (its age) that is left alone: flying free, then not to be caught again at once. */
@@ -536,7 +534,6 @@ public final class Tornado extends Disaster {
 			}
 		}
 		// The players, every tick: their own games move them, and need telling.
-		Map<UUID, Vec3> seen = new HashMap<>();
 		for (ServerPlayer player : level.players()) {
 			if (!player.isAlive() || immune(player)) {
 				continue;
@@ -548,8 +545,6 @@ public final class Tornado extends Disaster {
 			if (r > reach) {
 				continue;
 			}
-			Vec3 before = lastSeen.get(player.getUUID());
-			seen.put(player.getUUID(), player.position());
 			if (carried.containsKey(player.getUUID()) || sheltered(player)) {
 				continue;
 			}
@@ -566,19 +561,12 @@ public final class Tornado extends Disaster {
 				// Its mount takes the wind for it; a swimmer moves as the water lets it, not as on land or in the air.
 				continue;
 			}
-			Vec3 moved = before == null ? Vec3.ZERO : player.position().subtract(before);
-			if (moved.lengthSqr() > 9.0) {
-				// Teleported, not blown.
-				moved = Vec3.ZERO;
-			}
-			blowPlayer(player, moved, air(dx, dz, height, peak, ceiling));
+			blowPlayer(player, air(dx, dz, height, peak, ceiling));
 			if (r < coreNow * 1.15 && age % 10 == 0) {
 				// Debris in the core (a tornado too weak to pick anyone up still pelts them).
 				hurt(player, DisasterDamage.TORNADO, 0.5F + rating * 0.5F);
 			}
 		}
-		lastSeen.clear();
-		lastSeen.putAll(seen);
 		// Everything else in its wind: looked for every few ticks, pushed every tick.
 		if (age % 5 == 0) {
 			nearby.clear();
@@ -643,22 +631,13 @@ public final class Tornado extends Disaster {
 	}
 
 	/**
-	 * The wind on a player it hasn't caught. A player's own game moves the player, so the velocity a player is
-	 * given is the one it would have had next anyway (from how far it went since the last tick, slowed as the game
-	 * slows it on the ground or in the air) plus the wind's pull: a player keeps running, against it or across it,
-	 * only harder, and off the ground (jumping, falling) is blown about far more.
+	 * The wind on a player it hasn't caught: its game pulls it toward the speed of the air, from however fast it is
+	 * really going. A player keeps running, against it or across it, only harder, and off the ground (jumping,
+	 * falling) is blown about far more, and lifted in the updraft.
 	 */
-	private void blowPlayer(ServerPlayer player, Vec3 moved, Vec3 air) {
-		boolean ground = player.onGround();
-		double keep = ground ? 0.546 : 0.91;
+	private void blowPlayer(ServerPlayer player, Vec3 air) {
 		double pull = 0.07 + 0.012 * rating;
-		// On the ground a player is pressed down (that is how its game knows it is standing).
-		double vy = ground ? -0.0784 : (moved.y - 0.08) * 0.98;
-		if (!ground && air.y > vy) {
-			vy += (air.y - vy) * pull * 1.5;
-		}
-		Vec3 next = new Vec3(moved.x * keep + (air.x - moved.x) * pull, vy, moved.z * keep + (air.z - moved.z) * pull);
-		setVelocity(player, limit(next, 2.2));
+		blow(player, air, pull, pull * 1.5, 2.2);
 	}
 
 	/** A player it is almost on is told what to do, once. */

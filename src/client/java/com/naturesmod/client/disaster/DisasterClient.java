@@ -40,6 +40,7 @@ public final class DisasterClient {
 	public static void register() {
 		ClientPlayNetworking.registerGlobalReceiver(DisasterNet.Sync.TYPE, (payload, context) -> sync(payload));
 		ClientPlayNetworking.registerGlobalReceiver(DisasterNet.Event.TYPE, (payload, context) -> DisasterEvents.handle(payload));
+		ClientPlayNetworking.registerGlobalReceiver(DisasterNet.Push.TYPE, (payload, context) -> PlayerPush.apply(context.player(), payload));
 		ClientTickEvents.END_CLIENT_TICK.register(DisasterClient::tick);
 		DisasterParticle.registerProviders();
 		DisasterFog.install();

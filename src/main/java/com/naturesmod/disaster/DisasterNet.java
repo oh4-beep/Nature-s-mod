@@ -129,9 +129,57 @@ public final class DisasterNet {
 		}
 	}
 
+	/**
+	 * A push on the player it is sent to. A player's own game moves the player, so this is how a disaster moves one:
+	 * set to a velocity (carried off), given a kick (a blast), or pulled toward the speed of the air at a rate (the
+	 * wind), which the player's game works out from how fast the player is really going. At most `max` blocks a tick
+	 * after it (none when 0).
+	 */
+	public record Push(int mode, float x, float y, float z, float rate, float lift, float max) implements CustomPacketPayload {
+		public static final int SET = 0;
+		public static final int ADD = 1;
+		/** Toward (x, y, z): `rate` of the way across, and up (off the ground only) `lift` of the way when the air rises faster. */
+		public static final int TOWARD = 2;
+
+		public static final CustomPacketPayload.Type<Push> TYPE = new CustomPacketPayload.Type<>(NaturesMod.id("disaster_push"));
+		public static final StreamCodec<FriendlyByteBuf, Push> CODEC = CustomPacketPayload.codec(Push::write, Push::new);
+
+		private Push(FriendlyByteBuf buf) {
+			this(buf.readByte(), buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat());
+		}
+
+		private void write(FriendlyByteBuf buf) {
+			buf.writeByte(mode);
+			buf.writeFloat(x);
+			buf.writeFloat(y);
+			buf.writeFloat(z);
+			buf.writeFloat(rate);
+			buf.writeFloat(lift);
+			buf.writeFloat(max);
+		}
+
+		@Override
+		public CustomPacketPayload.Type<Push> type() {
+			return TYPE;
+		}
+	}
+
+	/** How many pushes this game has been given (counted by the client, for the tests to see). */
+	public static int pushesReceived;
+
 	public static void register() {
 		PayloadTypeRegistry.clientboundPlay().register(Sync.TYPE, Sync.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(Event.TYPE, Event.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(Push.TYPE, Push.CODEC);
+	}
+
+	/** Pushes a player (see {@link Push}); false if its game can't hear of it this way. */
+	static boolean push(ServerPlayer player, Push push) {
+		if (!ServerPlayNetworking.canSend(player, Push.TYPE)) {
+			return false;
+		}
+		ServerPlayNetworking.send(player, push);
+		return true;
 	}
 
 	/** Sends an event to the players of a level within `range` blocks of it (every one of them when range <= 0). */

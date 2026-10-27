@@ -142,8 +142,6 @@ public final class Hurricane extends Disaster {
 	/** The last tornado it spun up, and how many more it may. */
 	private Disaster tornado;
 	private int tornadoesLeft;
-	/** Where each player in it was last tick: how fast one is going is how far it went since. */
-	private final Map<UUID, Vec3> lastSeen = new HashMap<>();
 	/** What a gust has just knocked down and thrown, and until when (its age) that is let fly. */
 	private final Map<UUID, Integer> flung = new HashMap<>();
 	/** Players already told its eyewall is almost on them, or that they are in its eye. */
@@ -485,7 +483,6 @@ public final class Hurricane extends Disaster {
 	protected void finish() {
 		nearby.clear();
 		debris.clear();
-		lastSeen.clear();
 		flung.clear();
 		kinds.clear();
 	}
@@ -566,7 +563,6 @@ public final class Hurricane extends Disaster {
 	 * flies there. Between the rain bands, in the lulls between gusts, nothing is sent and a player is free.
 	 */
 	private void players(float strength) {
-		Map<UUID, Vec3> seen = new HashMap<>();
 		for (ServerPlayer player : level.players()) {
 			if (!player.isAlive() || player.isSpectator()) {
 				continue;
@@ -581,8 +577,6 @@ public final class Hurricane extends Disaster {
 			if (immune(player)) {
 				continue;
 			}
-			Vec3 before = lastSeen.get(player.getUUID());
-			seen.put(player.getUUID(), player.position());
 			Vec3 wind = windAt(player.getX(), player.getZ());
 			double w = wind.horizontalDistance();
 			if (w < FELT || sheltered(player)) {
@@ -600,43 +594,29 @@ public final class Hurricane extends Disaster {
 			if (!steady && flungFor(player) <= 0) {
 				continue;
 			}
-			Vec3 moved = before == null ? Vec3.ZERO : player.position().subtract(before);
-			if (moved.lengthSqr() > 9.0) {
-				// Teleported, not blown.
-				moved = Vec3.ZERO;
-			}
 			Vec3 air = wind.scale(SCALE);
 			if (eyewall && player.onGround() && knocksDown(player, w)) {
 				fling(player, air, w);
 				continue;
 			}
-			blowPlayer(player, moved, air, w);
+			blowPlayer(player, air, w);
 		}
-		lastSeen.clear();
-		lastSeen.putAll(seen);
 	}
 
 	/**
-	 * The wind on a player. A player's own game moves the player, so the velocity a player is given is the one it
-	 * would have had next anyway (from how far it went since the last tick, slowed as the game slows it on the
-	 * ground or in the air) plus the wind's pull toward the speed of the air: walking into it is a struggle (in the
-	 * eyewall of the strongest, hopeless), standing in it you are pushed along, and off the ground you are carried
-	 * off with it. Crouching braces against it.
+	 * The wind on a player: its game pulls it toward the speed of the air, from however fast it is really going.
+	 * Walking into it is a struggle (in the eyewall of the strongest, hopeless), standing in it you are pushed along,
+	 * and off the ground you are carried off with it. Crouching braces against it.
 	 */
-	private void blowPlayer(ServerPlayer player, Vec3 moved, Vec3 air, double w) {
-		boolean ground = player.onGround();
-		double keep = ground ? 0.546 : 0.91;
+	private void blowPlayer(ServerPlayer player, Vec3 air, double w) {
 		double pull = Math.min(0.18, 0.02 + 0.0018 * w);
-		if (!ground) {
+		if (!player.onGround()) {
 			pull *= 0.75;
 		}
 		if (player.isShiftKeyDown()) {
 			pull *= 0.6;
 		}
-		// On the ground a player is pressed down (that is how its game knows it is standing).
-		double vy = ground ? -0.0784 : (moved.y - 0.08) * 0.98;
-		Vec3 next = new Vec3(moved.x * keep + (air.x - moved.x) * pull, vy, moved.z * keep + (air.z - moved.z) * pull);
-		setVelocity(player, limit(next, 2.0));
+		blow(player, air, pull, 0.0, 2.0);
 	}
 
 	/** Whether a gust in the eyewall knocks something off its feet: from category 3 in the strongest gusts, often in a category 5. */

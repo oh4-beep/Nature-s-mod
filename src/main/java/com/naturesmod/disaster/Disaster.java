@@ -192,20 +192,44 @@ public abstract class Disaster {
 		return TreeEvents.snapTrunk(level, log, direction, heightAboveBase, 320, 24, 48);
 	}
 
-	/** Makes an entity move at `velocity`, by pushing it as much as it takes (see {@link #shove}). */
+	/** Makes an entity move at `velocity`, by pushing it as much as it takes (a player's game is told it outright). */
 	protected static void setVelocity(Entity entity, Vec3 velocity) {
 		Vec3 now = entity.getDeltaMovement();
-		shove(entity, velocity.x - now.x, velocity.y - now.y, velocity.z - now.z);
+		entity.push(velocity.x - now.x, velocity.y - now.y, velocity.z - now.z);
+		if (entity instanceof ServerPlayer player) {
+			tell(player, new DisasterNet.Push(DisasterNet.Push.SET, (float) velocity.x, (float) velocity.y, (float) velocity.z, 0.0F, 0.0F, 0.0F));
+		}
 	}
 
 	/**
-	 * Pushes an entity. A player's own game moves the player, and only hears of a push from the server when the
-	 * push is marked to be sent, as a knockback is: without that the wind would blow everything but the players.
+	 * Pushes an entity. A player's own game moves the player, and hears of the push from the disaster itself: what the
+	 * server thinks a player's velocity is is only a guess, a tick or two old, and the knockback the game sends would
+	 * put the player back to it, every tick the wind blew.
 	 */
 	protected static void shove(Entity entity, double dx, double dy, double dz) {
 		entity.push(dx, dy, dz);
-		if (entity instanceof ServerPlayer) {
-			entity.hurtMarked = true;
+		if (entity instanceof ServerPlayer player) {
+			tell(player, new DisasterNet.Push(DisasterNet.Push.ADD, (float) dx, (float) dy, (float) dz, 0.0F, 0.0F, 0.0F));
+		}
+	}
+
+	/**
+	 * The wind on a player: its game pulls it `rate` of the way toward the speed of the air each tick, and (off the
+	 * ground, in an updraft) `lift` of the way up, from however fast it is really going; never past `max` a tick.
+	 */
+	protected static void blow(ServerPlayer player, Vec3 air, double rate, double lift, double max) {
+		if (!DisasterNet.push(player, new DisasterNet.Push(DisasterNet.Push.TOWARD, (float) air.x, (float) air.y, (float) air.z, (float) rate,
+				(float) lift, (float) max))) {
+			Vec3 now = player.getDeltaMovement();
+			player.push((air.x - now.x) * rate, 0.0, (air.z - now.z) * rate);
+			player.hurtMarked = true;
+		}
+	}
+
+	private static void tell(ServerPlayer player, DisasterNet.Push push) {
+		if (!DisasterNet.push(player, push)) {
+			// A game that can't hear of it the mod's way hears of it as a knockback.
+			player.hurtMarked = true;
 		}
 	}
 

@@ -380,7 +380,7 @@ public final class Sandstorm extends Disaster {
 			if (devil != null) {
 				whirlPlayer(player, devil, moved);
 			} else {
-				blowPlayer(player, moved, in * gust);
+				blowPlayer(player, in * gust);
 			}
 		}
 		lastSeen.clear();
@@ -388,26 +388,18 @@ public final class Sandstorm extends Disaster {
 	}
 
 	/**
-	 * The wind on a player out in the dust. A player's own game moves the player, so the velocity a player is given is the
-	 * one it would have had next anyway (from how far it went since the last tick, slowed as the game slows it on the
-	 * ground or in the air) plus the wind's pull toward the speed of the air: walking into it is a struggle, standing in
-	 * it you are pushed along, and off the ground (jumping, falling) you are carried off with it. In the lulls between
-	 * the gusts nothing is sent at all, and the player is free.
+	 * The wind on a player out in the dust: its game pulls it toward the speed of the air, from however fast it is
+	 * really going. Walking into it is a struggle, standing in it you are pushed along, and off the ground (jumping,
+	 * falling) you are carried off with it. In the lulls between the gusts nothing is sent at all, and the player is free.
 	 */
-	private void blowPlayer(ServerPlayer player, Vec3 moved, double force) {
+	private void blowPlayer(ServerPlayer player, double force) {
 		if (force < 0.04) {
 			return;
 		}
 		force *= lee(player);
 		boolean ground = player.onGround();
-		double keep = ground ? 0.546 : 0.91;
 		double pull = (ground ? 0.08 + 0.02 * intensity : 0.05 + 0.012 * intensity) * Math.min(1.0, force);
-		// On the ground a player is pressed down (that is how its game knows it is standing).
-		double vy = ground ? -0.0784 : (moved.y - 0.08) * 0.98;
-		double airX = wind.x * windSpeed;
-		double airZ = wind.z * windSpeed;
-		Vec3 next = new Vec3(moved.x * keep + (airX - moved.x) * pull, vy, moved.z * keep + (airZ - moved.z) * pull);
-		setVelocity(player, limit(next, 1.5));
+		blow(player, new Vec3(wind.x * windSpeed, 0.0, wind.z * windSpeed), pull, 0.0, 1.5);
 	}
 
 	/** How much of the wind reaches a player: little in the lee of a wall or a rock (something solid just upwind). */
