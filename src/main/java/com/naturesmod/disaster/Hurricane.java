@@ -842,8 +842,9 @@ public final class Hurricane extends Disaster {
 	private void damageLand(float strength) {
 		columnsLeft = MAX_COLUMNS;
 		changesLeft = MAX_CHANGES;
-		effectsLeft = 2;
-		dropsLeft = 1;
+		// A crack and a dropped crop now and then, not every tick: each crack is a burst of bits of block for every player near.
+		effectsLeft = age % 4 == 0 ? 1 : 0;
+		dropsLeft = age % 4 == 0 ? 1 : 0;
 		launchesLeft = category >= 4 ? 1 : 0;
 		int per = Math.round((12 + 10 * category) * strength);
 		for (ServerPlayer player : level.players()) {
@@ -871,7 +872,7 @@ public final class Hurricane extends Disaster {
 		columnsLeft--;
 		int bx = (int) Math.floor(px);
 		int bz = (int) Math.floor(pz);
-		if (!loaded(bx, bz)) {
+		if (!workable(bx, bz)) {
 			return;
 		}
 		Vec3 wind = windAt(px, pz);

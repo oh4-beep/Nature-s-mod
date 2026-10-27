@@ -289,7 +289,7 @@ public final class Tornado extends Disaster {
 			double r = reach * Math.sqrt(random.nextDouble());
 			int bx = (int) Math.floor(hx + Math.cos(angle) * r);
 			int bz = (int) Math.floor(hz + Math.sin(angle) * r);
-			if (!loaded(bx, bz) || random.nextDouble() > strength) {
+			if (!workable(bx, bz) || random.nextDouble() > strength) {
 				continue;
 			}
 			BlockPos top = new BlockPos(bx, level.getHeight(Heightmap.Types.WORLD_SURFACE, bx, bz) - 1, bz);
@@ -579,7 +579,10 @@ public final class Tornado extends Disaster {
 		if (age % 5 == 0) {
 			nearby.clear();
 			AABB box = new AABB(x - reach, y - 6.0, z - reach, x + reach, y + ceiling + 12.0, z + reach);
-			List<Entity> found = level.getEntitiesOfClass(Entity.class, box, e -> e.isAlive() && !(e instanceof Player));
+			// As the hurricane's: not what hangs on walls (pushed, a painting, a frame or a leash knot comes down), nor anything
+			// else fixed in place.
+			List<Entity> found = level.getEntitiesOfClass(Entity.class, box, e -> e.isAlive()
+					&& (e instanceof ItemEntity || e instanceof FallingBlockEntity || e instanceof LivingEntity && !(e instanceof Player)));
 			// The animals first: a heap of dropped things mustn't crowd them out.
 			for (Entity entity : found) {
 				if (entity instanceof LivingEntity && nearby.size() < MAX_NEARBY) {
@@ -674,7 +677,8 @@ public final class Tornado extends Disaster {
 	private void damageLand() {
 		int samples = 12 + rating * 10;
 		int budget = 60 + rating * 35;
-		effectsLeft = 3 + rating;
+		// A few cracks a second, not a few a tick: each is a burst of up to sixty-four bits of block for every player near.
+		effectsLeft = age % 4 == 0 ? 1 + rating / 2 : 0;
 		launchesLeft = 2 + rating / 2;
 		int debrisCap = 12 + rating * 7;
 		double reach = coreNow * 1.5 + 2.0;
@@ -687,7 +691,7 @@ public final class Tornado extends Disaster {
 			double r = reach * Math.sqrt(random.nextDouble());
 			int bx = (int) Math.floor(x + Math.cos(angle) * r);
 			int bz = (int) Math.floor(z + Math.sin(angle) * r);
-			if (!loaded(bx, bz)) {
+			if (!workable(bx, bz)) {
 				continue;
 			}
 			// The winds are strongest at the edge of the core, and the storm's own motion adds on one side.

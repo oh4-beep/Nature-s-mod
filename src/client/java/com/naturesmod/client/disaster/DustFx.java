@@ -186,7 +186,8 @@ final class DustFx {
 	 * number times their area, which is what the graphics card pays for, stays much the same.
 	 */
 	private static double grain() {
-		return Math.max(0.8, Math.min(2.0, 1.0 / Math.sqrt(Math.max(0.05F, Fx.density))));
+		// By the player's own settings only: a slow computer thinning them gets fewer, not bigger (that costs the same to draw).
+		return Math.max(0.8, Math.min(2.0, 1.0 / Math.sqrt(Math.max(0.05F, Fx.settingDensity))));
 	}
 
 	/**

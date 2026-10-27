@@ -473,7 +473,8 @@ public final class LightningStorm extends Disaster {
 		for (int i = 0; i < 3; i++) {
 			int bx = (int) Math.floor(cx + random.nextGaussian() * spread);
 			int bz = (int) Math.floor(cz + random.nextGaussian() * spread);
-			if (!loaded(bx, bz)) {
+			// Only where things run: a bolt anywhere else would hang there unticked, to strike when someone came near.
+			if (!workable(bx, bz)) {
 				continue;
 			}
 			if (spare != null && distance2d(spare, bx + 0.5, bz + 0.5) < BOLT_REACH + 1.5) {
@@ -548,7 +549,17 @@ public final class LightningStorm extends Disaster {
 		if (level.isRaining() && biome.getBaseTemperature() < 1.5F && !biome.coldEnoughToSnow(pos, level.getSeaLevel())) {
 			return false;
 		}
-		return level.getBlockState(pos).ignitedByLava() || level.getBlockState(pos.set(bx, top - 1, bz)).ignitedByLava();
+		// The bolt's fire lands on its block and the blocks about it, and catches whatever is next to that.
+		for (int dx = -2; dx <= 2; dx++) {
+			for (int dz = -2; dz <= 2; dz++) {
+				for (int dy = -1; dy <= 1; dy++) {
+					if (level.getBlockState(pos.set(bx + dx, top + dy, bz + dz)).ignitedByLava()) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 
 	/**

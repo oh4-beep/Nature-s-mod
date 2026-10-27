@@ -342,20 +342,28 @@ public final class Blizzard extends Disaster {
 
 	/** Snow on `samples` columns about a place, no more than `changes` blocks changed; returns how many changes are left. */
 	private int fall(double cx, double cz, double spread, int samples, int changes) {
+		// A few patches of ground a tick, each a chunk across, not columns strewn all about: every chunk the snow lands
+		// in has to be drawn again by the players' games, and a weak computer can only redraw so many a tick.
+		int patchX = 0;
+		int patchZ = 0;
 		for (int i = 0; i < samples && changes > 0 && columnsLeft > 0; i++) {
 			columnsLeft--;
-			double angle = random.nextDouble() * Math.PI * 2.0;
-			double r = spread * Math.sqrt(random.nextDouble());
-			double px = cx + Math.cos(angle) * r;
-			double pz = cz + Math.sin(angle) * r;
-			double dx = px - x;
-			double dz = pz - z;
+			if (i % 16 == 0) {
+				double angle = random.nextDouble() * Math.PI * 2.0;
+				double r = spread * Math.sqrt(random.nextDouble());
+				patchX = Math.floorDiv((int) Math.floor(cx + Math.cos(angle) * r), 16) * 16;
+				patchZ = Math.floorDiv((int) Math.floor(cz + Math.sin(angle) * r), 16) * 16;
+			}
+			int bx = patchX + random.nextInt(16);
+			int bz = patchZ + random.nextInt(16);
+			double dx = bx + 0.5 - x;
+			double dz = bz + 0.5 - z;
 			double from = Math.sqrt(dx * dx + dz * dz);
 			// Thinning out toward its edge.
 			if (from > reach || from > reach - EDGE && random.nextDouble() * EDGE > reach - from) {
 				continue;
 			}
-			if (drop((int) Math.floor(px), (int) Math.floor(pz))) {
+			if (drop(bx, bz)) {
 				changes--;
 			}
 		}

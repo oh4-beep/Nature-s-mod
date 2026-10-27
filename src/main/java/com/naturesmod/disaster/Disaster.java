@@ -1,13 +1,16 @@
 package com.naturesmod.disaster;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.naturesmod.NaturesConfig;
 import com.naturesmod.tree.TreeEvents;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.SectionPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
@@ -20,6 +23,8 @@ import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
@@ -29,6 +34,13 @@ import net.minecraft.world.phys.Vec3;
  * goes out to the players of the level, whose clients draw it and make it heard.
  */
 public abstract class Disaster {
+	/** What ended disasters left to put right where the land wasn't loaded, by world: lava to crust over, fire to put out. */
+	private record Leftover(long pos, Block was, BlockState becomes) {
+	}
+
+	private static final Map<ResourceKey<Level>, List<Leftover>> LEFTOVERS = new HashMap<>();
+	private static final int MAX_LEFTOVERS = 20000;
+
 	private static int nextId = 1;
 
 	public final int id = nextId++;
@@ -247,8 +259,48 @@ public abstract class Disaster {
 		}
 	}
 
+	/** Whether a column's land is loaded and ready: never land still loading, whose blocks would make the server wait for it. */
 	protected boolean loaded(int bx, int bz) {
-		return level.hasChunkAt(bx, bz);
+		return level.getChunkSource().getChunkNow(SectionPos.blockToSectionCoord(bx), SectionPos.blockToSectionCoord(bz)) != null;
+	}
+
+	/**
+	 * Whether a column's blocks may be changed: its land and all the land round it loaded and running (the game's own
+	 * rule for where things happen), so that what a change tells its neighbours, a blast's rays or a tree looked over
+	 * never make the server load land on the spot.
+	 */
+	protected boolean workable(int bx, int bz) {
+		return level.isPositionEntityTicking(new BlockPos(bx, 0, bz));
+	}
+
+	/** Leaves a block to be put right (if it is still `was`) once its land is loaded and running again. */
+	protected void leaveForLater(BlockPos pos, Block was, BlockState becomes) {
+		List<Leftover> list = LEFTOVERS.computeIfAbsent(level.dimension(), key -> new ArrayList<>());
+		if (list.size() < MAX_LEFTOVERS) {
+			list.add(new Leftover(pos.asLong(), was, becomes));
+		}
+	}
+
+	/** Puts right, a few at a time, what ended disasters left where the land wasn't loaded. */
+	static void tickLeftovers(ServerLevel level) {
+		List<Leftover> list = LEFTOVERS.get(level.dimension());
+		if (list == null || list.isEmpty() || level.getGameTime() % 5 != 0) {
+			return;
+		}
+		BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
+		list.removeIf(left -> {
+			if (!level.isPositionEntityTicking(pos.set(left.pos()))) {
+				return false;
+			}
+			if (level.getBlockState(pos).is(left.was())) {
+				level.setBlock(pos, left.becomes(), Block.UPDATE_ALL);
+			}
+			return true;
+		});
+	}
+
+	static void clearLeftovers() {
+		LEFTOVERS.clear();
 	}
 
 	protected List<ServerPlayer> playersWithin(double range) {
@@ -278,7 +330,8 @@ public abstract class Disaster {
 	protected void lightning(double lx, double lz) {
 		int bx = (int) Math.floor(lx);
 		int bz = (int) Math.floor(lz);
-		if (!loaded(bx, bz)) {
+		// Only where things run: a bolt anywhere else would hang there unticked, to strike when someone came near.
+		if (!workable(bx, bz)) {
 			return;
 		}
 		LightningBolt bolt = EntityTypes.LIGHTNING_BOLT.create(level, EntitySpawnReason.TRIGGERED);

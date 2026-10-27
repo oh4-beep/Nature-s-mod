@@ -66,6 +66,7 @@ public final class Disasters {
 			ACTIVE.clear();
 			TOLD.clear();
 			PENDING.clear();
+			Disaster.clearLeftovers();
 			NaturalDisasters.reset();
 		});
 		CommandRegistrationCallback.EVENT.register((dispatcher, context, selection) -> DisasterCommand.register(dispatcher));
@@ -152,6 +153,7 @@ public final class Disasters {
 			list = ACTIVE.get(level.dimension());
 		}
 		NaturalDisasters.tick(level);
+		Disaster.tickLeftovers(level);
 		if (level.getGameTime() % 2 == 0) {
 			sync(level, list);
 		}

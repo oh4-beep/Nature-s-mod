@@ -226,7 +226,7 @@ final class TsunamiFx {
 		double top = wave.base() + h;
 		// Bigger the further off: each looks much the same size from where it is seen. And where fewer particles are allowed
 		// (the player's settings, a slow computer), each is bigger, so that the face still stands solid, only coarser.
-		double grain = Math.max(0.8, Math.min(2.0, 1.0 / Math.sqrt(Math.max(0.05F, Fx.density))));
+		double grain = Math.max(0.8, Math.min(2.0, 1.0 / Math.sqrt(Math.max(0.05F, Fx.settingDensity))));
 		double size = Math.max(3.0, Math.min(10.0, h * 0.45)) * (1.0 + Math.min(3.0, gap / 220.0)) * grain;
 		// The face has some depth to it: the swell rising behind it, lower the further back.
 		double depth = Math.min(6.0, 0.4 * h);

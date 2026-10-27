@@ -403,7 +403,7 @@ public final class AcidRain extends Disaster {
 	 * block changed.
 	 */
 	private boolean eat(int bx, int bz, boolean sure) {
-		if (!loaded(bx, bz)) {
+		if (!workable(bx, bz)) {
 			return false;
 		}
 		int top = level.getHeight(Heightmap.Types.MOTION_BLOCKING, bx, bz);

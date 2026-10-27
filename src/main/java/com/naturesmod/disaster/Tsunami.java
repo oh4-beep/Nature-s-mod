@@ -776,7 +776,7 @@ public final class Tsunami extends Disaster {
 	private List<Vec3> watched() {
 		List<Vec3> out = new ArrayList<>();
 		for (ServerPlayer player : level.players()) {
-			if (!player.isSpectator() && out.size() < 8 && nearWay(player.getX(), player.getZ())) {
+			if (!player.isSpectator() && player.isAlive() && out.size() < 8 && nearWay(player.getX(), player.getZ())) {
 				out.add(player.position());
 			}
 		}

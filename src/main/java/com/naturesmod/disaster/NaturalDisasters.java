@@ -227,7 +227,7 @@ final class NaturalDisasters {
 				int bx = from.getX() + dx;
 				int bz = from.getZ() + dz;
 				here = level.getUncachedNoiseBiome(QuartPos.fromBlock(bx), QuartPos.fromBlock(from.getY()), QuartPos.fromBlock(bz));
-				if (!here.is(WildOverworld.biome("volcanic_peaks")) || !level.hasChunkAt(bx, bz)) {
+				if (!here.is(WildOverworld.biome("volcanic_peaks")) || level.getChunkSource().getChunkNow(bx >> 4, bz >> 4) == null) {
 					continue;
 				}
 				int y = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, bx, bz);

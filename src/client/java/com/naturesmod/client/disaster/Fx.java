@@ -24,6 +24,8 @@ final class Fx {
 	static Vec3 eye = Vec3.ZERO;
 	static RandomSource random = RandomSource.create();
 	static float density = 1.0F;
+	/** The density the player's own settings ask for, before a slow game thins it. */
+	static float settingDensity = 1.0F;
 	static int spawned;
 	/** How far off a particle may be drawn where it is: past this the fog would hide it (see {@link DisasterParticle}). */
 	static double viewLimit = 96.0;
@@ -40,6 +42,7 @@ final class Fx {
 		// The game's own particle setting too: all, decreased or minimal.
 		int setting = minecraft.options.particles().get().ordinal();
 		density *= setting == 0 ? 1.0F : setting == 1 ? 0.5F : 0.2F;
+		settingDensity = density;
 		if (NaturesConfig.get().adaptiveDisasterEffects) {
 			// Under 50 frames a second the particles thin out, to a fifth at 15. Thinning fast and filling back in slowly,
 			// so that the thinning doesn't itself set the frame rate swinging.

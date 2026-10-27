@@ -431,7 +431,7 @@ public final class Wildfire extends Disaster {
 	/** Sets a column alight, if there is anything in it to burn and room for more to burn. */
 	private boolean ignite(int bx, int bz) {
 		long column = column(bx, bz);
-		if (burnt.contains(column) || burning.size() >= maxBurning || !inBounds(bx, bz) || !loaded(bx, bz)) {
+		if (burnt.contains(column) || burning.size() >= maxBurning || !inBounds(bx, bz) || !workable(bx, bz)) {
 			return false;
 		}
 		int top = level.getHeight(Heightmap.Types.MOTION_BLOCKING, bx, bz) - 1;
@@ -558,7 +558,7 @@ public final class Wildfire extends Disaster {
 
 	/** What is left once the fire has passed; returns how many blocks it changed. */
 	private int burnOut(int bx, int bz) {
-		if (!griefing() || !loaded(bx, bz)) {
+		if (!griefing() || !workable(bx, bz)) {
 			return 0;
 		}
 		int top = Math.min(level.getHeight(Heightmap.Types.MOTION_BLOCKING, bx, bz) - 1, level.getMaxY() - 2);
@@ -661,6 +661,11 @@ public final class Wildfire extends Disaster {
 			int fx = BlockPos.getX(key);
 			int fy = BlockPos.getY(key);
 			int fz = BlockPos.getZ(key);
+			if (!loaded(fx, fz)) {
+				// Out of reach now: put out as soon as its land is back, not left to burn on as the game's own fire.
+				leaveForLater(BlockPos.of(key), Blocks.FIRE, Blocks.AIR.defaultBlockState());
+				continue;
+			}
 			for (int dx = -1; dx <= 1; dx++) {
 				for (int dz = -1; dz <= 1; dz++) {
 					if (!loaded(fx + dx, fz + dz)) {

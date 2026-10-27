@@ -82,6 +82,8 @@ public final class DisasterClient {
 				clear();
 				lastLevel = null;
 			}
+			// Nothing of the world just left is kept: Fx.begin sets it again in the next one.
+			Fx.level = null;
 			return;
 		}
 		if (level != lastLevel) {

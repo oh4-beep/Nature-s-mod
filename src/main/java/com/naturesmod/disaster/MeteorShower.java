@@ -283,10 +283,10 @@ public final class MeteorShower extends Disaster {
 			double distance = great ? 90.0 + random.nextDouble() * 70.0 : 40.0 + random.nextDouble() * 220.0 * (1.0 - tries * 0.2);
 			tx = (int) Math.floor(around.x + Math.cos(angle) * distance);
 			tz = (int) Math.floor(around.z + Math.sin(angle) * distance);
-			found = loaded(tx, tz) && (fate != STRIKE || !crowded(tx, tz, radius * 2.0 + 10.0));
+			found = workable(tx, tz) && (fate != STRIKE || !crowded(tx, tz, radius * 2.0 + 10.0));
 		}
 		if (!found) {
-			if (great || !loaded(tx, tz)) {
+			if (great || !workable(tx, tz)) {
 				return false;
 			}
 			fate = BURST;
@@ -412,7 +412,10 @@ public final class MeteorShower extends Disaster {
 		double cz = ground.getZ() + 0.5;
 		int gy = ground.getY();
 		DisasterNet.send(level, new DisasterNet.Event(DisasterNet.Event.IMPACT, cx, gy + 1, cz, new float[] {radius}), 0);
-		level.explode(null, cx, gy + 1.5, cz, (float) Math.min(9.0, 2.0 + s * 1.5), Level.ExplosionInteraction.NONE);
+		// Its blast's rays reach out a long way: only where the land about it is running (else the server loads it on the spot).
+		if (workable(ground.getX(), ground.getZ())) {
+			level.explode(null, cx, gy + 1.5, cz, (float) Math.min(9.0, 2.0 + s * 1.5), Level.ExplosionInteraction.NONE);
+		}
 		shockwave(cx, gy, cz, radius);
 		strikes++;
 		lastStrike = age;
@@ -420,7 +423,7 @@ public final class MeteorShower extends Disaster {
 		if (scars.size() > MAX_TOLD) {
 			scars.remove(0);
 		}
-		if (griefing() && loaded(ground.getX(), ground.getZ()) && gy > level.getMinY() + 2 && gy < level.getMaxY() - 2) {
+		if (griefing() && workable(ground.getX(), ground.getZ()) && gy > level.getMinY() + 2 && gy < level.getMaxY() - 2) {
 			if (digging.size() >= MAX_DIGGING) {
 				// The oldest is left as far as it got.
 				digging.remove(0);

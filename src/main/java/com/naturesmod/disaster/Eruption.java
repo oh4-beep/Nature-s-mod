@@ -389,7 +389,13 @@ public final class Eruption extends Disaster {
 		// The lava still molten from the flows crusts over now, all of it, so that none is left burning for good: there is
 		// never more queued than the flows may pour in all (a few hundred blocks, once).
 		while (!cooling.isEmpty()) {
-			cool(cooling.pollFirst().pos());
+			BlockPos pos = cooling.pollFirst().pos();
+			if (loaded(pos.getX(), pos.getZ())) {
+				cool(pos);
+			} else {
+				// Not left molten for good: crusted over as soon as its land is back.
+				leaveForLater(pos, Blocks.LAVA, Blocks.BASALT.defaultBlockState());
+			}
 		}
 	}
 
@@ -414,7 +420,10 @@ public final class Eruption extends Disaster {
 	private void blast() {
 		blastAge = age;
 		DisasterNet.send(level, new DisasterNet.Event(DisasterNet.Event.BLAST, x, base + 1, z, new float[] {vei}), 0);
-		level.explode(null, x, base + 3, z, 5.0F + vei, Level.ExplosionInteraction.NONE);
+		// Its rays reach out a long way: only where the land about it is running (else the server loads it on the spot).
+		if (workable(vent.getX(), vent.getZ())) {
+			level.explode(null, x, base + 3, z, 5.0F + vei, Level.ExplosionInteraction.NONE);
+		}
 		warn(ashReach * 1.5, player -> Component.translatable("naturesmod.warning.eruption_ash", compass(wind.x, wind.z)));
 		// The shock wave: the players wherever they are, and whatever else is near enough to matter.
 		for (ServerPlayer player : level.players()) {
