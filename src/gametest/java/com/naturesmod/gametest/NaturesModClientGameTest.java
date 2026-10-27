@@ -741,6 +741,9 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 				() -> meteors(context, world), () -> eruption(context, world), () -> wildfire(context, world), () -> sandstorm(context, world),
 				() -> blizzard(context, world), () -> hurricane(context, world), () -> tsunami(context, world), () -> sinkhole(context, world),
 				() -> avalanche(context, world), () -> lightningStorm(context, world), () -> acidRain(context, world));
+		// The screenshots show the disasters as a computer that keeps up sees them: the test's software renderer is far too
+		// slow for that, and would have the effects thinned to a fifth.
+		NaturesConfig.get().adaptiveDisasterEffects = false;
 		for (Runnable scene : scenes) {
 			command(world, "time set noon");
 			command(world, "weather clear");
@@ -1086,8 +1089,10 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 			}
 			return wave.direction();
 		});
-		// Looking out the way it comes from: back along its way in.
+		// Looking out the way it comes from: back along its way in. Not as a spectator, whom the wave doesn't pour its water
+		// about (in creative, so as not to be swept away).
 		float yaw = (float) Math.toDegrees(Math.atan2(in.x, -in.z));
+		command(world, "gamemode creative @a");
 		teleport(context, world, Level.OVERWORLD, at.x, at.y + 4.0, at.z, yaw, -8.0F);
 		// Until it is close: about forty blocks out.
 		for (int i = 0; i < 30; i++) {
@@ -1098,9 +1103,20 @@ public class NaturesModClientGameTest implements FabricClientGameTest {
 			}
 			context.waitTicks(10);
 		}
+		describeTsunami(world, at);
 		shoot(context, "disaster_tsunami");
 		context.waitTicks(60);
+		describeTsunami(world, at);
 		shoot(context, "disaster_tsunami_ashore");
+	}
+
+	private static void describeTsunami(TestSingleplayerContext world, Vec3 at) {
+		String said = world.getServer().computeOnServer(server -> Disasters.active(server.overworld()).stream().filter(d -> d instanceof Tsunami)
+				.map(d -> (Tsunami) d).findFirst().map(wave -> String.format(java.util.Locale.ROOT,
+						"phase %d, front %.0f, the camera %.0f along its way, %.1f high, inland %s, %d water standing", wave.phase(), wave.front(),
+						wave.along(at.x, at.z), wave.height(), wave.inland(), wave.waterStanding()))
+				.orElse("gone"));
+		System.out.println("[gametest] tsunami: " + said);
 	}
 
 	/** From the brink of a level-4 sinkhole once it has opened. */

@@ -224,8 +224,12 @@ final class TsunamiFx {
 		}
 		double spread = Math.min(wave.halfWidth(), 0.5 * gap + 24.0);
 		double top = wave.base() + h;
-		// Bigger the further off: each looks much the same size from where it is seen.
-		double size = Math.max(3.0, Math.min(10.0, h * 0.45)) * (1.0 + Math.min(3.0, gap / 220.0));
+		// Bigger the further off: each looks much the same size from where it is seen. And where fewer particles are allowed
+		// (the player's settings, a slow computer), each is bigger, so that the face still stands solid, only coarser.
+		double grain = Math.max(0.8, Math.min(2.0, 1.0 / Math.sqrt(Math.max(0.05F, Fx.density))));
+		double size = Math.max(3.0, Math.min(10.0, h * 0.45)) * (1.0 + Math.min(3.0, gap / 220.0)) * grain;
+		// The face has some depth to it: the swell rising behind it, lower the further back.
+		double depth = Math.min(6.0, 0.4 * h);
 		double lean = Math.min(4.0, h * 0.22);
 		double speed = wave.speed();
 		for (int i = 0; i < count; i++) {
@@ -233,7 +237,8 @@ final class TsunamiFx {
 			if (c < -wave.halfWidth() || c > wave.halfWidth()) {
 				continue;
 			}
-			double a = wave.front() + Fx.range(-1.2, 0.6);
+			double back = Fx.random.nextDouble() * depth;
+			double a = wave.front() + 0.6 - back;
 			double px = wave.x(a, c);
 			double pz = wave.z(a, c);
 			double floor = Math.max(wave.base() - 12.0, land(px, pz, wave.base() - 1.0));
@@ -241,7 +246,8 @@ final class TsunamiFx {
 				// The land stands above the wave here.
 				continue;
 			}
-			double f = Math.pow(Fx.random.nextDouble(), 0.7);
+			// Up to its crest at the front, lower behind it.
+			double f = Math.pow(Fx.random.nextDouble(), 0.7) * (1.0 - 0.5 * back / Math.max(1.0, depth));
 			double curl = f * f * lean;
 			float[] tone = water(f, wave.inland());
 			Fx.cloud(px + wave.dx() * curl, floor + f * (top - floor), pz + wave.dz() * curl).velocity(wave.dx() * speed, 0.01 + 0.05 * f, wave.dz() * speed)
